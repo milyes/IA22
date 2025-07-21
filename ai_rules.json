@@ -1,0 +1,12 @@
+function interpreterIA() {
+  const input = document.getElementById("inputIA").value.toLowerCase();
+  fetch("ai_rules.json")
+    .then(res => res.json())
+    .then(data => {
+      const match = data.rules.find(rule =>
+        input.includes(rule.condition.toLowerCase())
+      );
+      const résultat = match ? `✅ Action IA : ${match.action}` : "⚠️ Aucune règle IA correspondante.";
+      document.getElementById("output").innerText = résultat;
+    });
+}
