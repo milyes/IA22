@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>IA22ZERO – Console cognitive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background-color: #0f0f18;
+      color: #ffffff;
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #1a1d23;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+    main {
+      padding: 30px;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 12px;
+      background-color: #1f222a;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      font-family: monospace;
+    }
+    button {
+      margin-top: 10px;
+      padding: 12px 24px;
+      background-color: #ffbb00;
+      color: #111;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #191c23;
+      border-radius: 6px;
+      box-shadow: inset 0 0 4px #000;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>IA22ZERO()</h1>
+    <p>Interpréteur logique IA – Système autonome</p>
+  </header>
+
+  <main>
+    <h2>🧠 Entrée IA</h2>
+    <textarea id="inputIA" placeholder="Ex : if utilisateur = 'ilyes' then accès = autorisé"></textarea>
+    <button onclick="interpreterIA()">Lancer IA</button>
+    <div id="output">🔎 En attente d'instruction IA...</div>
+  </main>
+
+  <script>
+    function interpreterIA() {
+      const input = document.getElementById("inputIA").value.toLowerCase();
+      let réponse = "🧠 IA22ZERO analyse la logique...\n";
+
+      if (input.includes("ilyes") && input.includes("if") && input.includes("then")) {
+        réponse += "✅ Identité confirmée. Accès IA autorisé.";
+      } else if (input.includes("if") && input.includes("then")) {
+        réponse += "⚙️ Structure logique détectée. IA en cours d'exécution.";
+      } else {
+        réponse += "❌ Syntaxe incorrecte. Format attendu : if condition then action.";
+      }
+
+      document.getElementById("output").innerText = réponse;
+    }
+  </script>
+
+</body>
+</html>
