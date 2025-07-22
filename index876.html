@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Corpus IA22 – Blocs techniques</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #333; margin: 0; padding: 0; }
+    header { background: #0078D4; color: white; padding: 20px; text-align: center; }
+    nav { background: #eee; padding: 10px 20px; border-bottom: 1px solid #ccc; }
+    nav a { margin-right: 15px; text-decoration: none; color: #0078D4; font-weight: bold; }
+    .bloc { background: white; border-left: 5px solid #0078D4; margin: 30px auto; padding: 20px;
+            max-width: 800px; border-radius: 4px; box-shadow: 0 0 5px rgba(0,0,0,0.05); }
+    h2 { color: #0078D4; margin-top: 0; }
+    pre { background: #f0f0f0; padding: 12px; border-radius: 4px; font-family: Consolas, monospace; overflow-x: auto; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📘 Corpus IA22 — Modules techniques</h1>
+  </header>
+
+  <nav>
+    <a href="#bloc-python">Python</a>
+    <a href="#bloc-nlp">NLP</a>
+    <a href="#bloc-devops">DevOps</a>
+    <a href="#bloc-docker">Docker</a>
+    <a href="#bloc-android">Android</a>
+    <a href="#bloc-iso">ISO VM</a>
+    <a href="#bloc-c">Langage C</a>
+    <a href="#bloc-prompt">Prompt GPT</a>
+    <a href="#bloc-yaml">Config YAML</a>
+    <a href="#bloc-hybride">Hybride IA</a>
+  </nav>
+
+  <div class="bloc" id="bloc-python">
+    <h2>🔣 Python — Entraînement IA</h2>
+    <p>Commande pour lancer un modèle GPT :</p>
+    <pre>python train_model.py --data input.csv --model gpt</pre>
+  </div>
+
+  <div class="bloc" id="bloc-nlp">
+    <h2>🔎 NLP — Extraction linguistique</h2>
+    <p>Pipeline spaCy francophone :</p>
+    <pre>nlp = spacy.load("fr_core_news_md")</pre>
+  </div>
+
+  <div class="bloc" id="bloc-devops">
+    <h2>⚙️ DevOps — Automatisation</h2>
+    <p>Workflow GitHub pour entraînement IA :</p>
+    <pre>name: Train IA  
+on: [push]  
+jobs:  
+  build:
+    steps:
+      - run: python train.py</pre>
+  </div>
+
+  <div class="bloc" id="bloc-docker">
+    <h2>🐳 Docker — Déploiement API</h2>
+    <p>Commande FastAPI en container :</p>
+    <pre>docker run -p 8000:8000 ia22-api:latest</pre>
+  </div>
+
+  <div class="bloc" id="bloc-android">
+    <h2>📱 Android — Lancement APK IA</h2>
+    <p>Démarrage activité depuis terminal :</p>
+    <pre>adb shell am start -n com.ia22/.MainActivity</pre>
+  </div>
+
+  <div class="bloc" id="bloc-iso">
+    <h2>💿 ISO VM — Démarrage qemu/kvm</h2>
+    <p>Boot d’une image ISO IA22 :</p>
+    <pre>qemu-system-x86_64 -boot d -cdrom ia22.iso -m 4096</pre>
+  </div>
+
+  <div class="bloc" id="bloc-c">
+    <h2>🔧 Langage C — Structure Emprunt</h2>
+    <p>Structuration mémoire en C :</p>
+    <pre>typedef struct {
+  char nom[50];
+  float montant;
+  float taux;
+  int duree;
+} Emprunt;</pre>
+  </div>
+
+  <div class="bloc" id="bloc-prompt">
+    <h2>🧠 Prompt — Analyse émotionnelle</h2>
+    <p>Modèle IA pour compréhension du ton :</p>
+    <pre>prompt = "Analyse ce message et déduis l’émotion dominante."</pre>
+  </div>
+
+  <div class="bloc" id="bloc-yaml">
+    <h2>🗂️ Config IA — YAML/JSON</h2>
+    <p>Paramètres modèle :</p>
+    <pre>{
+  "model": "gpt-4",
+  "temperature": 0.7,
+  "max_tokens": 2048
+}</pre>
+  </div>
+
+  <div class="bloc" id="bloc-hybride">
+    <h2>🧬 Hybride IA — Compilation C</h2>
+    <p>Exécution d’un agent compilé localement :</p>
+    <pre>gcc ia22.c -o ia22 && ./ia22</pre>
+  </div>
+
+</body>
+</html>
