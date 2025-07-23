@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>IA22 – Documentation imprimable</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background: #ffffff;
+      color: #000;
+      margin: 40px;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #0078D4;
+    }
+    .sommaire {
+      background: #f2f2f2;
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin-bottom: 40px;
+    }
+    .sommaire a {
+      display: block;
+      margin-bottom: 5px;
+      text-decoration: none;
+      color: #0078D4;
+    }
+    .bloc {
+      page-break-inside: avoid;
+      margin-bottom: 40px;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 12px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+      overflow-x: auto;
+    }
+    footer {
+      border-top: 1px solid #ccc;
+      margin-top: 60px;
+      padding-top: 10px;
+      font-size: 0.9em;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📘 Corpus IA22 – Modules techniques</h1>
+
+  <div class="sommaire">
+    <strong>🗂️ Sommaire</strong>
+    <a href="#bloc1">1. Entraînement Python</a>
+    <a href="#bloc2">2. NLP</a>
+    <a href="#bloc3">3. DevOps</a>
+    <a href="#bloc4">4. Docker</a>
+    <a href="#bloc5">5. Android</a>
+    <a href="#bloc6">6. ISO VM</a>
+    <a href="#bloc7">7. Langage C</a>
+    <a href="#bloc8">8. Prompt IA</a>
+    <a href="#bloc9">9. Config YAML</a>
+    <a href="#bloc10">10. Compilation Hybride</a>
+  </div>
+
+  <div class="bloc" id="bloc1">
+    <h2>1. 🔣 Entraînement Python</h2>
+    <p>Commande pour entraîner un modèle GPT :</p>
+    <pre>python train_model.py --data input.csv --model gpt</pre>
+  </div>
+
+  <div class="bloc" id="bloc2">
+    <h2>2. 🔎 NLP</h2>
+    <p>Extraction d’entités avec spaCy :</p>
+    <pre>nlp = spacy.load("fr_core_news_md")</pre>
+  </div>
+
+  <div class="bloc" id="bloc3">
+    <h2>3. ⚙️ DevOps</h2>
+    <p>Automatisation via GitHub Actions :</p>
+    <pre>name: Train IA  
+on: [push]  
+jobs:
+  build:
+    steps:
+      - run: python train.py</pre>
+  </div>
+
+  <div class="bloc" id="bloc4">
+    <h2>4. 🐳 Docker</h2>
+    <p>Exécution d’une API IA :</p>
+    <pre>docker run -p 8000:8000 ia22-api:latest</pre>
+  </div>
+
+  <div class="bloc" id="bloc5">
+    <h2>5. 📱 Android</h2>
+    <p>Démarrage d’un APK IA :</p>
+    <pre>adb shell am start -n com.ia22/.MainActivity</pre>
+  </div>
+
+  <div class="bloc" id="bloc6">
+    <h2>6. 💿 ISO VM</h2>
+    <p>Démarrage via QEMU :</p>
+    <pre>qemu-system-x86_64 -boot d -cdrom ia22.iso -m 4096</pre>
+  </div>
+
+  <div class="bloc" id="bloc7">
+    <h2>7. 🔧 Langage C</h2>
+    <p>Structure pour emprunt IA :</p>
+    <pre>typedef struct {
+  char nom[50];
+  float montant;
+  float taux;
+  int duree;
+} Emprunt;</pre>
+  </div>
+
+  <div class="bloc" id="bloc8">
+    <h2>8. 🧠 Prompt IA</h2>
+    <p>Analyse émotionnelle :</p>
+    <pre>prompt = "Analyse ce message et déduis l’émotion dominante."</pre>
+  </div>
+
+  <div class="bloc" id="bloc9">
+    <h2>9. 🗂️ Config YAML</h2>
+    <p>Paramétrage d’un modèle IA :</p>
+    <pre>{
+  "model": "gpt-4",
+  "temperature": 0.7
+}</pre>
+  </div>
+
+  <div class="bloc" id="bloc10">
+    <h2>10. 🧬 Compilation Hybride</h2>
+    <p>Exécution locale d’un agent IA :</p>
+    <pre>gcc ia22.c -o ia22 && ./ia22</pre>
+  </div>
+
+  <footer>
+    © IA22 – Compilation technique francophone – Version imprimable
+  </footer>
+
+</body>
+</html>
