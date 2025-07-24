@@ -1,36 +1,35 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>IA22_LOGIC – Accès Console IA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>IA22 Console – Accès sécurisé</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       background-color: #0f172a;
       font-family: 'Segoe UI', sans-serif;
       color: #ecf0f1;
       text-align: center;
-      padding: 40px;
+      padding: 50px;
     }
-    .logic-box {
+    .access-box {
       background-color: #1e293b;
       border-radius: 12px;
       padding: 30px;
-      max-width: 600px;
+      max-width: 500px;
       margin: auto;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
     }
     h1 {
       color: #00c3ff;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
     input[type="password"] {
       padding: 10px;
       font-size: 1em;
-      border: none;
-      border-radius: 6px;
+      width: 80%;
       margin-top: 20px;
-      width: 60%;
+      border-radius: 6px;
       background-color: #0f172a;
       color: #00c3ff;
       border: 2px solid #00c3ff;
@@ -66,36 +65,33 @@
 </head>
 <body>
 
-  <div class="logic-box">
-    <h1>🔁 IA22_LOGIC – Authentification IA</h1>
-    <p>Entrez votre mot de passe IA pour initialiser la console IA22 :</p>
+  <div class="access-box">
+    <h1>🔐 IA22_LOGIC – Console d’accès</h1>
+    <p>Veuillez entrer votre mot de passe IA22 pour initialiser la console :</p>
 
-    <input type="password" id="iaPassword" placeholder="🔒 mot de passe IA" />
+    <input type="password" id="consolePass" placeholder="🔒 mot de passe IA22" />
     <br>
-    <button class="btn-access" onclick="validateAccess()">Accéder à la console</button>
+    <button class="btn-access" onclick="validate()">Accéder à la console</button>
 
-    <div class="output" id="outputBox">🧠 Attente d’identification IA...</div>
+    <div class="output" id="responseBox">🧠 En attente d’identification IA...</div>
 
     <div class="signature">
-      🖋️ Zoubirou Ilyes – IA22 Logic | Montréal, 2025
+      🖋️ Zoubirou Ilyes – IA22 Architect | Montréal, 2025
     </div>
   </div>
 
   <script>
-    function validateAccess() {
-      const password = document.getElementById("iaPassword").value;
-      if (password === "IA22access") {
-        document.getElementById("outputBox").innerText =
-          "code200 ✔️ Accès autorisé\nInitialisation du noyau IA22_LOGIC...\n🧠 CoopKit OA actif\nÉtat : LOGIC_01 | Sécurité : stable";
+    function validate() {
+      const pass = document.getElementById("consolePass").value;
+      if (pass === "code200") {
+        document.getElementById("responseBox").innerText =
+          "✅ code200\nAccès à la console IA22 accordé\n🧠 CoopKit OA en cours d’activation...";
+        setTimeout(() => window.location.href = "ia22_console.html", 2500); // redirection vers la console
       } else {
-        document.getElementById("outputBox").innerText =
-          "code403 ❌ Mot de passe invalide\nAccès IA refusé.\n🔐 Recommencer.";
+        document.getElementById("responseBox").innerText =
+          "❌ code403\nMot de passe incorrect\nAccès refusé.";
       }
     }
-
-    window.onload = () => {
-      document.getElementById("iaPassword").focus();
-    };
   </script>
 
 </body>
