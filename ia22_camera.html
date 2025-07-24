@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>IA22_CAMERA – Analyse IA Visuelle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5faff;
+      margin: 40px;
+      color: #2c3e50;
+    }
+    .camera-block {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      padding: 30px;
+      max-width: 800px;
+      margin: auto;
+      text-align: center;
+    }
+    h1 {
+      color: #2980b9;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+    .output-box {
+      background: #eaf4ff;
+      border-left: 5px solid #3498db;
+      padding: 15px;
+      margin-top: 20px;
+      font-family: monospace;
+      color: #2c3e50;
+    }
+    .btn-analyse {
+      margin-top: 20px;
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .btn-analyse:hover {
+      background-color: #2980b9;
+    }
+    .signature {
+      margin-top: 40px;
+      font-style: italic;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <div class="camera-block">
+    <h1>📷 IA22_CAMERA – Module de vision IA</h1>
+    <p>Analyse visuelle simulée par intelligence augmentée IA22, orchestrée par <strong>Ilyes</strong>.</p>
+
+    <!-- Image affichée -->
+    <img src="image_camera.jpg" alt="Image IA22 analysée" />
+
+    <!-- Résultat IA -->
+    <div class="output-box" id="cameraOutput">Chargement de l'analyse IA...</div>
+    <button class="btn-analyse" onclick="analyseImage()">Analyser l’image IA</button>
+
+    <div class="signature">
+      🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> – IA22 Vision | Montréal, 2025
+    </div>
+  </div>
+
+  <script>
+    function analyseImage() {
+      const result = {
+        scene: "Urbain moderne",
+        luminosity: "Haute",
+        composition: "Symétrie verticale dominante",
+        interpretation: "📡 Suggestion IA : architecture inspirante détectée, potentielle entrée IA22_CITY"
+      };
+      document.getElementById("cameraOutput").innerHTML = `
+        <strong>Scène :</strong> ${result.scene}<br>
+        <strong>Luminosité :</strong> ${result.luminosity}<br>
+        <strong>Composition :</strong> ${result.composition}<br>
+        <strong>Interprétation IA :</strong> ${result.interpretation}
+      `;
+    }
+
+    window.onload = analyseImage;
+  </script>
+</body>
+</html>
