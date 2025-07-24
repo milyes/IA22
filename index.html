@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Publication Officielle – IA22_LOGIC</title>
+  <title>IA22_LOGIC – CoopKit OA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -11,64 +11,77 @@
       margin: 40px;
       color: #2c3e50;
     }
-    .container {
-      background: #fff;
+    .logic-block {
+      background: #ffffff;
       border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
       padding: 30px;
-      max-width: 800px;
+      max-width: 750px;
       margin: auto;
-    }
-    h1, h2 {
       text-align: center;
+    }
+    .logic-block h1 {
       color: #34495e;
     }
-    .highlight {
-      background: #eaf2ff;
-      padding: 15px;
+    .output-box {
+      background: #f9fcff;
       border-left: 5px solid #3498db;
+      padding: 15px;
       margin-top: 20px;
+      font-family: monospace;
+      color: #34495e;
     }
-    .signature {
-      margin-top: 40px;
-      font-style: italic;
-      text-align: center;
-      color: #7f8c8d;
-    }
-    button {
+    .btn-reset {
+      margin-top: 20px;
       background-color: #3498db;
       color: white;
       padding: 10px 20px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      margin-top: 20px;
     }
-    button:hover {
+    .btn-reset:hover {
       background-color: #2980b9;
+    }
+    .signature {
+      margin-top: 40px;
+      font-style: italic;
+      color: #7f8c8d;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🧠 IA22_LOGIC</h1>
-    <h2>Module CoopKit OA – Publication Officielle</h2>
-    
-    <div class="highlight">
-      <p><strong>Fonction principale :</strong> <code>zero()</code> – Initialise le module OA à son état logique par défaut</p>
-      <p><strong>Statut :</strong> RESET</p>
-      <p><strong>Niveau IA :</strong> 0</p>
-      <p><strong>Message système :</strong> Initialisation complète du module CoopKit OA</p>
-    </div>
+  <div class="logic-block">
+    <h1>🔁 IA22_LOGIC – Fonction <code>zero()</code></h1>
+    <p>Initialisation du module CoopKit OA piloté par l'intelligence IA sous la direction de <strong>Ilyes</strong>.</p>
 
-    <p>Ce module fait partie du projet <strong>IA22</strong> développé par <strong>Zoubirou Ilyes</strong>, visant à modéliser des raisonnements IA dans des environnements hybrides (local + cloud).</p>
-
-    <button onclick="alert('📤 IA22_LOGIC publié avec succès !')">Publier IA22_LOGIC</button>
+    <div class="output-box" id="logicOutput"></div>
+    <button class="btn-reset" onclick="executeZero()">Réinitialiser IA22_LOGIC</button>
 
     <div class="signature">
-      🖋️ Conçu et signé par <strong>Ilyes</strong> – Architecte IA22<br />
-      Montréal, 2025
+      🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> – IA22 Architect | Montréal, 2025
     </div>
   </div>
+
+  <script>
+    function zero() {
+      return {
+        status: "RESET",
+        level: 0,
+        message: "🧠 CoopKit OA initialisé avec succès"
+      };
+    }
+
+    function executeZero() {
+      const result = zero();
+      document.getElementById("logicOutput").innerHTML = `
+        <strong>État :</strong> ${result.status}<br>
+        <strong>Niveau logique :</strong> ${result.level}<br>
+        <strong>Message :</strong> ${result.message}
+      `;
+    }
+
+    window.onload = executeZero;
+  </script>
 </body>
 </html>
