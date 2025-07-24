@@ -2,27 +2,21 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>IA22_LOGIC | Interface unique</title>
+  <title>IA22_LOGIC | Démarrage public</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: "Segoe UI", sans-serif;
       background-color: #0d1117;
       color: #e6edf3;
+      font-family: "Segoe UI", sans-serif;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
       margin: 0;
       text-align: center;
     }
-
-    h1 {
-      font-size: 2em;
-      margin-bottom: 20px;
-    }
-
     button {
       background-color: #2ea44f;
       border: none;
@@ -31,57 +25,39 @@
       font-size: 18px;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
     }
-
     button:hover {
       background-color: #238636;
     }
-
     #status {
-      margin-top: 25px;
-      font-size: 16px;
-    }
-
-    footer {
-      margin-top: 40px;
-      font-size: 14px;
-      color: #8b949e;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <h1>🔐 Lancement IA22_LOGIC</h1>
-  <button id="launchIA">🚀 Démarrer IA22_LOGIC</button>
+  <h1>🚀 Bienvenue sur IA22_LOGIC</h1>
+  <button id="launchIA">Démarrer IA22_LOGIC</button>
   <div id="status">En attente de lancement...</div>
 
-  <footer>&copy; 2025 – milyes.github.io</footer>
-
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const bouton = document.getElementById("launchIA");
-      const statut = document.getElementById("status");
-
-      bouton.addEventListener("click", () => {
-        statut.innerHTML = "⏳ Connexion à IA22_LOGIC...";
-
-        fetch("https://milyes.github.io/api/ia22-launch", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({
-            module: "IA22_LOGIC",
-            trigger: "launch_sequence",
-            context: "web_direct"
-          })
+    document.getElementById("launchIA").addEventListener("click", () => {
+      const status = document.getElementById("status");
+      status.innerHTML = "⏳ Lancement en cours...";
+      fetch("https://milyes.github.io/api/ia22-launch", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          module: "IA22_LOGIC",
+          trigger: "launch_sequence"
         })
-        .then(response => response.json())
-        .then(data => {
-          statut.innerHTML = `✅ IA22_LOGIC lancé<br><strong>Statut :</strong> ${data.status}`;
-        })
-        .catch(error => {
-          statut.innerHTML = `❌ Erreur<br><code>${error.message}</code>`;
-        });
+      })
+      .then(response => response.json())
+      .then(data => {
+        status.innerHTML = `✅ IA lancée<br><strong>Statut :</strong> ${data.status}`;
+      })
+      .catch(error => {
+        status.innerHTML = `❌ Erreur : ${error.message}`;
       });
     });
   </script>
