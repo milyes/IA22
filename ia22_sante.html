@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>IA22_SANTE – Diagnostic IA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3f7fa;
+      margin: 40px;
+      color: #2c3e50;
+    }
+    .sante-block {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      padding: 30px;
+      max-width: 800px;
+      margin: auto;
+      text-align: center;
+    }
+    h1 {
+      color: #34495e;
+    }
+    .output-box {
+      background: #e8f7ef;
+      border-left: 5px solid #2ecc71;
+      padding: 15px;
+      margin-top: 20px;
+      font-family: monospace;
+      color: #2c3e50;
+    }
+    .btn-scan {
+      margin-top: 20px;
+      background-color: #2ecc71;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .btn-scan:hover {
+      background-color: #27ae60;
+    }
+    .signature {
+      margin-top: 40px;
+      font-style: italic;
+      color: #7f8c8d;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+<body>
+  <div class="sante-block">
+    <h1>🩺 IA22_SANTE – Scan vital IA</h1>
+    <p>Ce module simule un diagnostic IA des paramètres biologiques, prédictifs et comportementaux sous la supervision de <strong>Ilyes</strong>.</p>
+
+    <div class="output-box" id="santeOutput">Chargement du profil santé IA...</div>
+    <button class="btn-scan" onclick="executeScan()">Lancer le diagnostic</button>
+
+    <div class="signature">
+      🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> – IA22 Santé | Montréal, 2025
+    </div>
+  </div>
+
+  <script>
+    function scanVital() {
+      return {
+        status: "STABLE",
+        heartbeat: 72,
+        oxygen: "98%",
+        alert: "Aucun symptôme critique détecté"
+      };
+    }
+
+    function executeScan() {
+      const result = scanVital();
+      document.getElementById("santeOutput").innerHTML = `
+        <strong>Statut :</strong> ${result.status}<br>
+        <strong>Fréquence cardiaque :</strong> ${result.heartbeat} bpm<br>
+        <strong>Oxygénation :</strong> ${result.oxygen}<br>
+        <strong>Analyse :</strong> ${result.alert}
+      `;
+    }
+
+    window.onload = executeScan;
+  </script>
+</body>
+</html>
