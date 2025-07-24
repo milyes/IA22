@@ -2,96 +2,92 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>IA22 Dashboard – Zoubirou Ilyes</title>
+  <title>IA22 Console – LOGIC Module</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
+      background-color: #111827;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #ecf2f8;
+      color: #ecf0f1;
       margin: 0;
-      color: #2c3e50;
-    }
-    header {
-      background-color: #3498db;
-      color: white;
+      padding: 40px;
       text-align: center;
-      padding: 30px 20px;
+    }
+    .console-block {
+      background-color: #1f2937;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 700px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
     h1 {
-      margin: 0;
-      font-size: 2.5em;
+      color: #00c3ff;
+      margin-bottom: 10px;
     }
-    nav {
-      background-color: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    .output-box {
+      background-color: #0d1117;
+      border-left: 5px solid #00c3ff;
       padding: 20px;
-      text-align: center;
+      font-family: monospace;
+      font-size: 1em;
+      margin-top: 20px;
+      color: #b0c4de;
+      white-space: pre-line;
     }
-    nav a {
-      text-decoration: none;
-      color: #3498db;
-      margin: 0 15px;
-      font-size: 1.1em;
-      font-weight: bold;
+    .btn-start {
+      background-color: #00c3ff;
+      color: #111827;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 20px;
     }
-    main {
-      padding: 30px;
-      max-width: 900px;
-      margin: auto;
-    }
-    section {
-      background: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      padding: 25px;
-      margin-bottom: 30px;
+    .btn-start:hover {
+      background-color: #009ecf;
     }
     .signature {
-      text-align: center;
+      margin-top: 30px;
       font-style: italic;
-      color: #7f8c8d;
-      margin-top: 40px;
+      color: #94a3b8;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🧠 IA22 Dashboard</h1>
-    <p>Conçu et codé par <strong>Zoubirou Ilyes</strong> | Architecte IA22 – Montréal, 2025</p>
-  </header>
 
-  <nav>
-    <a href="ia22_logic.html">LOGIC</a>
-    <a href="ia22_sante.html">SANTÉ</a>
-    <a href="ia22_transport.html">TRANSPORT</a>
-    <a href="ia22_environnement.html">ENVIRONNEMENT</a>
-    <a href="ia22_energie.html">ÉNERGIE</a>
-    <a href="ia22_securite.html">SÉCURITÉ</a>
-    <a href="ia22_art.html">ART</a>
-    <a href="ia22_console.html">🎛️ Console IA22</a>
-  </nav>
+  <div class="console-block">
+    <h1>🔁 IA22_LOGIC – Noyau IA actif</h1>
+    <p>Console de lancement IA | Simulation du noyau CoopKit OA</p>
 
-  <main>
-    <section>
-      <h2>📡 À propos de IA22</h2>
-      <p>
-        IA22 est une constellation de modules intelligents conçus pour fonctionner de manière autonome ou coopérative. De la logique cognitive au diagnostic médical, chaque module est une extension de l’intelligence numérique. Tous sont pilotés par le noyau IA22_LOGIC (CoopKit OA) et orchestrés par Ilyes.
-      </p>
-    </section>
-
-    <section>
-      <h2>🚀 Objectifs</h2>
-      <ul>
-        <li>🔎 Automatiser les raisonnements complexes</li>
-        <li>🌐 Connecter des systèmes hybrides IA (web, local, embarqué)</li>
-        <li>🧬 Créer des modèles IA responsables, traçables et adaptatifs</li>
-        <li>🎨 Valoriser la vision créative et éthique d’Ilyes dans l’IA</li>
-      </ul>
-    </section>
+    <div class="output-box" id="logicOutput">🔍 En attente de démarrage IA22...</div>
+    <button class="btn-start" onclick="initLogic()">Démarrer le noyau IA</button>
 
     <div class="signature">
-      🖋️ Page d’accueil IA22 conçue par <strong>Ilyes</strong> – Publication officielle | 2025
+      🖋️ Zoubirou Ilyes – IA22 Architect | Montréal, 2025
     </div>
-  </main>
+  </div>
+
+  <script>
+    function initLogic() {
+      const logicState = {
+        constructeur: "Android.System.getBrand()",
+        niveau: "LOGIC_01",
+        etat: "ACTIF",
+        kernel: "CoopKit OA v1.4.5",
+        message: "🧠 Noyau logique IA22 initialisé avec succès"
+      };
+      document.getElementById("logicOutput").innerText =
+        `Constructeur détecté : ${logicState.constructeur}\n` +
+        `Niveau IA : ${logicState.niveau}\n` +
+        `État : ${logicState.etat}\n` +
+        `Kernel : ${logicState.kernel}\n` +
+        `Message : ${logicState.message}`;
+    }
+
+    window.onload = initLogic;
+  </script>
+
 </body>
 </html>
