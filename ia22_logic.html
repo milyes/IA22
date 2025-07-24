@@ -2,45 +2,45 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>IA22_LOGIC – CoopKit OA</title>
+  <title>IA22_LOGIC – Noyau IA Initialisé</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f3f7fa;
+      background-color: #f0f8ff;
       margin: 40px;
       color: #2c3e50;
+      text-align: center;
     }
     .logic-block {
       background: #ffffff;
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       padding: 30px;
       max-width: 750px;
       margin: auto;
-      text-align: center;
     }
-    .logic-block h1 {
-      color: #34495e;
+    h1 {
+      color: #2c3e50;
     }
-    .output-box {
-      background: #f9fcff;
+    .output {
+      background: #eaf3ff;
       border-left: 5px solid #3498db;
       padding: 15px;
       margin-top: 20px;
       font-family: monospace;
-      color: #34495e;
     }
-    .btn-reset {
+    .btn-init {
       margin-top: 20px;
       background-color: #3498db;
       color: white;
       padding: 10px 20px;
       border: none;
       border-radius: 6px;
+      font-size: 1em;
       cursor: pointer;
     }
-    .btn-reset:hover {
+    .btn-init:hover {
       background-color: #2980b9;
     }
     .signature {
@@ -52,36 +52,35 @@
 </head>
 <body>
   <div class="logic-block">
-    <h1>🔁 IA22_LOGIC – Fonction <code>zero()</code></h1>
-    <p>Initialisation du module CoopKit OA piloté par l'intelligence IA sous la direction de <strong>Ilyes</strong>.</p>
+    <h1>🔁 IA22_LOGIC – Initialisation du noyau IA</h1>
+    <p>Ce module déclenche le protocole logique IA avec détection du constructeur et simulation d’état système.</p>
 
-    <div class="output-box" id="logicOutput"></div>
-    <button class="btn-reset" onclick="executeZero()">Réinitialiser IA22_LOGIC</button>
+    <div class="output" id="logicOutput">🔍 Attente de l’activation IA22...</div>
+    <button class="btn-init" onclick="launchLogic()">Lancer IA22_LOGIC</button>
 
     <div class="signature">
-      🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> – IA22 Architect | Montréal, 2025
+      🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> – IA22 Logic | Montréal, 2025
     </div>
   </div>
 
   <script>
-    function zero() {
-      return {
-        status: "RESET",
-        level: 0,
-        message: "🧠 CoopKit OA initialisé avec succès"
+    function launchLogic() {
+      const constructeur = "android.getprop('ro.product.brand')"; // simulation JS
+      const state = {
+        constructeurDetecte: "Samsung",
+        etat: "ACTIF",
+        niveau: "LOGIC_01",
+        message: "🧠 CoopKit OA lancé avec succès"
       };
-    }
-
-    function executeZero() {
-      const result = zero();
       document.getElementById("logicOutput").innerHTML = `
-        <strong>État :</strong> ${result.status}<br>
-        <strong>Niveau logique :</strong> ${result.level}<br>
-        <strong>Message :</strong> ${result.message}
+        <strong>Constructeur détecté :</strong> ${state.constructeurDetecte}<br>
+        <strong>État IA :</strong> ${state.etat}<br>
+        <strong>Niveau IA :</strong> ${state.niveau}<br>
+        <strong>Message :</strong> ${state.message}
       `;
     }
 
-    window.onload = executeZero;
+    window.onload = launchLogic;
   </script>
 </body>
 </html>
