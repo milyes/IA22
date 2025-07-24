@@ -2,91 +2,95 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>IA22_LOGIC – CoopKit OA</title>
+  <title>IA22 Dashboard – Zoubirou Ilyes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f3f7fa;
-      margin: 40px;
+      background-color: #ecf2f8;
+      margin: 0;
       color: #2c3e50;
     }
-    .logic-block {
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      padding: 30px;
-      max-width: 800px;
-      margin: auto;
-      text-align: center;
-    }
-    h1 {
-      color: #34495e;
-    }
-    p {
-      font-size: 1.1em;
-    }
-    .output-box {
-      background: #eef6ff;
-      border-left: 6px solid #3498db;
-      padding: 15px;
-      margin-top: 20px;
-      font-family: monospace;
-      color: #34495e;
-    }
-    .btn-reset {
-      margin-top: 20px;
+    header {
       background-color: #3498db;
       color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1em;
+      text-align: center;
+      padding: 30px 20px;
     }
-    .btn-reset:hover {
-      background-color: #2980b9;
+    h1 {
+      margin: 0;
+      font-size: 2.5em;
+    }
+    nav {
+      background-color: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 20px;
+      text-align: center;
+    }
+    nav a {
+      text-decoration: none;
+      color: #3498db;
+      margin: 0 15px;
+      font-size: 1.1em;
+      font-weight: bold;
+    }
+    main {
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
+    }
+    section {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 25px;
+      margin-bottom: 30px;
     }
     .signature {
-      margin-top: 40px;
+      text-align: center;
       font-style: italic;
       color: #7f8c8d;
-      font-size: 0.95em;
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
-  <div class="logic-block">
-    <h1>🔁 IA22_LOGIC – Fonction <code>zero()</code></h1>
-    <p>Ce module initialise CoopKit OA dans l’écosystème IA22. Conçu pour réfléchir, exécuter et protéger les règles logiques du système sous la direction de <strong>Ilyes</strong>.</p>
+  <header>
+    <h1>🧠 IA22 Dashboard</h1>
+    <p>Conçu et codé par <strong>Zoubirou Ilyes</strong> | Architecte IA22 – Montréal, 2025</p>
+  </header>
 
-    <div class="output-box" id="logicOutput">Chargement…</div>
-    <button class="btn-reset" onclick="executeZero()">Réinitialiser IA22_LOGIC</button>
+  <nav>
+    <a href="ia22_logic.html">LOGIC</a>
+    <a href="ia22_sante.html">SANTÉ</a>
+    <a href="ia22_transport.html">TRANSPORT</a>
+    <a href="ia22_environnement.html">ENVIRONNEMENT</a>
+    <a href="ia22_energie.html">ÉNERGIE</a>
+    <a href="ia22_securite.html">SÉCURITÉ</a>
+    <a href="ia22_art.html">ART</a>
+  </nav>
+
+  <main>
+    <section>
+      <h2>📡 À propos de IA22</h2>
+      <p>
+        IA22 est une constellation de modules intelligents conçus pour fonctionner de manière autonome ou coopérative. De la logique cognitive au diagnostic médical, chaque module est une extension de l’intelligence numérique. Tous sont pilotés par le noyau IA22_LOGIC (CoopKit OA) et orchestrés par Ilyes.
+      </p>
+    </section>
+
+    <section>
+      <h2>🚀 Objectifs</h2>
+      <ul>
+        <li>🔎 Automatiser les raisonnements complexes</li>
+        <li>🌐 Connecter des systèmes hybrides IA (web, local, embarqué)</li>
+        <li>🧬 Créer des modèles IA responsables, traçables et adaptatifs</li>
+        <li>🎨 Valoriser la vision créative et éthique d’Ilyes dans l’IA</li>
+      </ul>
+    </section>
 
     <div class="signature">
-      🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> — IA22 Architect | Montréal, 2025
+      🖋️ Page d’accueil IA22 conçue par <strong>Ilyes</strong> – Publication officielle | 2025
     </div>
-  </div>
-
-  <script>
-    function zero() {
-      return {
-        status: "RESET",
-        level: 0,
-        message: "🧠 CoopKit OA initialisé avec succès"
-      };
-    }
-
-    function executeZero() {
-      const result = zero();
-      document.getElementById("logicOutput").innerHTML = `
-        <strong>État :</strong> ${result.status}<br>
-        <strong>Niveau logique :</strong> ${result.level}<br>
-        <strong>Message :</strong> ${result.message}
-      `;
-    }
-
-    window.onload = executeZero;
-  </script>
+  </main>
 </body>
 </html>
