@@ -1,4 +1,4 @@
-# NetSecurePro IA22 – LOGICVMQEM
+# NetSecurePro IA22 – LOGIC
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE.md)
 [![Security Policy](https://img.shields.io/badge/Security-Policy-blue.svg)](./SECURITY.md)
