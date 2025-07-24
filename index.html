@@ -2,97 +2,112 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>IA22 Console – Accès sécurisé</title>
+  <title>Dashboard IA22_CITY</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      background-color: #0f172a;
       font-family: 'Segoe UI', sans-serif;
+      background-color: #0a0f1c;
+      margin: 0;
+      padding: 20px;
       color: #ecf0f1;
-      text-align: center;
-      padding: 50px;
     }
-    .access-box {
-      background-color: #1e293b;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 500px;
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 1000px;
       margin: auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      gap: 20px;
     }
-    h1 {
-      color: #00c3ff;
-      margin-bottom: 20px;
+    .widget {
+      background: #121826;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,255,255,0.1);
+      padding: 20px;
+      text-align: center;
     }
-    input[type="password"] {
+    h2 {
+      color: #00d4ff;
+      text-shadow: 0 0 5px #00d4ff;
+      margin-bottom: 10px;
+    }
+    img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,255,255,0.15);
+      margin-top: 10px;
+    }
+    .output-box {
+      background: #1f2a40;
+      border-left: 4px solid #00d4ff;
       padding: 10px;
-      font-size: 1em;
-      width: 80%;
-      margin-top: 20px;
-      border-radius: 6px;
-      background-color: #0f172a;
-      color: #00c3ff;
-      border: 2px solid #00c3ff;
+      margin-top: 15px;
+      font-family: monospace;
     }
-    .btn-access {
-      margin-top: 20px;
-      background-color: #00c3ff;
-      color: #111827;
-      padding: 10px 20px;
+    .btn-action {
+      margin-top: 15px;
+      background-color: #00d4ff;
+      color: #121826;
+      padding: 10px 15px;
       border: none;
       border-radius: 6px;
       font-size: 1em;
       cursor: pointer;
     }
-    .btn-access:hover {
-      background-color: #0090bb;
+    .btn-action:hover {
+      background-color: #00b0cc;
     }
-    .output {
-      margin-top: 30px;
-      background-color: #0d1117;
-      border-left: 5px solid #00c3ff;
-      padding: 15px;
-      font-family: monospace;
-      color: #b0c4de;
-      white-space: pre-line;
+    audio {
+      margin-top: 15px;
+      width: 100%;
     }
     .signature {
-      margin-top: 30px;
+      font-size: 0.9em;
       font-style: italic;
       color: #7f8c8d;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
+  <div class="dashboard">
+    <div class="widget">
+      <h2>🌆 IA22_CITY – Vision Nocturne</h2>
+      <p>Analyse urbaine intelligente avec ambiance audio et recommandations IA.</p>
+      <img src="image_city_nuit.jpg" alt="Ville IA22 de nuit" />
 
-  <div class="access-box">
-    <h1>🔐 IA22_LOGIC – Console d’accès</h1>
-    <p>Veuillez entrer votre mot de passe IA22 pour initialiser la console :</p>
+      <div class="output-box" id="outputCity">Chargement des données IA...</div>
+      <button class="btn-action" onclick="analyseVille()">Lancer l’analyse IA</button>
 
-    <input type="password" id="consolePass" placeholder="🔒 mot de passe IA22" />
-    <br>
-    <button class="btn-access" onclick="validate()">Accéder à la console</button>
+      <audio controls autoplay loop>
+        <source src="neopulse_montreal.ogg" type="audio/ogg" />
+        <source src="neopulse_montreal.mp3" type="audio/mpeg" />
+        Votre navigateur ne supporte pas l’audio HTML5.
+      </audio>
 
-    <div class="output" id="responseBox">🧠 En attente d’identification IA...</div>
-
-    <div class="signature">
-      🖋️ Zoubirou Ilyes – IA22 Architect | Montréal, 2025
+      <div class="signature">
+        🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> – IA22 City | Montréal, 2025
+      </div>
     </div>
   </div>
 
   <script>
-    function validate() {
-      const pass = document.getElementById("consolePass").value;
-      if (pass === "code200") {
-        document.getElementById("responseBox").innerText =
-          "✅ code200\nAccès à la console IA22 accordé\n🧠 CoopKit OA en cours d’activation...";
-        setTimeout(() => window.location.href = "ia22_console.html", 2500); // redirection vers la console
-      } else {
-        document.getElementById("responseBox").innerText =
-          "❌ code403\nMot de passe incorrect\nAccès refusé.";
-      }
+    function analyseVille() {
+      const result = {
+        ambiance: "Nocturne techno-futuriste",
+        densite: "Élevée",
+        structure: "Tours vitrées réfléchissantes + éclairage bleuté",
+        suggestion: "🌿 Ajouter un pavillon végétal interactif en bioénergie"
+      };
+      document.getElementById("outputCity").innerHTML = `
+        <strong>Ambiance :</strong> ${result.ambiance}<br>
+        <strong>Densité :</strong> ${result.densite}<br>
+        <strong>Structure :</strong> ${result.structure}<br>
+        <strong>Suggestion IA :</strong> ${result.suggestion}
+      `;
     }
-  </script>
 
+    window.onload = analyseVille;
+  </script>
 </body>
 </html>
