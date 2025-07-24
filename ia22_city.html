@@ -2,45 +2,46 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>IA22_CITY – Analyse IA Urbaine</title>
+  <title>IA22_CITY – Vision Nocturne</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f8fcff;
+      background-color: #0a0f1c;
+      color: #ecf0f1;
       margin: 40px;
-      color: #2c3e50;
     }
     .city-block {
-      background: #ffffff;
+      background: #121826;
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 12px rgba(0,255,255,0.1);
       padding: 30px;
       max-width: 800px;
       margin: auto;
       text-align: center;
     }
     h1 {
-      color: #2c3e50;
+      color: #00d4ff;
+      text-shadow: 0 0 8px #00d4ff;
     }
     img {
       max-width: 100%;
       border-radius: 8px;
       margin-top: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 12px rgba(0,255,255,0.2);
     }
     .output-box {
-      background: #eaf9ff;
-      border-left: 5px solid #3498db;
+      background: #1f2a40;
+      border-left: 5px solid #00d4ff;
       padding: 15px;
       margin-top: 20px;
       font-family: monospace;
-      color: #2c3e50;
+      color: #ecf0f1;
     }
     .btn-analyse {
       margin-top: 20px;
-      background-color: #3498db;
-      color: white;
+      background-color: #00d4ff;
+      color: #121826;
       padding: 10px 20px;
       border: none;
       border-radius: 6px;
@@ -48,7 +49,7 @@
       font-size: 1em;
     }
     .btn-analyse:hover {
-      background-color: #2980b9;
+      background-color: #00b0cc;
     }
     .signature {
       margin-top: 40px;
@@ -56,19 +57,28 @@
       color: #7f8c8d;
       font-size: 0.95em;
     }
+    audio {
+      margin-top: 20px;
+      width: 100%;
+      outline: none;
+    }
   </style>
 </head>
 <body>
   <div class="city-block">
-    <h1>🌆 IA22_CITY – Vision urbaine IA</h1>
-    <p>Ce module analyse l’ambiance, la structure et les flux urbains à partir d’une image capturée, avec recommandation IA urbaine. Supervision par <strong>Ilyes</strong>.</p>
+    <h1>🌃 IA22_CITY – Vision urbaine Nocturne</h1>
+    <p>Ce module analyse la scène capturée et joue un thème audio urbain pour renforcer l’immersion. Supervision par <strong>Ilyes</strong>.</p>
 
-    <!-- Image affichée -->
-    <img src="image_city.jpg" alt="Scène urbaine IA22" />
+    <img src="image_city_nuit.jpg" alt="Scène urbaine IA22 de nuit" />
 
-    <!-- Résultat IA -->
-    <div class="output-box" id="cityOutput">Chargement de la scène urbaine IA...</div>
-    <button class="btn-analyse" onclick="analyseCity()">Explorer le quartier IA</button>
+    <div class="output-box" id="cityOutput">Chargement de la scène IA nocturne...</div>
+    <button class="btn-analyse" onclick="analyseCity()">Analyser le quartier IA</button>
+
+    <audio controls autoplay loop>
+      <source src="neopulse_montreal.ogg" type="audio/ogg" />
+      <source src="neopulse_montreal.mp3" type="audio/mpeg" />
+      Votre navigateur ne supporte pas l’audio HTML5.
+    </audio>
 
     <div class="signature">
       🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> – IA22 City | Montréal, 2025
@@ -78,10 +88,10 @@
   <script>
     function analyseCity() {
       const result = {
-        ambiance: "Moderne et technologique",
+        ambiance: "Nocturne techno-futuriste",
         densite: "Élevée",
-        structure: "Tour verticale dominante + reflets vitrées",
-        suggestion: "🧱 Proposition IA : intégrer un pavillon vert en architecture biomimétique"
+        structure: "Façades vitrées réfléchissantes + tours éclairées",
+        suggestion: "🌱 Intégration d’un dôme biomimétique lumineux à énergie verte"
       };
       document.getElementById("cityOutput").innerHTML = `
         <strong>Ambiance :</strong> ${result.ambiance}<br>
