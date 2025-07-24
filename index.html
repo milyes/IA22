@@ -1,92 +1,101 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>IA22 Console – LOGIC Module</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>IA22_LOGIC – Accès Console IA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background-color: #111827;
+      background-color: #0f172a;
       font-family: 'Segoe UI', sans-serif;
       color: #ecf0f1;
-      margin: 0;
-      padding: 40px;
       text-align: center;
+      padding: 40px;
     }
-    .console-block {
-      background-color: #1f2937;
+    .logic-box {
+      background-color: #1e293b;
       border-radius: 12px;
       padding: 30px;
-      max-width: 700px;
+      max-width: 600px;
       margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
     }
     h1 {
       color: #00c3ff;
       margin-bottom: 10px;
     }
-    .output-box {
-      background-color: #0d1117;
-      border-left: 5px solid #00c3ff;
-      padding: 20px;
-      font-family: monospace;
+    input[type="password"] {
+      padding: 10px;
       font-size: 1em;
-      margin-top: 20px;
-      color: #b0c4de;
-      white-space: pre-line;
-    }
-    .btn-start {
-      background-color: #00c3ff;
-      color: #111827;
       border: none;
       border-radius: 6px;
+      margin-top: 20px;
+      width: 60%;
+      background-color: #0f172a;
+      color: #00c3ff;
+      border: 2px solid #00c3ff;
+    }
+    .btn-access {
+      margin-top: 20px;
+      background-color: #00c3ff;
+      color: #111827;
       padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
       font-size: 1em;
       cursor: pointer;
-      margin-top: 20px;
     }
-    .btn-start:hover {
-      background-color: #009ecf;
+    .btn-access:hover {
+      background-color: #0090bb;
+    }
+    .output {
+      margin-top: 30px;
+      background-color: #0d1117;
+      border-left: 5px solid #00c3ff;
+      padding: 15px;
+      font-family: monospace;
+      color: #b0c4de;
+      white-space: pre-line;
     }
     .signature {
       margin-top: 30px;
       font-style: italic;
-      color: #94a3b8;
+      color: #7f8c8d;
     }
   </style>
 </head>
 <body>
 
-  <div class="console-block">
-    <h1>🔁 IA22_LOGIC – Noyau IA actif</h1>
-    <p>Console de lancement IA | Simulation du noyau CoopKit OA</p>
+  <div class="logic-box">
+    <h1>🔁 IA22_LOGIC – Authentification IA</h1>
+    <p>Entrez votre mot de passe IA pour initialiser la console IA22 :</p>
 
-    <div class="output-box" id="logicOutput">🔍 En attente de démarrage IA22...</div>
-    <button class="btn-start" onclick="initLogic()">Démarrer le noyau IA</button>
+    <input type="password" id="iaPassword" placeholder="🔒 mot de passe IA" />
+    <br>
+    <button class="btn-access" onclick="validateAccess()">Accéder à la console</button>
+
+    <div class="output" id="outputBox">🧠 Attente d’identification IA...</div>
 
     <div class="signature">
-      🖋️ Zoubirou Ilyes – IA22 Architect | Montréal, 2025
+      🖋️ Zoubirou Ilyes – IA22 Logic | Montréal, 2025
     </div>
   </div>
 
   <script>
-    function initLogic() {
-      const logicState = {
-        constructeur: "Android.System.getBrand()",
-        niveau: "LOGIC_01",
-        etat: "ACTIF",
-        kernel: "CoopKit OA v1.4.5",
-        message: "🧠 Noyau logique IA22 initialisé avec succès"
-      };
-      document.getElementById("logicOutput").innerText =
-        `Constructeur détecté : ${logicState.constructeur}\n` +
-        `Niveau IA : ${logicState.niveau}\n` +
-        `État : ${logicState.etat}\n` +
-        `Kernel : ${logicState.kernel}\n` +
-        `Message : ${logicState.message}`;
+    function validateAccess() {
+      const password = document.getElementById("iaPassword").value;
+      if (password === "IA22access") {
+        document.getElementById("outputBox").innerText =
+          "code200 ✔️ Accès autorisé\nInitialisation du noyau IA22_LOGIC...\n🧠 CoopKit OA actif\nÉtat : LOGIC_01 | Sécurité : stable";
+      } else {
+        document.getElementById("outputBox").innerText =
+          "code403 ❌ Mot de passe invalide\nAccès IA refusé.\n🔐 Recommencer.";
+      }
     }
 
-    window.onload = initLogic;
+    window.onload = () => {
+      document.getElementById("iaPassword").focus();
+    };
   </script>
 
 </body>
