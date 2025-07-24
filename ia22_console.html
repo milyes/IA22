@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22 Console Centrale – Zoubirou Ilyes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #edf2f8;
+      margin: 40px;
+      color: #2c3e50;
+      text-align: center;
+    }
+    h1 {
+      color: #34495e;
+    }
+    select {
+      padding: 10px;
+      font-size: 1em;
+      margin-top: 20px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .module {
+      display: none;
+      margin-top: 30px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      padding: 25px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .signature {
+      margin-top: 40px;
+      font-style: italic;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 IA22 Console – Pilotage des Modules</h1>
+  <p>Sélectionne un module IA22 pour l'activer :</p>
+  <select onchange="showModule(this.value)">
+    <option value="">-- Choisir un module IA22 --</option>
+    <option value="logic">IA22_LOGIC</option>
+    <option value="sante">IA22_SANTE</option>
+    <option value="transport">IA22_TRANSPORT</option>
+    <option value="environnement">IA22_ENVIRONNEMENT</option>
+    <option value="energie">IA22_ENERGIE</option>
+    <option value="securite">IA22_SECURITE</option>
+    <option value="art">IA22_ART</option>
+  </select>
+
+  <!-- Modules IA22 -->
+  <div id="logic" class="module">
+    <h2>🔁 IA22_LOGIC</h2>
+    <p>Initialisation CoopKit OA...</p>
+    <pre>État : RESET\nNiveau : 0\nMessage : CoopKit OA initialisé</pre>
+  </div>
+
+  <div id="sante" class="module">
+    <h2>🩺 IA22_SANTE</h2>
+    <p>Scan vital IA...</p>
+    <pre>Statut : STABLE\nFréquence : 72 bpm\nOxygène : 98%</pre>
+  </div>
+
+  <div id="transport" class="module">
+    <h2>🚌 IA22_TRANSPORT</h2>
+    <p>Optimisation de trajet IA...</p>
+    <pre>Temps gagné : 12 min\nCarburant : -8%</pre>
+  </div>
+
+  <div id="environnement" class="module">
+    <h2>🌍 IA22_ENVIRONNEMENT</h2>
+    <p>Analyse écologique IA...</p>
+    <pre>Qualité de l’air : Bonne\nCO₂ : 412 ppm\nTempérature : 21°C</pre>
+  </div>
+
+  <div id="energie" class="module">
+    <h2>⚡ IA22_ENERGIE</h2>
+    <p>Smart Grid IA...</p>
+    <pre>Statut : OPTIMISÉ\nÉconomie : 15%</pre>
+  </div>
+
+  <div id="securite" class="module">
+    <h2>🔐 IA22_SECURITE</h2>
+    <p>Analyse comportementale IA...</p>
+    <pre>Statut : SÛR\nDernier accès : 11:42\nAlerte : faible</pre>
+  </div>
+
+  <div id="art" class="module">
+    <h2>🎨 IA22_ART</h2>
+    <p>Impulsion créative IA...</p>
+    <pre>Style : Surréaliste\nConcept : forêt fractale</pre>
+  </div>
+
+  <div class="signature">
+    🖋️ Conçu par <strong>Zoubirou Ilyes</strong> – Architecte IA22 | Montréal, 2025
+  </div>
+
+  <script>
+    function showModule(id) {
+      const modules = document.querySelectorAll('.module');
+      modules.forEach(module => module.style.display = 'none');
+      if (id) document.getElementById(id).style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
