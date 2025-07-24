@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>IA22_ENVIRONNEMENT – Surveillance IA verte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #eef6f2;
+      margin: 40px;
+      color: #2c3e50;
+    }
+    .env-block {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      padding: 30px;
+      max-width: 800px;
+      margin: auto;
+      text-align: center;
+    }
+    h1 {
+      color: #2e7d32;
+    }
+    .output-box {
+      background: #f2fff3;
+      border-left: 5px solid #2e7d32;
+      padding: 15px;
+      margin-top: 20px;
+      font-family: monospace;
+      color: #2c3e50;
+    }
+    .btn-scan {
+      margin-top: 20px;
+      background-color: #43a047;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .btn-scan:hover {
+      background-color: #388e3c;
+    }
+    .signature {
+      margin-top: 40px;
+      font-style: italic;
+      color: #7f8c8d;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+<body>
+  <div class="env-block">
+    <h1>🌍 IA22_ENVIRONNEMENT – Analyse écologique IA</h1>
+    <p>Ce module simule une analyse des données environnementales en temps réel, basée sur des capteurs IA fictifs. Supervision par <strong>Ilyes</strong>.</p>
+
+    <div class="output-box" id="envOutput">Chargement des relevés IA22...</div>
+    <button class="btn-scan" onclick="executeEcoScan()">Analyser l’environnement</button>
+
+    <div class="signature">
+      🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> – IA22 Environnement | Montréal, 2025
+    </div>
+  </div>
+
+  <script>
+    function ecoScan() {
+      return {
+        airQuality: "Bonne",
+        co2Level: "412 ppm",
+        temperature: "21.3 °C",
+        alert: "Aucune anomalie écologique détectée"
+      };
+    }
+
+    function executeEcoScan() {
+      const result = ecoScan();
+      document.getElementById("envOutput").innerHTML = `
+        <strong>Qualité de l’air :</strong> ${result.airQuality}<br>
+        <strong>Taux de CO₂ :</strong> ${result.co2Level}<br>
+        <strong>Température ambiante :</strong> ${result.temperature}<br>
+        <strong>Analyse :</strong> ${result.alert}
+      `;
+    }
+
+    window.onload = executeEcoScan;
+  </script>
+</body>
+</html>
