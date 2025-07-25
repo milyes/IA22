@@ -1,0 +1,18 @@
+# build_iso.sh
+#!/bin/bash
+# Génère IA22_VM_Live.iso via debootstrap
+WORKDIR=ia22_iso
+mkdir -p $WORKDIR
+sudo debootstrap --arch amd64 bullseye $WORKDIR http://deb.debian.org/debian
+# Copy assets & scripts
+sudo cp -r ../IA22WebConsole $WORKDIR/opt/ia22
+sudo cp build_preseed.cfg $WORKDIR/preseed.cfg
+# Configuraton auto-login lightdm, splash scripts...
+# ...
+# Crée l’ISO
+sudo genisoimage -r -V "IA22 Live" -cache-inodes -J -l \
+  -b isolinux/isolinux.bin -c isolinux/boot.cat \
+  -no-emul-boot -boot-load-size 4 -boot-info-table \
+  -o IA22_VM_Live.iso $WORKDIR
+
+
