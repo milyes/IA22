@@ -2,104 +2,97 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IA22_TUNNEL Cockpit</title>
+  <title>IA22_WEB Cockpit</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(#0a0a0a, #1e1e2f);
-      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      color: #2c3e50;
     }
     header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 1rem;
       text-align: center;
-      padding: 50px 20px 20px;
-    }
-    #logo {
-      width: 180px;
-      animation: pulseHalo 2s infinite;
-    }
-    h1 {
-      font-size: 2.5em;
-      color: #00bfff;
-      margin: 20px 0;
-    }
-    p {
-      font-size: 1.1em;
-      margin: 10px auto;
-      max-width: 700px;
+      font-size: 1.8rem;
     }
     nav {
       display: flex;
       justify-content: center;
-      gap: 30px;
-      margin-top: 40px;
+      background-color: #e0e7ef;
+      padding: 0.5rem;
     }
     nav a {
-      color: #00bfff;
+      margin: 0 1rem;
       text-decoration: none;
+      color: #34495e;
       font-weight: bold;
-      transition: color 0.3s;
     }
-    nav a:hover {
-      color: #ffffff;
-    }
-    section {
-      padding: 60px 20px;
-      text-align: center;
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
     }
     .module {
-      margin-top: 30px;
-      padding: 20px;
-      background: #222233;
-      border-radius: 10px;
-      display: inline-block;
-      width: 80%;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 1rem;
+      transition: transform 0.3s ease;
     }
-    .module h2 {
-      color: #00ffff;
+    .module:hover {
+      transform: translateY(-3px);
     }
-
-    /* Animation halo */
-    @keyframes pulseHalo {
-      0% { box-shadow: 0 0 5px #00bfff; }
-      50% { box-shadow: 0 0 25px #00bfff; }
-      100% { box-shadow: 0 0 5px #00bfff; }
+    .icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #ecf0f1;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-
-<header>
-  <img src="logo_ia22.png" alt="Logo IA22_TUNNEL" id="logo">
-  <h1>IA22_TUNNEL Cockpit</h1>
-  <p><strong>Français · English · العربية</strong> – Un réseau techno trilingue pour les idées IA du futur</p>
-</header>
-
-<nav>
-  <a href="#coopkit">CoopKit</a>
-  <a href="#tunnelsim">TunnelSim</a>
-  <a href="#trustmesh">TrustMesh</a>
-</nav>
-
-<section id="coopkit" class="module">
-  <h2>🔧 Module CoopKit</h2>
-  <p>Boîte à outils collaborative pour les projets IA interconnectés</p>
-</section>
-
-<section id="tunnelsim" class="module">
-  <h2>🧪 Module TunnelSim</h2>
-  <p>Simulations IA avancées pour modéliser des flux cognitifs et des processus</p>
-</section>
-
-<section id="trustmesh" class="module">
-  <h2>🛡️ Module TrustMesh</h2>
-  <p>Réseau de confiance intégré, avec gestion des identités et des validations</p>
-</section>
-
-<footer style="text-align:center; padding:40px; font-size:0.9em;">
-  © IA22_TUNNEL · Signature : Zoubirou-2025
-</footer>
-
+  <header>🚀 IA22_TUNNEL Cockpit</header>
+  <nav>
+    <a href="#">Santé</a>
+    <a href="#">Transport</a>
+    <a href="#">Énergie</a>
+    <a href="#">Art</a>
+    <a href="#">Sécurité</a>
+  </nav>
+  <main>
+    <div class="module">
+      <div class="icon">🧬</div>
+      <h2>Santé</h2>
+      <p>Module IA pour la prévention, le bien-être et la médecine intelligente.</p>
+    </div>
+    <div class="module">
+      <div class="icon">🚗</div>
+      <h2>Transport</h2>
+      <p>Optimisation IA des réseaux, mobilité douce et smart traffic.</p>
+    </div>
+    <div class="module">
+      <div class="icon">⚡</div>
+      <h2>Énergie</h2>
+      <p>Production et consommation intelligente, IA verte et durable.</p>
+    </div>
+    <div class="module">
+      <div class="icon">🎨</div>
+      <h2>Art</h2>
+      <p>Création visuelle, sonore et interactive assistée par IA.</p>
+    </div>
+    <div class="module">
+      <div class="icon">🛡️</div>
+      <h2>Sécurité</h2>
+      <p>Analyse prédictive et protection des environnements numériques.</p>
+    </div>
+  </main>
+  <footer>Multilingue FR · EN · AR — Interface cockpit IA22_WEB © 2025</footer>
 </body>
-</html>.
+</html>
