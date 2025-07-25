@@ -55,6 +55,10 @@
       font-style: italic;
       color: #7f8c8d;
     }
+    .signature a {
+      color: #2980b9;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
@@ -62,15 +66,15 @@
     <h1>📷 IA22_CAMERA – Module de vision IA</h1>
     <p>Analyse visuelle simulée par intelligence augmentée IA22, orchestrée par <strong>Ilyes</strong>.</p>
 
-    <!-- Image affichée -->
     <img src="image_camera.jpg" alt="Image IA22 analysée" />
 
-    <!-- Résultat IA -->
     <div class="output-box" id="cameraOutput">Chargement de l'analyse IA...</div>
     <button class="btn-analyse" onclick="analyseImage()">Analyser l’image IA</button>
 
     <div class="signature">
-      🖋️ Codé et signé par <strong>Zoubirou Ilyes</strong> – IA22 Vision | Montréal, 2025
+      🖋️ Codé et signé par <strong>Zoubirou Mohammed Ilyes</strong><br>
+      📘 <a href="https://orcid.org/0009-0007-7571-3178" target="_blank">ORCID : 0009-0007-7571-3178</a><br>
+      🌐 Projet IA22_CAMERA – Montréal, 2025
     </div>
   </div>
 
@@ -89,7 +93,6 @@
         <strong>Interprétation IA :</strong> ${result.interpretation}
       `;
     }
-
     window.onload = analyseImage;
   </script>
 </body>
