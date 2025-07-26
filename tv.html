@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22 Terminal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #000914;
+      color: #c2eaff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #25c9ff;
+    }
+
+    .terminal {
+      width: 100%;
+      max-width: 800px;
+      background-color: #101a26;
+      border: 2px solid #25c9ff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 0 20px rgba(37, 201, 255, 0.3);
+    }
+
+    .output {
+      font-size: 1.2rem;
+      min-height: 150px;
+      white-space: pre-wrap;
+      margin-bottom: 1rem;
+      background-color: #0e151e;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #25c9ff33;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #25c9ff88;
+      background-color: #0b121b;
+      color: #c2eaff;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #25c9ff;
+      box-shadow: 0 0 6px #25c9ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛰️ IA22 • Terminal Cognitif</h1>
+  <div class="terminal">
+    <div class="output" id="reponseIA">
+      ⏳ En attente d’entrée cognitive...
+    </div>
+    <input type="text" id="entree" placeholder="Écris une requête pour IA22 et appuie sur Entrée..." />
+  </div>
+
+  <script>
+    const input = document.getElementById("entree");
+    const output = document.getElementById("reponseIA");
+
+    const reponsesSimulees = [
+      "📡 Signal IA22 capté... analyse en cours.",
+      "🧠 Traitement neuronal activé... logique en mouvement.",
+      "🔍 Exploration des données profondes...",
+      "⚡ Réponse générée : 'L’univers est une onde logique infinie.'"
+    ];
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const question = input.value.trim();
+        if (question.length > 0) {
+          const index = Math.floor(Math.random() * reponsesSimulees.length);
+          output.textContent = reponsesSimulees[index] + "\n🗨️ Question : " +
