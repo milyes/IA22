@@ -1,48 +1,60 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>IA22 Terminal</title>
+  <title>IA22 • IPTV Logic Terminal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
+      background-color: #050b14;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #000914;
-      color: #c2eaff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      padding: 2rem;
+      color: #e0f8ff;
     }
 
-    h1 {
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
       font-size: 2rem;
-      margin-bottom: 1rem;
+      background-color: #0f1825;
+      border-bottom: 2px solid #25c9ff;
       color: #25c9ff;
     }
 
-    .terminal {
-      width: 100%;
-      max-width: 800px;
-      background-color: #101a26;
-      border: 2px solid #25c9ff;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 0 20px rgba(37, 201, 255, 0.3);
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
     }
 
-    .output {
-      font-size: 1.2rem;
-      min-height: 150px;
-      white-space: pre-wrap;
-      margin-bottom: 1rem;
-      background-color: #0e151e;
+    video {
+      width: 100%;
+      max-width: 800px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #25c9ff66;
+      margin-bottom: 2rem;
+    }
+
+    .ia-zone {
+      background-color: #101e2b;
+      border: 2px solid #25c9ff88;
+      border-radius: 12px;
       padding: 1rem;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 0 10px #25c9ff44;
+    }
+
+    .ia-output {
+      min-height: 120px;
+      padding: 1rem;
+      background-color: #0e161f;
       border-radius: 8px;
-      border: 1px solid #25c9ff33;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      border: 1px solid #25c9ff22;
     }
 
     input {
@@ -52,7 +64,7 @@
       border-radius: 8px;
       border: 1px solid #25c9ff88;
       background-color: #0b121b;
-      color: #c2eaff;
+      color: #e0f8ff;
       outline: none;
     }
 
@@ -60,31 +72,54 @@
       border-color: #25c9ff;
       box-shadow: 0 0 6px #25c9ff;
     }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background-color: #0f1825;
+      border-top: 1px solid #25c9ff;
+      color: #8ebbd6;
+    }
   </style>
 </head>
 <body>
-  <h1>🛰️ IA22 • Terminal Cognitif</h1>
-  <div class="terminal">
-    <div class="output" id="reponseIA">
-      ⏳ En attente d’entrée cognitive...
+  <header>🛰️ IA22 • Interface IPTV Cyber-Logique</header>
+  <div class="container">
+    <video controls autoplay muted loop>
+      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+      Votre navigateur ne supporte pas la vidéo HTML5.
+    </video>
+
+    <div class="ia-zone">
+      <div class="ia-output" id="iaReponse">⏳ IA22 attend votre requête cognitive...</div>
+      <input type="text" id="inputIA" placeholder="Pose une question à IA22 et appuie sur Entrée..." />
     </div>
-    <input type="text" id="entree" placeholder="Écris une requête pour IA22 et appuie sur Entrée..." />
   </div>
 
-  <script>
-    const input = document.getElementById("entree");
-    const output = document.getElementById("reponseIA");
+  <footer>© 2025 • IA22 IPTV Logic • Montréal</footer>
 
-    const reponsesSimulees = [
-      "📡 Signal IA22 capté... analyse en cours.",
-      "🧠 Traitement neuronal activé... logique en mouvement.",
-      "🔍 Exploration des données profondes...",
-      "⚡ Réponse générée : 'L’univers est une onde logique infinie.'"
+  <script>
+    const input = document.getElementById("inputIA");
+    const output = document.getElementById("iaReponse");
+
+    const simulations = [
+      "📡 Flux cognitif synchronisé. Recherche contextuelle en cours...",
+      "🎞️ IA22 indexe les séquences neuronales visuelles...",
+      "⚙️ Traitement vidéo et logique fusionné.",
+      "📺 Réponse IA : 'L’image transmet l’émotion que le langage ne peut décrire.'"
     ];
 
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         const question = input.value.trim();
         if (question.length > 0) {
-          const index = Math.floor(Math.random() * reponsesSimulees.length);
-          output.textContent = reponsesSimulees[index] + "\n🗨️ Question : " +
+          const index = Math.floor(Math.random() * simulations.length);
+          output.textContent = simulations[index] + "\n🗨️ Requête : " + question;
+          input.value = "";
+        }
+      }
+    });
+  </script>
+</body>
+</html>
