@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 Universal Chat UI</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #0d1117;
+        color: #e6edf3;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+    }
+    header {
+        text-align: center;
+        padding: 30px 10px;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    }
+    header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
+    header p {
+        color: #8b949e;
+        font-size: 1.2em;
+    }
+    section {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+    }
+    h2 {
+        color: #58a6ff;
+        margin-top: 30px;
+    }
+    ul {
+        margin: 10px 0 20px 20px;
+    }
+    .qr-container {
+        text-align: center;
+        margin-top: 30px;
+    }
+    img.qr {
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+    }
+    pre.mermaid {
+        background: #161b22;
+        padding: 15px;
+        border-radius: 6px;
+        overflow-x: auto;
+    }
+    footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 0.9em;
+        color: #8b949e;
+        border-top: 1px solid #30363d;
+        margin-top: 40px;
+    }
+</style>
+<!-- MermaidJS -->
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
+</head>
+<body>
+
+<header>
+    <h1>🚀 Universal Chat UI</h1>
+    <p>The AI-powered universal interface for modern communication and workflows</p>
+</header>
+
+<section>
+    <h2>🌐 Overview</h2>
+    <p>Universal Chat UI is a next-generation communication hub that unifies your favorite messaging platforms, developer tools, and AI workflows into a single, intelligent interface.</p>
+    <p>Whether you're coding, collaborating, or managing projects, Universal Chat UI keeps everything in sync — with context-aware suggestions, smart automation, and seamless integrations.</p>
+
+    <h2>✨ Features</h2>
+    <ul>
+        <li>🔗 <strong>Multi-platform Integration</strong> — Connect Slack, Discord, Telegram, Jira, GitHub, and more — all in one place.</li>
+        <li>🤖 <strong>Built-in AI Assistant</strong> — Contextual replies, smart detection, and proactive suggestions to boost productivity.</li>
+        <li>🧪 <strong>AI Workflows</strong> — Trigger tests, validations, and automation directly from your conversations.</li>
+        <li>📣 <strong>Smart Notifications</strong> — Send alerts to external systems based on message context and user actions.</li>
+        <li>🧩 <strong>Modular & Extensible</strong> — Easily add plugins or custom integrations to fit your team's needs.</li>
+        <li>🎨 <strong>Developer-friendly UI</strong> — Clean, responsive design tailored for technical teams and fast-paced environments.</li>
+    </ul>
+
+    <h2>🛠 Use Cases</h2>
+    <ul>
+        <li><strong>Collaborative Development</strong> — Chat, code, test, and deploy — without switching tabs.</li>
+        <li><strong>Technical Support</strong> — Centralize tickets, logs, and AI-powered responses.</li>
+        <li><strong>Project Management</strong> — Track Jira issues, GitHub commits, and Slack threads in one unified feed.</li>
+        <li><strong>Automation on Demand</strong> — Trigger builds, run tests, or deploy apps directly from chat commands.</li>
+    </ul>
+
+    <h2>🔐 Security</h2>
+    <ul>
+        <li>End-to-end encryption</li>
+        <li>OAuth authentication</li>
+        <li>Granular permission control</li>
+    </ul>
+
+    <h2>📊 Architecture Diagram</h2>
+    <pre class="mermaid">
+flowchart LR
+    A[User] --> B[Universal Chat UI]
+    B -->|Slack, Discord, Telegram| C[Messaging Platforms]
+    B -->|GitHub, Jira| D[Developer Tools]
+    B --> E[AI Workflows]
+    E --> F[Tests & Validations]
+    E --> G[Automation & Deployments]
+    B --> H[Smart Notifications]
+    H --> I[External Systems]
+    style B fill:#58a6ff,stroke:#1f6feb,stroke-width:2px,color:white
+    style E fill:#8250df,stroke:#5e3ba2,stroke-width:2px,color:white
+    </pre>
+
+    <div class="qr-container">
+        <h2>📱 Quick Access</h2>
+        <img class="qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAA..." width="180" height="180" alt="QR Code">
+        <p>Scan to view project</p>
+    </div>
+</section>
+
+<footer>
+    © 2025 Zoubirou Mohammed Ilyes — <a href="https://orcid.org/0009-0007-7571-3178" style="color:#58a6ff;">ORCID</a>
+</footer>
+
+</body>
+</html>
