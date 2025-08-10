@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Universal Chat UI — Pilier de communication IA</title>
+  <meta name="description" content="Universal Chat UI: interface universelle pilotée par IA pour centraliser Slack, Discord, GitHub, Jira et plus. Développée pour équipes techniques et workflows intelligents." />
+
+  <!-- Favicons / Social -->
+  <meta property="og:title" content="Universal Chat UI" />
+  <meta property="og:description" content="Interface universelle pilotée par IA — multi-plateformes, plugins, et automatisations." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="YOUR_SOCIAL_IMAGE_URL" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Minimal reset + modern layout -->
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#96A0B5; --accent:#6EE7B7;
+      --glass: rgba(255,255,255,0.03);
+      --maxw:1200px; --radius:14px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: linear-gradient(180deg,#071022 0%, #08122a 60%);
+      color:#E6EEF8; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      line-height:1.5; padding:32px;
+      display:flex; justify-content:center;
+      font-size:16px;
+    }
+    .wrap{width:100%; max-width:var(--maxw);}
+    header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{
+      width:56px; height:56px; border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),#60A5FA); display:flex;align-items:center;justify-content:center;
+      font-weight:700;color:#072032; box-shadow:0 6px 24px rgba(8,20,40,0.6);
+    }
+    h1{margin:0;font-size:28px}
+    p.lead{color:var(--muted); margin:6px 0 0}
+    .hero{
+      display:grid; grid-template-columns:1fr 380px; gap:28px; align-items:start;
+      margin-bottom:28px;
+    }
+
+    /* card */
+    .card{background:var(--card); border-radius:var(--radius); padding:20px; box-shadow:0 6px 30px rgba(2,6,23,0.6);}
+    .small{font-size:14px; color:var(--muted)}
+
+    /* features grid */
+    .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:14px}
+    .feature{background:var(--glass); padding:14px; border-radius:12px; min-height:96px}
+
+    /* code */
+    pre{background:#061123; padding:12px; border-radius:8px; overflow:auto; color:#dff; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:13px}
+    code{font-family:inherit}
+
+    /* install buttons */
+    .btn{display:inline-flex; gap:10px; align-items:center; padding:10px 14px; border-radius:10px; background:#062033; color:var(--accent); border:1px solid rgba(110,231,183,0.08); text-decoration:none; font-weight:600}
+    .btn.secondary{background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.04); font-weight:600}
+
+    footer{margin-top:30px; color:var(--muted); font-size:13px; text-align:center}
+
+    /* responsive */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr}
+      header{flex-direction:column; align-items:flex-start; gap:8px}
+    }
+
+    /* roadmap list */
+    .roadmap li{margin:8px 0}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.04); color:var(--muted); font-size:13px}
+
+    /* top badges */
+    .badges{display:flex; gap:10px; align-items:center}
+    .qr{width:100%; height:100%; object-fit:contain; border-radius:8px; background:linear-gradient(180deg,#071225,#061022); display:flex; align-items:center; justify-content:center; color:var(--muted)}
+  </style>
+
+  <!-- Mermaid & Prism for diagram + code highlighting (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-clike.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+
+  <script>
+    mermaid.initialize({ startOnLoad:true, theme: 'dark' });
+    document.addEventListener('DOMContentLoaded', function(){
+      Prism.highlightAll();
+    });
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">UCI</div>
+        <div>
+          <h1>Universal Chat UI</h1>
+          <p class="lead">Interface universelle pilotée par IA — centralisez Slack, Discord, GitHub, Jira et workflows IA.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="badges">
+          <span class="badge">MIT</span>
+          <span class="badge">v1.0.0</span>
+          <span class="badge">build: passing</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <div class="card">
+            <h2 style="margin-top:0">Un hub — toutes vos conversations</h2>
+            <p class="small">Universal Chat UI unifie messages, tickets et outils de développement dans une seule interface contextuelle. Gagnez du temps grâce aux automatismes IA, plugins et intégrations.</p>
+
+            <div class="grid" style="margin-top:18px">
+              <div class="feature">
+                <strong>Intégrations</strong>
+                <div class="small">Slack, Discord, Telegram, GitHub, Jira, et plus.</div>
+              </div>
+              <div class="feature">
+                <strong>Assistant IA</strong>
+                <div class="small">Réponses contextuelles, suggestions proactives et actions automatisées.</div>
+              </div>
+              <div class="feature">
+                <strong>Plugins modulaires</strong>
+                <div class="small">Ajoutez des connecteurs et commandes personnalisées en quelques lignes.</div>
+              </div>
+              <div class="feature">
+                <strong>Sécurité</strong>
+                <div class="small">OAuth, permissions granulaires et chiffrement de bout en bout.</div>
+              </div>
+            </div>
+
+            <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap">
+              <a class="btn" href="#installation">Installer</a>
+              <a class="btn secondary" href="#docs">Documentation</a>
+              <a class="btn secondary" href="https://github.com/yourusername/universal-chat-ui" target="_blank" rel="noopener">GitHub</a>
+            </div>
+          </div>
+
+          <!-- Installation & Quick Start -->
+          <div class="card" style="margin-top:18px">
+            <h3>Installation</h3>
+            <p class="small">Démarrage local (Node.js) ou conteneurisé (Docker).</p>
+
+            <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+              <div style="flex:1; min-width:240px">
+                <h4>Node.js</h4>
+                <pre><code class="language-javascript">git clone https://github.com/yourusername/universal-chat-ui.git
+cd universal-chat-ui
+npm install
+npm run dev</code></pre>
+              </div>
+              <div style="flex:1; min-width:240px">
+                <h4>Docker</h4>
+                <pre><code class="language-javascript">docker-compose up -d --build</code></pre>
+              </div>
+            </div>
+
+            <h4 style="margin-top:12px">Variables d'environnement</h4>
+            <pre><code class="language-javascript"># .env
+SLACK_TOKEN=your_slack_token
+DISCORD_TOKEN=your_discord_token
+TELEGRAM_TOKEN=your_telegram_token
+GITHUB_TOKEN=your_github_token
+JIRA_API_KEY=your_jira_key</code></pre>
+          </div>
+
+          <!-- Plugin example -->
+          <div class="card" style="margin-top:18px">
+            <h3>Créer un plugin</h3>
+            <p class="small">Déposez vos modules dans `plugins/` — exemple minimal :</p>
+            <pre><code class="language-javascript">module.exports = {
+  name: "hello-world",
+  trigger: "!hello",
+  execute: async (ctx) =&gt; {
+    await ctx.reply("Hello from my custom plugin!");
+  }
+};</code></pre>
+            <p class="small">Redémarrez le service après ajout.</p>
+          </div>
+
+        </div>
+
+        <!-- Right column: QR, diagram, contact -->
+        <aside>
+          <div class="card" style="margin-bottom:14px; text-align:center;">
+            <h4 style="margin-top:0">Demo / Accès rapide</h4>
+            <!-- Replace src with generated QR or hosted image -->
+            <div class="qr" style="height:220px">
+              <div>
+                <div style="font-size:13px;color:var(--muted); margin-bottom:8px">Scanner pour la demo</div>
+                <img alt="QR placeholder" src="YOUR_QR_IMAGE_URL" style="width:140px;height:140px;object-fit:cover;border-radius:8px" />
+              </div>
+            </div>
+
+            <div style="margin-top:12px; display:flex; gap:8px; justify-content:center">
+              <a class="btn" href="https://yourdomain.com/demo" target="_blank">Ouvrir la démo</a>
+              <a class="btn secondary" href="https://github.com/yourusername/universal-chat-ui/releases" target="_blank">Téléchargements</a>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:14px">
+            <h4>Architecture</h4>
+            <div class="small">Schéma haut-niveau — l'IA et les connecteurs centralisent les flux.</div>
+            <div style="margin-top:8px">
+              <div class="mermaid">
+                graph TD
+                  A[Utilisateur] -->|Messages| B[Universal Chat UI]
+                  B -->|API Calls| C[Slack / Discord / Telegram]
+                  B -->|Webhooks| D[GitHub / Jira]
+                  B -->|AI Processing| E[Assistant IA]
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4>Contact & Licence</h4>
+            <p class="small">Auteur: <strong>Zoubirou Mohammed Ilyes</strong></p>
+            <p class="small">ORCID: <a href="https://orcid.org/0009-0007-7571-3178" style="color:var(--accent)">0009-0007-7571-3178</a></p>
+            <p class="small">Licence: MIT</p>
+            <div style="margin-top:8px; display:flex;gap:8px">
+              <a class="btn secondary" href="mailto:your.email@example.com">Contact</a>
+              <a class="btn secondary" href="#roadmap">Roadmap</a>
+            </div>
+          </div>
+
+        </aside>
+      </section>
+
+      <!-- Roadmap & Use Cases -->
+      <section class="card" id="docs" style="margin-bottom:18px">
+        <h3>Cas d'usage & Roadmap</h3>
+        <div style="display:flex; gap:18px; flex-wrap:wrap">
+          <div style="flex:1;min-width:320px">
+            <h4>Use cases</h4>
+            <ul>
+              <li>Collaboration dev: chat, CI, rollback, déploiement via commandes</li>
+              <li>Support technique: tickets, logs, suggestions IA</li>
+              <li>Automatisation: déclencheurs tests / déploiement depuis chat</li>
+            </ul>
+          </div>
+          <div style="flex:1;min-width:240px">
+            <h4 id="roadmap">Roadmap</h4>
+            <ul class="roadmap">
+              <li>✅ Intégration Slack, Discord, GitHub</li>
+              <li>🔲 Microsoft Teams integration</li>
+              <li>🔲 Voice support via WebRTC</li>
+              <li>🔲 Public API & SDK</li>
+              <li>🔲 Custom AI agent scripting</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer / Legal -->
+      <section class="card" style="display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+        <div>
+          <strong>Prêt à contribuer ?</strong>
+          <p class="small" style="margin:6px 0 0">Fork, suivez les guidelines et ouvrez des PRs — contributions bienvenues.</p>
+        </div>
+        <div style="text-align:right">
+          <a class="btn" href="https://github.com/yourusername/universal-chat-ui" target="_blank">Voir sur GitHub</a>
+        </div>
+      </section>
+
+      <footer>
+        © <span id="year"></span> Zoubirou Mohammed Ilyes • ORCID 0009-0007-7571-3178 • MIT License
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // small helpers
+    document.getElementById('year').innerText = new Date().getFullYear();
+
+    // Accessibility: allow mermaid re-render on visibility if needed
+    document.addEventListener('visibilitychange', function(){
+      if (!document.hidden) mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+    });
+  </script>
+</body>
+</html>
