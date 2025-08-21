@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetSecurePro IA – Structure</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f6f9;
+      color: #222;
+      text-align: center;
+    }
+    header {
+      background: #222;
+      color: #fff;
+      padding: 20px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+    .container {
+      padding: 20px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .console {
+      margin-top: 20px;
+      padding: 15px;
+      background: #000;
+      color: #0f0;
+      text-align: left;
+      font-family: monospace;
+      border-radius: 8px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow-x: auto;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .btn:hover {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NetSecurePro IA – Schéma Structure</h1>
+  </header>
+
+  <div class="container">
+    <h2>Schéma Développeur</h2>
+    <img src="diagram_preview.png" alt="Schéma structure développeur">
+    
+    <div class="console" id="console">
+      [IA22_LOGIC] En attente de commande...
+    </div>
+    <button class="btn" onclick="runDemo()">Envoyer une requête IA</button>
+  </div>
+
+  <script>
+    function runDemo() {
+      const consoleBox = document.getElementById("console");
+      consoleBox.innerHTML += "\n> Requête envoyée...";
+      setTimeout(() => {
+        consoleBox.innerHTML += "\n[IA22_LOGIC] Réponse simulée : 'Analyse terminée ✅'";
+        consoleBox.scrollTop = consoleBox.scrollHeight;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
