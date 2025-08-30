@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>DZ_TERMINAL_AI</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: #00ff99;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+    }
+    #terminal {
+      background-color: #000;
+      border: 2px solid #00ff99;
+      padding: 20px;
+      height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 0 20px #00ff99;
+    }
+    #input {
+      width: 100%;
+      padding: 10px;
+      background-color: #111;
+      color: #00ff99;
+      border: none;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>DZ_TERMINAL_AI</h1>
+  <div id="terminal">
+    <p>IA_CMD&gt; Bienvenue dans le terminal IA le plus puissant du monde.</p>
+    <p>IA_CMD&gt; Tapez <strong>help</strong> pour voir les commandes disponibles.</p>
+  </div>
+  <input type="text" id="input" placeholder="Entrez une commande..." autofocus>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const input = document.getElementById('input');
+
+    const responses = {
+      help: "Commandes disponibles : help, exit, info, netscan, run module sentiment_analyzer, run module sys_info",
+      exit: "Fermeture du terminal... À bientôt.",
+      info: "DZ_TERMINAL_AI v1.0 - Analyseur de texte, scanner réseau, IA linguistique.",
+      "run module sentiment_analyzer": "Analyse du texte : 'Le climat change rapidement' → Sentiment : neutre.",
+      "run module sys_info": "CPU: 4.2GHz | RAM: 32GB | OS: DZ_AI_OS",
+      netscan: "ping googlive.com (142.250.206.142): 2 paquets transmis, 2 reçus, temps 61ms\nrtt min/avg/max/mdev = 6.161/6.420/6.680/0.271 ms"
+    };
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        const response = responses[cmd] || "Commande inconnue. Tapez 'help' pour la liste.";
+        terminal.innerHTML += `<p>IA_CMD&gt; ${cmd}</p><p>${response}</p>`;
+        terminal.scrollTop = terminal.scrollHeight;
+        input.value = '';
+        if (cmd === 'exit') input.disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
