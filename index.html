@@ -3,35 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page web simple</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-        }
-        .container {
-            width: 80%;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        p {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-    </style>
+    <title>IA CLI</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Bienvenue sur ma page web !</h1>
-        <p>Ceci est un exemple de page web simple.</p>
-        <p>Vous pouvez personnaliser ce code pour créer votre propre page web.</p>
+    <div class="cli-container">
+        <div class="cli-header">
+            <h1>IA CLI</h1>
+        </div>
+        <div class="cli-body">
+            <div class="cli-input">
+                <input type="text" id="user-input" placeholder="Tapez une commande...">
+                <button id="send-btn">Envoyer</button>
+            </div>
+            <div class="cli-output">
+                <p id="output"></p>
+            </div>
+        </div>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
