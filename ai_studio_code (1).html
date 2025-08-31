@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Mentale : Mohammed Ilyes Zoubirou - Écosystème IA22</title>
+    <style>
+        /* --- Importation de la police --- */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        /* --- Styles Généraux --- */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: auto; /* Permet le défilement horizontal si la carte est large */
+        }
+
+        h1 {
+            color: #58a6ff;
+            border-bottom: 2px solid #30363d;
+            padding-bottom: 10px;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        /* --- Conteneur principal de la carte mentale --- */
+        .mindmap {
+            display: inline-flex; /* Permet au conteneur de s'adapter à la taille de la carte */
+            text-align: center;
+            padding: 20px;
+        }
+
+        .mindmap ul {
+            padding-left: 0;
+            margin: 0;
+            list-style-type: none;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mindmap ul ul {
+            flex-direction: row;
+            margin-top: 50px;
+        }
+
+        .mindmap li {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding: 20px 5px 0 5px;
+        }
+        
+        /* --- Styles des Noeuds --- */
+        .mindmap li a {
+            text-decoration: none;
+            color: #e6edf3;
+            background-color: #161b22;
+            padding: 10px 18px;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 120px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1; /* S'assure que le noeud est au-dessus des lignes */
+        }
+
+        .mindmap li a:hover {
+            background-color: #013a78;
+            border-color: #58a6ff;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.5);
+        }
+
+        /* Style du noeud central */
+        .mindmap > ul > li > a {
+            background-color: #0e4f8d;
+            color: #ffffff;
+            font-size: 1.2em;
+            font-weight: 700;
+            border-width: 2px;
+            border-color: #58a6ff;
+        }
+        
+        /* Style des branches principales */
+        .mindmap > ul > li > ul > li > a {
+             background-color: #223c53;
+             font-weight: 500;
+        }
+
+        /* --- Dessin des lignes de connexion --- */
+
+        /* Lignes verticales */
+        .mindmap li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 2px solid #30363d;
+            width: 0;
+            height: 20px;
+        }
+
+        /* Lignes horizontales */
+        .mindmap li::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            border-top: 2px solid #30363d;
+            width: 100%;
+            height: 0;
+        }
+
+        /* Cas spécifiques pour cacher les lignes inutiles */
+        .mindmap > ul > li::before,
+        .mindmap > ul > li::after {
+            display: none; /* Pas de ligne au-dessus du noeud racine */
+        }
+
+        .mindmap ul ul > li:first-child::after {
+            left: 50%;
+            width: 50%;
+        }
+
+        .mindmap ul ul > li:last-child::after {
+            width: 50%;
+        }
+
+        .mindmap ul ul > li:only-child::after {
+            display: none; /* Pas de ligne horizontale si un seul enfant */
+        }
+
+        /* Ligne de connexion entre les niveaux */
+        .mindmap li ul::before {
+            content: '';
+            position: absolute;
+            top: -30px; /* Positionné juste au-dessus du groupe d'enfants */
+            left: 50%;
+            border-left: 2px solid #30363d;
+            width: 0;
+            height: 30px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Carte Mentale : Mohammed Ilyes Zoubirou - Écosystème IA22</h1>
+
+    <div class="mindmap">
+        <ul>
+            <li>
+                <a>Mohammed Ilyes Zoubirou & Écosystème IA22</a>
+                <ul>
+                    <li>
+                        <a>Profil & Identité</a>
+                        <ul>
+                            <li><a>Développeur Full-Stack</a></li>
+                            <li><a>Analyste en Informatique</a></li>
+                            <li><a>Doctorant en Sciences Cognitives</a></li>
+                            <li><a>ORCID: 0008-1000-4337-3706</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a>Philosophie : IA22_LOGIC</a>
+                        <ul>
+                            <li><a>Cadre d'Évaluation de la Sécurité</a></li>
+                            <li><a>Pilier: Réactivité</a></li>
+                            <li><a>Pilier: Résilience</a></li>
+                            <li><a>Pilier: Adaptabilité</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a>Architecture Système IA22</a>
+                        <ul>
+                            <li><a>Noyau : ANN, CORE, Knowledge Base</a></li>
+                            <li><a>Plateforme : IA22 PLATFORM</a></li>
+                            <li><a>Module Vision</a></li>
+                            <li><a>Module Sécurité</a></li>
+                            <li><a>Module Analyse</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a>Projets & Composants Clés</a>
+                        <ul>
+                            <li><a>IA22 TUNNEL (DZERO IA22)</a></li>
+                            <li><a>NetSecurePro IA</a></li>
+                            <li><a>SYSTEME ILYES / IA2</a></li>
+                            <li><a>IA22 LOGIC Terminal</a></li>
+                             <li><a>Cockpit Cognitif IA22</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a>Domaines d'Application</a>
+                        <ul>
+                            <li><a>Cybersécurité Cognitive</a></li>
+                            <li><a>Santé Connectée</a></li>
+                            <li><a>Gaming Neuro-adaptatif</a></li>
+                            <li><a>Sécurité Nationale</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a>Vision Éthique</a>
+                        <ul>
+                             <li><a>Devise : "Je t'écoute"</a></li>
+                            <li><a>Principe : Local-first</a></li>
+                            <li><a>Principe : IA Intégrée</a></li>
+                            <li><a>Principe : Respect Vie Privée</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>
