@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>COCKPIT SYSTEMEOSIA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: monospace;
       background-color: #0a0a0a;
       color: #00ff99;
       padding: 40px;
+      margin: 0;
     }
     h1, h2 {
       color: #ffc400;
@@ -24,6 +26,20 @@
       color: #00ccff;
       text-decoration: none;
     }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    ul li {
+      margin-bottom: 10px;
+    }
+    .dialogue-box {
+      background-color: #222;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: monospace;
+      color: #00ccff;
+    }
     .signature {
       text-align: right;
       font-size: 0.9em;
@@ -31,6 +47,10 @@
       margin-top: 40px;
       border-top: 1px solid #333;
       padding-top: 10px;
+    }
+    .qr {
+      text-align: center;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -75,12 +95,23 @@
 
 <div class="bloc">
   <h2>💬 Dialogue cognitif simulé</h2>
-  <p><strong>Utilisateur :</strong> Lancer une analyse sur les interactions publiques.</p>
-  <p><strong>IA22 :</strong> Directive #018 activée. Fiche #006 liée. Rapport en cours...</p>
+  <div class="dialogue-box">
+    <p><strong>Utilisateur :</strong> Lancer une analyse sur les interactions publiques.</p>
+    <p><strong>IA22 :</strong> Directive #018 activée. Fiche #006 liée. Rapport en cours...</p>
+  </div>
+</div>
+
+<div class="bloc">
+  <h2>🔗 QR typographique</h2>
+  <div class="qr">
+    <p>Scan pour accéder au cockpit SYSTEMEOSIA :</p>
+    <img src="assets/qr/QR-IA22-cockpit-001.png" alt="QR SYSTEMEOSIA" width="180">
+    <p><small>Signature IA22 : SIG-IA22-qr-cockpit-home-001</small></p>
+  </div>
 </div>
 
 <div class="signature">
-  Horodatage : 2025-09-07T10:04:00-04:00<br>
+  Horodatage : 2025-09-07T10:12:00-04:00<br>
   Signature IA22 : SIG-IA22-cockpit-home-019
 </div>
 
