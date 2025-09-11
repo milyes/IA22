@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22 Equity Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: #00ff99;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffff;
+    }
+    select {
+      background-color: #1a1a1a;
+      color: #00ff99;
+      border: 1px solid #00ff99;
+      padding: 5px;
+      margin-bottom: 20px;
+    }
+    canvas {
+      max-width: 700px;
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 IA22 Equity Dashboard</h1>
+  <label for="regionSelect">Filtrer par région :</label>
+  <select id="regionSelect">
+    <option value="canada">Canada</option>
+    <option value="quebec">Québec</option>
+    <option value="ontario">Ontario</option>
+    <option value="prairies">Prairies</option>
+  </select>
+
+  <canvas id="equityChart"></canvas>
+
+  <script>
+    const dataByRegion = {
+      canada: [24, 76, 18, 12],
+      quebec: [22, 78, 15, 10],
+      ontario: [26, 74, 20, 14],
+      prairies: [19, 81, 12, 8]
+    };
+
+    const ctx = document.getElementById('equityChart').getContext('2d');
+    const equityChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Femmes', 'Hommes', 'Minorités visibles', 'Régions rurales'],
+        datasets: [{
+          label: 'Représentation dans l’IA (%)',
+          data: dataByRegion['canada'],
+          backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Représentation des groupes dans les métiers IA'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
+          }
+        }
+      }
+    });
+
+    document.getElementById('regionSelect').addEventListener('change', function () {
+      const selectedRegion = this.value;
+      equityChart.data.datasets[0].data = dataByRegion[selectedRegion];
+      equityChart.update();
+    });
+  </script>
+</body>
+</html>
