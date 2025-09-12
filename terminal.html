@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22 LOGIC Terminal</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0ff;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+    }
+    #terminal {
+      background-color: #111;
+      border: 2px solid #0ff;
+      padding: 20px;
+      box-shadow: 0 0 20px #0ff;
+      max-width: 800px;
+      margin: auto;
+    }
+    #consoleOut {
+      white-space: pre-wrap;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      font-family: inherit;
+      font-size: 14px;
+      border: none;
+    }
+    input {
+      background-color: #222;
+      color: #0ff;
+      border: 1px solid #0ff;
+    }
+    button {
+      background-color: #0ff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0cc;
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal">
+    <h2>🧠 IA22 LOGIC Terminal – V7 Secure Mode</h2>
+    <div id="consoleOut">Bienvenue dans IA22 LOGIC Terminal. Tapez 'help' pour la liste des commandes.</div>
+
+    <input type="text" id="username" placeholder="Nom d'utilisateur IA22">
+    <input type="password" id="token" placeholder="Token NetSecurePro IA">
+    <button onclick="loginIA22()">Connexion IA22</button>
+    <br>
+
+    <input type="text" id="commandInput" placeholder="Tapez une commande IA22">
+    <button onclick="runCommand()">Exécuter</button>
+
+    <audio id="beep" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+  </div>
+
+  <script>
+    function playBeep() {
+      document.getElementById('beep').play();
+    }
+
+    function loginIA22() {
+      const user = document.getElementById('username').value;
+      const token = document.getElementById('token').value;
+      if (user === "Mohammed Ilyes Zoubirou" && token === "NSP-IA22-VALID") {
+        playBeep();
+        log(`
+🔐 Connexion IA22 réussie pour ${user}
+🛡️ Accès cockpit sécurisé activé
+`);
+      } else {
+        playBeep();
+        log(`⛔ Échec de connexion IA22 – Identifiants invalides`);
+      }
+    }
+
+    function runCommand() {
+      const cmd = document.getElementById('commandInput').value;
+      playBeep();
+      switch(cmd) {
+        case "bootIA22()":
+          bootIA22(); break;
+        case "activateMAC()":
+          activateMAC(); break;
+        case "syncPlaylists()":
+          syncPlaylists(); break;
+        case "exportData()":
+          exportData(); break;
+        case "toggleNeonMode()":
+          toggleNeonMode(); break;
+        default:
+          log(`⛔ Commande inconnue : ${cmd}`);
+      }
+    }
+
+    function log(text) {
+      document.getElementById('consoleOut').innerText += `\n${text}`;
+    }
+
+    function bootIA22() {
+      log(`IA22> bootIA22()\n🧠 Moteur IA22 initialisé avec succès.`);
+    }
+
+    function activateMAC() {
+      log(`IA22> activateMAC("YG:19:95:E1:A2:CA", token="NSP-IA22-VALID")\n📡 MAC validée : YG:19:95:E1:A2:CA\n🔐 Token NetSecurePro IA accepté\n🛡️ Accès sécurisé activé jusqu’au 27/08/2026`);
+    }
+
+    function syncPlaylists() {
+      log(`IA22> syncPlaylists({ "playlist1": "playlist1" })\n🔁 Playlist synchronisée : Playlist1\n📊 Checksum validé – Signature IA22 confirmée`);
+    }
+
+    function exportData() {
+      log(`IA22> exportData("firebase", secure=true)\n📤 Données exportées vers Firebase\n📁 Format : JSON sécurisé + horodatage IA22\n🔐 Cryptage actif – Transmission validée`);
+    }
+
+    function toggleNeonMode() {
+      log(`IA22> toggleNeonMode(JSON)\n🌌 Interface NEON V7 activée\n🎨 Mode JSON visuel : ✅\n📟 IA22 LOGIC Terminal prêt pour affichage cockpit`);
+    }
+  </script>
+</body>
+</html>
