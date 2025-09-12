@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22_CONSOLE</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      margin: 0;
+      padding: 20px;
+    }
+    .terminal {
+      animation: pulse 2s infinite;
+      padding: 20px;
+      border: 2px solid #0f0;
+      box-shadow: 0 0 10px #0f0;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+    }
+    @keyframes pulse {
+      0% { background-color: #000; color: #00f; }
+      50% { background-color: #020; color: #0f0; }
+      100% { background-color: #000; color: #00f; }
+    }
+    button {
+      background-color: #111;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+      font-family: monospace;
+    }
+    canvas {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="consoleOut" class="terminal">
+    IA22> Tapez 'boot IA22' pour initialiser le moteur.
+  </div>
+
+  <button onclick="bootIA22()">boot IA22</button>
+  <button onclick="scanIA()">scan ia22</button>
+  <button onclick="cockpit()">cockpit</button>
+  <button onclick="audit()">audit()</button>
+  <button onclick="forecast2030()">forecast 2030</button>
+  <button onclick="clearConsole()">clear</button>
+
+  <canvas id="chartIA22" width="400" height="200"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    function bootIA22() {
+      document.getElementById('consoleOut').innerText = `
+✅ Initialisation IA22 Equity Engine...
+Modules chargés :
+- Représentation
+- Salaire
+- Formation IA
+- Simulation
+- Résumé dynamique
+- Export CSV / PDF / JSON / HTML
+- Scan IA22
+- Commande graphique
+- Transformation sociale
+Cockpit IA22 prêt. Tapez 'help' pour voir les commandes disponibles.
+`;
+    }
+
+    function scanIA() {
+      document.getElementById('consoleOut').innerText = `
+🔍 Scan IA22 en cours...
+- Représentation femmes : 38%
+- Écart salarial moyen : 18%
+- Accès formation IA : 42%
+✅ Diagnostic terminé. Recommandation : audit()
+`;
+    }
+
+    function cockpit() {
+      document.getElementById('consoleOut').innerText = `
+🧠 Cockpit IA22 ouvert.
+Modules graphiques en cours de chargement...
+> Visualisation dynamique activée
+`;
+      document.getElementById('chartIA22').style.display = 'block';
+      const ctx = document.getElementById('chartIA22').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Femmes', 'Hommes', 'Minorités', 'Régions rurales'],
+          datasets: [{
+            label: 'Représentation (%)',
+            data: [38, 62, 27, 19],
+            backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Représentation par groupe – IA22',
+              font: { size: 18 }
+            }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    function audit() {
+      document.getElementById('consoleOut').innerText = `
+📋 Audit IA22 :
+- Groupe le plus sous-représenté : Femmes
+- Écart salarial moyen : 18%
+- Recommandation : Formation ciblée + Transparence IA + Quotas régionaux
+`;
+    }
+
+    function forecast2030() {
+      document.getElementById('consoleOut').innerText = `
+📊 Prévision IA22 – Année 2030 :
+- Si aucune politique n’est appliquée :
+  > Écart salarial femmes/hommes : 22%
+  > Accès à la formation IA : -12% pour les minorités
+  > Représentation rurale : stagnation
+- Recommandation : intervention urgente requise
+`;
+    }
+
+    function clearConsole() {
+      document.getElementById('consoleOut').innerText = 'IA22> ';
+      document.getElementById('chartIA22').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
