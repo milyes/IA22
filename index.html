@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>DZROUGE IA22 – Cockpit IA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background-color: #0f0f0f;
+      color: #00ffaa;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .terminal {
+      background-color: #1a1a1a;
+      border: 2px solid #00ffaa;
+      border-radius: 10px;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 0 20px #00ffaa;
+    }
+    .prompt {
+      margin-bottom: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      background-color: #0f0f0f;
+      border: 1px solid #00ffaa;
+      color: #00ffaa;
+      font-family: inherit;
+      font-size: 1em;
+      border-radius: 5px;
+    }
+    #response {
+      margin-top: 15px;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="terminal">
+    <div class="prompt">🧠|IA22 LOGIC Terminal – V7 Secure Mode activé</div>
+    <div class="prompt">Bienvenue, ilyes (milyes@netsecurepro.ca)</div>
+    <div class="prompt">🔐 Connexion IA22 automatique...</div>
+    <input type="text" id="command" placeholder="Tapez une commande IA22...">
+    <div id="response"></div>
+  </div>
+
+  <script>
+    const input = document.getElementById("command");
+    const response = document.getElementById("response");
+
+    input.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        const cmd = input.value.trim().toLowerCase();
+        if (cmd === "securemail --compose") {
+          response.innerHTML = "📩 Email sécurisé généré avec horodatage IA22.";
+        } else if (cmd === "roi22 --compare gitlab") {
+          response.innerHTML = "📊 Calculateur ROI IA22 activé – export JSON en cours...";
+        } else if (cmd === "load ia22_sante") {
+          response.innerHTML = "🏥 Module IA22 Santé chargé – interface médicale IA prête.";
+        } else {
+          response.innerHTML = "❌ Commande inconnue. Essayez : securemail --compose";
+        }
+        input.value = "";
+      }
+    });
+  </script>
+
+</body>
+</html>
