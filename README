@@ -1,56 +1,20 @@
-# NetSecurePro IA22 – LOGIC
+# 🧠 IA22 – Cockpit Cognitif
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE.md)
-[![Security Policy](https://img.shields.io/badge/Security-Policy-blue.svg)](./SECURITY.md)
-[![ORCID](https://img.shields.io/badge/ORCID-0009--0007--7571--3178-lightgrey.svg)](https://orcid.org/0009-0007-7571-3178)
-[![Release](https://img.shields.io/badge/Release-FINAL--2025-blueviolet.svg)](https://github.com/milyes)
-[![Made with Python](https://img.shields.io/badge/Made%20with-Python-blue.svg)](https://www.python.org/)
-[![Built with ❤️ by NetSecurePro IA](https://img.shields.io/badge/Built%20with-%E2%9D%A4%EF%B8%8F%20by%20NetSecurePro%20IA-red.svg)](https://github.com/milyes)
+Bienvenue dans IA22, un terminal cognitif interactif conçu pour simuler des logiques IA, des analyses médicales, et des réponses stylisées en bash, Python et HTML.
 
----
+## 🚀 Modules Principaux
 
-## 🔐 Projet IA & Cybersécurité
+- `launch.sh` → Initialisation du cockpit IA22
+- `prompt.sh` → Terminal interactif IA22
+- `logic.py` → Moteur de raisonnement IA
+- `parkinson.sh` → Analyse cognitive Parkinson simulée
+- `ia22_sante.py` → Module médical IA22
+- `ia22_terminal.html` → Interface Web stylisée
 
-**NetSecurePro IA22 – LOGICVMQEM** est une solution avancée d'**IA locale sécurisée**, conçue pour :
-- Environnements **ISO / QEMU / CLI**
-- Interfaces **WebView intelligentes**
-- **Signature IA locale**
-- **QR Code GitHub** (accès rapide et sécurisé)
+## 🧩 Commandes IA22
 
----
-
-## 🧠 Auteur
-
-**Zoubirou Mohammed Ilyes**  
-Fondateur de **NetSecurePro IA**  
-[ORCID : 0009-0007-7571-3178](https://orcid.org/0009-0007-7571-3178)  
-[GitHub : https://github.com/milyes](https://github.com/milyes)
-
----
-
-## 📥 Téléchargement
-
-### 📲 QR Code d'accès rapide :  
-![QR Code](./assets/qr_code.png)
-
-### 🖼️ Splash visuel :  
-![Splash Cover](./assets/splash_cover.png)
-
----
-
-## 📚 Documentation
-
-- 📄 [Fiche technique PDF (FR/EN)](./docs/NetSecureProIA22LOGICVMQEMA4FR_EN.pdf)
-- 📄 [Fiche technique Markdown (FR/EN)](./docs/NetSecureProIA22LOGICVMQEMA4FR_EN.md)
-- 🔐 [Politique de sécurité](./SECURITY.md)
-- 🤝 [Guide de contribution](./CONTRIBUTING.md)
-
----
-
-## 🛡️ Licence
-
-Ce projet est distribué sous licence **MIT**. Voir [LICENSE.md](./LICENSE.md).
-
----
-
-## 🚀 Built with ❤️ by NetSecurePro IA
+```bash
+securemail --compose           # Génère un email sécurisé
+generate pitch --target=GitLab # Crée un pitch DevOps IA22
+parkinson --analyze            # Analyse cognitive Parkinson
+unlock_ai --mode=devops        # Active les modules IA avancés
