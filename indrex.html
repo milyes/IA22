@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console de Commandes IA22_LOGIC</title>
+    <style>
+        /* Styles de base */
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #3498db;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Conteneur des cartes de commande */
+        .command-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Style des cartes individuelles */
+        .command-card {
+            background-color: #34495e;
+            border-radius: 8px;
+            border: 1px solid #4a667d;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            padding: 25px;
+            flex: 1 1 300px; /* Base de flexbox pour la réactivité */
+            box-sizing: border-box;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .command-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .command-card h2 {
+            margin-top: 0;
+            color: #95a5a6;
+            font-size: 1.4em;
+            word-wrap: break-word;
+        }
+        
+        .command-card p {
+            font-size: 0.9em;
+            color: #bdc3c7;
+        }
+
+        /* Style pour les petits écrans */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .command-card {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Console de Commandes IA22_LOGIC</h1>
+        
+        <div class="command-grid">
+            
+            <div class="command-card">
+                <h2>IA22_LOGIC:evaluate &lt;expression&gt;</h2>
+                <p>Évalue une expression logique ou mathématique donnée.</p>
+            </div>
+            
+            <div class="command-card">
+                <h2>IA22_LOGIC:deduce &lt;premise&gt;</h2>
+                <p>Déduit des conclusions logiques à partir d'un ensemble de prémisses.</p>
+            </div>
+
+            <div class="command-card">
+                <h2>IA22_LOGIC:query_kb &lt;question&gt;</h2>
+                <p>Recherche et extrait des informations de la base de connaissances du système.</p>
+            </div>
+
+            <div class="command-card">
+                <h2>IA22_LOGIC:list_axioms</h2>
+                <p>Affiche la liste de tous les axiomes et règles de logique définis dans le système.</p>
+            </div>
+
+            <div class="command-card">
+                <h2>IA22_LOGIC:infer &lt;data_set&gt;</h2>
+                <p>Applique des règles d'inférence pour générer de nouvelles informations à partir de données existantes.</p>
+            </div>
+
+            <div class="command-card">
+                <h2>IA22_LOGIC:reboot</h2>
+                <p>Redémarre le moteur logique, effaçant la mémoire active.</p>
+            </div>
+
+            <div class="command-card">
+                <h2>IA22_LOGIC:status</h2>
+                <p>Vérifie l'état opérationnel du moteur logique et la disponibilité des ressources.</p>
+            </div>
+            
+            <div class="command-card">
+                <h2>IA22_LOGIC:docs</h2>
+                <p>Accède à la documentation complète de l'API et des commandes du système.</p>
+            </div>
+            
+        </div>
+    </div>
+
+</body>
+</html>
