@@ -1,79 +1,185 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>DZROUGE IA22 – Cockpit IA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>SYSTEME-ILYES — Cockpit IA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      margin: 0;
-      background-color: #0f0f0f;
-      color: #00ffaa;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      margin:0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg,#071023,#071827);
+      color:#e6eef8;
     }
-    .terminal {
-      background-color: #1a1a1a;
-      border: 2px solid #00ffaa;
-      border-radius: 10px;
-      padding: 20px;
-      width: 90%;
-      max-width: 600px;
-      box-shadow: 0 0 20px #00ffaa;
+    header {
+      padding:20px;
+      text-align:center;
+      background:#0f1724;
     }
-    .prompt {
-      margin-bottom: 10px;
+    header h1 {
+      margin:0;
+      font-size:22px;
     }
-    input {
-      width: 100%;
-      padding: 10px;
-      background-color: #0f0f0f;
-      border: 1px solid #00ffaa;
-      color: #00ffaa;
-      font-family: inherit;
-      font-size: 1em;
-      border-radius: 5px;
+    nav {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:8px;
+      margin-top:10px;
     }
-    #response {
-      margin-top: 15px;
-      color: #ffffff;
+    nav button {
+      background:#0b1220;
+      border:1px solid #1e293b;
+      padding:8px 14px;
+      border-radius:8px;
+      color:#98a0b3;
+      cursor:pointer;
+    }
+    nav button:hover {
+      background:#1e293b;
+      color:#fff;
+    }
+    main {
+      max-width:900px;
+      margin:20px auto;
+      padding:20px;
+      background:#0b1220;
+      border-radius:12px;
+      border:1px solid #1e293b;
+    }
+    section {
+      margin-bottom:40px;
+    }
+    section h2 {
+      font-size:18px;
+      border-bottom:1px solid #1e293b;
+      padding-bottom:6px;
+      margin-bottom:12px;
+    }
+    footer {
+      text-align:center;
+      padding:20px;
+      font-size:13px;
+      color:#98a0b3;
+    }
+    .btn {
+      display:inline-block;
+      padding:8px 12px;
+      margin-top:10px;
+      border-radius:6px;
+      background:linear-gradient(90deg,#7c3aed,#06b6d4);
+      color:#fff;
+      text-decoration:none;
+      font-weight:bold;
+    }
+    .state {
+      padding:8px;
+      margin-top:10px;
+      border-radius:6px;
+      background:#1e293b;
+      font-size:14px;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>SYSTEME-ILYES — Cockpit Cognitif</h1>
+    <p>Il ne force rien. Il est là.</p>
+    <nav>
+      <button onclick="goto('boot')">0 BOOT</button>
+      <button onclick="goto('core')">1 CORE</button>
+      <button onclick="goto('recognition')">2 RECOGNITION</button>
+      <button onclick="goto('vision')">3 VISION</button>
+      <button onclick="goto('logic')">4 LOGIC</button>
+      <button onclick="goto('qr')">5 QR</button>
+      <button onclick="goto('announce')">6 ANNOUNCE</button>
+    </nav>
+  </header>
 
-  <div class="terminal">
-    <div class="prompt">🧠|IA22 LOGIC Terminal – V7 Secure Mode activé</div>
-    <div class="prompt">Bienvenue, ilyes (milyes@netsecurepro.ca)</div>
-    <div class="prompt">🔐 Connexion IA22 automatique...</div>
-    <input type="text" id="command" placeholder="Tapez une commande IA22...">
-    <div id="response"></div>
-  </div>
+  <main>
+    <section id="boot">
+      <h2>0 — BOOT</h2>
+      <p>Démarrage du système IA.</p>
+      <div class="state" id="boot-state">Inactif</div>
+      <a href="#" class="btn" onclick="boot()">Lancer Boot</a>
+    </section>
+
+    <section id="core">
+      <h2>1 — CORE</h2>
+      <p>Modules essentiels du système.</p>
+      <div class="state" id="core-state">Inactif</div>
+      <a href="#" class="btn" onclick="core()">Initialiser Core</a>
+    </section>
+
+    <section id="recognition">
+      <h2>2 — RECOGNITION</h2>
+      <p>Reconnaissance vocale et textuelle.</p>
+      <div class="state" id="recog-state">Inactif</div>
+      <a href="#" class="btn" onclick="recognition()">Activer Recognition</a>
+    </section>
+
+    <section id="vision">
+      <h2>3 — VISION</h2>
+      <p>Vision IA intégrée.</p>
+      <div class="state" id="vision-state">Inactif</div>
+      <a href="#" class="btn" onclick="vision()">Démarrer Vision</a>
+    </section>
+
+    <section id="logic">
+      <h2>4 — LOGIC</h2>
+      <p>Logique centrale IA.</p>
+      <div class="state" id="logic-state">Inactif</div>
+      <a href="#" class="btn" onclick="logic()">Exécuter Logic</a>
+    </section>
+
+    <section id="qr">
+      <h2>5 — QR</h2>
+      <p>Scanner / générateur de QR codes.</p>
+      <div class="state" id="qr-state">Inactif</div>
+      <a href="#" class="btn" onclick="qr()">Activer QR</a>
+    </section>
+
+    <section id="announce">
+      <h2>6 — ANNOUNCE</h2>
+      <p>Annonce et affichage final.</p>
+      <div class="state" id="ann-state">Inactif</div>
+      <a href="#" class="btn" onclick="announce()">Déclencher Announce</a>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> SYSTEME-ILYES — by Zoubirou Mohammed Ilyes  
+    | <a href="https://orcid.org/0009-0007-7571-3178" target="_blank">ORCID</a>
+  </footer>
 
   <script>
-    const input = document.getElementById("command");
-    const response = document.getElementById("response");
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-    input.addEventListener("keypress", function(e) {
-      if (e.key === "Enter") {
-        const cmd = input.value.trim().toLowerCase();
-        if (cmd === "securemail --compose") {
-          response.innerHTML = "📩 Email sécurisé généré avec horodatage IA22.";
-        } else if (cmd === "roi22 --compare gitlab") {
-          response.innerHTML = "📊 Calculateur ROI IA22 activé – export JSON en cours...";
-        } else if (cmd === "load ia22_sante") {
-          response.innerHTML = "🏥 Module IA22 Santé chargé – interface médicale IA prête.";
-        } else {
-          response.innerHTML = "❌ Commande inconnue. Essayez : securemail --compose";
-        }
-        input.value = "";
-      }
-    });
+    function goto(id){
+      document.getElementById(id).scrollIntoView({behavior:"smooth"});
+    }
+
+    function boot(){
+      document.getElementById("boot-state").textContent="BOOT lancé";
+    }
+    function core(){
+      document.getElementById("core-state").textContent="CORE initialisé";
+    }
+    function recognition(){
+      document.getElementById("recog-state").textContent="RECOGNITION active";
+    }
+    function vision(){
+      document.getElementById("vision-state").textContent="VISION active";
+    }
+    function logic(){
+      document.getElementById("logic-state").textContent="LOGIC exécuté";
+    }
+    function qr(){
+      document.getElementById("qr-state").textContent="QR activé";
+    }
+    function announce(){
+      document.getElementById("ann-state").textContent="ANNOUNCE déclenchée";
+    }
   </script>
-
 </body>
 </html>
