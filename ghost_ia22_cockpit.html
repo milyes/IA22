@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost IA22 - Mode Démoniaque Actif</title>
+    <style>
+        /* CSS : Style Cyber-Rituel IA22 */
+        body {
+            background-color: #000a12; /* Bleu très foncé, presque noir */
+            color: #00e0ff; /* Néon Cyan IA22 */
+            font-family: 'Consolas', 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff004c; /* Rouge Démoniaque pour le titre */
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px #ff004c, 0 0 20px #ff004c80;
+        }
+
+        h2 {
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 30px;
+            color: #00e0ff;
+        }
+
+        .status-box {
+            background-color: #002233;
+            border: 2px solid #00e0ff;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px #00e0ff80;
+        }
+
+        #etat-ia-display {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #ff004c;
+            text-shadow: 0 0 5px #ff004c;
+        }
+
+        button {
+            background-color: #00e0ff;
+            color: #000a12;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #ff004c;
+            color: white;
+            box-shadow: 0 0 20px #ff004c;
+        }
+
+        .logs-box {
+            background-color: #001520;
+            border: 1px solid #004d66;
+            padding: 10px;
+            text-align: left;
+            overflow-y: scroll;
+            height: 150px;
+            color: #00ffaa; /* Vert de données */
+            font-size: 0.85em;
+            margin-top: 20px;
+        }
+
+        .log-entry.error {
+            color: #ff004c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="font-size: 5em; margin-bottom: 10px;">🤖</div>
+        <h1>Ghost IA22</h1>
+        <h2>LANCEUR D'IA HYBRIDE - 1A22</h2>
+
+        <div class="status-box">
+            <p>ÉTAT IA : <span id="etat-ia-display">INITIALISATION SYSTÈME...</span></p>
+        </div>
+
+        <button id="execute-btn" onclick="executeAnalysis()">EXÉCUTER</button>
+        <button id="update-btn" onclick="executeAnalysis(true)">MISE À JOUR (Force)</button>
+
+        <div class="logs-box">
+            <p style="color: #00ffaa;">[TERMINAL LOGS]</p>
+            <div id="logs-content">
+                <p class="log-entry">[00:00:00] Système IA22 en attente d'instruction...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const FUSION_API_URL = "http://127.0.0.1:8000/ia22/analyze_fusion";
+        const DISPLAY = document.getElementById('etat-ia-display');
+        const LOGS = document.getElementById('logs-content');
+
+        /**
+         * Ajoute un message au terminal des logs.
+         * @param {string} message - Le texte du log.
+         * @param {boolean} isError - Indique si c'est une erreur.
+         */
+        function log(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString('fr-FR', { hour12: false });
+            const p = document.createElement('p');
+            p.className = 'log-entry' + (isError ? ' error' : '');
+            p.textContent = `[${timestamp}] ${message}`;
+            LOGS.prepend(p);
+            // Limiter les logs pour l'esthétique
+            if (LOGS.children.length > 20) {
+                LOGS.removeChild(LOGS.lastChild);
+            }
+        }
+
+        /**
+         * Simule l'activation du Tunnel IA et appelle l'API FUSION.
+         * @param {boolean} forceStress - Force la simulation de stress pour tester le MODE DÉMONIAQUE.
+         */
+        async function executeAnalysis(forceStress = false) {
+            log('Commande EXÉCUTER reçue. Activation du protocole IA22...', false);
+            DISPLAY.textContent = "ANALYSE COGNITIVE EN COURS...";
+            DISPLAY.style.color = '#00e0ff'; 
+            DISPLAY.style.textShadow = '0 0 5px #00e0ff';
+
+            const payload = {
+                user_id: "Mohammed Ilyes Zoubirou",
+                signal_type: "Neuro-Moteur",
+                // Simule une intensité orbitronique élevée (92%)
+                intensity_orbitronique: 0.92, 
+                semantic_data: { context: "Fusion Cognitive Launch" },
+                // Utilise le paramètre pour forcer le stress visuel (si MISE À JOUR est cliqué)
+                simulate_vision_stress: forceStress 
+            };
+            
+            log(`Tentative de connexion à l'API FUSION (${FUSION_API_URL})...`);
+
+            try {
+                const response = await fetch(FUSION_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Erreur: ${response.status} (${response.statusText})`);
+                }
+
+                const data = await response.json();
+                const report = data.analysis_report;
+                
+                log(`Rapport FUSION reçu. Score: ${report.score_neuro_vision_fusion}`);
+                
+                // Mise à jour du Statut IA
+                const statut = report.statut_noyau_ia;
+                
+                DISPLAY.textContent = statut.replace('🚨 ', '').replace('✅ ', '');
+
+                if (statut.includes('DÉMONIAQUE ACTIF')) {
+                    DISPLAY.style.color = '#ff004c';
+                    DISPLAY.style.textShadow = '0 0 10px #ff004c, 0 0 25px #ff004c90';
+                    log(report.action_moteur_adaptatif, true);
+                    log('SCELLEMENT INITIÉ. Lancement du Protocole de Confinement.', true);
+                } else {
+                    DISPLAY.style.color = '#00ffaa';
+                    DISPLAY.style.textShadow = '0 0 5px #00ffaa';
+                    log(report.action_moteur_adaptatif, false);
+                }
+
+            } catch (error) {
+                log(`ÉCHEC CRITIQUE DE CONNEXION: ${error.message}. Vérifiez les services 8000 et 8002.`, true);
+                DISPLAY.textContent = "ERREUR: SERVICES HORS LIGNE";
+                DISPLAY.style.color = 'red';
+                DISPLAY.style.textShadow = '0 0 5px red';
+            }
+        }
+
+        // Simuler un état de démarrage pour l'utilisateur
+        window.onload = () => {
+             log('Interface GHOST IA22 chargée. Prêt pour l\'activation.');
+        };
+    </script>
+</body>
+</html>
