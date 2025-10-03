@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INNOVOIA Interface</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .commandes {
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #3498db;
+      color: #fff;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    #output {
+      background: #eee;
+      padding: 10px;
+      border-radius: 4px;
+      min-height: 50px;
+      font-family: monospace;
+    }
+    @media (max-width: 640px) {
+      .container {
+        padding: 15px;
+      }
+      button {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>INNOVOIA Terminal Virtuel</h1>
+    <div class="commandes">
+      <button onclick="executerCommande('info')">Info</button>
+      <button onclick="executerCommande('sqlite')">Scan SQLite</button>
+      <button onclick="executerCommande('binaries')">Scan Binaires</button>
+      <button onclick="executerCommande('send')">Envoyer Données</button>
+      <button onclick="executerCommande('flush')">Nettoyer</button>
+    </div>
+    <div id="output">Sortie : ...</div>
+  </div>
+
+  <script>
+    function executerCommande(cmd) {
+      let outputDiv = document.getElementById('output');
+      let resultat = '';
+
+      switch(cmd) {
+        case 'info':
+          resultat = '<span style="color:                                                               
+          break;
+        case '"color:                                                               
+          break;
+        case 'sqlite':
+          resultat = '<span style=""color:                                                                          
+          break;
+        case 'binaries':
+          resultat = '<span style=""color:                                                       
+          break;
+        case 'send':
+          resultat = '<span style="'<span style="color:                                                                     
+          break;
+        case 'flush':
+          resultat = '<span style="color: #c0392b;">Nettoyage</span> effectué (simulé)';
+          outputDiv.style.backgroundColor = '         
+          setTimeout(() => { outputDiv.style.backgroundColor = '#eee'; }, 800);
+          break;
+        default:
+          resultat = 'Commande inconnue';
+      }
+
+      outputDiv.innerHTML = 'Sortie : ' + resultat;
+    }
+  </script>
+</body>
+</html>
