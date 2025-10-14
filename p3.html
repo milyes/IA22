@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi de Projet : Pipeline de Données IA22 et Architecture de Production Sécurisée</title>
+    <style>
+        /* Variables de couleur et style professionnel */
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #333;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --code-bg: #eef2f8;
+            --note-success: #e8f5e9;
+            --note-danger: #ffebee;
+            --note-border-success: #4caf50;
+            --note-border-danger: #f44336;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--secondary-color);
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: var(--bg-color);
+        }
+        h1, h2, h3 { color: var(--primary-color); }
+        h1 { border-bottom: 3px solid var(--primary-color); padding-bottom: 15px; text-align: center; font-size: 2.2em; }
+        h2 { border-bottom: 1px solid #ccc; padding-bottom: 8px; font-size: 1.8em; }
+        h3 { font-size: 1.4em; margin-top: 20px; }
+        table { border-collapse: collapse; width: 100%; margin: 1.5rem 0; background-color: var(--card-bg); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 12px; text-align: left; }
+        th { background-color: #e0f7fa; color: var(--primary-color); }
+        code { font-family: 'Courier New', monospace; background-color: var(--code-bg); padding: 2px 4px; border-radius: 3px; font-size: 0.9em; }
+        pre { background-color: var(--code-bg); padding: 15px; border-left: 5px solid var(--primary-color); overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9em; margin-bottom: 20px; border-radius: 4px; }
+        .authors { text-align: center; margin-bottom: 30px; }
+        .authors p { font-style: italic; }
+        .status-box { padding: 15px; margin: 20px 0; border-radius: 6px; font-weight: bold; }
+        .status-success { background-color: var(--note-success); border-left: 4px solid var(--note-border-success); }
+        .status-danger { background-color: var(--note-danger); border-left: 4px solid var(--note-border-danger); }
+        .architecture-img { max-width: 100%; height: auto; display: block; margin: 20px auto; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        @media (max-width: 768px) { body { margin: 10px; } table { display: block; overflow-x: auto; } th, td { white-space: nowrap; } }
+    </style>
+</head>
+<body>
+
+    <h1>Suivi de Projet : Pipeline de Données IA22 et Systèmes d'Exploitation Cibles</h1>
+
+    <div class="authors">
+        <h3>Propriétaire du Projet : Mohammed Ilyes ZOUBIROU</h3>
+        <p>Contact : milyes@netsecurepro.ca</p>
+    </div>
+
+    <h2>1. Fiche Technique du Prototype</h2>
+
+    <table>
+        <tr><th>Élément</th><th>Statut Actuel</th><th>Exigence de Production</th></tr>
+        [cite_start]<tr><td>**Nom du Prototype**</td><td>Pipeline de Données pour Signaux "IA22" [cite: 1]</td><td>Intégration au noyau GEMINI CORE 2.6 PRO</td></tr>
+        [cite_start]<tr><td>**Langage d'Exécution**</td><td>Script **Bash** (`run_ia22_data.sh`) [cite: 1]</td><td>Python / C++ pour la sérialisation binaire</td></tr>
+        [cite_start]<tr><td>**Objectif Final**</td><td>Préparation de données pour l'inférence **TFLite** [cite: 1][cite_start]</td><td>Déploiement en temps réel sur dispositifs Edge [cite: 1]</td></tr>
+        <tr><td>**Statut du Prototype**</td><td class="status-box status-success">✅ Validé Fonctionnellement</td><td>Passage en phase de durcissement (Hardening)</td></tr>
+    </table>
+
+    <div class="status-box status-success">
+        [cite_start]**Rapport de Validation :** L'exécution a réussi, confirmant la chaîne de génération des données brutes à l'encapsulation compacte (réduction de ~350 octets à ~130 octets) pour le format TFLite[cite: 1].
+    </div>
+
+    <hr>
+
+    <h2>2. Architecture du Pipeline et Systèmes d'Exploitation</h2>
+
+    <h3>2.1. Flux de Traitement</h3>
+    [cite_start]<p>Le pipeline est structuré en trois phases (Génération, TUNNEL, Préparation TFLite)[cite: 1].</p>
+    <figure>
+        <img class="architecture-img" src="https://oaidalleapiprod.blob.core.windows.net/private/org-r75f3DmL54t7g90fMif51K32/user-4794e7ff-43a1-4389-9b98-656b270a3c20/img-oF0uBqW0sQ0qG3r7NqD1B6aR.png?st=2023-11-30T10%3A22%3A58Z&se=2023-11-30T12%3A22%3A58Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6ee04d8c-21a4-470e-8a2b-69ea5a417e67&sktid=a48cca56-e6da-484e-a814-9c84965219e5&skt=2023-11-30T11%3A05%3A28Z&ske=2023-11-30T11%3A15%3A28Z&sks=b&skv=2021-08-06&sig=c19wQY9D3wE%2BMj20S9%2B28H3%2B/gQ1/vXh/GqB9K6qG24%3D" alt="Architecture du pipeline de données IA22 Edge">
+        [cite_start]<figcaption>Architecture du Pipeline de Données IA22 Edge [cite: 1]</figcaption>
+    </figure>
+
+    <h3>2.2. Systèmes d'Exploitation et Environnements Cibles</h3>
+    <p>Le projet utilise deux types de systèmes d'exploitation : un pour l'exécution sécurisée du pipeline, et l'autre pour le déploiement de l'IA embarquée.</p>
+
+    <table>
+        <tr><th>Rôle</th><th>Système d'Exploitation (SE) / Environnement</th><th>Exigence de Production</th></tr>
+        [cite_start]<tr><td>**Exécution du Pipeline**</td><td>Prototype : **Linux** (Ubuntu 22.04 LTS) [cite: 1]</td><td>**Conteneurisation (Docker)** ou **Sandboxing** (`chroot`, `firejail`)</td></tr>
+        [cite_start]<tr><td>**Déploiement Edge AI**</td><td>Systèmes compatibles **TensorFlow Lite**</td><td>**Linux Embarqué** (ex: Yocto, Raspberry Pi OS), **Android** (SDK TFLite), **iOS** (Core ML/TFLite) [cite: 1]</td></tr>
+        <tr><td>**Gestion des Clés**</td><td>Non spécifié (À définir)</td><td>Services de Gestion de Clés (KMS) ou **Trusted Platform Module (TPM)**</td></tr>
+    </table>
+
+    <hr>
+
+    <h2>3. FeuilLe de Route : Sécurité et Robustesse (Dépassement du Prototype)</h2>
+    <p>La prochaine phase se concentre sur les améliorations critiques pour garantir la conformité en production.</p>
+
+    <h3>3.1. Durcissement de la Sécurité</h3>
+    <ul>
+        <li>Remplacer la simulation de sécurité (`gzip -c`) par un **Cryptage Robuste** (**AES-256-CBC** via `openssl`).</li>
+        <li>Intégrer la **Vérification d'Intégrité** via **HMAC SHA256** pour détecter toute altération des données chiffrées.</li>
+        <li>Isoler l'exécution du script par **Conteneurisation (Docker)**.</li>
+    </ul>
+
+    <h3>3.2. Optimisation des Performances</h3>
+    <ul>
+        <li>Remplacer la sérialisation JSON rudimentaire par un format binaire dédié et **schema-driven** : **Protobuf** ou **FlatBuffers**.</li>
+        <li>Améliorer la **Gestion des Erreurs** avec des vérifications de statut (`$?`) après chaque commande critique.</li>
+    </ul>
+
+    <div class="status-box status-danger">
+        **Alerte Critique (Production) :** Le prototype ne gère pas le cryptage cryptographiquement sécurisé ni l'intégrité des données (absence d'HMAC). Ces points doivent être corrigés avant tout déploiement sur des signaux "IA22" sensibles.
+    </div>
+
+</body>
+</html>
