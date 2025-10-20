@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Météo</title>
+    <style>
+        /* --- CSS : Le style de l'application --- */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #6dd5ed, #2193b0);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .weather-app {
+            background: rgba(255, 255, 255, 0.9);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        .search-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        #city-input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        #city-input:focus {
+            outline: none;
+            border-color: #2193b0;
+        }
+
+        #search-btn {
+            padding: 12px 20px;
+            background-color: #2193b0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #search-btn:hover {
+            background-color: #1c7a91;
+        }
+        
+        #weather-result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .weather-icon img {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .temperature {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+        
+        .description {
+            font-size: 1.5em;
+            color: #555;
+            text-transform: capitalize;
+        }
+        
+        .city-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- --- HTML : La structure de l'application --- -->
+    <div class="weather-app">
+        <h1>Météo Actuelle</h1>
+        <div class="search-area">
+            <input type="text" id="city-input" placeholder="Entrez le nom d'une ville...">
+            <button id="search-btn">Rechercher</button>
+        </div>
+        <div id="weather-result">
+            <!-- Les résultats météo s'afficheront ici -->
+        </div>
+    </div>
+
+    <script>
+        // --- JavaScript : La logique de l'application ---
+
+        // 1. Récupérer les éléments HTML
+        const cityInput = document.getElementById('city-input');
+        const searchBtn = document.getElementById('search-btn');
+        const weatherResult = document.getElementById('weather-result');
+
+        // 2. Remplacez par votre propre clé API de OpenWeatherMap
+        const apiKey = 'VOTRE_CLÉ_API_ICI'; 
+
+        // 3. Fonction pour récupérer et afficher la météo
+        async function getWeather() {
+            const city = cityInput.value.trim();
+            
+            if (city === '') {
+                weatherResult.innerHTML = `<p class="error">Veuillez entrer le nom d'une ville.</p>`;
+                return;
+            }
+            
+            if (apiKey === 'VOTRE_CLÉ_API_ICI') {
+                 weatherResult.innerHTML = `<p class="error">Veuillez insérer votre clé API dans le code JavaScript.</p>`;
+                return;
+            }
+
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=fr`;
+
+            try {
+                // Effacer les anciens résultats et afficher un message de chargement
+                weatherResult.innerHTML = `<p>Chargement...</p>`;
+
+                // Appeler l'API
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error('Ville non trouvée. Veuillez vérifier le nom.');
+                }
+                
+                const data = await response.json();
+                
+                // Afficher les résultats
+                displayWeather(data);
+
+            } catch (error) {
+                weatherResult.innerHTML = `<p class="error">${error.message}</p>`;
+            }
+        }
+
+        // 4. Fonction pour formater et afficher les données reçues
+        function displayWeather(data) {
+            const cityName = data.name;
+            const country = data.sys.country;
+            const temp = Math.round(data.main.temp);
+            const description = data.weather[0].description;
+            const iconCode = data.weather[0].icon;
+            const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+
+            weatherResult.innerHTML = `
+                <div class="city-name">${cityName}, ${country}</div>
+                <div class="weather-icon">
+                    <img src="${iconUrl}" alt="Icône météo">
+                </div>
+                <div class="temperature">${temp}°C</div>
+                <div class="description">${description}</div>
+            `;
+        }
+
+        // 5. Écouteurs d'événements
+        searchBtn.addEventListener('click', getWeather);
+        cityInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                getWeather();
+            }
+        });
+
+    </script>
+</body>
+</html>
