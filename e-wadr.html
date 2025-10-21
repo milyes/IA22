@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSecurePro IA22 Control Panel</title>
+<style>
+body { font-family:'Courier New', monospace; background:#0a0a0a; color:#00ffcc; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+.container { width:90%; max-width:900px; background:#111; padding:20px; border:1px solid #00ffcc; border-radius:10px; box-shadow:0 0 20px #00ffcc44; }
+#logo { width:150px; display:block; margin:0 auto 20px; }
+textarea { width:100%; height:80px; background:#000; color:#0f0; border:1px solid #00ffcc; padding:10px; border-radius:8px; margin-bottom:10px; }
+button { background:#00ffcc; color:#000; border:none; padding:10px 20px; font-weight:bold; border-radius:8px; margin-right:10px; cursor:pointer; }
+button:hover { background:#00ffaa; }
+.output { margin-top:20px; background:#000; padding:15px; border-radius:8px; max-height:300px; overflow-y:auto; white-space:pre-wrap; }
+footer { text-align:center; margin-top:10px; font-size:12px; color:#00ffaa99; }
+</style>
+</head>
+<body>
+<div class="container">
+<img id="logo" src="https://i.ibb.co/9GxwNHP/netsecurepro-logo.png" alt="NetSecurePro Logo">
+<h1>🧠 NetSecurePro IA22 - Interface de Commande</h1>
+<textarea id="prompt" placeholder="Entrez une commande IA ou utilisez le micro..."></textarea><br>
+<button id="send">Exécuter</button>
+<button id="voice">🎤 Parler</button>
+<div class="output" id="result"></div>
+<footer>© 2025 NetSecurePro IA22 | Core Gemini 2.6 Local | Système Souverain</footer>
+</div>
+<script>
+const resultBox = document.getElementById('result');
+
+async function sendPrompt(text) {
+    resultBox.textContent += "\\n> " + text + "\\n⏳ Exécution en cours...";
+    try {
+        const response = await fetch('http://localhost:8000/execute', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({agent:"IA22", command:"generate_text", params:{prompt:text}})
+        });
+        const data = await response.json();
+        resultBox.textContent += "\\n" + JSON.stringify(data,null,2) + "\\n";
+        resultBox.scrollTop = resultBox.scrollHeight;
+    } catch (error) {
+        resultBox.textContent += "\\n❌ Erreur : " + error + "\\n";
+    }
+}
+
+document.getElementById('send').addEventListener('click', () => {
+    const prompt = document.getElementById('prompt').value;
+    if(prompt.trim()) sendPrompt(prompt);
+});
+
+document.getElementById('voice').addEventListener('click', () => {
+    if(!('webkitSpeechRecognition' in window)) {
+        alert("Votre navigateur ne supporte pas la reconnaissance vocale");
+        return;
+    }
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'fr-FR';
+    recognition.start();
+    recognition.onresult = (event) => {
+        const speech = event.results[0][0].transcript;
+        document.getElementById('prompt').value = speech;
+        sendPrompt(speech);
+    };
+});
+</script>
+</body>
+</html>
