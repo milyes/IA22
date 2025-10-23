@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SARA Scripts – IA22 Studio | NetSecurePro_AI</title>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #e6edf3;
+      font-family: 'Consolas', monospace;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(90deg, #0077ff, #00c4ff);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+    main {
+      padding: 20px;
+    }
+    section {
+      margin-bottom: 30px;
+      background-color: #161b22;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    h2 {
+      color: #00c4ff;
+    }
+    button {
+      background-color: #00c4ff;
+      color: #0d1117;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #0077ff;
+    }
+    pre {
+      background-color: #0c0f14;
+      border: 1px solid #2f3339;
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      color: #00ffcc;
+    }
+    footer {
+      text-align: center;
+      padding: 15px;
+      border-top: 1px solid #2f3339;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    #log {
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+      background: #0d0f12;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <header>🧠 IA22 Studio – Module SARA</header>
+  <main>
+    <section>
+      <h2>Présentation</h2>
+      <p>Le module <strong>SARA</strong> (Secure Automated Runtime Assistant) automatise les scripts IA et de sécurité embarqués pour <em>NetSecurePro_AI</em>.</p>
+    </section>
+
+    <section>
+      <h2>Scripts disponibles</h2>
+      <pre id="scriptDisplay">
+# Exemple de script SARA (Bash)
+#!/bin/bash
+echo "Démarrage du module IA22..."
+python3 -m ia22_pipeline.cli run ./samples
+echo "Analyse terminée."
+      </pre>
+      <button onclick="runScript()">▶ Exécuter le script</button>
+    </section>
+
+    <section>
+      <h2>Console / Logs</h2>
+      <div id="log">[SARA] Prêt à exécuter…</div>
+    </section>
+  </main>
+
+  <footer>© 2025 by Milyes – NetSecurePro_AI | IA22 Secure Runtime</footer>
+
+  <script>
+    function runScript() {
+      const logBox = document.getElementById('log');
+      logBox.textContent = '[SARA] Exécution du script IA22 en cours...\n';
+      setTimeout(() => {
+        logBox.textContent += '[INFO] Simulation terminée ✅\n';
+        logBox.textContent += '[SARA] Tous les modules IA22 ont été exécutés avec succès.';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
