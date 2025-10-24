@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SARA Scripts – IA22 Studio | NetSecurePro_AI</title>
+  <style>
+    body{background:#0d1117;color:#e6edf3;font-family:Consolas,monospace;margin:0;padding:0}
+    header{background:linear-gradient(90deg,#0077ff,#00c4ff);color:#fff;padding:20px;text-align:center;font-size:1.6rem;font-weight:bold}
+    main{padding:20px}
+    section{margin-bottom:30px;background:#161b22;border-radius:12px;padding:20px;box-shadow:0 0 10px rgba(0,0,0,.5)}
+    h2{color:#00c4ff}
+    button{background:#00c4ff;color:#0d1117;border:none;border-radius:8px;padding:10px 16px;cursor:pointer;transition:background .3s}
+    button:hover{background:#0077ff}
+    pre{background:#0c0f14;border:1px solid #2f3339;padding:12px;border-radius:8px;overflow-x:auto;color:#00ffcc}
+    footer{text-align:center;padding:15px;border-top:1px solid #2f3339;font-size:.9rem;color:#aaa}
+    #log{max-height:200px;overflow-y:auto;font-size:.85rem;background:#0d0f12;padding:10px;border-radius:8px;border:1px solid #333}
+  </style>
+</head>
+<body>
+  <header>🧠 IA22 Studio – Module SARA</header>
+  <main>
+    <section>
+      <h2>Présentation</h2>
+      <p>Le module <strong>SARA</strong> (Secure Automated Runtime Assistant) communique directement avec ton API IA22 pour exécuter des scripts distants.</p>
+    </section>
+
+    <section>
+      <h2>Script à exécuter</h2>
+      <textarea id="scriptInput" rows="6" style="width:100%;border-radius:8px;background:#0c0f14;color:#00ffcc;padding:8px;border:1px solid #333;">
+#!/bin/bash
+echo "Démarrage de l'analyse IA22..."
+python3 -m ia22_pipeline.cli run ./samples
+echo "Analyse terminée."
+      </textarea>
+      <br><br>
+      <button onclick="runScript()">▶ Envoyer à l'API IA22</button>
+    </section>
+
+    <section>
+      <h2>Console / Logs</h2>
+      <div id="log">[SARA] Prêt à exécuter…</div>
+    </section>
+  </main>
+
+  <footer>© 2025 by Milyes – NetSecurePro_AI | IA22 Secure Runtime</footer>
+
+  <script>
+    const API_URL = "https://milyes.github.io/IA22/api/run"; // ou ton endpoint Flask/FastAPI local
+    const TOKEN = "secure_token_demo"; // à remplacer par ton vrai token
+
+    async function runScript() {
+      const script = document.getElementById('scriptInput').value;
+      const logBox = document.getElementById('log');
+      logBox.textContent = "[SARA] Envoi du script à l'API IA22...\n";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${TOKEN}`
+          },
+          body: JSON.stringify({ script })
+        });
+
+        const data = await res.json();
+        logBox.textContent += `[IA22] Réponse:\n${JSON.stringify(data, null, 2)}\n`;
+      } catch (err) {
+        logBox.textContent += `[ERREUR] ${err.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
