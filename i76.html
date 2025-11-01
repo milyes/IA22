@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA22-REFERRAL Cockpit (COOPKIT Interface)</title>
+    <style>
+        :root {
+            --primary-color: #007bff; /* Bleu UdeM */
+            --secondary-color: #28a745; /* Vert pour l'approbation */
+            --danger-color: #dc3545; /* Rouge pour le rejet */
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #343a40;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .cockpit-container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            padding: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .main-panel {
+            grid-column: 1 / 2;
+        }
+
+        .side-panel {
+            grid-column: 2 / 3;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 1.4em;
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 1px dashed #e9ecef;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* --- Prédiction --- */
+        #prediction-result {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: var(--danger-color);
+        }
+
+        #confidence-score {
+            font-size: 1.5em;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        /* --- Standards et Éthique --- */
+        .standards p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85em;
+            color: var(--text-color);
+        }
+
+        /* --- Workflow --- */
+        .workflow-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .btn-approve {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-reject {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-modify {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Journal d'Audit --- */
+        #audit-log {
+            height: 150px;
+            overflow-y: scroll;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            font-size: 0.8em;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cockpit-container">
+        <h1>IA22-REFERRAL Cockpit <span style="font-size: 0.6em;">(Interface COOPKIT / NETSECUREPRO)</span></h1>
+
+        <div class="dashboard-grid">
+            
+            <div class="main-panel">
+                <div class="card">
+                    <h2>Résultat d'Analyse AIMEDIXAL (Prédiction)</h2>
+                    <div id="prediction-status">
+                        <p>Statut du Patient : <span id="prediction-result">Classe 2 - Symptômes Modérés Parkinson</span></p>
+                        <p>Score de Confiance du Modèle : <span id="confidence-score">94.8%</span></p>
+                        <p>Risque de Décision Asymétrique : **FAIBLE**</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Importance des Caractéristiques (Auditabilité)</h2>
+                    <p style="font-size: 0.9em;">Affiche les facteurs de données qui ont le plus influencé la prédiction.</p>
+                    <ul style="list-style-type: none; padding-left: 0; font-size: 0.9em;">
+                        <li>**1.** Tremblements au repos (feature\_3) : <span class="code">0.35 importance</span></li>
+                        <li>**2.** Rigidité des membres (feature\_7) : <span class="code">0.28 importance</span></li>
+                        <li>**3.** Vitesse de la parole (feature\_1) : <span class="code">0.15 importance</span></li>
+                        <li>*... Autres facteurs moins influents ...*</li>
+                    </ul>
+                </div>
+
+                <div class="card workflow">
+                    <h2>Workflow d'Approbation (Gouvernance Humaine)</h2>
+                    <p>Le clinicien doit valider la recommandation de référence ou proposer une modification. Cette action est enregistrée de manière inviolable (NETSECUREPRO).</p>
+                    <div class="workflow-actions">
+                        <button class="btn btn-approve" onclick="logAction('Approbation Clinique')">Approuver la Référence</button>
+                        <button class="btn btn-reject" onclick="logAction('Rejet de la Référence')">Rejeter la Référence</button>
+                        <button class="btn btn-modify" onclick="logAction('Modification et Annotation')">Modifier / Annoter</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-panel">
+                <div class="card standards">
+                    <h2>Standards FHIR/SNOMED CT (Interopérabilité)</h2>
+                    <p>Traduction de la décision de l'IA en codes standardisés pour l'échange de données.</p>
+                    <hr>
+                    <p>Ressource FHIR : <span class="code">FHIR::Condition / V4.0.1</span></p>
+                    <p>Code SNOMED CT : <span class="code">49049000 (Maladie de Parkinson modérée)</span></p>
+                    <p>Statut du Code : <span class="code">Confirmed (Confirmé par l'IA)</span></p>
+                    <hr>
+                    <p>La communication de l'information est ainsi assurée par un "tuyau" technique standardisé.</p>
+                </div>
+
+                <div class="card">
+                    <h2>Journal d'Audit Sécurisé (NETSECUREPRO)</h2>
+                    <p style="font-size: 0.9em;">Enregistrement horodaté de toutes les interactions pour la traçabilité éthique.</p>
+                    <div id="audit-log">
+                        <p>12:40:01 - IA22 CORE : Modèle Random Forest V3.1 Invoqué.</p>
+                        <p>12:40:05 - AIMEDIXAL : Prédiction Class 2 Générée.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Le code ci-dessous simule la logique du fichier COCKPIT.JS
+        // Dans une implémentation réelle, ce script gérerait les appels API (FHIR), 
+        // les interactions utilisateurs, et l'enregistrement dans la base de données sécurisée (NETSECUREPRO).
+
+        /**
+         * Simule l'enregistrement d'une action utilisateur dans le journal d'audit sécurisé.
+         * @param {string} actionType - Le type d'action (Approbation, Rejet, Modification).
+         */
+        function logAction(actionType) {
+            const logElement = document.getElementById('audit-log');
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('fr-FR', { hour12: false });
+            
+            const newLog = document.createElement('p');
+            newLog.innerHTML = `${timeString} - CLINICIEN : **${actionType}** de la recommandation IA. (Hash ID: ${Math.random().toString(16).substr(2, 8)})`;
+            newLog.style.fontWeight = 'bold';
+            newLog.style.color = (actionType.includes('Approbation')) ? var(--secondary-color) : (actionType.includes('Rejet') ? var(--danger-color) : var(--primary-color));
+
+            logElement.prepend(newLog);
+            alert(`Action enregistrée : ${actionType}. L'enregistrement est sécurisé via NETSECUREPRO.`);
+        }
+        
+        // Initialisation de l'interface au chargement (simule la liaison avec AIMEDIXAL)
+        window.onload = function() {
+            document.getElementById('audit-log').scrollTop = document.getElementById('audit-log').scrollHeight;
+        };
+
+    </script>
+    </body>
+</html>
