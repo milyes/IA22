@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À Propos - IA_NMESG</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* Copier/coller le CSS de index.html ici */
+        body { font-family: 'Roboto', sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
+        .container { max-width: 900px; margin: 20px auto; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        header { background-color: #673AB7; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        header h1 { margin: 0; font-size: 2.5em; }
+        nav { background-color: #512DA8; padding: 10px 0; border-radius: 0 0 8px 8px; margin-bottom: 20px; }
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
+        nav ul li { margin: 0 15px; }
+        nav ul li a { color: white; text-decoration: none; font-weight: bold; padding: 8px 12px; transition: background-color 0.3s ease, border-radius 0.3s ease; border-radius: 5px; }
+        nav ul li a:hover, nav ul li a.active { background-color: #7E57C2; border-radius: 5px; }
+        h2 { color: #673AB7; border-bottom: 2px solid #EEE; padding-bottom: 10px; margin-top: 30px; }
+        code { background-color: #e9ecef; padding: 2px 4px; border-radius: 3px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
+        pre { background-color: #e9ecef; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 0.9em; margin-bottom: 20px; }
+        footer { text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #EEE; color: #666; font-size: 0.9em; }
+        .logo-section { text-align: center; margin-bottom: 30px; }
+        .logo-section img { max-width: 200px; height: auto; margin-bottom: 15px; }
+        .button {
+            display: inline-block;
+            background-color: #673AB7;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #512DA8;
+        }
+        .about-content {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .about-content img {
+            height: 120px;
+            margin-bottom: 25px;
+        }
+        .about-content h3 {
+            font-size: 2.2em;
+            color: #673AB7;
+            margin-bottom: 5px;
+        }
+        .about-content p.version {
+            font-size: 1.1em;
+            color: #777;
+            margin-bottom: 30px;
+        }
+        .about-content p {
+            font-size: 1.1em;
+            color: #444;
+            max-width: 600px;
+            margin: 0 auto 25px auto;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .info-item .material-icons {
+            color: #673AB7;
+            margin-right: 15px;
+            font-size: 30px;
+        }
+        .info-item .text-content {
+            text-align: left;
+        }
+        .info-item .text-content h4 {
+            margin: 0;
+            color: #673AB7;
+            font-size: 1.2em;
+        }
+        .info-item .text-content p {
+            margin: 0;
+            color: #555;
+            font-size: 1em;
+        }
+        .linkedin-link .material-icons {
+            color: #0A66C2; /* LinkedIn blue */
+        }
+        .linkedin-link a {
+            color: #0A66C2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .linkedin-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>À Propos de IA_NMESG</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="backend.html">Backend Flask</a></li>
+                <li><a href="flutter_app.html">App Flutter</a></li>
+                <li><a href="instructions.html">Instructions</a></li>
+                <li><a href="about.html" class="active">À Propos</a></li>
+            </ul>
+        </nav>
+        <main>
+            <div class="about-content">
+                <img src="logo.png" alt="Logo IA_NMESG">
+                <h3>IA_NMESG</h3>
+                <p class="version">Version 1.0.0</p>
+                <p>Développé avec passion par <strong>NetSecurePro</strong>, IA_NMESG est une application mobile de messagerie intelligente conçue pour offrir une interaction fluide et intuitive avec une intelligence artificielle avancée.</p>
+                <p>Notre mission est de fournir une plateforme sécurisée et performante pour la communication assistée par IA, rendant la technologie de pointe accessible à tous.</p>
+
+                <div class="info-item">
+                    <span class="material-icons">person</span>
+                    <div class="text-content">
+                        <h4>Développeur</h4>
+                        <p>NetSecurePro</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="material-icons">email</span>
+                    <div class="text-content">
+                        <h4>Contact</h4>
+                        <p>contact@netsecurepro.com</p>
+                    </div>
+                </div>
+                <div class="info-item linkedin-link">
+                    <span class="material-icons">link</span>
+                    <div class="text-content">
+                        <h4>Profil LinkedIn</h4>
+                        <p><a href="https://www.linkedin.com/in/ton-profil-linkedin" target="_blank">Connectez-vous avec nous !</a></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2023 NetSecurePro. Tous droits réservés.</p>
+        </footer>
+    </div>
+</body>
+</html>
