@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Clinique IA Parkinson</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- NOUVEAU: Librairie jsPDF pour la génération de rapports PDF côté client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Styles personnalisés pour améliorer l'esthétique et la réactivité */
+        :root {
+            --primary-indigo: #4338ca;
+            --secondary-cyan: #06b6d4;
+            --background-light: #f3f4f6;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-light);
+            color: #1f2937;
+        }
+        .text-primary-indigo { color: var(--primary-indigo); }
+        .diagnosis-high { color: #dc2626; font-weight: 700; }
+        .diagnosis-low { color: #16a34a; font-weight: 700; }
+        /* Style pour la barre de risque avec transition */
+        .risk-bar { transition: width 1s ease-in-out; }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-8 p-4 bg-white rounded-xl shadow-lg">
+            <h1 class="text-4xl font-extrabold text-primary-indigo">Dashboard Clinique IA Parkinson</h1>
+            <p class="text-gray-600 mt-2">Analyse Multimodale IA des Données de Capteurs et Caractéristiques Cliniques</p>
+        </header>
+
+        <!-- Conteneur pour le Score Final et le Diagnostic (KPI) -->
+        <div id="kpi-score" class="bg-white p-6 rounded-xl shadow-xl mb-6 flex flex-col md:flex-row justify-between items-start space-y-4 md:space-y-0">
+            <div class="flex-grow">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Statut Actuel du Patient</h2>
+                
+                <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-8">
+                    <!-- Score Final -->
+                    <div class="flex-1 w-full">
+                        <p class="text-lg text-gray-500">Score de Risque Final (0-1):</p>
+                        <div class="flex items-center mt-1">
+                            <span id="final-score" class="text-5xl font-bold text-primary-indigo">--</span>
+                            <span class="ml-4 text-gray-700 text-sm italic">(Seuil = 0.65)</span>
+                        </div>
+                        <!-- Barre de progression -->
+                        <div class="w-full bg-gray-200 rounded-full h-3 mt-3">
+                            <div id="risk-bar" class="risk-bar h-3 rounded-full" style="width: 0%; background-color: #4338ca;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Diagnostic -->
+                    <div class="flex-1 w-full bg-secondary-cyan/10 p-4 rounded-lg">
+                        <p class="text-lg text-secondary-cyan font-medium">Diagnostic IA :</p>
+                        <strong id="ia-diagnosis" class="text-2xl mt-1">Chargement...</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- NOUVEAU: Bouton d'exportation PDF -->
+            <button onclick="generatePDFReport()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 self-start md:self-center w-full md:w-auto mt-4 md:mt-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Rapport PDF
+            </button>
+        </div>
+
+        <div class="flex flex-wrap -mx-3">
+            <!-- 1. Graphique des Séries Temporelles -->
+            <div class="w-full lg:w-1/2 px-3 mb-6">
+                <div id="ts-graph" class="bg-white p-4 rounded-xl shadow-md h-96">
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">1. Analyse des Séries Temporelles (Capteurs)</h3>
+                    <div id="plotly-ts-graph" class="h-80"></div>
+                </div>
+            </div>
+
+            <!-- 2. Graphique d'Explicabilité (XAI) -->
+            <div class="w-full lg:w-1/2 px-3 mb-6">
+                <div id="xai-graph" class="bg-white p-4 rounded-xl shadow-md h-96">
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">2. Explicabilité du Modèle Clinique (XAI)</h3>
+                    <div id="plotly-xai-graph" class="h-80"></div>
+                </div>
+            </div>
+            
+            <!-- 3. Graphique de Comparaison (Scores Historiques) -->
+            <div class="w-full px-3 mb-6">
+                <div id="history-graph" class="bg-white p-4 rounded-xl shadow-md h-96">
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">3. Suivi Historique du Risque</h3>
+                    <div id="plotly-history-graph" class="h-80"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script pour charger et afficher les données via une API Flask -->
+    <script>
+        const API_KEY = "netsecurepro-ia-parkinson-key-2025";
+        let globalDashboardData = null; // Stockage global pour l'export PDF
+
+        async function fetchDashboardData() {
+            try {
+                const patientId = 1; 
+                const apiUrl = `http://127.0.0.1:5000/api/dashboard/patient/${patientId}`; 
+                
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'X-API-KEY': API_KEY 
+                    }
+                }); 
+                
+                if (response.status === 401) {
+                     throw new Error(`Erreur 401: Accès non autorisé. Vérifiez votre Clé API.`);
+                }
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}. Assurez-vous que le backend Flask est démarré.`);
+                }
+                
+                const data = await response.json();
+                globalDashboardData = data; // Stocker les données globalement
+                
+                // Mise à jour des KPI
+                updateKPIs(data.final_score, data.diagnosis);
+                
+                // Dessin des graphiques
+                drawTimeSeriesGraph(data.ts_data);
+                drawXaiGraph(data.xai_data);
+                drawHistoryGraph(data.history_data);
+
+            } catch (error) {
+                console.error("Erreur lors du chargement des données du dashboard:", error);
+                document.getElementById('ia-diagnosis').innerHTML = `<span class="diagnosis-high">Erreur: ${error.message}. Lancez Flask!</span>`;
+            }
+        }
+
+        function updateKPIs(score, diagnosis) {
+            const scoreElement = document.getElementById('final-score');
+            const diagnosisElement = document.getElementById('ia-diagnosis');
+            const riskBar = document.getElementById('risk-bar');
+            
+            // Mise à jour du score
+            scoreElement.innerText = score.toFixed(3);
+            
+            // Mise à jour du diagnostic et de la couleur
+            const isHighRisk = score >= 0.65;
+            diagnosisElement.innerText = diagnosis;
+            diagnosisElement.className = isHighRisk ? 'text-2xl diagnosis-high' : 'text-2xl diagnosis-low';
+
+            // Mise à jour de la barre de risque
+            const barColor = isHighRisk ? '#dc2626' : '#16a34a';
+            riskBar.style.width = `${score * 100}%`;
+            riskBar.style.backgroundColor = barColor;
+        }
+
+        // --- Fonctions de Dessin Plotly ---
+
+        function drawTimeSeriesGraph(tsData) {
+            const data = [
+                {
+                    x: tsData.timestamps,
+                    y: tsData.acc_x,
+                    mode: 'lines',
+                    name: 'Acc X',
+                    line: {color: '#6366f1'}
+                },
+                {
+                    x: tsData.timestamps,
+                    y: tsData.acc_y,
+                    mode: 'lines',
+                    name: 'Acc Y',
+                    line: {color: '#ef4444'}
+                },
+                {
+                    x: tsData.timestamps,
+                    y: tsData.acc_z,
+                    mode: 'lines',
+                    name: 'Acc Z',
+                    line: {color: '#10b981'}
+                }
+            ];
+
+            const layout = {
+                title: 'Tendances de Tremblement (Accéléromètre)',
+                margin: {t: 40, r: 10, b: 20, l: 30},
+                xaxis: {title: 'Points Temporels (Simulés)', showgrid: false},
+                yaxis: {title: 'Amplitude (g)', fixedrange: true},
+                hovermode: 'x unified',
+                responsive: true
+            };
+
+            Plotly.newPlot('plotly-ts-graph', data, layout, {displayModeBar: false});
+        }
+
+        function drawXaiGraph(xaiData) {
+            // SHAP/LIME : Les valeurs positives poussent vers le diagnostic, négatives éloignent.
+            const colors = xaiData.importance_values.map(v => v > 0 ? '#4338ca' : '#ef4444');
+
+            const sortedIndices = xaiData.importance_values
+                .map((val, index) => ({ val, index }))
+                .sort((a, b) => Math.abs(b.val) - Math.abs(a.val))
+                .map(item => item.index);
+            
+            const sortedValues = sortedIndices.map(i => xaiData.importance_values[i]);
+            const sortedNames = sortedIndices.map(i => xaiData.feature_names[i]);
+
+            const data = [
+                {
+                    x: sortedValues,
+                    y: sortedNames,
+                    type: 'bar',
+                    orientation: 'h',
+                    marker: { color: colors },
+                    hovertemplate: '<b>%{y}</b>: %{x:.3f}<extra></extra>'
+                }
+            ];
+
+            const layout = {
+                title: 'Impact des Caractéristiques Cliniques sur le Score IA',
+                margin: {t: 40, r: 10, b: 20, l: 150},
+                xaxis: {title: 'Valeur d\'Impact (SHAP)', zeroline: true},
+                yaxis: {automargin: true},
+                responsive: true
+            };
+
+            Plotly.newPlot('plotly-xai-graph', data, layout, {displayModeBar: false});
+        }
+
+        function drawHistoryGraph(historyData) {
+            const dates = historyData.map(d => d.date);
+            const scores = historyData.map(d => d.score);
+            
+            const data = [
+                {
+                    x: dates,
+                    y: scores,
+                    mode: 'lines+markers',
+                    name: 'Score de Risque',
+                    line: {color: '#06b6d4', width: 3},
+                    marker: {size: 10, symbol: 'circle'}
+                }
+            ];
+
+            const layout = {
+                title: 'Évolution du Risque Parkinson',
+                margin: {t: 40, r: 10, b: 40, l: 40},
+                xaxis: {title: 'Date de l\'Évaluation'},
+                yaxis: {
+                    title: 'Score (0-1)',
+                    range: [0, 1],
+                    tickvals: [0, 0.65, 1],
+                    ticktext: ['Faible', 'Seuil (0.65)', 'Élevé'],
+                    line: {color: '#dc2626', dash: 'dash', width: 1}, // Ligne de seuil
+                },
+                shapes: [
+                    // Ligne horizontale pour le seuil (0.65)
+                    {
+                        type: 'line',
+                        xref: 'paper', x0: 0, x1: 1,
+                        yref: 'y', y0: 0.65, y1: 0.65,
+                        line: { color: '#dc2626', width: 2, dash: 'dot' }
+                    }
+                ],
+                responsive: true
+            };
+
+            Plotly.newPlot('plotly-history-graph', data, layout, {displayModeBar: false});
+        }
+        
+        // --- NOUVEAU: Fonction d'exportation PDF ---
+        async function generatePDFReport() {
+            if (!globalDashboardData) {
+                console.error("Les données du dashboard ne sont pas chargées.");
+                alert("Veuillez attendre le chargement des données avant de générer le rapport.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const MARGIN = 15;
+            let y = MARGIN;
+
+            // --- Titre ---
+            doc.setFontSize(22);
+            doc.setTextColor('#4338ca');
+            doc.text("Rapport de Diagnostic IA Parkinson", MARGIN, y);
+            y += 10;
+            
+            doc.setFontSize(10);
+            doc.setTextColor('#6b7280');
+            doc.text(`Généré par NetSecurePro AI le ${new Date().toLocaleDateString('fr-FR')}`, MARGIN, y);
+            y += 10;
+
+            // --- Section KPI ---
+            doc.setDrawColor('#4338ca');
+            doc.line(MARGIN, y, 210 - MARGIN, y); // Ligne de séparation
+            y += 5;
+
+            // Diagnostic
+            doc.setFontSize(16);
+            doc.setTextColor('#1f2937');
+            doc.text("Diagnostic IA (Patient ID: 1)", MARGIN, y);
+            y += 8;
+
+            doc.setFontSize(20);
+            const isHighRisk = globalDashboardData.final_score >= 0.65;
+            doc.setTextColor(isHighRisk ? '#dc2626' : '#16a34a');
+            doc.text(globalDashboardData.diagnosis, MARGIN, y);
+            y += 8;
+            
+            // Score
+            doc.setFontSize(14);
+            doc.setTextColor('#1f2937');
+            doc.text(`Score de Risque Final: ${globalDashboardData.final_score.toFixed(3)}`, MARGIN, y);
+            y += 10;
+
+            // --- Graphiques ---
+            doc.setFontSize(16);
+            doc.setTextColor('#1f2937');
+            doc.text("Analyses Visuelles", MARGIN, y);
+            y += 5;
+            
+            // Fonction utilitaire pour ajouter un graphique
+            const addPlotlyChartToPDF = async (divId, title) => {
+                if (y > 250) { // Nouvelle page si l'espace est insuffisant
+                    doc.addPage();
+                    y = MARGIN;
+                    doc.setFontSize(16);
+                    doc.setTextColor('#1f2937');
+                    doc.text("Analyses Visuelles (suite)", MARGIN, y);
+                    y += 5;
+                }
+                
+                doc.setFontSize(12);
+                doc.setTextColor('#4338ca');
+                doc.text(title, MARGIN, y);
+                y += 2;
+                
+                // Convertir le graphique Plotly en image statique (PNG)
+                const imgData = await Plotly.toImage(document.getElementById(divId), {
+                    format: 'png', 
+                    width: 780, // Largeur pour une bonne résolution
+                    height: 380 
+                });
+
+                const imgWidth = 180; // Largeur du graphique dans le PDF
+                const imgHeight = 90; // Hauteur calculée (780/380 ratio 2.05)
+                
+                doc.addImage(imgData, 'PNG', MARGIN, y, imgWidth, imgHeight);
+                y += imgHeight + 10;
+            };
+
+            // 1. Historique du Risque (Graphique le plus important)
+            await addPlotlyChartToPDF('plotly-history-graph', "Suivi Historique du Risque");
+            
+            // 2. Explicabilité (XAI)
+            await addPlotlyChartToPDF('plotly-xai-graph', "Impact des Caractéristiques Cliniques (XAI)");
+
+            // 3. Séries Temporelles (TS)
+            await addPlotlyChartToPDF('plotly-ts-graph', "Tendances de Tremblement (Accéléromètre)");
+
+            // --- Conclusion ---
+            if (y > 250) {
+                doc.addPage();
+                y = MARGIN;
+            }
+            doc.setFontSize(10);
+            doc.setTextColor('#6b7280');
+            doc.text("Note: Ce rapport est basé sur l'évaluation la plus récente du modèle IA multimodale. Les résultats sont un support clinique et ne remplacent pas l'avis d'un professionnel de santé.", MARGIN, 280);
+
+            // Sauvegarder le PDF
+            doc.save(`Rapport_Diagnostic_Parkinson_Patient_${globalDashboardData.patient_id}_${new Date().toISOString().slice(0, 10)}.pdf`);
+        }
+
+
+        // Lancement du chargement des données au chargement de la page
+        document.addEventListener('DOMContentLoaded', fetchDashboardData);
+    </script>
+</body>
+</html>
