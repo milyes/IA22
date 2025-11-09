@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA22 ORBITRON.IA - Tableau de Bord Exécutif</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .container {
+            max-width: 1300px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        .alert-box {
+            background-color: #ffdddd;
+            border: 2px solid #ff4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+        .alert-icon {
+            font-size: 2.5em;
+            color: #ff4444;
+            margin-right: 20px;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #007bff;
+        }
+        .metric-card.green { border-left-color: #28a745; }
+        .metric-card.red { border-left-color: #dc3545; }
+        .metric-card h3 { margin-top: 0; font-size: 1em; color: #555; }
+        .metric-card p { font-size: 1.6em; font-weight: bold; margin: 5px 0 0; }
+        #mermaid-diagram {
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚀 Synthèse Exécutive de la Pipeline IA22 ORBITRON.IA</h1>
+    
+    <h2>🚨 Résultats Cliniques et Alertes (MedicalTrackerPro)</h2>
+    
+    <div class="alert-box">
+        <span class="alert-icon">⚠️</span>
+        <div>
+            <strong>ALERTE CRITIQUE IMMÉDIATE (FHIR Observation)</strong>
+            <p style="margin-top: 5px;">**Diagnostic IA (ORBITRON.IA v3.0) :** Choc Circulatoire Imminent (Code SNOMED CT: 271649006)</p>
+            <p style="font-size: 0.9em; color: #777;">
+                **Score de Confiance :** 96% | **Explication (XAI) :** Chute de Tension -25% en 5 minutes.
+            </p>
+        </div>
+    </div>
+
+    <h2>📊 Suivi des Performances MLOps (Tableau de Bord Pro)</h2>
+    
+    <div class="metric-grid">
+        <div class="metric-card green">
+            <h3>Performance du Modèle (AUC)</h3>
+            <p>0.96</p>
+            <span style="font-size: 0.8em;">(Après Réentraînement Continu - CT)</span>
+        </div>
+        <div class="metric-card">
+            <h3>Latence d'Inférence (M2)</h3>
+            <p>4.2 secondes</p>
+            <span style="font-size: 0.8em;">(De l'Ingestion à l'Alerte)</span>
+        </div>
+        <div class="metric-card red">
+            <h3>Dérive de Concept (Drift)</h3>
+            <p>RÉSOUDRE</p>
+            <span style="font-size: 0.8em;">Détectée à 0.88, Corrigée par v3.0.</span>
+        </div>
+        <div class="metric-card green">
+            <h3>Version Modèle Actif</h3>
+            <p>ORBITRON.IA v3.0</p>
+            <span style="font-size: 0.8em;">Déploiement Atomique réussi.</span>
+        </div>
+    </div>
+    
+    <h2>🛣️ Diagramme d'Architecture (IA22_SNOWFLAKE_PIPELINE)</h2>
+    
+    <div id="mermaid-diagram">
+        <pre class="mermaid">
+graph LR
+
+subgraph EXT[🏥 Systèmes Externes Hôpital / Clinique]
+    SRC[[Système Source FHIR/SNOMED CT]]
+    DST[[Système Cible FHIR/Observation]]
+    ROM([Référentiel Opérationnel Médical])
+end
+
+subgraph ING[🔒 Ingestion & Sécurité]
+    G1[Passerelle Sécurisée HTTPS/TLS]
+    G2[Service de Collecte Protobuf]
+    G3[Snowflake Staging @data/raw/]
+    SRC --> G1 --> G2 --> G3
+end
+
+subgraph PROC[⚙️ Traitement & Préparation Snowpark]
+    P1[Snowpark Preprocessing UDFs]
+    P2[Déchiffrement & Validation FHIR]
+    P3[Structuration en Tables Snowflake]
+    G3 --> P1 --> P2 --> P3
+end
+
+subgraph FEAT[📊 Data Mart & Feature Store]
+    F1[Feature Engineering (Snowpark Python)]
+    F2[Feature Store Tables/Views]
+    P3 --> F1 --> F2
+end
+
+subgraph ML[🤖 ORBITRON.IA - Intelligence Mentale]
+    M1[Chargement Modèle ORBITRON.IA]
+    M2[Exécution / Inférence (Snowflake ML Lab)]
+    M3[Résultats d’Inférence Sécurisés]
+    F2 --> M1 --> M2 --> M3
+end
+
+subgraph POST[📈 Post-traitement & Exportation]
+    R1[Génération de Rapports / Alertes]
+    R2[Transformation FHIR (Observation/Result)]
+    R3[Chiffrement des Résultats]
+    R4[API d’Export Sécurisée / Data Share]
+    M3 --> R1 --> R2 --> R3 --> R4 --> DST
+end
+
+%% Connexions globales
+EXT -.-> ING
+ING --> PROC
+PROC --> FEAT
+FEAT --> ML
+ML --> POST
+POST -.-> EXT
+
+%% Connexion du Référentiel ROM
+ROM -.-> P1
+ROM -.-> F1
+
+%% Styles
+classDef box fill:#e7f0ff,stroke:#000,stroke-width:1px;
+classDef critical fill:#ffd6a5,stroke:#000,stroke-width:1px;
+classDef secure fill:#caffbf,stroke:#000,stroke-width:1px;
+classDef ml fill:#ffadad,stroke:#000,stroke-width:1px;
+classDef io fill:#bdb2ff,stroke:#000,stroke-width:1px;
+class EXT,ING,PROC,FEAT,ML,POST box;
+class G1,G2,G3 secure;
+class P1,P2,P3 critical;
+class F1,F2 secure;
+class M1,M2,M3 ml;
+class R1,R2,R3,R4 secure;
+class SRC,DST,ROM io;
+        </pre>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize({ startOnLoad: true });
+</script>
+
+</body>
+</html>
