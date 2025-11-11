@@ -1,0 +1,254 @@
+<!doctype html>
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NetSecurePro IA — Présentation de l'écosystème</title>
+  <meta name="description" content="NetSecurePro IA — Écosystème intelligent : cybersécurité, santé connectée et applications mobiles.">
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="NetSecurePro IA — Écosystème intelligent">
+  <meta property="og:description" content="Écosystème IA pour la cybersécurité et la santé connectée — par Milyes / NetSecurePro.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="">
+  <meta property="og:url" content="https://www.netsecurepro.ca">
+  <style>
+    :root{ --bg:#071028; --card:#0f2740; --accent:#09a3ff; --muted:#9bb6d6; --glass: rgba(255,255,255,0.04);}    
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:#e6f2ff;background:linear-gradient(180deg,#031022 0%, #061629 50%, #041323 100%);}
+    .container{max-width:1100px;margin:32px auto;padding:24px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#071b2e,#073a5a);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(3,20,38,0.5)}
+    .logo svg{filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6))}
+    h1{font-size:20px;margin:0}
+    .tagline{color:var(--muted);font-size:13px}/* Hero */
+.hero{margin-top:22px;padding:36px;border-radius:16px;background:linear-gradient(180deg,rgba(9,163,255,0.04),transparent);box-shadow:inset 0 0 60px rgba(9,163,255,0.02);position:relative;overflow:hidden}
+.matrix{position:absolute;inset:0;opacity:0.06;background-image:radial-gradient(circle at 10% 10%, rgba(9,163,255,0.06), transparent 6%), repeating-linear-gradient(0deg, rgba(255,255,255,0.01) 0 1px, transparent 1px 4px);mix-blend-mode:overlay}
+.hero-grid{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:center}
+.hero-left h2{font-size:28px;margin:0 0 10px}
+.hero-left p{color:var(--muted);margin:0 0 18px}
+.cta-row{display:flex;gap:10px}
+.btn{background:linear-gradient(90deg,var(--accent),#0067b8);color:white;padding:12px 16px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+.btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+/* Modules */
+.modules{margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.02);transition:transform .22s ease,box-shadow .22s}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 50px rgba(2,14,28,0.6)}
+.card h3{margin:0 0 8px}
+.muted{color:var(--muted);font-size:13px}
+
+/* Arch */
+.architecture{margin-top:26px;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);display:flex;gap:16px;align-items:center}
+.arch-diagram{flex:1}
+.arch-legend{width:280px}
+.legend-item{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.dot{width:12px;height:12px;border-radius:4px}
+
+/* Contact & Footer */
+.contact{margin-top:26px;display:flex;gap:18px;flex-wrap:wrap}
+.contact .card{flex:1;min-width:260px}
+footer{margin-top:28px;color:var(--muted);font-size:13px;text-align:center}
+
+/* Responsive */
+@media (max-width:880px){.hero-grid{grid-template-columns:1fr} .hero{padding:20px}}
+
+/* Small helpers */
+.small{font-size:13px;color:var(--muted)}
+.copy-area{display:flex;gap:8px}
+.facebook{background:#1877f2;color:white;padding:10px 12px;border-radius:8px;border:0;cursor:pointer}
+
+/* subtle animated accent */
+@keyframes floaty{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+.float{animation:floaty 4s ease-in-out infinite}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">
+          <!-- Simple shield/AI logo -->
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2l7 3v5c0 5-3.3 9.7-7 11-3.7-1.3-7-6-7-11V5l7-3z" fill="#0DB0FF"/>
+            <path d="M9.2 10.5c.3-.9 1-1.6 1.9-1.9V16l-1.9-5.5z" fill="#07243b"/>
+          </svg>
+        </div>
+        <div>
+          <h1>NetSecurePro IA</h1>
+          <div class="tagline">Écosystème intelligent — Cybersécurité & Santé Connectée</div>
+        </div>
+      </div>
+      <nav class="small">
+        <a href="#ecosystem" style="color:var(--muted);text-decoration:none;margin-right:12px">Écosystème</a>
+        <a href="#tech" style="color:var(--muted);text-decoration:none;margin-right:12px">Technos</a>
+        <a href="#contact" style="color:var(--muted);text-decoration:none">Contact</a>
+      </nav>
+    </header><section class="hero">
+  <div class="matrix"></div>
+  <div class="hero-grid">
+    <div class="hero-left">
+      <h2>Intelligence intégrée. Protection et bien-être.</h2>
+      <p>NetSecurePro IA fusionne la cybersécurité, la santé connectée et les applications mobiles pour offrir une plateforme robuste, éthique et adaptable.</p>
+      <div class="cta-row">
+        <button class="btn" onclick="document.getElementById('ecosystem').scrollIntoView({behavior:'smooth'})">Découvrir l’écosystème</button>
+        <button class="btn secondary" onclick="copyFacebookText()">Copier texte FB</button>
+        <button class="btn secondary" onclick="openShare()">Ouvrir lien Facebook</button>
+      </div>
+      <p class="small" style="margin-top:12px">Contact officiel : <strong>milyes@netsecurepro.ca</strong></p>
+    </div>
+    <div class="float">
+      <div style="background:linear-gradient(180deg,rgba(9,163,255,0.06),transparent);padding:18px;border-radius:12px;min-width:300px">
+        <h3 style="margin:0 0 8px">Aperçu rapide</h3>
+        <div class="small muted">Modules clés, architecture sécurisée et liaison mobile-cloud.</div>
+        <div style="margin-top:12px;display:grid;gap:8px">
+          <div style="display:flex;justify-content:space-between"><span class="small">IA Health</span><strong>Analyse prédictive</strong></div>
+          <div style="display:flex;justify-content:space-between"><span class="small">IA Security</span><strong>Détection active</strong></div>
+          <div style="display:flex;justify-content:space-between"><span class="small">IA Mobile</span><strong>Flutter</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ecosystem">
+  <h2 style="margin-top:26px">Écosystème NetSecurePro IA</h2>
+  <p class="small" style="margin-top:6px">Carte des modules — interaction intelligente et échange sécurisé entre services.</p>
+  <div class="modules">
+    <div class="card">
+      <h3>IA Health 🩺</h3>
+      <div class="muted">Analyse prédictive des données capteurs, détection d’anomalies, alertes temps réel et apprentissage personnalisé.</div>
+    </div>
+    <div class="card">
+      <h3>IA Security 🛡️</h3>
+      <div class="muted">Surveillance adaptative, détection d’intrusions, protection proactive et réponses automatisées.</div>
+    </div>
+    <div class="card">
+      <h3>IA Mobile 📱</h3>
+      <div class="muted">Applications Flutter, UI/UX responsive, synchronisation cloud et mode offline intelligent.</div>
+    </div>
+    <div class="card">
+      <h3>IA Proxy Cloud ☁️</h3>
+      <div class="muted">Proxy sécurisé, routage intelligent, Cloudflare Tunnel et APIs interconnectées.</div>
+    </div>
+  </div>
+</section>
+
+<section id="tech" class="architecture">
+  <div class="arch-diagram">
+    <h3>Architecture & Flux</h3>
+    <p class="muted">Schéma simplifié des échanges entre mobile, cloud et moteur IA.</p>
+    <!-- Simple SVG architecture -->
+    <svg width="100%" height="180" viewBox="0 0 900 260" preserveAspectRatio="xMidYMid meet" style="margin-top:12px">
+      <defs>
+        <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 z" fill="#09a3ff" />
+        </marker>
+      </defs>
+      <!-- Mobile -->
+      <rect x="20" y="40" width="160" height="120" rx="12" fill="#071b2e" stroke="#08324b" />
+      <text x="100" y="75" fill="#9bb6d6" font-size="14" text-anchor="middle">Mobile Flutter</text>
+      <!-- Cloud -->
+      <rect x="360" y="20" width="220" height="160" rx="12" fill="#07243b" stroke="#08324b" />
+      <text x="470" y="55" fill="#9bb6d6" font-size="14" text-anchor="middle">Proxy / API Cloud</text>
+      <!-- IA Core -->
+      <rect x="660" y="40" width="200" height="120" rx="12" fill="#071b2e" stroke="#08324b" />
+      <text x="760" y="75" fill="#9bb6d6" font-size="14" text-anchor="middle">IA Core (TFLite / Server)</text>
+
+      <!-- arrows -->
+      <line x1="180" y1="100" x2="360" y2="100" stroke="#09a3ff" stroke-width="2.6" marker-end="url(#arrow)" />
+      <line x1="580" y1="100" x2="660" y2="100" stroke="#09a3ff" stroke-width="2.6" marker-end="url(#arrow)" />
+      <line x1="600" y1="140" x2="760" y2="140" stroke="#09a3ff" stroke-width="1.6" marker-end="url(#arrow)" stroke-dasharray="6 6"/>
+      <line x1="860" y1="100" x2="900" y2="100" stroke="#09a3ff" stroke-width="0.6"/>
+    </svg>
+  </div>
+  <div class="arch-legend">
+    <h4>Points clés</h4>
+    <div class="legend-item"><div class="dot" style="background:#09a3ff"></div><div class="small">Communications sécurisées (TLS, JWT)</div></div>
+    <div class="legend-item"><div class="dot" style="background:#0ed3b0"></div><div class="small">Déploiement edge / tflite</div></div>
+    <div class="legend-item"><div class="dot" style="background:#f7b500"></div><div class="small">Alertes & Notifications locales</div></div>
+    <div class="legend-item"><div class="dot" style="background:#ff6b6b"></div><div class="small">Respect de la confidentialité & éthique</div></div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="card">
+    <h3>Contact officiel</h3>
+    <p class="muted">Pour partenariats, démonstrations ou demandes techniques :</p>
+    <p><strong>milyes@netsecurepro.ca</strong></p>
+    <p class="small">ORCID : <a href="https://orcid.org/0009-0007-7571-3178" target="_blank" style="color:var(--accent);text-decoration:none">0009-0007-7571-3178</a></p>
+    <div style="margin-top:10px">
+      <button class="btn" onclick="mailto()">Envoyer un email</button>
+      <button class="facebook" onclick="openShare()">Partager sur Facebook</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Publication Facebook</h3>
+    <p class="muted">Texte prêt pour la publication — cliquez pour copier puis collez sur votre page.</p>
+    <div style="margin-top:10px">
+      <textarea id="fbText" style="width:100%;height:160px;border-radius:8px;padding:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.02);color:#e6f2ff;resize:none">🚀 Lancement officiel : NetSecurePro IA Écosystème Intelligent\n\nUne nouvelle ère d’intelligence intégrée, reliant cybersécurité, santé connectée et technologies mobiles IA.\n\n🔹 IA Health : Analyse prédictive & alertes en temps réel\n🔹 IA Security : Détection et prévention automatisée\n🔹 IA Mobile : Applications Flutter connectées\n🔹 IA Proxy Cloud : Communication IA entre serveurs et clients\n\nChaque donnée devient une force. Chaque interaction, une protection intelligente.\n\nContact : milyes@netsecurepro.ca\nORCID : https://orcid.org/0009-0007-7571-3178\n#NetSecureProIA #AI #CyberSécurité #SantéConnectée</textarea>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn" onclick="copyFacebookText()">Copier le texte</button>
+        <button class="btn secondary" onclick="openShare()">Ouvrir le lien FB</button>
+        <button class="btn secondary" onclick="downloadPNG()">Télécharger visuel (PNG)</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© NetSecurePro IA — by Milyes</div>
+  <div style="margin-top:8px"><a href="https://orcid.org/0009-0007-7571-3178" target="_blank" style="color:var(--muted);text-decoration:none">ORCID</a> · <a href="#contact" style="color:var(--muted);text-decoration:none">Contact</a></div>
+</footer>
+
+  </div>  <script>
+    function copyFacebookText(){
+      const ta = document.getElementById('fbText');
+      ta.select();
+      document.execCommand('copy');
+      showToast('Texte copié dans le presse-papiers');
+    }
+    function showToast(msg){
+      const t = document.createElement('div');
+      t.textContent = msg; t.style.position='fixed'; t.style.right='18px'; t.style.bottom='18px'; t.style.background='rgba(2,14,28,0.9)'; t.style.color='white'; t.style.padding='10px 14px'; t.style.borderRadius='10px'; t.style.boxShadow='0 10px 30px rgba(0,0,0,0.5)'; t.style.zIndex=9999;
+      document.body.appendChild(t);
+      setTimeout(()=>{t.style.transition='opacity .4s';t.style.opacity=0;setTimeout(()=>t.remove(),400)},2000);
+    }
+    function openShare(){
+      // User provided link
+      const url = 'https://www.facebook.com/share/1EXtJrfKPP/';
+      window.open(url,'_blank');
+    }
+    function mailto(){
+      window.location.href = 'mailto:milyes@netsecurepro.ca?subject=NetSecurePro%20IA%20—%20Demande%20de%20contact';
+    }
+
+    // Simple visual generation (canvas) — creates a basic PNG with title and subtitle
+    function downloadPNG(){
+      const canvas = document.createElement('canvas');
+      canvas.width = 1080; canvas.height = 1080;
+      const ctx = canvas.getContext('2d');
+      // background
+      const g = ctx.createLinearGradient(0,0,1080,1080);
+      g.addColorStop(0,'#021328'); g.addColorStop(1,'#06183a');
+      ctx.fillStyle = g; ctx.fillRect(0,0,1080,1080);
+      // matrix lines
+      ctx.fillStyle = 'rgba(9,163,255,0.05)';
+      for(let i=0;i<120;i++) ctx.fillRect(Math.random()*1080, Math.random()*1080, 2, Math.random()*30);
+      // title
+      ctx.fillStyle = '#0db0ff'; ctx.font = 'bold 46px Inter, Arial'; ctx.textAlign='center';
+      ctx.fillText('NetSecurePro IA',540,360);
+      ctx.fillStyle = '#e6f2ff'; ctx.font = '22px Inter, Arial'; ctx.fillText('Écosystème intelligent — Cybersécurité & Santé Connectée',540,410);
+      // footer
+      ctx.font = '18px Inter, Arial'; ctx.fillText('by Milyes — milyes@netsecurepro.ca',540,980);
+
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'NetSecurePro_IA_prestation_1080x1080.png';
+      link.click();
+    }
+  </script></body>
+</html>
