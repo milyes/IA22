@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marloo Financial AI - Démo WebApp</title>
+    <style>
+        :root {
+            --primary-color: #00e0ff; /* Bleu Cyan Neon */
+            --secondary-color: #1e1e1e; /* Fond Sombre */
+            --text-color: #f0f0f0;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 5%;
+            border-bottom: 3px solid var(--primary-color);
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 224, 255, 0.2);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.8em;
+            color: var(--primary-color);
+            text-shadow: 0 0 15px var(--primary-color);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .section {
+            padding: 60px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            font-size: 2.2em;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid var(--primary-color);
+            display: inline-block;
+            padding-bottom: 5px;
+            text-shadow: 0 0 8px var(--primary-color);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .feature-card {
+            background-color: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            border-top: 4px solid var(--primary-color);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Pseudo-élément pour un effet de lueur subtile */
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(0, 224, 255, 0.1), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 224, 255, 0.4);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card h3 {
+            color: var(--primary-color);
+            font-size: 1.6em;
+            margin-top: 0;
+        }
+
+        .cta-button {
+            display: block;
+            width: 250px;
+            margin: 50px auto 0;
+            padding: 18px 35px;
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            text-decoration: none;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 0 20px var(--primary-color);
+            transition: background-color 0.3s, transform 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background-color: #00aacc;
+            transform: scale(1.05);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 5%;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        /* Effet de lueur sur le texte */
+        h1, h2, .feature-card h3 {
+            filter: drop-shadow(0 0 1.5px var(--primary-color));
+        }
+
+        /* Animation simple pour simuler l'IA */
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        .ai-status {
+            color: var(--primary-color);
+            margin-top: 10px;
+            font-size: 1.1em;
+            animation: pulse 2.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>MARLOO FINANCIAL AI</h1>
+        <p class="ai-status">⚡ Real-Time Data Security & Compliance | V2.0</p>
+    </header>
+
+    <main class="container">
+
+        <section id="introduction" class="section">
+            <h2>Bienvenue dans l'Ère Algumaptique</h2>
+            <p style="text-align: center; font-size: 1.3em; max-width: 800px; margin: 20px auto;">
+                Marloo Financial AI est votre partenaire en intelligence financière. Nous fusionnons l'**analyse adaptative** avec des **protocoles de sécurité de niveau militaire** pour des décisions rapides, précises et conformes.
+            </p>
+        </section>
+
+        <section id="security" class="section">
+            <h2>🔒 Sécurité et Conformité des Données</h2>
+            <div class="feature-grid">
+                
+                <div class="feature-card">
+                    <h3>End-to-End Encryption</h3>
+                    <p>Protection maximale de bout en bout pour toutes vos communications et transactions de données.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Zero Data Retention</h3>
+                    <p>Vos données vocales et sensibles ne sont jamais stockées après traitement, garantissant la confidentialité absolue.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Protocoles Voix & Injection</h3>
+                    <p>Utilisation de l'IA sécurisée pour le traitement vocal et résistance prouvée aux tentatives d'injection malveillantes (IA22 Project).</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="data-management" class="section">
+            <h2>📊 Gestion de Données en Temps Réel</h2>
+            <div class="feature-grid">
+                
+                <div class="feature-card">
+                    <h3>Real-Time Data Integration Et Flow</h3>
+                    <p>Intégrez vos données de CRM et d'autres systèmes via des APIs robustes pour des analyses continues et dynamiques.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Adaptive Intelligence</h3>
+                    <p>Notre IA apprend et s'adapte en permanence à votre style de travail et aux évolutions du marché financier.</p>
+                </div>
+
+            </div>
+            <button class="cta-button" onclick="showAlert()">Voir le Tableau de Bord Pilote</button>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>Projet Développé par Marloo Financial AI | IA22_Project - Nouvelle Ère Algumapique V2.0.</p>
+        <p>Contact: demo@marloo.ai</p>
+    </footer>
+
+    <script>
+        function showAlert() {
+            alert('Accès au Tableau de Bord Pilote: En cours de déploiement (Phase TEST PILOTE P3). Revenez bientôt !');
+        }
+    </script>
+</body>
+</html>
