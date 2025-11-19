@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cockpit de Contrôle IA22</title>
+    
+    <style>
+        /* Styles de Base pour le Cockpit */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        #status-display {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+        }
+        #status {
+            font-weight: bold;
+            color: #34495e;
+        }
+        .controls button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .controls button:hover {
+            background-color: #2980b9;
+        }
+        .controls button:active {
+            transform: translateY(1px);
+        }
+        .controls button:nth-child(2) { /* Bouton Arrêter */
+            background-color: #e74c3c;
+        }
+        .controls button:nth-child(2):hover {
+            background-color: #c0392b;
+        }
+        /* Styles pour les messages d'erreur et succès */
+        .status-ok { color: #27ae60; }
+        .status-error { color: #e74c3c; }
+        .status-warn { color: #f39c12; }
+    </style>
+
+    <script>
+        // --- Fonctions du Bridge de Communication (Pilier 1 & 4) ---
+
+        /**
+         * Met à jour le statut affiché dans l'interface Cockpit.
+         * Fonction appelée par le code Flutter via _controller.runJavaScript("setStatus('...')").
+         * @param {string} message Le message de statut envoyé par l'hôte Flutter.
+         */
+        function setStatus(message) {
+            const statusElement = document.getElementById('status');
+            statusElement.innerText = message;
+            
+            // Applique un style basé sur le contenu pour une meilleure UX
+            statusElement.className = '';
+            if (message.includes('✅') || message.includes('terminé')) {
+                statusElement.classList.add('status-ok');
+            } else if (message.includes('🚨') || message.includes('ERREUR')) {
+                statusElement.classList.add('status-error');
+            } else if (message.includes('⚠️')) {
+                statusElement.classList.add('status-warn');
+            }
+        }
+
+        /**
+         * Envoie une commande structurée en JSON à l'application hôte Flutter.
+         * Implémente le Protocole JSON (Pilier 4) et la gestion d'erreurs robustes.
+         * @param {string} actionType La commande à envoyer (ex: 'START', 'STOP', 'CONFIG').
+         * @param {object | null} dataPayload Les paramètres à associer à l'action.
+         */
+        function sendCommand(actionType, dataPayload = null) {
+            const message = {
+                action: actionType,
+                data: dataPayload
+            };
+            
+            try {
+                // Vérification du Bridge (Pilier 1)
+                if (typeof FlutterPostMessage !== 'undefined' && FlutterPostMessage.postMessage) {
+                    
+                    // Envoi du message JSON structuré (Pilier 4)
+                    FlutterPostMessage.postMessage(JSON.stringify(message));
+                    setStatus(`🟡 Envoi de la commande ${actionType}...`);
+                    
+                } else {
+                    // Le Bridge n'est pas prêt
+                    console.error("Bridge non disponible. L'objet FlutterPostMessage est indéfini.");
+                    setStatus("🔴 ERREUR CRITIQUE: Bridge de communication non initialisé.");
+                }
+            } catch (e) {
+                // Erreur durant l'exécution (ex: Bridge mal initialisé)
+                console.error("Erreur fatale lors de l'appel Bridge:", e);
+                setStatus(`🔴 ERREUR FATALE (${actionType}): Le Bridge a levé une exception JS.`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setStatus("Prêt à recevoir les commandes (JS OK)");
+        });
+    </script>
+</head>
+<body>
+    <h1>Cockpit de Contrôle IA22</h1>
+
+    <div id="status-display">Statut actuel: <span id="status">Chargement...</span></div>
+    
+    <hr>
+    
+    <div class="controls">
+        <h2>Commandes Moteur</h2>
+        
+        <button onclick="sendCommand('START', {mode: 'High-Res', quality: 90});">
+            ▶️ Démarrer IA (High-Res)
+        </button>
+        
+        <button onclick="sendCommand('STOP');">
+            ⏹️ Arrêter IA
+        </button>
+        
+        <button onclick="sendCommand('CONFIG', {threshold: 0.85, delay: 500});">
+            ⚙️ Appliquer Configuration
+        </button>
+        
+        <p style="margin-top: 20px; font-size: 0.9em;">
+            *Vérifiez les logs natifs pour les détails de l'exécution et des erreurs.
+        </p>
+    </div>
+</body>
+</html>
