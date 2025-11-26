@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LanguageLearner</title>
+  
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="LangLearner">
+  <meta name="theme-color" content="#3b82f6">
+
+  <style>
+    :root { --primary: #3b82f6; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      min,...
+      color: white;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 500px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 2rem; }
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 1rem;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    select, button {
+      padding: 0.8rem 1rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+    select { flex: 1; background: white; color: #333; }
+    .swap { background: rgba(255,255,255,0.3); font-size: 1.5rem; width: 50px; }
+    .translate-btn {
+      background: white;
+      color: var(--primary);
+      font-weight: bold;
+      flex: 2;
+    }
+    .result {
+      background: rgba(255,255,255,0.15);
+      padding: 1.5rem;
+      border-radius: 16px;
+      margin-top: 1rem;
+      min-height: 100px;
+      backdrop-filter: blur(10px);
+      font-size: 1.3rem;
+      line-height: 1.5;
+    }
+    .loading { opacity: 0.6; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LanguageLearner - Traducteur IA</h1>
+
+    <textarea id="input" placeholder="Écris ou colle ton texte ici..."></textarea>
+
+    <div class="controls">
+      <select id="source"></select>
+      <button class="swap" id="swap">↔</button>
+      <select id="target"></select>
+    </div>
+
+    <button class="translate-btn" id="translate">Traduire maintenant</button>
+
+    <div class="result" id="output">La traduction apparaîtra ici...</div>
+  </div>
+
+  <script>
+    const API
