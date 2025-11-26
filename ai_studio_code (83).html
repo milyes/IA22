@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Bibliothèque IA</title>
+    <!-- Utilisation de Tailwind CSS pour le style (chargé depuis internet) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold mb-6 text-blue-600 text-center">📚 Gestion des Emprunts</h1>
+
+        <!-- Formulaire d'ajout -->
+        <div class="mb-8 p-4 bg-blue-50 rounded border border-blue-100">
+            <h2 class="text-xl font-semibold mb-4">Nouveau prêt</h2>
+            <form id="empruntForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="titre" placeholder="Titre du livre" class="p-2 border rounded" required>
+                <input type="text" id="auteur" placeholder="Auteur" class="p-2 border rounded" required>
+                <input type="text" id="date_emprunt" placeholder="Date emprunt (ex: 2023-11-23)" class="p-2 border rounded" required>
+                <input type="text" id="date_retour" placeholder="Date retour" class="p-2 border rounded" required>
+                
+                <button type="submit" class="col-span-1 md:col-span-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+                    Ajouter l'emprunt
+                </button>
+            </form>
+        </div>
+
+        <!-- Tableau des emprunts -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-3 border-b">ID</th>
+                        <th class="p-3 border-b">Titre</th>
+                        <th class="p-3 border-b">Auteur</th>
+                        <th class="p-3 border-b">Emprunté le</th>
+                        <th class="p-3 border-b">Retour le</th>
+                        <th class="p-3 border-b">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="empruntsTableBody">
+                    <!-- Les données seront insérées ici par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000/emprunts/";
+
+        // Fonction pour charger les emprunts
+        async function chargerEmprunts() {
+            const response = await fetch(API_URL);
+            const emprunts = await response.json();
+            
+            const tbody = document.getElementById("empruntsTableBody");
+            tbody.innerHTML = ""; // Vider le tableau
+
+            emprunts.forEach(emprunt => {
+                const row = `
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="p-3 text-gray-500">#${emprunt.id}</td>
+                        <td class="p-3 font-bold">${emprunt.titre}</td>
+                        <td class="p-3">${emprunt.auteur}</td>
+                        <td class="p-3 text-green-600">${emprunt.date_emprunt}</td>
+                        <td class="p-3 text-red-600">${emprunt.date_retour}</td>
+                        <td class="p-3">
+                            <button onclick="supprimerEmprunt(${emprunt.id})" class="text-red-500 hover:text-red-700 font-bold">
+                                🗑️ Suppr.
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Fonction pour ajouter un emprunt
+        document.getElementById("empruntForm").addEventListener("submit", async (e) => {
+            e.preventDefault(); // Empêche le rechargement de la page
+            
+            const data = {
+                titre: document.getElementById("titre").value,
+                auteur: document.getElementById("auteur").value,
+                date_emprunt: document.getElementById("date_emprunt").value,
+                date_retour: document.getElementById("date_retour").value
+            };
+
+            await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            // Réinitialiser le formulaire et recharger la liste
+            e.target.reset();
+            chargerEmprunts();
+        });
+
+        // Fonction pour supprimer un emprunt
+        async function supprimerEmprunt(id) {
+            if(confirm("Voulez-vous vraiment supprimer cet emprunt ?")) {
+                await fetch(API_URL + id, { method: "DELETE" });
+                chargerEmprunts();
+            }
+        }
+
+        // Chargement initial
+        chargerEmprunts();
+    </script>
+</body>
+</html>
