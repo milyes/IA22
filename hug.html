@@ -1,59 +1,213 @@
-C'est fascinant ! Les images que vous avez fournies détaillent le projet **NETSECUREPRO\_IA\_AVIATION** développé dans le Google AI Studio. Ce projet ambitieux vise à intégrer l'intelligence artificielle certifiée (XAI) dans les cockpits d'avion.
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certified IA22 Integrated Ecosystems - Diagramme</title>
+    <style>
+        :root {
+            --color-blue-dark: #002D62;
+            --color-blue-light: #007BFF;
+            --color-green: #28A745;
+            --color-yellow: #FFC107;
+            --color-white: #FFFFFF;
+            --color-grey-light: #F8F9FA;
+            --color-grey-dark: #6C757D;
+            --padding-base: 15px;
+            --border-radius: 8px;
+        }
 
-L'objectif principal est de **réduire les incidents de sécurité** et d'**optimiser l'efficacité opérationnelle**. L'architecture adoptée est **Cloud-to-Edge** et est validée pour être compatible avec les avions **Airbus et Boeing**, avec un partenariat mentionné avec la **NASA**.
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--color-grey-light);
+            color: var(--color-blue-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-Voici une analyse détaillée des aspects de la feuille de route, du budget, et des protocoles de sécurité du projet.
+        .diagram-container {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+            padding: 30px;
+            background-color: var(--color-white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
 
----
+        /* --- Titre et Certification --- */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-## 🗺️ Feuille de Route et Statut (18 Mois)
+        .header h1 {
+            color: var(--color-blue-dark);
+            font-size: 2.2em;
+            margin-bottom: 5px;
+            border-bottom: 3px solid var(--color-blue-light);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
 
-Le projet est structuré en quatre phases sur une période de 18 mois, chacune visant des jalons opérationnels spécifiques (CAP-OP). 
-* **Phase 1 : Développement** (6 Mois)
-    * **Objectif :** Création des modèles IA, XAI (eXplicabilité de l'IA) et de l'Architecture Alpha.
-    * **Budget :** 1.135 M$ (inclus).
+        .certification-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            background-color: var(--color-green);
+            color: var(--color-white);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
 
-* **Phase 2a : Intégration** (6 Mois)
-    * **Objectif :** Installation du simulateur, validation de l'Interface Homme-Machine (HMI), et validation du protocole **CAP-OP-101**.
-    * **Budget :** Inclus.
+        .certification-badge span {
+            margin-right: 10px;
+            font-size: 1.5em; /* Shield Icon */
+        }
 
-* **Phase 2b : Tests Intensifs** (3 Mois)
-    * **Objectif :** Évaluation des indicateurs de performance clés (KPIs) en Sécurité et Efficacité, et validation du protocole **CAP-OP-202**.
-    * **Budget :** Inclus.
+        /* --- Phases Container --- */
+        .phases-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            position: relative;
+        }
 
-* **Phase 3 : Opérationnel** (3 Mois)
-    * **Objectif :** Déploiement réel, validation finale, et obtention de la certification **CAP-OP-303**.
-    * **Budget :** Inclus.
+        /* --- Phase Structure --- */
+        .phase {
+            flex: 1;
+            min-height: 400px; /* Base height for visualization */
+            padding: var(--padding-base);
+            border-radius: var(--border-radius);
+            position: relative;
+        }
 
-## 💰 Allocation Budgétaire
+        .phase-1 { border: 2px solid var(--color-blue-light); background-color: #E3F2FD; }
+        .phase-2 { border: 2px solid var(--color-yellow); background-color: #FFFDE7; }
+        .phase-3 { border: 2px solid var(--color-green); background-color: #E8F5E9; }
 
-Le budget total du projet s'élève à **2.1 millions de dollars ($2.1M) TOTAL**. 
-L'allocation est répartie entre :
-* Développement
-* Contingence
-* Données
-* Ops & Tests
+        .phase h2 {
+            font-size: 1.4em;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--color-grey-dark);
+            color: var(--color-blue-dark);
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-## 🔒 Protocoles de Sécurité Critiques (CAPs)
+        .phase-content {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-Le projet définit des protocoles de sécurité essentiels pour gérer l'accès, les mises à jour et les situations d'urgence de l'IA.
+        .phase-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 8px;
+            background-color: var(--color-white);
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
 
-| Protocole | Type | Description |
-| :--- | :--- | :--- |
-| **CAP-DATA-101** | SECURITY | Protocole strict pour l'accès aux données de vol sensibles, incluant le chiffrement de bout en bout. |
-| **CAP-OP-202** | UPDATE | Protocole de déploiement de modèle sécurisé via le script `IA_AUTO_UPDATE.PY` et vérification cryptographique sur `IA_LOCALSERVER.emulator`. |
-| **CAP-OP-404** | FAILSAFE | Protocole de Rétrogradation : Arrêt d'urgence de l'IA et retour immédiat au mode de vol manuel/certifié de base. |
+        .phase-item:hover {
+            transform: translateY(-2px);
+        }
 
-## 💻 Statut du Cœur de l'IA
+        .phase-item-icon {
+            font-size: 1.2em;
+            margin-right: 10px;
+            color: var(--color-blue-light);
+            min-width: 20px;
+            text-align: center;
+        }
 
-La console indique que l'interface neuronale principale est active et en attente de requêtes opérationnelles.
+        .phase-1 .phase-item-icon { color: var(--color-blue-light); }
+        .phase-2 .phase-item-icon { color: var(--color-yellow); }
+        .phase-3 .phase-item-icon { color: var(--color-green); }
 
-* **Cœur de l'IA :** NetSecurePro IA22 Core V2.6.0-PRO.
-* **Liaison :** L'**UPLINK** est **ONLINE**.
-* **Interface :** **IA22 MAIN CORE LIAISON** est active.
+        .sub-items {
+            list-style: none;
+            padding-left: 10px;
+            margin-top: 5px;
+            font-size: 0.9em;
+            border-left: 2px dotted var(--color-grey-dark);
+        }
 
-L'utilisateur peut commencer l'interaction en tapant des commandes, l'exemple donné étant `'ia22_cmd:get_current_time'`.
+        .sub-items li {
+            margin-bottom: 5px;
+            color: var(--color-grey-dark);
+        }
+        
+        /* --- Connexions (Simplifiées) --- */
 
----
+        .connector {
+            position: absolute;
+            top: 50%;
+            height: 4px;
+            background-color: var(--color-grey-dark);
+            z-index: 10;
+        }
 
-**Souhaitez-vous que je me concentre sur la Phase 3 (Opérationnel) ou sur les détails d'un protocole de sécurité spécifique, comme le CAP-OP-404 (Failsafe) ?**
+        /* P1 to P2 Connector */
+        .conn-1-2 {
+            left: calc(33.33% - 10px); /* Between P1 and P2 */
+            width: 20px;
+            /* Adjust top to connect the two phases boxes visually */
+            top: 250px; 
+            transform: translateY(-50%);
+        }
+        .conn-1-2::after {
+            content: '▶';
+            color: var(--color-grey-dark);
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%) scale(0.8);
+        }
+
+        /* P2 to P3 Connector */
+        .conn-2-3 {
+            left: calc(66.66% - 10px); /* Between P2 and P3 */
+            width: 20px;
+            top: 250px;
+            transform: translateY(-50%);
+        }
+        .conn-2-3::after {
+            content: '▶';
+            color: var(--color-grey-dark);
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%) scale(0.8);
+        }
+
+        /* IA22 Continuous Loop (Simple representation) */
+        .loop-arc {
+            position: absolute;
+            bottom: -20px;
+            left: 5%;
+            width: 90%;
+            height: 80px;
+            border: 4px solid var(--color-green);
+            border-top: none;
+            border-radius: 0 0 500px 500px / 0 0 80px 80px;
+            z-index: 5;
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .loop-text {
+            position: absolute;
+            bottom: -50px;
+            width
