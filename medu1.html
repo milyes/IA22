@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>🧠 Assistant IA Médical Autonome – Mode Offline Sécurisé</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {font-family: 'Segoe UI', Arial, sans-serif;background:#0d1117;color:#c9d1d9;margin:0;padding:20px;}
+    .container {max-width:900px;margin:auto;background:#161b22;padding:30px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.6);border:1px solid #30363d;}
+    h1 {color:#58a6ff;text-align:center;margin-bottom:30px;font-size:2em;text-shadow:0 0 10px #58a6ff44;}
+    #chat {background:#0d1117;border-radius:12px;padding:20px;height:560px;overflow-y:auto;border:1px solid #30363d;margin-bottom:20px;line-height:1.7;box-shadow:inset 0 4px 16px rgba(0,0,0,0.4);}
+    .message {margin:16px 0;padding:14px 20px;border-radius:14px;max-width:90%;word-wrap:break-word;}
+    .user {background:#1f6feb;color:white;align-self:flex-end;margin-left:auto;border-bottom-right-radius:4px;}
+    .assistant {background:#21262d;border:1px solid #30363d;align-self:flex-start;border-bottom-left-radius:4px;}
+    .sources {margin-top:14px;padding:14px;background:#161b22;border-left:5px solid #58a6ff;font-size:0.94em;border-radius:8px;}
+    .sources a {color:#58a6ff;text-decoration:underline;}
+    textarea {width:100%;height:100px;padding:16px;font-size:1.1em;border:1px solid #30363d;border-radius:12px;resize:none;box-sizing:border-box;font-family:inherit;background:#0d1117;color:#c9d1d9;}
+    textarea::placeholder {color:#6e7681;}
+    button {margin-top:16px;background:#1f6feb;color:white;border:none;padding:16px 32px;border-radius:12px;cursor:pointer;float:right;font-size:1.1em;font-weight:bold;transition:0.3s;box-shadow:0 4px 12px rgba(30,111,235,0.4);}
+    button:hover {background:#388bfd;transform:translateY(-2px);box-shadow:0 8px 20px rgba(30,111,235,0.6);}
+    small {color:#8b949e;display:block;margin-top:40px;text-align:center;font-size:0.95em;line-height:1.5;}
+    .header-badge {text-align:center;margin-bottom:20px;font-size:0.9em;color:#8b949e;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-badge">NetSecurePro IA22 • Assistant Médical Autonome v2.0 • Mode Offline Sécurisé</div>
+    <h1>🧠 Assistant IA Médical<br><span style="font-size:0.7em;color:#8b949e;">Avec simulation intelligente PubMed</span></h1>
+
+    <div id="chat">
+      <div class="message assistant">
+        <strong>🤖 IA Médicale Autonome :</strong><br><br>
+        Bonjour ! Je suis votre assistant médical intelligent, conçu pour fonctionner <strong>entièrement hors ligne</strong> et en toute sécurité.<br><br>
+        Je peux analyser :<br>
+        • Symptômes et résultats biologiques<br>
+        • Ordonnances et rapports médicaux<br>
+        • Questions de santé générale<br><br>
+        Mes réponses s’appuient sur des connaissances médicales validées et des références simulées issues de PubMed.<br><br>
+        <strong>Posez votre question en langage naturel.</strong>
+      </div>
+    </div>
+
+    <textarea id="input" placeholder="Ex: Que signifie une CRP à 45 mg/L chez un enfant fiévreux ? • J’ai une glycémie à jeun de 1.30 g/L, est-ce grave ? • Analyse cette ordonnance..."></textarea>
+    <button onclick="envoyer()">Envoyer</button>
+
+    <small>
+      ⚠️ Cet assistant est strictement informatif et éducatif.<br>
+      Il ne remplace en aucun cas l’avis d’un médecin ou d’un professionnel de santé qualifié.<br>
+      En cas de symptôme ou de doute, consultez immédiatement un médecin.
+    </small>
+  </div>
+
+  <script>
+    // Base de connaissances médicales simulées (réponses prudentes, éthiques et sourcées)
+    const connaissances = {
+      "crp": {
+        reponse: `Une CRP (Protéine C Réactive) élevée indique une inflammation dans l'organisme, souvent liée à une infection (bactérienne > virale) ou une autre cause inflammatoire.\n\nChez un enfant fiévreux :\n• < 10 mg/L : inflammation faible ou virale probable\n• 10–50 mg/L : inflammation modérée, infection possible\n• > 50 mg/L : souvent infection bactérienne sérieuse\n\nUne valeur à 45 mg/L suggère une inflammation significative. Une évaluation clinique complète (examen, autres examens) est nécessaire.\n\nJe ne suis pas un médecin : consultez rapidement un pédiatre.`,
+        sources: [
+          {title: "C-reactive protein in febrile children: diagnostic and prognostic value", authors: "Lacour AG et al.", journal: "Arch Pediatr", pubdate: "2023", link: "https://pubmed.ncbi.nlm.nih.gov/36754692/"},
+          {title: "Diagnostic value of CRP in pediatric infections", authors: "Van den Bruel A et al.", journal: "BMJ", pubdate: "2024", link: "https://pubmed.ncbi.nlm.nih.gov/35678901/"}
+        ]
+      },
+      "glycémie|diabète|1.30|130": {
+        reponse: `Une glycémie à jeun de 1,30 g/L (13 mmol/L) est significativement élevée et correspond à un état d'<strong>hyperglycémie</strong>.\n\nInterprétation :\n• Normal : < 1,10 g/L\n• Prédiabète : 1,10–1,25 g/L\n• Diabète : ≥ 1,26 g/L (confirmé à deux reprises)\n\nÀ 1,30 g/L, cela évoque fortement un diabète non contrôlé ou non diagnostiqué.\n\nActions recommandées :\n• Consultation médicale urgente\n• Contrôle glycémique répété\n• Bilan complet (HbA1c, etc.)\n\n⚠️ Ne pas ignorer : risque de complications à long terme.`,
+        sources: [
+          {title: "2025 ADA Standards of Medical Care in Diabetes", authors: "American Diabetes Association", journal: "Diabetes Care", pubdate: "2025", link: "https://pubmed.ncbi.nlm.nih.gov/38123456/"},
+          {title: "Diagnosis and Classification of Diabetes", authors: "ElSayed NA et al.", journal: "Diabetes Care", pubdate: "2025", link: "https://pubmed.ncbi.nlm.nih.gov/38078585/"}
+        ]
+      },
+      "tsh": {
+        reponse: `Une TSH élevée ou basse indique un dysfonctionnement thyroïdien.\n\nExemples :\n• TSH > 4,5 mUI/L : hypothyroïdie possible (souvent subclinique si T4 normale)\n• TSH < 0,4 mUI/L : hyperthyroïdie possible\n\nUne TSH isolée ne suffit pas : il faut doser T4L et T3L, et rechercher des anticorps (anti-TPO).\n\nSymptômes fréquents : fatigue, prise/perte de poids, frilosité, palpitations.\n\nConsultez un endocrinologue pour une interprétation complète.`,
+        sources: [
+          {title: "Thyroid function testing in adults", authors: "Bekkering GE et al.", journal: "Thyroid", pubdate: "2024", link: "https://pubmed.ncbi.nlm.nih.gov/37864403/"}
+        ]
+      },
+      "anémie|fer": {
+        reponse: `L’anémie ferriprive est la plus fréquente.\n\nSignes biologiques :\n• Ferritine basse (< 30 µg/L)\n• Fer sérique bas, transferrine élevée\n• Hémoglobine < 13 g/dL (homme) ou < 12 g/dL (femme)\n\nCauses fréquentes :\n• Pertes sanguines (règles abondantes, saignements digestifs)\n• Carence d’apport\n• Malabsorption\n\nTraitement : supplémentation en fer + recherche de la cause.\n\nConsultation médicale obligatoire.`,
+        sources: [
+          {title: "Iron deficiency anaemia: diagnosis and management", authors: "Camaschella C", journal: "Blood", pubdate: "2024", link: "https://pubmed.ncbi.nlm.nih.gov/36989432/"}
+        ]
+      }
+    };
+
+    function trouverReponse(input) {
+      const lower = input.toLowerCase();
+      for (const [key, data] of Object.entries(connaissances)) {
+        if (key.split('|').some(k => lower.includes(k))) {
+          return data;
+        }
+      }
+      return {
+        reponse: `Je comprends votre question sur : "${input}"\n\nJe peux fournir des informations générales sur de nombreux sujets médicaux (analyses biologiques, symptômes, pathologies courantes).\n\nPour une réponse plus précise, reformulez avec des termes médicaux ou des valeurs chiffrées (ex: "CRP à 45", "glycémie 1.30", "TSH élevée", "anémie").\n\nRappelez-vous : je ne remplace pas un avis médical professionnel.`,
+        sources: []
+      };
+    }
+
+    function afficherSources(sources) {
+      if (sources.length === 0) return '';
+      let html = `<div class="sources"><strong>📚 Références scientifiques simulées (PubMed) :</strong><br><br>`;
+      sources.forEach(src => {
+        html += `• <a href="${src.link}" target="_blank">${src.title}</a><br>
+          <small>${src.authors} — ${src.journal}, ${src.pubdate}</small><br><br>`;
+      });
+      html += `</div>`;
+      return html;
+    }
+
+    function envoyer() {
+      const input = document.getElementById("input").value.trim();
+      if (!input) return;
+
+      const chatBox = document.getElementById("chat");
+
+      // Message utilisateur
+      chatBox.innerHTML += `<div class="message user"><strong>👤 Vous :</strong><br>${input.replace(/\n/g, '<br>')}</div>`;
+      
+      // Réponse IA simulée
+      const resultat = trouverReponse(input);
+      
+      setTimeout(() => {
+        chatBox.innerHTML += `<div class="message assistant">
+          <strong>🤖 IA Médicale Autonome :</strong><br><br>${resultat.reponse.replace(/\n/g, '<br>')}
+          ${afficherSources(resultat.sources)}
+        </div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 800);
+
+      document.getElementById("input").value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Envoi avec Entrée
+    document.getElementById("input").addEventListener("keypress", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        envoyer();
+      }
+    });
+  </script>
+</body>
+</html>
