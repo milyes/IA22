@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Assistant IA Médical Autonome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/dist/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans">
+
+    <nav class="bg-blue-600 p-4 text-white shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">🩺 MedAI <span class="text-blue-200 text-sm font-normal">v1.0</span></h1>
+            <div class="space-x-4">
+                <button class="hover:text-blue-200">Tableau de bord</button>
+                <button class="hover:text-blue-200">Historique</button>
+                <button class="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold">Urgence</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-10 p-6 max-w-4xl bg-white rounded-xl shadow-md min-h-[600px] flex flex-col">
+        <div id="chat-window" class="flex-grow overflow-y-auto mb-4 p-4 border-b">
+            <div class="bg-blue-100 p-3 rounded-lg mb-4 max-w-[80%]">
+                <p class="text-blue-800">Bonjour, je suis votre assistant médical. Comment vous sentez-vous aujourd'hui ?</p>
+            </div>
+        </div>
+
+        <div class="flex gap-2">
+            <input type="text" placeholder="Décrivez vos symptômes..." class="flex-grow p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </main>
+
+</body>
+</html>
