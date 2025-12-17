@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSecurePro IA22 - Assistant Médical</title>
+    <script src="https:                                
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans">
+    <nav class="bg-blue-600 p-4 text-white shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">🧠 NetSecurePro IA22</h1>
+            <div class="space-x-4">
+                <button class="hover:text-blue-200">Tableau de bord</button>
+                <button class="hover:text-blue-200">Historique</button>
+                <button class="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold">Urgence</button>
+            </div>
+        </div>
+    </nav>
+    <main class="container mx-auto mt-10 p-6 max-w-4xl bg-white rounded-xl shadow-md">
+        <div id="chat-window" class="h-[500px] overflow-y-auto mb-4 p-4 border-b">
+            <!-- Messages will be inserted here -->
+        </div>
+        <div class="flex gap-2">
+            <input type="text" id="user-input" placeholder="Décrivez vos symptômes..." 
+                   class="flex-grow p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="send-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // JavaScript code to handle chat functionality
+        document.getElementById('send-btn').addEventListener('click', async () => {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim()) {
+                // Add user message to chat
+                const chatWindow = document.getElementById('chat-window');
+                chatWindow.innerHTML += `<div class="text-right mb-2">
+                    <span class="bg-blue-500 text-white p-2 rounded-lg inline-block">${userInput}</span>
+                </div>`;
+                
+                // Call your API here
+                try {
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: userInput })
+                    });
+                    const data = await response.json();
+                    
+                    // Add AI response to chat
+                    chatWindow.innerHTML += `<div class="text-left mb-2">
+                        <span class="bg-gray-200 p-2 rounded-lg inline-block">${data.response}</span>
+                    </div>`;
+                    
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                    document.getElementById('user-input').value = '';
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
