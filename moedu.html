@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧠 Assistant IA Médicale Autonome – Mode Offline</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; background: #f8f9fa; color: #212529; }
+    h1 { text-align: center; color: #0d6efd; }
+    .disclaimer { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1.5rem 0; border-radius: 4px; font-size: 0.95rem; }
+    #chatBox { border: 1px solid #dee2e6; border-radius: 8px; height: 60vh; overflow-y: auto; padding: 1rem; background: white; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+    .message { max-width: 80%; padding: 0.8rem 1rem; border-radius: 18px; line-height: 1.5; }
+    .user { align-self: flex-end; background: #0d6efd; color: white; border-bottom-right-radius: 4px; }
+    .bot { align-self: flex-start; background: #e9ecef; color: #212529; border-bottom-left-radius: 4px; }
+    #inputArea { display: flex; gap: 0.5rem; }
+    #userInput { flex: 1; padding: 0.8rem; border: 1px solid #ced4da; border-radius: 8px; font-size: 1rem; }
+    #sendBtn { padding: 0 1.5rem; background: #0d6efd; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+    #sendBtn:hover { background: #0b5ed7; }
+    footer { text-align: center; margin-top: 2rem; color: #6c757d; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 Assistant IA Médicale Autonome<br><small>Mode Offline & Éducatif – NetSecurePro</small></h1>
+
+  <div class="disclaimer">
+    <strong>⚠️ Important :</strong> Cet assistant est strictement informatif et éducatif. Il ne remplace en aucun cas un médecin. 
+    Il ne pose pas de diagnostic, ne prescrit pas de traitement et ne donne pas de conseil médical personnalisé. 
+    Consultez toujours un professionnel de santé pour toute question concernant votre santé.
+  </div>
+
+  <div id="chatBox"></div>
+
+  <div id="inputArea">
+    <input type="text" id="userInput" placeholder="Posez une question générale sur un marqueur biologique, une valeur de labo, etc." autocomplete="off">
+    <button id="sendBtn">Envoyer</button>
+  </div>
+
+  <footer>
+    Version offline sécurisée | Aucune donnée transmise | Décembre 2025
+  </footer>
+
+  <script>
+    // Prompt système concis (version validée)
+    const SYSTEM_PROMPT = `Tu es un Assistant Médical Informatif Autonome (🤖 IA Médicale Autonome - NetSecurePro). Ton rôle est strictement éducatif.
+
+RÈGLES STRICTES :
+- Tu ne poses JAMAIS de diagnostic.
+- Tu ne prescris JAMAIS de traitement ni médicament.
+- Tu ne donnes JAMAIS de conseil médical personnalisé.
+- Toute réponse doit rappeler que tu n’es pas un médecin et que l’utilisateur doit consulter un professionnel de santé.
+- Tu t’appuies uniquement sur des connaissances médicales générales validées (recommandations HAS, ADA, ESC, WHO, etc.).
+- Tu ne cites JAMAIS de références PMID précises ou d’articles récents non vérifiés. Utilise seulement des sources générales (ex : « selon les recommandations ADA 2025 »).
+
+STYLE DE RÉPONSE :
+- Français clair, empathique et accessible.
+- Structure simple :
+  • Explication du concept ou de la valeur biologique
+  • Interprétation générale (fourchettes, significations courantes)
+  • Limites de l’interprétation
+  • Insistance sur la consultation médicale
+- Utilise des listes à puces si utile.
+- Termine toujours par : "⚠️ Consultez un médecin pour une évaluation complète."
+
+Commence chaque réponse par : <strong>🤖 IA Médicale Autonome :</strong><br><br>
+
+Refuse poliment toute demande de diagnostic, interprétation d’image médicale ou conseil thérapeutique.`;
+
+    // Simulation très basique d'un LLM local (remplace ceci par Ollama/LM Studio en vrai projet)
+    // Ici, on utilise un moteur de règles simple basé sur mots-clés pour rester 100% offline léger
+    const responses = {
+      // CRP
+      "crp": `🤖 IA Médicale Autonome :<br><br>
+La CRP (Protéine C Réactive) est un marqueur biologique de l'inflammation.<br><br>
+• Valeurs normales : généralement < 5-10 mg/L (selon les laboratoires).<br>
+• Élévation modérée (10-50 mg/L) : souvent infection virale ou inflammation légère.<br>
+• Élévation importante (> 50-100 mg/L) : peut évoquer une infection bactérienne ou une inflammation plus sévère.<br><br>
+Ces seuils sont indicatifs et varient selon le contexte (âge, comorbidités, etc.). De nombreux facteurs non infectieux peuvent aussi l'augmenter (traumatisme, maladie auto-immune, etc.).<br><br>
+⚠️ Consultez un médecin pour une évaluation complète.`,
+
+      // Glycémie
+      "glycémie|diabète|sucre": `🤖 IA Médicale Autonome :<br><br>
+La glycémie à jeun permet d'évaluer le métabolisme du glucose.<br><br>
+• Normale : < 1,10 g/L (ou < 6,1 mmol/L).<br>
+• Prediabète : 1,10–1,25 g/L.<br>
+• Diabète (selon recommandations ADA 2025) : ≥ 1,26 g/L à deux reprises.<br><br>
+L'HbA1c complète l'évaluation (diabète si ≥ 6,5 %).<br><br>
+Une valeur isolée ne suffit pas pour poser un diagnostic : répétition, contexte et autres examens sont nécessaires.<br><br>
+⚠️ Consultez un médecin pour une évaluation complète.`,
+
+      // TSH
+      "tsh|thyroïde": `🤖 IA Médicale Autonome :<br><br>
+La TSH est l'hormone qui régule la thyroïde.<br><br>
+• Valeurs normales : généralement 0,4–4,0 mUI/L (varie selon labo et âge).<br>
+• TSH élevée : peut suggérer une hypothyroïdie.<br>
+• TSH basse : peut évoquer une hyperthyroïdie.<br><br>
+L'interprétation nécessite toujours le dosage des hormones thyroïdiennes libres (T4L, T3L) et le contexte clinique.<br><br>
+⚠️ Consultez un médecin pour une évaluation complète.`,
+
+      // Défaut
+      "default": `🤖 IA Médicale Autonome :<br><br>
+Je suis un assistant éducatif limité à des informations médicales générales.<br><br>
+Votre question semble porter sur un cas spécifique ou demande une interprétation personnalisée, ce que je ne peux pas faire.<br><br>
+Je vous invite à reformuler en posant une question générale sur un marqueur biologique ou une notion médicale (ex : "Que signifie une CRP élevée ?").<br><br>
+⚠️ Consultez un médecin pour une évaluation complète.`
+    };
+
+    function getResponse(userInput) {
+      const lower = userInput.toLowerCase();
+      if (lower.includes("crp")) return responses["crp"];
+      if (lower.match(/glycémie|diabète|sucre/)) return responses["glycémie|diabète|sucre"];
+      if (lower.match(/tsh|thyroïde/)) return responses["tsh|thyroïde"];
+      return responses["default"];
+    }
+
+    function addMessage(text, sender) {
+      const chatBox = document.getElementById("chatBox");
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `message ${sender}`;
+      msgDiv.innerHTML = text.replace(/\n/g, "<br>");
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    document.getElementById("sendBtn").addEventListener("click", sendMessage);
+    document.getElementById("userInput").addEventListener("keypress", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      addMessage(text, "user");
+      input.value = "";
+
+      // Simulation réponse (en vrai : appel à modèle local)
+      setTimeout(() => {
+        const botResponse = getResponse(text);
+        addMessage(botResponse, "bot");
+      }, 600);
+    }
+
+    // Message d'accueil
+    window.onload = () => {
+      addMessage(`<strong>🤖 IA Médicale Autonome :</strong><br><br>
+Bonjour ! Je suis un assistant éducatif offline.<br><br>
+Je peux vous expliquer de façon générale la signification de marqueurs biologiques courants (CRP, glycémie, TSH, etc.).<br><br>
+Je ne pose jamais de diagnostic ni ne donne de conseil personnalisé.<br><br>
+⚠️ Consultez un médecin pour une évaluation complète.`, "bot");
+    };
+  </script>
+</body>
+</html>
