@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA22 COCKPIT // NETSECUREPRO</title>
+    <style>
+        :root {
+            --neon-blue: #00ffe7;
+            --neon-pink: #ff00aa;
+            --bg-dark: #050505;
+            --panel-bg: rgba(0, 255, 231, 0.03);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--neon-blue);
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            border-left: 5px solid var(--neon-pink);
+        }
+
+        .header {
+            border-bottom: 2px solid var(--neon-pink);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .module {
+            border: 1px solid #333;
+            background: var(--panel-bg);
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 255, 231, 0.1);
+            position: relative;
+        }
+
+        .module h2 {
+            color: var(--neon-pink);
+            font-size: 1.2rem;
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+
+        .status-ok { color: #00ff00; font-weight: bold; }
+        .status-warn { color: #ffff00; font-weight: bold; }
+        .status-off { color: #ff0000; font-weight: bold; }
+
+        .log-terminal {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            height: 150px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            border: 1px solid #222;
+        }
+
+        .btn-uchat {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--neon-pink);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-uchat:hover {
+            background: #d4008d;
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🛰️ IA22 MAINFRAME // V4.0</h1>
+        <p>OPÉRATEUR : <strong>M. I. ZOUBIROU</strong> | SIGNATURE : ZOUBIROU-IA-2025</p>
+        <p>RESEAU : NETSECUREPRO | CONTACT : 73182eb056@inv.easydmarc.com</p>
+    </div>
+
+    <div class="grid">
+        <div class="module">
+            <h2>🧠 CORE INTELLIGENCE</h2>
+            <ul>
+                <li>S.A.R.A. Assistant : <span class="status-ok">ONLINE</span></li>
+                <li>IA22 Logic : <span class="status-ok">ACTIF</span></li>
+                <li>Scripts Sara : <span class="status-ok">SYNCHRONISÉ</span></li>
+            </ul>
+            <a href="https://milyes.github.io/M/uchat.html" target="_blank" class="btn-uchat">OUVRIR UNIVERSAL CHAT</a>
+        </div>
+
+        <div class="module">
+            <h2>🏙️ SMART CITY OPS</h2>
+            <p>Énergie : <span class="status-ok">OPTIMISÉ (-12%)</span></p>
+            <p>Transport : <span class="status-warn">RECALIBRATION</span></p>
+            <p>Sécurité : <span class="status-ok">PROTECTION ACTIVE</span></p>
+        </div>
+
+        <div class="module">
+            <h2>📊 MONITORING (ISOLÉ)</h2>
+            <p>EMF Field : <strong>0.343 µT</strong></p>
+            <p>Camera Stream : <strong>99.9%</strong></p>
+            <p>Capteurs Mobiles : <span class="status-off">DÉSACTIVÉS</span></p>
+            <p>Architecture : AUTO-DETECT (Debian/Termux)</p>
+        </div>
+    </div>
+
+    <div class="module" style="margin-top: 20px;">
+        <h2>📜 SYSTÈME LOGS (IA22_CORE)</h2>
+        <div class="log-terminal" id="terminal">
+            [12:00:01] INITIALISATION DU COCKPIT...<br>
+            [12:00:02] NETSECUREPRO PARE-FEU : OK.<br>
+            [12:00:03] S.A.R.A. : Bonjour Mohammed, système prêt.<br>
+            [12:00:04] ISOLATION CAPTEURS MATÉRIELS : RÉUSSIE.<br>
+            [12:00:05] SYNC uCHAT : https://milyes.github.io/M/uchat.html
+        </div>
+    </div>
+
+    <div class="footer">
+        PROJET IA22 © 2025 - NETSECUREPRO - TOUS DROITS RÉSERVÉS
+    </div>
+
+    <script>
+        // Simulation de logs dynamiques
+        const terminal = document.getElementById('terminal');
+        const logs = [
+            "Analyse du secteur Énergie terminée.",
+            "Rapport envoyé à EasyDMARC.",
+            "Tunnel stable : AES-2048.",
+            "Optimisation IA22 en cours..."
+        ];
+
+        setInterval(() => {
+            const time = new Date().toLocaleTimeString();
+            const randomLog = logs[Math.floor(Math.random() * logs.length)];
+            terminal.innerHTML += `<br>[${time}] ${randomLog}`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }, 5000);
+    </script>
+</body>
+</html>
