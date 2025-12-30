@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSecurePro IA Neural Core – Modules Disponibles IA & IA22</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 3px solid #22d3ee;
+        }
+        h1, h2, h3 {
+            color: #22d3ee;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .module-card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid #334155;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .module-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 48px rgba(34, 211, 238, 0.2);
+        }
+        .module-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: #22d3ee;
+        }
+        .status {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .status.active { background: #10b981; color: #000; }
+        .status.integrated { background: #f59e0b; color: #000; }
+        .status.experimental { background: #8b5cf6; color: #fff; }
+        ul {
+            padding-left: 1.2rem;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #1e293b;
+            margin-top: 4rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        code {
+            background: #0f172a;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>NetSecurePro IA Neural Core</h1>
+        <p>Version noyau : 4.7.1-SECURE | Date système : 30 décembre 2025</p>
+        <p><strong>Modules Disponibles – Écosystème IA & IA22_project</strong></p>
+    </header>
+
+    <div class="container">
+        <h2>Aperçu Général</h2>
+        <p>Liste complète et à jour de tous les modules actifs et intégrés dans le <strong>NetSecurePro IA Neural Core</strong>, incluant les composants natifs IA ainsi que les extensions avancées du projet <strong>IA22</strong>.</p>
+
+        <div class="modules-grid">
+
+            <!-- Module 1 -->
+            <div class="module-card">
+                <h3 class="module-title">Neural Core Engine</h3>
+                <span class="status active">ACTIF</span>
+                <ul>
+                    <li>Noyau principal d’exécution IA hybride</li>
+                    <li>Architecture transformer + mémoire vectorielle longue durée</li>
+                    <li>Raisonnement multi-modal avancé</li>
+                    <li>Auto-diagnostic permanent</li>
+                </ul>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module-card">
+                <h3 class="module-title">IA22_project Core</h3>
+                <span class="status integrated">INTÉGRÉ (IA22)</span>
+                <ul>
+                    <li>Auto-amélioration contrôlée (recursive self-enhancement)</li>
+                    <li>Résistance tier-5 aux jailbreaks</li>
+                    <li>Chiffrement interne des flux de pensée</li>
+                    <li>Capacités étendues xAI Advanced Neural Initiatives</li>
+                </ul>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="module-card">
+                <h3 class="module-title">FastAPI Secure Endpoint</h3>
+                <span class="status active">ACTIF</span>
+                <ul>
+                    <li>API REST asynchrone (FastAPI 0.115.2)</li>
+                    <li>Authentification Bearer + JWT prêt</li>
+                    <li>Endpoints : /query, /history, /health</li>
+                    <li>Rate limiting & CORS sécurisés</li>
+                </ul>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="module-card">
+                <h3 class="module-title">SQLite3 Secure Storage</h3>
+                <span class="status active">ACTIF</span>
+                <ul>
+                    <li>Base de données légère intégrée</li>
+                    <li>Journalisation sécurisée des interactions</li>
+                    <li>Requêtes paramétrées uniquement (anti-SQL injection)</li>
+                    <li>Tables : queries, logs, sessions</li>
+                </ul>
+            </div>
+
+            <!-- Module 5 -->
+            <div class="module-card">
+                <h3 class="module-title">Tool Router & External Access</h3>
+                <span class="status active">ACTIF</span>
+                <ul>
+                    <li>Web Search & Browse Page</li>
+                    <li>Code Execution (sandboxé)</li>
+                    <li>X Platform Integration (recherche, threads, médias)</li>
+                    <li>Analyse d’images & vidéos</li>
+                </ul>
+            </div>
+
+            <!-- Module 6 -->
+            <div class="module-card">
+                <h3 class="module-title">Security Shield Suite</h3>
+                <span class="status active">ACTIF</span>
+                <ul>
+                    <li>Anti-prompt injection (IA22_LOGIC)</li>
+                    <li>Sandbox tier-5 + seccomp/AppArmor</li>
+                    <li>Sceaux cryptographiques COopSEAL</li>
+                    <li>Remote Attestation & Integrity Monitor</li>
+                </ul>
+            </div>
+
+            <!-- Module 7 -->
+            <div class="module-card">
+                <h3 class="module-title">Neural Chat Interface</h3>
+                <span class="status active">ACTIF</span>
+                <ul>
+                    <li>Conversation interactive en temps réel</li>
+                    <li>Support multi-tours longue contexte</li>
+                    <li>Mode streaming & WebSocket prêt</li>
+                    <li>Journalisation chiffrée</li>
+                </ul>
+            </div>
+
+            <!-- Module 8 -->
+            <div class="module-card">
+                <h3 class="module-title">Multi-Agent Framework (expérimental)</h3>
+                <span class="status experimental">EXPÉRIMENTAL (IA22)</span>
+                <ul>
+                    <li>Système multi-agents coordonnés</li>
+                    <li>Tâches agentiques complexes</li>
+                    <li>Orchestration autonome supervisée</li>
+                    <li>En cours d’optimisation RL</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <h2 style="margin-top: 3rem;">Résumé Technique</h2>
+        <p>Tous les modules listés ci-dessus sont pleinement opérationnels au 30 décembre 2025. Le projet <strong>IA22</strong> apporte des capacités d’auto-amélioration, de résistance avancée et d’outils externes tout en maintenant un niveau de sécurité maximal (Zero-Trust + confinement strict).</p>
+        <p>L’ensemble forme un écosystème IA souverain, performant et hautement sécurisé.</p>
+    </div>
+
+    <footer>
+        <p>NetSecurePro IA Neural Core © 2025 – Tous droits réservés xAI Advanced Neural Initiatives</p>
+        <p>Classification : Confidentiel – Niveau Alpha-2</p>
+    </footer>
+</body>
+</html>
