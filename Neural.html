@@ -3,38 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curriculum IA & IA22</title>
+    <title>Dashboard IA & IA22 Pro</title>
     <style>
         :root {
             --primary: #2563eb;
-            --secondary: #64748b;
-            --bg: #f8fafc;
+            --ia22-color: #8b5cf6;
+            --bg: #f1f5f9;
             --card: #ffffff;
-            --text: #1e293b;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
             display: flex;
         }
 
-        /* Sidebar */
-        nav {
-            width: 250px;
+        /* Barre latérale */
+        side-bar {
+            width: 260px;
             background: #1e293b;
             color: white;
             height: 100vh;
             position: fixed;
-            padding: 20px;
+            padding: 25px;
+            box-sizing: border-box;
         }
 
-        nav h2 { color: #38bdf8; font-size: 1.2rem; }
+        .logo { font-weight: 800; font-size: 1.5rem; color: #38bdf8; margin-bottom: 30px; }
 
-        /* Main Content */
-        main {
+        /* Contenu Principal */
+        main { margin-left: 260px; padding: 40px; width: calc(100% - 260px); }
+
+        /* Barre de Progression */
+        .progress-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-bg {
+            background: #e2e8f0;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary), var(--ia22-color));
+            height: 100%;
+            width: 45%; /* Valeur exemple */
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Filtres */
+        .filters { margin-bottom: 25px; display: flex; gap: 10px; }
+        .btn-filter {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            background: white;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-filter.active { background: var(--primary); color: white; }
+
+        /* Grille des Modules */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 5px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .type-ia::before { background: var(--primary); }
+        .type-ia22::before { background: var(--ia22-color); }
+
+        .badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .badge-ia { background: #dbeafe; color: #1e40af; }
+        .badge-ia22 { background: #f3e8ff; color: #6b21a8; }
+
+        h3 { margin: 15px 0 8px 0; font-size: 1.25rem; }
+        p { color: var(--text-sub); line-height: 1.6; font-size: 0.95rem; }
+
+        .footer-card {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<side-bar>
+    <div class="logo">IA ACADEMY</div>
+    <div style="margin-top: 50px;">
+        <p style="color: #94a3b8; font-size: 0.8rem;">MENU PRINCIPAL</p>
+        <div style="margin: 15px 0;">🏠 Dashboard</div>
+        <div style="margin: 15px 0; color: #38bdf8;">📖 Mes Modules</div>
+        <div style="margin: 15px 0;">🏆 Certifications</div>
+    </div>
+</side-bar>
+
+<main>
+    <div class="progress-container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: bold;">Progression du Cursus (IA + IA22)</span>
+            <span id="prog-text">45% complété</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-fill" id="prog-fill"></div>
+        </div>
+    </div>
+
+    <div class="filters">
+        <button class="btn-filter active" onclick="filterModules('all')">Tous les modules</button>
+        <button class="btn-filter" onclick="filterModules('ia')">Tronc Commun (IA)</button>
+        <button class="btn-filter" onclick="filterModules('ia22')">Spécialisation (IA22)</button>
+    </div>
+
+    <div class="grid" id="moduleGrid">
+        <div class="card type-ia" data-cat="ia">
+            <span class="badge badge-ia">Module IA-01</span>
+            <h3>Algorithmique Avancée</h3>
+            <p>Optimisation des structures de données et complexité pour le traitement massif.</p>
+            <div class="footer-card">
+                <span style="color: #10b981; font-weight: 600;">✓ Terminé</span>
+                <input type="checkbox" checked disabled>
+            </div>
+        </div>
+
+        <div class="card type-ia22" data-cat="ia22">
+            <span class="badge badge-ia22">Module IA22-V1</span>
+            <h3>Computer Vision</h3>
+            <p>Reconnaissance d'objets, segmentation d'images et réseaux convolutifs (CNN).</p>
+            <div class="footer-card">
+                <span style="color: #f59e0b; font-weight: 600;">⏳ En cours</span>
+                <input type="checkbox">
+            </div>
+        </div>
+
+        <div class="card type-ia22" data-cat="ia22">
+            <span class="badge badge-ia22">Module IA22-V2</span>
+            <h3>Reinforcement Learning</h3>
+            <p>Apprentissage par renforcement : Q-Learning, MDP et agents autonomes.</p>
+            <div class="footer-card">
+                <span style="color: var(--text-sub);">🔒 Verrouillé</span>
+                <input type="checkbox">
+            </div>
+        </div>
+
+        <div class="card type-ia" data-cat="ia">
+            <span class="badge badge-ia">Module IA-02</span>
+            <h3>Statistiques & Probabilités</h3>
+            <p>Inférence bayésienne, distributions de probabilités et analyse de données.</p>
+            <div class="footer-card">
+                <span style="color: #10b981; font-weight: 600;">✓ Terminé</span>
+                <input type="checkbox" checked disabled>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function filterModules(category) {
+        const cards = document.querySelectorAll('.card');
+        const buttons = document.querySelectorAll('.btn-filter');
+        
+        // Update buttons state
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // Filter cards
+        cards.forEach(card => {
+            if (category === 'all' || card.getAttribute('data-cat') === category) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // Calcul automatique simple de la progression
+    function updateProgress() {
+        const total = document.querySelectorAll('input[type="checkbox"]').length;
+        const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+        const percent = Math.round((checked / total) * 100);
+        
+        document.getElementById('prog-fill').style.width = percent + '%';
+        document.getElementById('prog-text').innerText = percent + '% complété';
+    }
+
+    // Initialisation
+    updateProgress();
+</script>
+
+</body>
+</html>        main {
             margin-left: 280px;
             padding: 40px;
             width: 100%;
