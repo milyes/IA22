@@ -3,38 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NetSecurePro IA Neural Core – Modules Disponibles IA & IA22</title>
+    <title>Curriculum IA & IA22</title>
     <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
-            padding: 0;
-            line-height: 1.6;
+            display: flex;
         }
-        header {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 3px solid #22d3ee;
-        }
-        h1, h2, h3 {
-            color: #22d3ee;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        .module-card {
+
+        /* Sidebar */
+        nav {
+            width: 250px;
             background: #1e293b;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding: 20px;
+        }
+
+        nav h2 { color: #38bdf8; font-size: 1.2rem; }
+
+        /* Main Content */
+        main {
+            margin-left: 280px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Module Cards */
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            border-left: 5px solid var(--primary);
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .tag {
+            font-size: 0.75rem;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .ia22 { border-left-color: #8b5cf6; }
+        .ia22 .tag { background: #f3e8ff; color: #6b21a8; }
+
+        h3 { margin: 15px 0 10px 0; }
+        p { color: var(--secondary); font-size: 0.9rem; line-height: 1.5; }
+
+        .status {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2>Dashboard IA</h2>
+    <p style="font-size: 0.8rem; opacity: 0.7;">Promotion 2024-2025</p>
+    <hr style="opacity: 0.2; margin: 20px 0;">
+    <div style="cursor: pointer; margin-bottom: 10px;">📊 Vue d'ensemble</div>
+    <div style="cursor: pointer; margin-bottom: 10px;">📚 Mes Modules</div>
+    <div style="cursor: pointer; margin-bottom: 10px;">📝 Examens</div>
+</nav>
+
+<main>
+    <div class="header">
+        <h1>Modules IA & IA22</h1>
+        <p>Explorez les unités d'enseignement de l'intelligence artificielle fondamentale et avancée.</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <span class="tag">Module IA-01</span>
+            <h3>Fondamentaux de l'IA</h3>
+            <p>Logique propositionnelle, agents intelligents et résolution de problèmes par la recherche.</p>
+            <div class="status">✅ Complété</div>
+        </div>
+
+        <div class="card">
+            <span class="tag">Module IA-02</span>
+            <h3>Machine Learning</h3>
+            <p>Régression linéaire, arbres de décision et introduction aux réseaux de neurones.</p>
+            <div class="status">🔵 En cours</div>
+        </div>
+
+        <div class="card ia22">
+            <span class="tag">Module IA22-01</span>
+            <h3>Deep Learning Avancé</h3>
+            <p>Architectures CNN, RNN et mécanismes d'attention (Transformers).</p>
+            <div class="status">🕒 Prochainement</div>
+        </div>
+
+        <div class="card ia22">
+            <span class="tag">Module IA22-02</span>
+            <h3>NLP & LLM</h3>
+            <p>Traitement du langage naturel, Fine-tuning de modèles et Prompt Engineering.</p>
+            <div class="status">🕒 Prochainement</div>
+        </div>
+
+        <div class="card ia22">
+            <span class="tag">Module IA22-03</span>
+            <h3>IA Éthique & Gouvernance</h3>
+            <p>Biais algorithmiques, RGPD et sécurité des systèmes autonomes.</p>
+            <div class="status">🕒 Prochainement</div>
+        </div>
+
+        <div class="card">
+            <span class="tag">Module IA-03</span>
+            <h3>Mathématiques pour l'IA</h3>
+            <p>Algèbre linéaire, calcul matriciel et probabilités bayésiennes.</p>
+            <div class="status">✅ Complété</div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>            background: #1e293b;
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
