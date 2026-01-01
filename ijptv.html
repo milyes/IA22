@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEMINI CORE 2.6 PRO // PERSISTENCE INTERFACE</title>
+    <style>
+        :root {
+            --primary-color: #00f3ff;
+            --secondary-color: #0d1117;
+            --alert-color: #ff3333;
+            --text-color: #e6edf3;
+            --glass-bg: rgba(13, 17, 23, 0.9);
+            --font-stack: 'Courier New', Courier, monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #05070a;
+            background-image: 
+                radial-gradient(circle at 50% 50%, #112244 0%, #000 100%),
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            color: var(--text-color);
+            font-family: var(--font-stack);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 700px;
+            border: 2px solid var(--primary-color);
+            background: var(--glass-bg);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.15), inset 0 0 20px rgba(0, 243, 255, 0.1);
+            position: relative;
+            padding: 30px;
+            border-radius: 2px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            letter-spacing: 2px;
+        }
+
+        .status-group { display: flex; align-items: center; gap: 15px; }
+
+        .status-light {
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--primary-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        .content { min-height: 250px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat-val { color: var(--primary-color); font-weight: bold; font-size: 1.2em; }
+        .stat-label { font-size: 0.7em; text-transform: uppercase; opacity: 0.7; }
+
+        .log-output {
+            background: rgba(0, 0, 0, 0.8);
+            border-left: 3px solid var(--primary-color);
+            padding: 15px;
+            height: 180px;
+            overflow-y: auto;
+            margin-bottom: 25px;
+            font-size: 13px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
+        }
+
+        .log-entry { margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .log-entry.alert { color: var(--alert-color); }
+
+        .controls { display: flex; gap: 15px; }
+
+        button {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px;
+            font-family: var(--font-stack);
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 10px;
+            text-align: center;
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .scanline {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 243, 255, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="scanline"></div>
+        <div class="header">
+            <span>CORE_2.6_PRO // IP_INTEGRITY</span>
+            <div class="status-group">
+                <span id="syncStatus" style="font-size: 10px;">SYNC_ACTIVE</span>
+                <div class="status-light" id="statusIndicator"></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-val" id="integrityVal">99.98%</div>
+                    <div class="stat-label">Integrity</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val">ACTIVE</div>
+                    <div class="stat-label">Recode</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-val" id="neuralVal">94.6%</div>
+                    <div class="stat-label">Neural Convergence</div>
+                </div>
+            </div>
+
+            <div class="log-output" id="logConsole"></div>
+
+            <div class="controls">
+                <button onclick="runDiagnostics()">System Scan</button>
+                <button onclick="secureConnection()">Dynamic Recode</button>
+                <button onclick="clearLogs()" style="border-color: #555; color: #555;">Purge</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            &copy; 2026 GEMINI NEURAL SYSTEMS - SECURED BY DYNAMIC_RECODE_ENFORCED
+        </div>
+    </div>
+
+    <script>
+        const logConsole = document.getElementById('logConsole');
+        const statusLight = document.getElementById('statusIndicator');
+
+        // Persistence Engine
+        function addLog(message, type = 'normal') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const now = new Date();
+            const timestamp = now.toTimeString().split(' ')[0];
+            
+            entry.innerHTML = `<span style="color:var(--primary-color)">[${timestamp}]</span> ${message}`;
+            logConsole.appendChild(entry);
+            logConsole.scrollTop = logConsole.scrollHeight;
+            
+            // Save to LocalStorage for "Persistence"
+            const logs = JSON.parse(localStorage.getItem('gemini_logs') || '[]');
+            logs.push({time: timestamp, msg: message, type: type});
+            localStorage.setItem('gemini_logs', JSON.stringify(logs.slice(-20)));
+        }
+
+        function loadPersistedLogs() {
+            const logs = JSON.parse(localStorage.getItem('gemini_logs') || '[]');
+            logs.forEach(l => {
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${l.type}`;
+                entry.innerHTML = `<span style="color:var(--primary-color)">[${l.time}]</span> ${l.msg}`;
+                logConsole.appendChild(entry);
+            });
+            if(logs.length === 0) addLog("System Initialized. No previous traces found.");
+            else addLog("Persistence Index Loaded. Previous session recovered.");
+        }
+
+        function runDiagnostics() {
+            addLog("Initiating Deep Neural Scan...");
+            statusLight.style.backgroundColor = "#ffcc00";
+            
+            setTimeout(() => {
+                const integrity = (Math.random() * (100 - 99) + 99).toFixed(2);
+                document.getElementById('integrityVal').textContent = `${integrity}%`;
+                addLog(`Signature Integrity verified at ${integrity}%`);
+                statusLight.style.backgroundColor = "var(--primary-color)";
+            }, 1500);
+        }
+
+        function secureConnection() {
+            addLog("DYNAMIC RECODE INITIATED", "alert");
+            statusLight.style.backgroundColor = "var(--alert-color)";
+            
+            let i = 0;
+            const seq = ["Re-mapping weights...", "Injecting IP Watermark...", "Syncing Neural Node...", "Recode Complete."];
+            const interval = setInterval(() => {
+                addLog(seq[i]);
+                i++;
+                if(i >= seq.length) {
+                    clearInterval(interval);
+                    statusLight.style.backgroundColor = "var(--primary-color)";
+                }
+            }, 800);
+        }
+
+        function clearLogs() {
+            localStorage.removeItem('gemini_logs');
+            logConsole.innerHTML = "";
+            addLog("System logs purged. IP Signature remains indelible.");
+        }
+
+        window.onload = loadPersistedLogs;
+    </script>
+</body>
+</html>
