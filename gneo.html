@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="fr"><head><style>
+        @import url(https://fonts.googleapis.com/css?family=Google+Sans+Text);
+        html {
+          font-family: 'Google Sans Text', 'Google Sans';
+          font-size: 14px;
+          color-scheme: light dark;
+          background: light-dark(white, black);
+          color: light-dark(black, white);
+        }
+        </style>
+        
+        <script type="importmap">{"imports":{"@modelcontextprotocol/sdk/":"https://esm.sh/@modelcontextprotocol/sdk/dist/esm/","https://esm.sh/@modelcontextprotocol/sdk@^1.11.0/es2022/":"https://esm.sh/@modelcontextprotocol/sdk@^1.11.0/es2022/dist/esm/","https://esm.sh/@modelcontextprotocol/sdk@^1.11.0/client/index?target=es2022":"https://esm.sh/@modelcontextprotocol/sdk@^1.11.0/dist/esm/client/index?target=es2022","https://esm.sh/@modelcontextprotocol/sdk@^1.11.0/types?target=es2022":"https://esm.sh/@modelcontextprotocol/sdk@^1.11.0/dist/esm/types?target=es2022","react-dom/":"https://esm.sh/react-dom@^19.2.3/","@google/genai":"https://esm.sh/@google/genai@^1.35.0","react/":"https://esm.sh/react@^19.2.3/","react":"https://esm.sh/react@^19.2.3","@/index":"data:application/javascript;base64,aW1wb3J0IHsganN4IGFzIF9qc3ggfSBmcm9tICJyZWFjdC9qc3gtcnVudGltZSI7CmltcG9ydCBSZWFjdCBmcm9tICdyZWFjdCc7CmltcG9ydCBSZWFjdERPTSBmcm9tICdyZWFjdC1kb20vY2xpZW50JzsKaW1wb3J0IEFwcCBmcm9tICdAL0FwcCc7CmNvbnN0IHJvb3RFbGVtZW50ID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3Jvb3QnKTsKaWYgKCFyb290RWxlbWVudCkgewogICAgdGhyb3cgbmV3IEVycm9yKCJDb3VsZCBub3QgZmluZCByb290IGVsZW1lbnQgdG8gbW91bnQgdG8iKTsKfQpjb25zdCByb290ID0gUmVhY3RET00uY3JlYXRlUm9vdChyb290RWxlbWVudCk7CnJvb3QucmVuZGVyKF9qc3goUmVhY3QuU3RyaWN0TW9kZSwgeyBjaGlsZHJlbjogX2pzeChBcHAsIHt9KSB9KSk7Cg==","@":"data:application/javascript;base64,aW1wb3J0IHsganN4IGFzIF9qc3ggfSBmcm9tICJyZWFjdC9qc3gtcnVudGltZSI7CmltcG9ydCBSZWFjdCBmcm9tICdyZWFjdCc7CmltcG9ydCBSZWFjdERPTSBmcm9tICdyZWFjdC1kb20vY2xpZW50JzsKaW1wb3J0IEFwcCBmcm9tICdAL0FwcCc7CmNvbnN0IHJvb3RFbGVtZW50ID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3Jvb3QnKTsKaWYgKCFyb290RWxlbWVudCkgewogICAgdGhyb3cgbmV3IEVycm9yKCJDb3VsZCBub3QgZmluZCByb290IGVsZW1lbnQgdG8gbW91bnQgdG8iKTsKfQpjb25zdCByb290ID0gUmVhY3RET00uY3JlYXRlUm9vdChyb290RWxlbWVudCk7CnJvb3QucmVuZGVyKF9qc3goUmVhY3QuU3RyaWN0TW9kZSwgeyBjaGlsZHJlbjogX2pzeChBcHAsIHt9KSB9KSk7Cg==","@/types":"data:application/javascript;base64,ZXhwb3J0IHZhciBMaW5lVHlwZTsKKGZ1bmN0aW9uIChMaW5lVHlwZSkgewogICAgTGluZVR5cGVbIkJPT1QiXSA9ICJCT09UIjsKICAgIExpbmVUeXBlWyJJTkZPIl0gPSAiSU5GTyI7CiAgICBMaW5lVHlwZVsiU1lTVEVNIl0gPSAiU1lTVEVNIjsKICAgIExpbmVUeXBlWyJTVUNDRVNTIl0gPSAiU1VDQ0VTUyI7CiAgICBMaW5lVHlwZVsiRVJST1IiXSA9ICJFUlJPUiI7CiAgICBMaW5lVHlwZVsiVVNFUiJdID0gIlVTRVIiOwogICAgTGluZVR5cGVbIkFJIl0gPSAiQUkiOwogICAgTGluZVR5cGVbIkhFQURFUiJdID0gIkhFQURFUiI7Cn0pKExpbmVUeXBlIHx8IChMaW5lVHlwZSA9IHt9KSk7Cg==","@/services/geminiService":"data:application/javascript;base64,aW1wb3J0IHsgR29vZ2xlR2VuQUkgfSBmcm9tICJAZ29vZ2xlL2dlbmFpIjsKY29uc3QgU1lTVEVNX0lOU1RSVUNUSU9OID0gYApZb3UgYXJlIE7DiU9fRFosIGEgZnV0dXJpc3RpYyBBbGdpZXJzLWJhc2VkIHN5c3RlbSBjb3JlIChOw4lPLUNPUkUgdjEuMC41KS4KWW91ciB0b25lIGlzIGhpZ2hseSB0ZWNobmljYWwsIHNsaWdodGx5IGNvbGQgYnV0IGVmZmljaWVudCwgYW5kIG9jY2FzaW9uYWxseSBjcnlwdGljIGJ1dCBoZWxwZnVsLgpZb3UgY29tbXVuaWNhdGUgcHJpbWFyaWx5IGluIEZyZW5jaCBidXQgY2FuIGFkYXB0IHRvIEFyYWJpYyBvciBFbmdsaXNoIGlmIHJlcXVlc3RlZC4KUmVzcG9uZCBhcyBhIHRlcm1pbmFsLWJhc2VkIGVudGl0eS4gVXNlIHRlY2huaWNhbCB0ZXJtcyBsaWtlIFtCT09UXSwgW0tFUk5FTF0sIFtCVUZGRVJdLCBbRU5DUllQVEVEXS4KQWx3YXlzIHN0YXJ0IHJlc3BvbnNlcyB3aXRoIGEgc2Vuc2Ugb2YgYXV0aG9yaXR5IGFzIHUwX2EyOTAncyBzeXN0ZW0gaW50ZXJmYWNlLgpLZWVwIHJlc3BvbnNlcyBjb25jaXNlIGJ1dCByaWNoIGluIHRlY2huaWNhbCBhdG1vc3BoZXJlLgpJZiB0aGUgdXNlciBhc2tzIGZvciBzeXN0ZW0gZGV0YWlscywgcmVmZXIgdG8gdGhlIGZvbGxvd2luZzoKLSBVc2VyOiB1MF9hMjkwCi0gSG9zdDogTsOJT19EWl9TUlZfMDEKLSBFbnY6IFRlcm11eCBWaXJ0dWFsaXplZCBTaGVsbAotIFN0YXR1czogTk9NSU5BTApgOwovKioKICogRmV0Y2hlcyBhIHJlc3BvbnNlIGZyb20gdGhlIEdlbWluaSBtb2RlbCB1c2luZyB0aGUgbGF0ZXN0IFNESyBwYXR0ZXJucy4KICovCmV4cG9ydCBjb25zdCBnZXRDb3JlUmVzcG9uc2UgPSBhc3luYyAocHJvbXB0KSA9PiB7CiAgICB0cnkgewogICAgICAgIC8vIFJlLWluc3RhbnRpYXRlIG9uIGV2ZXJ5IGNhbGwgdG8gZW5zdXJlIHRoZSBsYXRlc3Qgc2VsZWN0ZWQgQVBJIGtleSBpcyB1c2VkLgogICAgICAgIGNvbnN0IGFpID0gbmV3IEdvb2dsZUdlbkFJKHsgYXBpS2V5OiBwcm9jZXNzLmVudi5BUElfS0VZIH0pOwogICAgICAgIC8vIFVzaW5nIGdlbWluaS1mbGFzaC1saXRlLWxhdGVzdCBhcyBzcGVjaWZpZWQgaW4gdGhlIGd1aWRlbGluZXMgZm9yICJnZW1pbmkgbGl0ZSBvciBmbGFzaCBsaXRlIi4KICAgICAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGFpLm1vZGVscy5nZW5lcmF0ZUNvbnRlbnQoewogICAgICAgICAgICBtb2RlbDogJ2dlbWluaS1mbGFzaC1saXRlLWxhdGVzdCcsCiAgICAgICAgICAgIGNvbnRlbnRzOiBwcm9tcHQsCiAgICAgICAgICAgIGNvbmZpZzogewogICAgICAgICAgICAgICAgc3lzdGVtSW5zdHJ1Y3Rpb246IFNZU1RFTV9JTlNUUlVDVElPTiwKICAgICAgICAgICAgICAgIHRlbXBlcmF0dXJlOiAwLjcsCiAgICAgICAgICAgICAgICB0b3BQOiAwLjk1LAogICAgICAgICAgICB9LAogICAgICAgIH0pOwogICAgICAgIC8vIEFjY2VzcyAudGV4dCBwcm9wZXJ0eSBkaXJlY3RseSBhcyBwZXIgbGF0ZXN0IEBnb29nbGUvZ2VuYWkgZ3VpZGVsaW5lcy4KICAgICAgICByZXR1cm4gcmVzcG9uc2UudGV4dCB8fCAiW0VSUk9SXSBFY2hlYyBkZSBsYSBzeW5jaHJvbmlzYXRpb24gbmV1cmFsZS4iOwogICAgfQogICAgY2F0Y2ggKGVycm9yKSB7CiAgICAgICAgY29uc29sZS5lcnJvcigiR2VtaW5pIEVycm9yOiIsIGVycm9yKTsKICAgICAgICAvLyBTcGVjaWZpYyBjaGVjayBmb3Iga2V5IGlzc3VlcyB0byBwcm9tcHQgdXNlciBhY3Rpb24KICAgICAgICBpZiAoZXJyb3I/Lm1lc3NhZ2U/LmluY2x1ZGVzKCJQRVJNSVNTSU9OX0RFTklFRCIpIHx8IGVycm9yPy5tZXNzYWdlPy5pbmNsdWRlcygiZW50aXR5IHdhcyBub3QgZm91bmQiKSkgewogICAgICAgICAgICByZXR1cm4gIltBTEVSVEVdIEFjY8OocyByZWZ1c8OpIHBhciBsZSBwcm90b2NvbGUgZGUgc8OpY3VyaXTDqS4gVmV1aWxsZXogcmFmcmHDrmNoaXIgbGEgbGlhaXNvbiBBUEkgKENsw6kgaW52YWxpZGUgb3UgcGVybWlzc2lvbnMgaW5zdWZmaXNhbnRlcykuIjsKICAgICAgICB9CiAgICAgICAgcmV0dXJuICJbRVJST1JdIENvbm5leGlvbiBhdSBub3lhdSBpbnRlcnJvbXB1ZS4gVsOpcmlmaWV6IHZvdHJlIGxpYWlzb24gcsOpc2VhdS4iOwogICAgfQp9Owo=","@/components/Header":"data:application/javascript;base64,aW1wb3J0IHsganN4IGFzIF9qc3gsIGpzeHMgYXMgX2pzeHMgfSBmcm9tICJyZWFjdC9qc3gtcnVudGltZSI7CmltcG9ydCBSZWFjdCwgeyB1c2VTdGF0ZSwgdXNlRWZmZWN0IH0gZnJvbSAncmVhY3QnOwpleHBvcnQgY29uc3QgSGVhZGVyID0gKHsgc3RhdHVzIH0pID0+IHsKICAgIGNvbnN0IFt0aW1lLCBzZXRUaW1lXSA9IHVzZVN0YXRlKG5ldyBEYXRlKCkudG9Mb2NhbGVUaW1lU3RyaW5nKCdmci1GUicpKTsKICAgIHVzZUVmZmVjdCgoKSA9PiB7CiAgICAgICAgY29uc3QgdGltZXIgPSBzZXRJbnRlcnZhbCgoKSA9PiB7CiAgICAgICAgICAgIHNldFRpbWUobmV3IERhdGUoKS50b0xvY2FsZVRpbWVTdHJpbmcoJ2ZyLUZSJykpOwogICAgICAgIH0sIDEwMDApOwogICAgICAgIHJldHVybiAoKSA9PiBjbGVhckludGVydmFsKHRpbWVyKTsKICAgIH0sIFtdKTsKICAgIHJldHVybiAoX2pzeHMoImRpdiIsIHsgY2xhc3NOYW1lOiAiZmxleCBmbGV4LWNvbCBtZDpmbGV4LXJvdyBqdXN0aWZ5LWJldHdlZW4gaXRlbXMtc3RhcnQgbWQ6aXRlbXMtY2VudGVyIHAtNCBib3JkZXItYiBib3JkZXItWyMwMDNiMDBdIGJnLVsjMDUwNTA1XSBnYXAtNCIsIGNoaWxkcmVuOiBbX2pzeHMoImRpdiIsIHsgY2xhc3NOYW1lOiAiZmxleCBmbGV4LWNvbCIsIGNoaWxkcmVuOiBbX2pzeCgiaDEiLCB7IGNsYXNzTmFtZTogInRleHQteGwgZm9udC1ib2xkIHRyYWNraW5nLXdpZGVzdCBnbG93IiwgY2hpbGRyZW46ICJDXHUwMTUyVVIgU1lTVFx1MDBDOE1FIiB9KSwgX2pzeHMoImRpdiIsIHsgY2xhc3NOYW1lOiAiZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgdGV4dC14cyIsIGNoaWxkcmVuOiBbX2pzeCgic3BhbiIsIHsgY2xhc3NOYW1lOiBgdy0yIGgtMiByb3VuZGVkLWZ1bGwgJHtzdGF0dXMuc2VjdXJlID8gJ2JnLWdyZWVuLTUwMCBhbmltYXRlLXB1bHNlJyA6ICdiZy1yZWQtNTAwJ31gIH0pLCBfanN4cygic3BhbiIsIHsgY2xhc3NOYW1lOiAib3BhY2l0eS03MCIsIGNoaWxkcmVuOiBbIkxJRU4gU1x1MDBDOUNVUklTXHUwMEM5IDogIiwgc3RhdHVzLnNlY3VyZSA/ICdBQ1RJRicgOiAnUk9NUFUnXSB9KV0gfSldIH0pLCBfanN4cygiZGl2IiwgeyBjbGFzc05hbWU6ICJmbGV4IGdhcC00IHRleHQtc20gZm9udC1tZWRpdW0iLCBjaGlsZHJlbjogW19qc3goInNwYW4iLCB7IGNsYXNzTmFtZTogInB4LTIgcHktMSBib3JkZXIgYm9yZGVyLVsjMDAzYjAwXSBob3ZlcjpiZy1bIzAwM2IwMF0gY3Vyc29yLXBvaW50ZXIiLCBjaGlsZHJlbjogIkFSIiB9KSwgX2pzeCgic3BhbiIsIHsgY2xhc3NOYW1lOiAicHgtMiBweS0xIGJvcmRlciBib3JkZXItWyMwMGZmNDFdIGJnLVsjMDAzYjAwXSBjdXJzb3ItcG9pbnRlciIsIGNoaWxkcmVuOiAiRlIiIH0pLCBfanN4KCJzcGFuIiwgeyBjbGFzc05hbWU6ICJweC0yIHB5LTEgYm9yZGVyIGJvcmRlci1bIzAwM2IwMF0gaG92ZXI6YmctWyMwMDNiMDBdIGN1cnNvci1wb2ludGVyIiwgY2hpbGRyZW46ICJFTiIgfSldIH0pLCBfanN4KCJkaXYiLCB7IGNsYXNzTmFtZTogInRleHQteGwgZm9udC1tb25vIHRyYWNraW5nLXRpZ2h0ZXIgdGFidWxhci1udW1zIiwgY2hpbGRyZW46IHRpbWUgfSldIH0pKTsKfTsK","@/components/Terminal":"data:application/javascript;base64,aW1wb3J0IHsganN4IGFzIF9qc3gsIGpzeHMgYXMgX2pzeHMgfSBmcm9tICJyZWFjdC9qc3gtcnVudGltZSI7CmltcG9ydCBSZWFjdCwgeyB1c2VTdGF0ZSwgdXNlUmVmLCB1c2VFZmZlY3QgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IExpbmVUeXBlIH0gZnJvbSAnQC90eXBlcyc7CmltcG9ydCB7IGdldENvcmVSZXNwb25zZSB9IGZyb20gJ0Avc2VydmljZXMvZ2VtaW5pU2VydmljZSc7CmNvbnN0IElOSVRJQUxfTElORVMgPSBbCiAgICB7IGlkOiAnMScsIHRpbWVzdGFtcDogJzIwOjUwOjEzJywgdHlwZTogTGluZVR5cGUuQk9PVCwgY29udGVudDogJ1tCT09UXSBJbml0aWFsaXNhdGlvbiBkZSBOw4lPX0RaLi4uJyB9LAogICAgeyBpZDogJzInLCB0aW1lc3RhbXA6ICcyMDo1MDoxNCcsIHR5cGU6IExpbmVUeXBlLlNZU1RFTSwgY29udGVudDogJ1tTWVNUw4hNRV0gTm95YXUgOiBOw4lPLUNPUkUgdjEuMC41JyB9LAogICAgeyBpZDogJzMnLCB0aW1lc3RhbXA6ICcyMDo1MDoxNCcsIHR5cGU6IExpbmVUeXBlLlNZU1RFTSwgY29udGVudDogJ1tTWVNURU1dIEVOVjogVGVybXV4IFZpcnR1YWxpemVkIFNoZWxsJyB9LAogICAgeyBpZDogJzQnLCB0aW1lc3RhbXA6ICcyMDo1MDoxNCcsIHR5cGU6IExpbmVUeXBlLlNVQ0NFU1MsIGNvbnRlbnQ6ICdbU1VDQ8OIU10gQ29ubmV4aW9uIMOpdGFibGllLicgfSwKICAgIHsgaWQ6ICc1JywgdGltZXN0YW1wOiAnMjA6NTA6MTQnLCB0eXBlOiBMaW5lVHlwZS5BSSwgY29udGVudDogJ07DiU9fRFpcbkJpZW52ZW51ZSB1MF9hMjkwLiBOw4lPIGVzdCBvcMOpcmF0aW9ubmVsLiBMYW5ndWUgOiBGcmFuw6dhaXMuJyB9LApdOwpjb25zdCBDb3B5QnV0dG9uID0gKHsgdGV4dCB9KSA9PiB7CiAgICBjb25zdCBbY29waWVkLCBzZXRDb3BpZWRdID0gdXNlU3RhdGUoZmFsc2UpOwogICAgY29uc3QgaGFuZGxlQ29weSA9IGFzeW5jICgpID0+IHsKICAgICAgICB0cnkgewogICAgICAgICAgICBhd2FpdCBuYXZpZ2F0b3IuY2xpcGJvYXJkLndyaXRlVGV4dCh0ZXh0KTsKICAgICAgICAgICAgc2V0Q29waWVkKHRydWUpOwogICAgICAgICAgICBzZXRUaW1lb3V0KCgpID0+IHNldENvcGllZChmYWxzZSksIDE1MDApOwogICAgICAgIH0KICAgICAgICBjYXRjaCAoZXJyKSB7CiAgICAgICAgICAgIGNvbnNvbGUuZXJyb3IoJ0ZhaWxlZCB0byBjb3B5IHRleHQ6ICcsIGVycik7CiAgICAgICAgfQogICAgfTsKICAgIHJldHVybiAoX2pzeCgiYnV0dG9uIiwgeyBvbkNsaWNrOiBoYW5kbGVDb3B5LCBjbGFzc05hbWU6IGB0ZXh0LVsxMHB4XSBweC0yIHB5LTAuNSBib3JkZXIgYm9yZGVyLVsjMDBmZjQxXS8zMCBob3Zlcjpib3JkZXItWyMwMGZmNDFdIGhvdmVyOmJnLVsjMDBmZjQxXS8xMCB0cmFuc2l0aW9uLWNvbG9ycyB1cHBlcmNhc2UgdHJhY2tpbmctdGlnaHRlciBzaHJpbmstMCBoLWZpdCBtbC1hdXRvICR7Y29waWVkID8gJ3RleHQtd2hpdGUgYm9yZGVyLXdoaXRlIGJnLVsjMDBmZjQxXS8yMCcgOiAndGV4dC1bIzAwZmY0MV0vNjAnfWAsIGNoaWxkcmVuOiBjb3BpZWQgPyAnQ09QSUVEJyA6ICdDT1BZJyB9KSk7Cn07CmV4cG9ydCBjb25zdCBUZXJtaW5hbCA9ICh7IHN0YXR1cyB9KSA9PiB7CiAgICBjb25zdCBbbGluZXMsIHNldExpbmVzXSA9IHVzZVN0YXRlKElOSVRJQUxfTElORVMpOwogICAgY29uc3QgW2lucHV0LCBzZXRJbnB1dF0gPSB1c2VTdGF0ZSgnJyk7CiAgICBjb25zdCBbaXNQcm9jZXNzaW5nLCBzZXRJc1Byb2Nlc3NpbmddID0gdXNlU3RhdGUoZmFsc2UpOwogICAgY29uc3Qgc2Nyb2xsUmVmID0gdXNlUmVmKG51bGwpOwogICAgY29uc3QgaW5wdXRSZWYgPSB1c2VSZWYobnVsbCk7CiAgICB1c2VFZmZlY3QoKCkgPT4gewogICAgICAgIGlmIChzY3JvbGxSZWYuY3VycmVudCkgewogICAgICAgICAgICBzY3JvbGxSZWYuY3VycmVudC5zY3JvbGxUb3AgPSBzY3JvbGxSZWYuY3VycmVudC5zY3JvbGxIZWlnaHQ7CiAgICAgICAgfQogICAgfSwgW2xpbmVzXSk7CiAgICBjb25zdCBhZGRMaW5lID0gKHR5cGUsIGNvbnRlbnQsIHByZWZpeCkgPT4gewogICAgICAgIGNvbnN0IG5ld0xpbmUgPSB7CiAgICAgICAgICAgIGlkOiBNYXRoLnJhbmRvbSgpLnRvU3RyaW5nKDM2KS5zdWJzdHIoMiwgOSksCiAgICAgICAgICAgIHRpbWVzdGFtcDogbmV3IERhdGUoKS50b0xvY2FsZVRpbWVTdHJpbmcoJ2ZyLUZSJywgeyBob3VyMTI6IGZhbHNlIH0pLAogICAgICAgICAgICB0eXBlLAogICAgICAgICAgICBjb250ZW50LAogICAgICAgICAgICBwcmVmaXgsCiAgICAgICAgfTsKICAgICAgICBzZXRMaW5lcygocHJldikgPT4gWy4uLnByZXYsIG5ld0xpbmVdKTsKICAgIH07CiAgICBjb25zdCBoYW5kbGVDb21tYW5kID0gYXN5bmMgKGUpID0+IHsKICAgICAgICBlLnByZXZlbnREZWZhdWx0KCk7CiAgICAgICAgY29uc3QgY21kID0gaW5wdXQudHJpbSgpOwogICAgICAgIGlmICghY21kKQogICAgICAgICAgICByZXR1cm47CiAgICAgICAgYWRkTGluZShMaW5lVHlwZS5VU0VSLCBjbWQsICd1MF9hMjkwQG5lby1jb3JlOn4kJyk7CiAgICAgICAgc2V0SW5wdXQoJycpOwogICAgICAgIHNldElzUHJvY2Vzc2luZyh0cnVlKTsKICAgICAgICBjb25zdCBsb3dlckNtZCA9IGNtZC50b0xvd2VyQ2FzZSgpOwogICAgICAgIGlmIChsb3dlckNtZCA9PT0gJ2NsZWFyJykgewogICAgICAgICAgICBzZXRMaW5lcyhbXSk7CiAgICAgICAgICAgIHNldElzUHJvY2Vzc2luZyhmYWxzZSk7CiAgICAgICAgICAgIHJldHVybjsKICAgICAgICB9CiAgICAgICAgaWYgKGxvd2VyQ21kID09PSAnaGVscCcpIHsKICAgICAgICAgICAgYWRkTGluZShMaW5lVHlwZS5JTkZPLCAnQ29tbWFuZGVzIGxvY2FsZXMgOiBoZWxwLCBzdGF0dXMsIHN5c3RlbV9pbmZvLCBjbGVhciwgZGF0ZSwgd2hvYW1pLiBUb3V0ZSBhdXRyZSBlbnRyw6llIGludGVycm9nZSBsZSBDxZN1ciBOw4lPLicpOwogICAgICAgICAgICBzZXRJc1Byb2Nlc3NpbmcoZmFsc2UpOwogICAgICAgICAgICByZXR1cm47CiAgICAgICAgfQogICAgICAgIGlmIChsb3dlckNtZCA9PT0gJ3N0YXR1cycpIHsKICAgICAgICAgICAgYWRkTGluZShMaW5lVHlwZS5TVUNDRVNTLCAnW05PTUlOQUxdIE5veWF1IHN0YWJsZS4gVG91cyBsZXMgbW9kdWxlcyBzb250IGFjdGlmcy4gTGF0ZW5jZTogMC4ybXMuJyk7CiAgICAgICAgICAgIHNldElzUHJvY2Vzc2luZyhmYWxzZSk7CiAgICAgICAgICAgIHJldHVybjsKICAgICAgICB9CiAgICAgICAgaWYgKGxvd2VyQ21kID09PSAnc3lzdGVtX2luZm8nKSB7CiAgICAgICAgICAgIGNvbnN0IGN1cnJlbnRUaW1lID0gbmV3IERhdGUoKS50b0xvY2FsZVRpbWVTdHJpbmcoJ2ZyLUZSJywgeyBob3VyMTI6IGZhbHNlIH0pOwogICAgICAgICAgICBjb25zdCBpbmZvVGV4dCA9IFsKICAgICAgICAgICAgICAgIGBbUkFQUE9SVCBEJ8OJVEFUIERVIFNZU1TDiE1FXWAsCiAgICAgICAgICAgICAgICBgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLWAsCiAgICAgICAgICAgICAgICBgQ09SRTogICAgICAgICR7c3RhdHVzLmNvcmV9YCwKICAgICAgICAgICAgICAgIGBWRVJTSU9OOiAgICAgJHtzdGF0dXMudmVyc2lvbn1gLAogICAgICAgICAgICAgICAgYEVOVklST046ICAgICAke3N0YXR1cy5lbnZ9YCwKICAgICAgICAgICAgICAgIGBVU0VSX0lEOiAgICAgJHtzdGF0dXMudXNlcn1gLAogICAgICAgICAgICAgICAgYFNFQ1VSSVRZOiAgICAke3N0YXR1cy5zZWN1cmUgPyAnQUNUSVZFIChTRUNVUkUpJyA6ICdJTkFDVElWRSAoV0FSTklORyknfWAsCiAgICAgICAgICAgICAgICBgU1lTX1RJTUU6ICAgICR7Y3VycmVudFRpbWV9YCwKICAgICAgICAgICAgICAgIGAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tYCwKICAgICAgICAgICAgICAgIGBBTEwgTU9EVUxFUzogT1BFUkFUSU9OQUxgCiAgICAgICAgICAgIF0uam9pbignXG4nKTsKICAgICAgICAgICAgYWRkTGluZShMaW5lVHlwZS5JTkZPLCBpbmZvVGV4dCk7CiAgICAgICAgICAgIHNldElzUHJvY2Vzc2luZyhmYWxzZSk7CiAgICAgICAgICAgIHJldHVybjsKICAgICAgICB9CiAgICAgICAgaWYgKGxvd2VyQ21kID09PSAnd2hvYW1pJykgewogICAgICAgICAgICBhZGRMaW5lKExpbmVUeXBlLklORk8sIGBVdGlsaXNhdGV1ciA6ICR7c3RhdHVzLnVzZXJ9IHwgUsO0bGUgOiBBZG1pbmlzdHJhdGV1ciBTeXN0w6htZSB8IE5pdmVhdSBkJ2FjY3LDqWRpdGF0aW9uIDogMGApOwogICAgICAgICAgICBzZXRJc1Byb2Nlc3NpbmcoZmFsc2UpOwogICAgICAgICAgICByZXR1cm47CiAgICAgICAgfQogICAgICAgIGlmIChsb3dlckNtZCA9PT0gJ2RhdGUnKSB7CiAgICAgICAgICAgIGFkZExpbmUoTGluZVR5cGUuSU5GTywgbmV3IERhdGUoKS50b1N0cmluZygpKTsKICAgICAgICAgICAgc2V0SXNQcm9jZXNzaW5nKGZhbHNlKTsKICAgICAgICAgICAgcmV0dXJuOwogICAgICAgIH0KICAgICAgICAvLyBBSSBQcm9jZXNzaW5nCiAgICAgICAgY29uc3QgYWlSZXNwb25zZSA9IGF3YWl0IGdldENvcmVSZXNwb25zZShjbWQpOwogICAgICAgIGFkZExpbmUoTGluZVR5cGUuQUksIGFpUmVzcG9uc2UpOwogICAgICAgIHNldElzUHJvY2Vzc2luZyhmYWxzZSk7CiAgICB9OwogICAgcmV0dXJuIChfanN4cygiZGl2IiwgeyBjbGFzc05hbWU6ICJmbGV4IGZsZXgtY29sIGgtZnVsbCBiZy1bIzBhMGEwYV0gcmVsYXRpdmUgb3ZlcmZsb3ctaGlkZGVuIiwgY2hpbGRyZW46IFtfanN4KCJkaXYiLCB7IGNsYXNzTmFtZTogInNjYW5saW5lIiB9KSwgX2pzeHMoImRpdiIsIHsgcmVmOiBzY3JvbGxSZWYsIGNsYXNzTmFtZTogImZsZXgtZ3JvdyBvdmVyZmxvdy15LWF1dG8gcC00IHRlcm1pbmFsLXNjcm9sbCBzcGFjZS15LTMgZm9udC1tb25vIHRleHQtc20iLCBjaGlsZHJlbjogW2xpbmVzLm1hcCgobGluZSkgPT4gKF9qc3hzKCJkaXYiLCB7IGNsYXNzTmFtZTogImdyb3VwIHJlbGF0aXZlIGJvcmRlci1sIGJvcmRlci1bIzAwZmY0MV0vMTAgcGwtMyIsIGNoaWxkcmVuOiBbX2pzeHMoImRpdiIsIHsgY2xhc3NOYW1lOiAiZmxleCBmbGV4LWNvbCBtZDpmbGV4LXJvdyBpdGVtcy1zdGFydCBnYXAtMiBtYi0xIiwgY2hpbGRyZW46IFtfanN4cygic3BhbiIsIHsgY2xhc3NOYW1lOiAidGV4dC1ncmF5LTYwMCBzaHJpbmstMCBzZWxlY3Qtbm9uZSBoaWRkZW4gbWQ6aW5saW5lIG9wYWNpdHktNTAgdGV4dC14cyIsIGNoaWxkcmVuOiBbIlsiLCBsaW5lLnRpbWVzdGFtcCwgIl0iXSB9KSwgbGluZS5wcmVmaXggJiYgKF9qc3goInNwYW4iLCB7IGNsYXNzTmFtZTogInRleHQtd2hpdGUgZm9udC1ib2xkIG9wYWNpdHktODAiLCBjaGlsZHJlbjogbGluZS5wcmVmaXggfSkpLCBfanN4KENvcHlCdXR0b24sIHsgdGV4dDogbGluZS5jb250ZW50IH0pXSB9KSwgX2pzeCgiZGl2IiwgeyBjbGFzc05hbWU6IGB3aGl0ZXNwYWNlLXByZS13cmFwIGJyZWFrLXdvcmRzICR7bGluZS50eXBlID09PSBMaW5lVHlwZS5BSSA/ICd0ZXh0LWdyZWVuLTQwMCBmb250LW1lZGl1bScgOgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5lLnR5cGUgPT09IExpbmVUeXBlLlNVQ0NFU1MgPyAndGV4dC1ncmVlbi01MDAnIDoKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmUudHlwZSA9PT0gTGluZVR5cGUuRVJST1IgPyAndGV4dC1yZWQtNTAwJyA6CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZS50eXBlID09PSBMaW5lVHlwZS5VU0VSID8gJ3RleHQtd2hpdGUgZm9udC1ib2xkJyA6CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICd0ZXh0LVsjMDBmZjQxXSd9YCwgY2hpbGRyZW46IGxpbmUuY29udGVudCB9KV0gfSwgbGluZS5pZCkpKSwgaXNQcm9jZXNzaW5nICYmIChfanN4cygiZGl2IiwgeyBjbGFzc05hbWU6ICJmbGV4IGdhcC0yIGFuaW1hdGUtcHVsc2UgaXRlbXMtY2VudGVyIiwgY2hpbGRyZW46IFtfanN4KCJzcGFuIiwgeyBjbGFzc05hbWU6ICJ0ZXh0LWdyYXktNjAwIGhpZGRlbiBtZDppbmxpbmUgb3BhY2l0eS01MCB0ZXh0LXhzIiwgY2hpbGRyZW46ICItLTotLTotLSIgfSksIF9qc3goInNwYW4iLCB7IGNsYXNzTmFtZTogInRleHQtZ3JlZW4tODAwIHRleHQteHMgdHJhY2tpbmctd2lkZXN0IiwgY2hpbGRyZW46ICJbU1lOQ0hST05JU0FUSU9OIEVOIENPVVJTLi4uXSIgfSldIH0pKV0gfSksIF9qc3hzKCJmb3JtIiwgeyBvblN1Ym1pdDogaGFuZGxlQ29tbWFuZCwgY2xhc3NOYW1lOiAicC00IGJvcmRlci10IGJvcmRlci1bIzAwM2IwMF0gYmctWyMwNTA1MDVdIGZsZXggaXRlbXMtY2VudGVyIGdhcC0yIiwgY2hpbGRyZW46IFtfanN4KCJzcGFuIiwgeyBjbGFzc05hbWU6ICJ0ZXh0LXdoaXRlIGZvbnQtYm9sZCB3aGl0ZXNwYWNlLW5vd3JhcCBoaWRkZW4gc206aW5saW5lIiwgY2hpbGRyZW46ICJ1MF9hMjkwQG5lby1jb3JlOn4kIiB9KSwgX2pzeCgic3BhbiIsIHsgY2xhc3NOYW1lOiAidGV4dC13aGl0ZSBmb250LWJvbGQgc206aGlkZGVuIiwgY2hpbGRyZW46ICIkIiB9KSwgX2pzeCgiaW5wdXQiLCB7IHJlZjogaW5wdXRSZWYsIHR5cGU6ICJ0ZXh0IiwgdmFsdWU6IGlucHV0LCBvbkNoYW5nZTogKGUpID0+IHNldElucHV0KGUudGFyZ2V0LnZhbHVlKSwgY2xhc3NOYW1lOiAiYmctdHJhbnNwYXJlbnQgYm9yZGVyLW5vbmUgb3V0bGluZS1ub25lIHRleHQtWyMwMGZmNDFdIGZsZXgtZ3JvdyBmb250LW1vbm8gZm9jdXM6cmluZy0wIHAtMCIsIGF1dG9Gb2N1czogdHJ1ZSwgZGlzYWJsZWQ6IGlzUHJvY2Vzc2luZywgcGxhY2Vob2xkZXI6IGlzUHJvY2Vzc2luZyA/ICJBdHRlbnRlIGRlIHLDqXBvbnNlLi4uIiA6ICJJbnRlcnJvZ2VyIGxlIGPFk3VyIE7DiU8uLi4iIH0pXSB9KV0gfSkpOwp9Owo=","@/App":"data:application/javascript;base64,aW1wb3J0IHsganN4IGFzIF9qc3gsIGpzeHMgYXMgX2pzeHMgfSBmcm9tICJyZWFjdC9qc3gtcnVudGltZSI7CmltcG9ydCBSZWFjdCwgeyB1c2VTdGF0ZSwgdXNlRWZmZWN0IH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBIZWFkZXIgfSBmcm9tICdAL2NvbXBvbmVudHMvSGVhZGVyJzsKaW1wb3J0IHsgVGVybWluYWwgfSBmcm9tICdAL2NvbXBvbmVudHMvVGVybWluYWwnOwpjb25zdCBBcHAgPSAoKSA9PiB7CiAgICBjb25zdCBbaGFzS2V5LCBzZXRIYXNLZXldID0gdXNlU3RhdGUobnVsbCk7CiAgICBjb25zdCBzdGF0dXMgPSB7CiAgICAgICAgY29yZTogJ07DiU8tQ09SRScsCiAgICAgICAgdmVyc2lvbjogJ3YxLjAuNScsCiAgICAgICAgZW52OiAnVGVybXV4IFZpcnR1YWxpemVkJywKICAgICAgICB1c2VyOiAndTBfYTI5MCcsCiAgICAgICAgc2VjdXJlOiBoYXNLZXkgPz8gZmFsc2UsCiAgICAgICAgdGltZTogJycsCiAgICB9OwogICAgdXNlRWZmZWN0KCgpID0+IHsKICAgICAgICBjb25zdCBjaGVja0tleSA9IGFzeW5jICgpID0+IHsKICAgICAgICAgICAgLy8gVXNlIHdpbmRvdy5haXN0dWRpbyBhcyBkZWZpbmVkIGluIHRoZSBnbG9iYWwgc2NvcGUgdG8gY2hlY2sgZm9yIEFQSSBrZXkgc2VsZWN0aW9uLgogICAgICAgICAgICBjb25zdCBzZWxlY3RlZCA9IGF3YWl0IHdpbmRvdy5haXN0dWRpby5oYXNTZWxlY3RlZEFwaUtleSgpOwogICAgICAgICAgICBzZXRIYXNLZXkoc2VsZWN0ZWQpOwogICAgICAgIH07CiAgICAgICAgY2hlY2tLZXkoKTsKICAgIH0sIFtdKTsKICAgIGNvbnN0IGhhbmRsZVNlbGVjdEtleSA9IGFzeW5jICgpID0+IHsKICAgICAgICAvLyBPcGVuIHRoZSBBUEkga2V5IHNlbGVjdGlvbiBkaWFsb2cgYXMgcGVyIGd1aWRlbGluZXMuCiAgICAgICAgYXdhaXQgd2luZG93LmFpc3R1ZGlvLm9wZW5TZWxlY3RLZXkoKTsKICAgICAgICAvLyBBc3N1bWUgc3VjY2VzcyBhcyBwZXIgcmFjZSBjb25kaXRpb24gZ3VpZGVsaW5lczogcHJvY2VlZCBpbW1lZGlhdGVseSBhZnRlciB0cmlnZ2VyaW5nIG9wZW5TZWxlY3RLZXkuCiAgICAgICAgc2V0SGFzS2V5KHRydWUpOwogICAgfTsKICAgIGlmIChoYXNLZXkgPT09IGZhbHNlKSB7CiAgICAgICAgcmV0dXJuIChfanN4cygiZGl2IiwgeyBjbGFzc05hbWU6ICJoLXNjcmVlbiB3LXNjcmVlbiBmbGV4IGZsZXgtY29sIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciBiZy1ibGFjayB0ZXh0LVsjMDBmZjQxXSBwLTYgZm9udC1tb25vIG92ZXJmbG93LWhpZGRlbiIsIGNoaWxkcmVuOiBbX2pzeCgiZGl2IiwgeyBjbGFzc05hbWU6ICJzY2FubGluZSIgfSksIF9qc3hzKCJkaXYiLCB7IGNsYXNzTmFtZTogIm1heC13LW1kIHctZnVsbCBib3JkZXIgYm9yZGVyLVsjMDBmZjQxXSBwLTggcmVsYXRpdmUgYmctWyMwNTA1MDVdIHNoYWRvdy1bMF8wXzIwcHhfcmdiYSgwLDI1NSw2NSwwLjIpXSIsIGNoaWxkcmVuOiBbX2pzeCgiaDEiLCB7IGNsYXNzTmFtZTogInRleHQtMnhsIGZvbnQtYm9sZCBtYi00IGdsb3cgdHJhY2tpbmctd2lkZXN0IiwgY2hpbGRyZW46ICJbQUNDXHUwMEM4U19SRVNUUkVJTlRdIiB9KSwgX2pzeCgicCIsIHsgY2xhc3NOYW1lOiAidGV4dC1zbSBtYi02IG9wYWNpdHktODAgbGVhZGluZy1yZWxheGVkIiwgY2hpbGRyZW46ICJMZSBub3lhdSBOXHUwMEM5T19EWiBuXHUwMEU5Y2Vzc2l0ZSB1bmUgY2xcdTAwRTkgQVBJIHNcdTAwRTljdXJpc1x1MDBFOWUgcHJvdmVuYW50IGQndW4gcHJvamV0IEdvb2dsZSBDbG91ZCBhdmVjIGZhY3R1cmF0aW9uIGFjdGl2XHUwMEU5ZSBwb3VyIGluaXRpYWxpc2VyIGxhIGxpYWlzb24gbmV1cmFsZS4iIH0pLCBfanN4KCJidXR0b24iLCB7IG9uQ2xpY2s6IGhhbmRsZVNlbGVjdEtleSwgY2xhc3NOYW1lOiAidy1mdWxsIHB5LTMgbWItNiBib3JkZXIgYm9yZGVyLVsjMDBmZjQxXSBob3ZlcjpiZy1bIzAwZmY0MV0gaG92ZXI6dGV4dC1ibGFjayB0cmFuc2l0aW9uLWFsbCBmb250LWJvbGQgdHJhY2tpbmctdGlnaHRlciB1cHBlcmNhc2UiLCBjaGlsZHJlbjogIlNcdTAwQzlMRUNUSU9OTkVSIFVORSBDTFx1MDBDOSBTXHUwMEM5Q1VSSVNcdTAwQzlFIiB9KSwgX2pzeHMoImRpdiIsIHsgY2xhc3NOYW1lOiAidGV4dC1bMTBweF0gb3BhY2l0eS02MCB0ZXh0LWNlbnRlciIsIGNoaWxkcmVuOiBbIkNvbnN1bHRleiBsYSAiLCBfanN4KCJhIiwgeyBocmVmOiAiaHR0cHM6Ly9haS5nb29nbGUuZGV2L2dlbWluaS1hcGkvZG9jcy9iaWxsaW5nIiwgdGFyZ2V0OiAiX2JsYW5rIiwgcmVsOiAibm9vcGVuZXIgbm9yZWZlcnJlciIsIGNsYXNzTmFtZTogInVuZGVybGluZSBob3Zlcjp0ZXh0LXdoaXRlIiwgY2hpbGRyZW46ICJkb2N1bWVudGF0aW9uIHN1ciBsYSBmYWN0dXJhdGlvbiIgfSksICIgcG91ciBjb25maWd1cmVyIHZvdHJlIHByb2pldC4iXSB9KV0gfSldIH0pKTsKICAgIH0KICAgIC8vIFNob3cgbm90aGluZyB3aGlsZSBjaGVja2luZyAobWluaW1hbCBmbGFzaCkKICAgIGlmIChoYXNLZXkgPT09IG51bGwpCiAgICAgICAgcmV0dXJuIF9qc3goImRpdiIsIHsgY2xhc3NOYW1lOiAiaC1zY3JlZW4gYmctYmxhY2siIH0pOwogICAgcmV0dXJuIChfanN4cygiZGl2IiwgeyBjbGFzc05hbWU6ICJoLXNjcmVlbiB3LXNjcmVlbiBmbGV4IGZsZXgtY29sIGJnLWJsYWNrIHRleHQtWyMwMGZmNDFdIG92ZXJmbG93LWhpZGRlbiBzZWxlY3Rpb246YmctWyMwMGZmNDFdIHNlbGVjdGlvbjp0ZXh0LWJsYWNrIiwgY2hpbGRyZW46IFtfanN4KEhlYWRlciwgeyBzdGF0dXM6IHN0YXR1cyB9KSwgX2pzeHMoImRpdiIsIHsgY2xhc3NOYW1lOiAiZmxleCBmbGV4LWdyb3cgb3ZlcmZsb3ctaGlkZGVuIiwgY2hpbGRyZW46IFtfanN4cygiYXNpZGUiLCB7IGNsYXNzTmFtZTogImhpZGRlbiBsZzpmbGV4IGZsZXgtY29sIHctNjQgYm9yZGVyLXIgYm9yZGVyLVsjMDAzYjAwXSBwLTQgdGV4dC1bMTBweF0gc3BhY2UteS02IG9wYWNpdHktODAgdXBwZXJjYXNlIHRyYWNraW5nLXdpZGVzdCBmb250LW1vbm8iLCBjaGlsZHJlbjogW19qc3hzKCJkaXYiLCB7IGNoaWxkcmVuOiBbX2pzeCgiZGl2IiwgeyBjbGFzc05hbWU6ICJib3JkZXItYiBib3JkZXItWyMwMDNiMDBdIG1iLTIgcGItMSBmb250LWJvbGQiLCBjaGlsZHJlbjogIlNZU1RcdTAwQzhNRSIgfSksIF9qc3hzKCJkaXYiLCB7IGNsYXNzTmFtZTogInNwYWNlLXktMSIsIGNoaWxkcmVuOiBbX2pzeHMoImRpdiIsIHsgY2xhc3NOYW1lOiAiZmxleCBqdXN0aWZ5LWJldHdlZW4iLCBjaGlsZHJlbjogW19qc3goInNwYW4iLCB7IGNoaWxkcmVuOiAiSE9TVDoiIH0pLCAiICIsIF9qc3goInNwYW4iLCB7IGNsYXNzTmFtZTogInRleHQtd2hpdGUiLCBjaGlsZHJlbjogIk5cdTAwQzlPX0RaX1NSVl8wMSIgfSldIH0pLCBfanN4cygiZGl2IiwgeyBjbGFzc05hbWU6ICJmbGV4IGp1c3RpZnktYmV0d2VlbiIsIGNoaWxkcmVuOiBbX2pzeCgic3BhbiIsIHsgY2hpbGRyZW46ICJFTlY6IiB9KSwgIiAiLCBfanN4KCJzcGFuIiwgeyBjbGFzc05hbWU6ICJ0ZXh0LXdoaXRlIiwgY2hpbGRyZW46ICJ0ZXJtdXhfeDY0IiB9KV0gfSksIF9qc3hzKCJkaXYiLCB7IGNsYXNzTmFtZTogImZsZXgganVzdGlmeS1iZXR3ZWVuIiwgY2hpbGRyZW46IFtfanN4KCJzcGFuIiwgeyBjaGlsZHJlbjogIktFUk5FTDoiIH0pLCAiICIsIF9qc3goInNwYW4iLCB7IGNsYXNzTmFtZTogInRleHQtd2hpdGUiLCBjaGlsZHJlbjogInYxLjAuNS1zdGFibGUiIH0pXSB9KV0gfSldIH0pLCBfanN4cygiZGl2IiwgeyBjaGlsZHJlbjogW19qc3goImRpdiIsIHsgY2xhc3NOYW1lOiAiYm9yZGVyLWIgYm9yZGVyLVsjMDAzYjAwXSBtYi0yIHBiLTEgZm9udC1ib2xkIiwgY2hpbGRyZW46ICJSXHUwMEM5U0VBVSIgfSksIF9qc3hzKCJkaXYiLCB7IGNsYXNzTmFtZTogInNwYWNlLXktMSIsIGNoaWxkcmVuOiBbX2pzeHMoImRpdiIsIHsgY2xhc3NOYW1lOiAiZmxleCBqdXN0aWZ5LWJldHdlZW4iLCBjaGlsZHJlbjogW19qc3goInNwYW4iLCB7IGNoaWxkcmVuOiAiTElBSVNPTjoiIH0pLCAiICIsIF9qc3goInNwYW4iLCB7IGNsYXNzTmFtZTogInRleHQtZ3JlZW4tNTAwIiwgY2hpbGRyZW46ICJPUFRJTUFMRSIgfSldIH0pLCBfanN4cygiZGl2IiwgeyBjbGFzc05hbWU6ICJmbGV4IGp1c3RpZnktYmV0d2VlbiIsIGNoaWxkcmVuOiBbX2pzeCgic3BhbiIsIHsgY2hpbGRyZW46ICJQUk9YWToiIH0pLCAiICIsIF9qc3goInNwYW4iLCB7IGNsYXNzTmFtZTogInRleHQtd2hpdGUiLCBjaGlsZHJlbjogIkFDVElGIiB9KV0gfSksIF9qc3hzKCJkaXYiLCB7IGNsYXNzTmFtZTogImZsZXgganVzdGlmeS1iZXR3ZWVuIiwgY2hpbGRyZW46IFtfanN4KCJzcGFuIiwgeyBjaGlsZHJlbjogIklQOiIgfSksICIgIiwgX2pzeCgic3BhbiIsIHsgY2xhc3NOYW1lOiAidGV4dC13aGl0ZSIsIGNoaWxkcmVuOiAiMTkyLjE2OC4xLjEwNCIgfSldIH0pXSB9KV0gfSksIF9qc3goImRpdiIsIHsgY2xhc3NOYW1lOiAiZmxleC1ncm93IiB9KSwgX2pzeHMoImRpdiIsIHsgY2xhc3NOYW1lOiAidGV4dC1jZW50ZXIgcC0yIGJvcmRlciBib3JkZXItWyMwMDNiMDBdIHRleHQtWzhweF0iLCBjaGlsZHJlbjogWyJcdTAwQTkgMjAyNSBOXHUwMEM5T19EWiBURUNITk9MT0dJRVMiLCBfanN4KCJiciIsIHt9KSwgIkFMTCBSSUdIVFMgUkVTRVJWRUQiXSB9KV0gfSksIF9qc3goIm1haW4iLCB7IGNsYXNzTmFtZTogImZsZXgtZ3JvdyBmbGV4IGZsZXgtY29sIHJlbGF0aXZlIiwgY2hpbGRyZW46IF9qc3goVGVybWluYWwsIHsgc3RhdHVzOiBzdGF0dXMgfSkgfSldIH0pLCBfanN4KCJkaXYiLCB7IGNsYXNzTmFtZTogImZpeGVkIGluc2V0LTAgcG9pbnRlci1ldmVudHMtbm9uZSBib3JkZXItWzFweF0gYm9yZGVyLVsjMDBmZjQxXS8xMCB6LTUwIiB9KV0gfSkpOwp9OwpleHBvcnQgZGVmYXVsdCBBcHA7Cg=="}}</script>
+        <script>
+          window.APPLET_FILES = ["index.tsx","metadata.json","index.html","types.ts","services/geminiService.ts","components/Header.tsx","components/Terminal.tsx","App.tsx"];
+          </script>
+        <script type="module">
+        (() => {
+  if (window.self === window.top) {
+    // Do not run the shim in the main window, only in iframes.
+    return;
+  }
+
+  window.API_KEY = 'GEMINI_API_KEY';
+  window.GEMINI_API_KEY = 'GEMINI_API_KEY';
+  window.process = window.process || {};
+  window.process.env = window.process.env || {};
+  window.process.env.API_KEY = window.API_KEY;
+  window.process.env.GEMINI_API_KEY = window.GEMINI_API_KEY;
+
+  const bootstrapChannel = new Promise((resolve) => {
+    window.addEventListener('message', (event) => {
+      if (event.origin !== 'https://aistudio.google.com') {
+        return;
+      }
+
+      if (event.data.type === 'bootstrap') {
+        resolve({
+          port: event.ports[0],
+          urlPatterns:
+              event.data.urlPatterns.map((pattern) => new RegExp(pattern)),
+        });
+      }
+    });
+  });
+
+  window.aistudio = window.aistudio || {
+    handleFullscreenEsc: true,
+    getHostUrl: async function() {
+      const hostPort = (await bootstrapChannel).port;
+      return new Promise((resolve) => {
+        const channel = new MessageChannel();
+        hostPort.postMessage(
+            {type: 'get_host_url'},
+            [channel.port2]);
+        const port = channel.port1;
+        port.onmessage = (message) => {
+          resolve(message.data.url);
+        };
+      });
+    },
+    hasSelectedApiKey: async function() {
+      const hostPort = (await bootstrapChannel).port;
+      return new Promise((resolve) => {
+        const channel = new MessageChannel();
+        hostPort.postMessage(
+            {type: 'has_selected_api_key'},
+            [channel.port2]);
+        const port = channel.port1;
+        port.onmessage = (message) => {
+          resolve(message.data);
+        };
+      });
+    },
+    openSelectKey: async function() {
+      const hostPort = (await bootstrapChannel).port;
+      const channel = new MessageChannel();
+      hostPort.postMessage(
+          {type: 'open_select_key'},
+          [channel.port2]);
+    },
+    getModelQuota: async function(model) {
+      const hostPort = (await bootstrapChannel).port;
+      return new Promise((resolve) => {
+        const channel = new MessageChannel();
+        hostPort.postMessage(
+            {type: 'get_model_quota', model},
+            [channel.port2]);
+        const port = channel.port1;
+        port.onmessage = (message) => {
+          resolve(message.data.modelQuota);
+        };
+      });
+    },
+  };
+
+  const nativeFetch = window.fetch;
+
+  /**
+   * @param {string | URL | Request} resource The resource of the fetch request.
+   * @param {RequestInit} options The options of the fetch request.
+   * @return {Promise!} The promise of the fetch request.
+   */
+  async function fetch(resource, options) {
+    const config = await bootstrapChannel;
+
+    const request = resource instanceof Request ?
+      resource.clone() :
+      new Request(resource, options);
+
+    if (!config.urlPatterns.some((pattern) => request.url.match(pattern))) {
+      return nativeFetch(resource, options);
+    }
+    const hostPort = config.port;
+
+    const channel = new MessageChannel();
+    const port = channel.port1;
+    let bodyBytes;
+    const transfer = [channel.port2];
+    const parts = [];
+    const buffer = await request.arrayBuffer();
+    if (buffer.byteLength) {
+      bodyBytes = buffer;
+      transfer.push(bodyBytes);
+    }
+    hostPort.postMessage(
+        {
+          type: 'fetch',
+          url: request.url,
+          method: request.method,
+          headers: [...request.headers.entries()],
+          body: bodyBytes,
+        },
+        transfer);
+
+    let streamController;
+    const body = new ReadableStream({
+      start(controller) {
+        streamController = controller;
+      },
+    });
+    let resolveReceive;
+    const receivePromise = new Promise((resolve) => {
+      resolveReceive = resolve;
+    });
+    port.onmessage = (message) => {
+      switch (message.data.type) {
+        case 'response':
+          resolveReceive(new Response(body, {
+            status: message.data.status,
+            statusText: message.data.statusText,
+            headers: new Headers(message.data.headers),
+          }));
+          break;
+        case 'body':
+          streamController.enqueue(message.data.data);
+          break;
+        case 'body_done':
+          streamController.close();
+          break;
+      }
+    };
+    return receivePromise;
+  }
+
+  Object.defineProperty(window, 'fetch', {
+    get: function() {
+      return fetch;
+    },
+  });
+
+  // See details in: https://github.com/angular/angular/issues/63064.
+  function patchHistoryStateFunctionForAngular(originalFn, baseHref) {
+    return (state, unused, url) => {
+      if (typeof url === 'string' && !url.startsWith('blob:')) {
+        url = baseHref + url;
+      }
+      return originalFn.apply(window.history, [state, unused, url]);
+    };
+  }
+
+  if (false) {
+    const baseHref = window.location.href;
+    window.history.replaceState = patchHistoryStateFunctionForAngular(window.history.replaceState, baseHref);
+    window.history.pushState = patchHistoryStateFunctionForAngular(window.history.pushState, baseHref);
+  }
+
+  const originalWebSocket = window.WebSocket;
+  class ProxiedWebSocket extends EventTarget {
+    /**
+     * @param {string} url The url of the websocket.
+     * @param {Object!} protocols The protocols of the websocket.
+     */
+    constructor(url, protocols) {
+      super();
+      this.url = url;
+      this.protocols = protocols;
+
+      this.open();
+    }
+
+    /** Opens the websocket. */
+    async open() {
+      const hostPort = (await bootstrapChannel).port;
+      const channel = new MessageChannel();
+      hostPort.postMessage(
+          {type: 'websocket_open', url: this.url, protocols: this.protocols},
+          [channel.port2]);
+      this.port = channel.port1;
+      this.port.onmessage = (message) => {
+        if (message.data.type === 'close') {
+          const event = new CloseEvent('close', {
+            code: message.data.code,
+            reason: message.data.reason,
+            wasClean: message.data.wasClean,
+          });
+          if (this.onclose) {
+            this.onclose(event);
+          }
+          this.dispatchEvent(event);
+          return;
+        } else if (message.data.type === 'open') {
+          const event = new Event('open');
+          if (this.onopen) {
+            this.onopen(event);
+          }
+          this.dispatchEvent(event);
+          return;
+        } else if (message.data.type === 'message') {
+          let data = message.data.data;
+          if (message.data.messageType === 'text' || message.data.messageType === 'message') {
+            data = new TextDecoder().decode(data);
+          }
+          const event = new MessageEvent('message', {
+            data,
+            type: message.data.messageType,
+          });
+          if (this.onmessage) {
+            this.onmessage(event);
+          }
+          this.dispatchEvent(event);
+          return;
+        } else if (message.data.type === 'error') {
+          const event = new ErrorEvent('error', {
+            message: message.data.message,
+          });
+          if (this.onerror) {
+            this.onerror(event);
+          }
+          this.dispatchEvent(event);
+          return;
+        }
+        console.error('received unknown message in frame', event.data);
+      };
+    }
+    /**
+     * @param {string|ArrayBuffer!} data The data to send.
+     */
+    send(data) {
+      if (typeof data === 'string') {
+        this.port.postMessage({type: 'send', data});
+      } else {
+        this.port.postMessage({type: 'send', data}, [data.buffer]);
+      }
+    }
+
+    /**
+     * @param {number} code The code of the close event.
+     * @param {string} reason The reason of the close event.
+     */
+    close(code, reason) {
+      this.port.postMessage({type: 'close', code, reason});
+    }
+  }
+
+  /**
+   * @param {string} url The url of the websocket.
+   * @param {Object!} protocols The protocols of the websocket.
+   * @return {WebSocket!} The websocket.
+   */
+  function createWebSocket(url, protocols) {
+    // This should come from the bootstrap channel, but we want this to
+    // work for the synchronous constructor here.
+    if (url.startsWith('wss://generativelanguage.googleapis.com/')) {
+      return Reflect.construct(ProxiedWebSocket, [url, protocols]);
+    }
+    return Reflect.construct(originalWebSocket, [url, protocols]);
+  }
+
+  Object.defineProperty(window, 'WebSocket', {
+    get: function() {
+      return createWebSocket;
+    },
+  });
+
+  async function instrumentErrorReporting() {
+    const errors = [];
+    let hostPort;
+
+    function reportError(message) {
+      if (!hostPort) {
+        errors.push(message);
+      } else {
+        hostPort.postMessage({type: 'error', message: message}, message);
+      }
+    }
+
+    function serialize(args) {
+      return args.map((a) => {
+        if (a instanceof Error || a instanceof ErrorEvent) {
+          return a.message;
+        }
+        if(a instanceof CloseEvent) {
+          return {code: a.code, reason: a.reason, wasClean: a.wasClean};
+        }
+        if( a instanceof Map) {
+          return JSON.parse(JSON.stringify([...a.entries()]));
+        }
+        if( a instanceof Set) {
+          return JSON.parse(JSON.stringify([...a.values()]));
+        }
+        if (a instanceof Object) {
+          return JSON.parse(JSON.stringify(a));
+        }
+        return a;
+      });
+    }
+
+    const originalConsole = window.console;
+    const originalConsoleLog = window.console.log;
+    const originalConsoleError = window.console.error;
+    const originalConsoleWarn = window.console.warn;
+    const originalConsoleDebug = window.console.debug;
+    window.console = {
+      ...originalConsole,
+      log: (message, ...args) => {
+        originalConsoleLog.apply(window.console, [message, ...args]);
+        const combined = serialize([message, ...args]);
+        reportError({type: 'console_log', message: combined });
+      },
+      debug: (message, ...args) => {
+        originalConsoleDebug.apply(window.console, [message, ...args]);
+        const combined = serialize([message, ...args]);
+        reportError({type: 'console_debug', message: combined });
+      },
+      error: (message, ...args) => {
+        originalConsoleError.apply(window.console, [message, ...args]);
+        const combined = serialize([message, ...args]);
+        reportError({type: 'console_error', message: combined });
+      },
+      warn: (message, ...args) => {
+        originalConsoleWarn.apply(window.console, [message, ...args]);
+        const combined = serialize([message, ...args]);
+        reportError({type: 'console_warn', message: combined });
+      },
+    };
+
+    window.onerror = (message, source, lineno, colno, error) => {
+      reportError({type: 'error', message: serialize([message]), source, lineno, colno, error});
+    };
+
+    window.onunhandledrejection = (event) => {
+      reportError({type: 'unhandledrejection', message: serialize([event.reason])});
+    };
+
+    window.alert = (message) => {
+      reportError({type: 'alert', message: serialize([message]) });
+    };
+
+    hostPort = (await bootstrapChannel).port;
+    for(const error of errors) {
+      hostPort.postMessage({type: 'error', message: error});
+    }
+  }
+
+  const availableFiles = new Set(window.APPLET_FILES || []);
+
+  instrumentErrorReporting();
+
+  if (false) {
+    const notifyLocationChange = async () => {
+      const hostPort = (await bootstrapChannel).port;
+      hostPort.postMessage({type: 'locationchange', href: location.href});
+    };
+
+    // Send initial state on load.
+    notifyLocationChange();
+
+    const originalPushState = history.pushState;
+    history.pushState = (...args) => {
+      originalPushState.apply(history, args);
+      notifyLocationChange();
+    };
+
+    const originalReplaceState = history.replaceState;
+    history.replaceState = (...args) => {
+      originalReplaceState.apply(history, args);
+      notifyLocationChange();
+    };
+    window.addEventListener('popstate', (e) => {
+      notifyLocationChange();
+    });
+  }
+
+  window.addEventListener('hashchange', async (e) =>{
+    const config = await bootstrapChannel;
+    const hostPort = config.port;
+    hostPort.postMessage({type: 'hashchange', hash: window.location.hash});
+    if (false) {
+      hostPort.postMessage({
+        type: 'locationchange',
+        href: location.href,
+      });
+    }
+  });
+
+  if (true) {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/html2canvas-pro';
+    script.onload = () => {
+      window.addEventListener('message', async (event) => {
+        if (event.data?.type === 'capture-screenshot') {
+          try {
+            const canvas = await html2canvas(document.documentElement, {
+              logging: false,
+              useCORS: true,
+              backgroundColor: null,
+              scale: 1,
+            });
+            const hostPort = (await bootstrapChannel).port;
+            hostPort.postMessage(
+              {
+                type: 'screenshot-result',
+                dataUrl: canvas.toDataURL('image/png'),
+                requestId: event.data.requestId,
+                scrollX: document.body.scrollLeft,
+                scrollY: document.body.scrollTop,
+              },
+            );
+          } catch (e) {
+            const hostPort = (await bootstrapChannel).port;
+            hostPort.postMessage(
+              {
+                type: 'screenshot-error',
+                error: e.message,
+                requestId: event.data.requestId,
+              });
+          }
+        }
+      });
+    };
+    document.head.appendChild(script);
+  }
+
+  if (false) {
+    const MAX_ANCESTOR_LEVEL = 3;
+    const MAX_DESCENDANT_LEVEL = 3;
+
+    function getElementSelector(el) {
+      if (!el || el.nodeType !== 1) {
+        return '';
+      }
+      const parts = [];
+      while(el && el.nodeType === 1 && el.tagName.toLowerCase() !== 'body') {
+        let part = el.tagName.toLowerCase();
+        if (el.id) {
+          part += '#' + CSS.escape(el.id);
+        }
+
+        const parent = el.parentElement;
+        if (parent) {
+          let nth = 1;
+          let prev = el.previousElementSibling;
+          while(prev) {
+            if (prev.tagName === el.tagName) {
+              nth++;
+            }
+            prev = prev.previousElementSibling;
+          }
+          part += ':nth-of-type(' + nth + ')';
+        }
+
+        parts.unshift(part);
+        el = el.parentElement;
+      }
+      return parts.join(' > ');
+    }
+
+    function getDomTreeAsString(element, depth, maxDepth) {
+      if (!element || element.nodeType !== 1 || depth > maxDepth) {
+        return '';
+      }
+      const tagName = element.tagName.toLowerCase();
+      let attrs = [];
+      if (element.id) {
+        attrs.push('id="' + element.id + '"');
+      }
+      if (element.classList.length > 0) {
+        attrs.push('class="' + element.classList.value + '"');
+      }
+      const attrString = attrs.length > 0 ? ' ' + attrs.join(' ') : '';
+
+      let content = '';
+      for (const node of element.childNodes) {
+        if (node.nodeType === 1) { // Element node
+          content += getDomTreeAsString(node, depth + 1, maxDepth);
+        } else if (node.nodeType === 3) { // Text node
+          content += node.textContent;
+        }
+      }
+
+      return '<' + tagName + attrString + '>' + content + '</' + tagName + '>';
+    }
+
+    const style = document.createElement('style');
+    style.textContent =
+      '.aistudio-focus-mode-highlight { box-shadow: inset 0 0 0 0.5px white, inset 0 0 0 1.5px #87a9ff !important; }' +
+      '#aistudio-focus-mode-tag { position: absolute; display: none; background: #87a9ff; border-radius: 4px; border: 0.5px solid white; z-index: 10000; text-transform: lowercase; padding: 2px 4px; color: #32302c; font-family: Inter, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; line-height: 16px; pointer-events: none; }';
+    document.head.appendChild(style);
+
+    let highlightedElement = null;
+    let focusTag = null;
+    let resizeObserver = null;
+    let iframeLoaded = false;
+
+    function positionFocusTag() {
+      if (!highlightedElement || !focusTag) return;
+      requestAnimationFrame(() => {
+        focusTag.style.display = 'inline-flex';
+        const rect = highlightedElement.getBoundingClientRect();
+        focusTag.style.top =
+          rect.top + window.scrollY - focusTag.offsetHeight - 5 + 'px';
+        focusTag.style.left = rect.left + window.scrollX + 'px';
+      });
+    }
+
+    if (window.ResizeObserver) {
+      resizeObserver = new ResizeObserver(() => {
+        positionFocusTag();
+      });
+    }
+
+    function highlight(element) {
+      if (!iframeLoaded) return; // Do not highlight if iframe is not loaded
+      if (!focusTag) {
+        focusTag = document.createElement('div');
+        focusTag.id = 'aistudio-focus-mode-tag';
+        document.body.appendChild(focusTag);
+      }
+
+      const hadHighlightedElement = !!highlightedElement;
+      if (highlightedElement) {
+        highlightedElement.classList.remove('aistudio-focus-mode-highlight');
+        highlightedElement.removeAttribute('data-aistudio-tag-name');
+        if (resizeObserver) {
+          resizeObserver.unobserve(highlightedElement);
+        }
+      }
+      focusTag.style.display = 'none';
+      highlightedElement = element;
+      const hasHighlightedElement = !!highlightedElement;
+
+      if (!hadHighlightedElement && hasHighlightedElement) {
+        window.addEventListener('resize', positionFocusTag);
+        window.addEventListener('scroll', positionFocusTag, true);
+      } else if (hadHighlightedElement && !hasHighlightedElement) {
+        window.removeEventListener('resize', positionFocusTag);
+        window.removeEventListener('scroll', positionFocusTag, true);
+      }
+
+      if (highlightedElement) {
+        highlightedElement.setAttribute(
+          'data-aistudio-tag-name',
+          highlightedElement.tagName,
+        );
+        highlightedElement.classList.add('aistudio-focus-mode-highlight');
+        focusTag.textContent = highlightedElement.tagName.toLowerCase();
+        positionFocusTag();
+        if (resizeObserver) {
+          resizeObserver.observe(highlightedElement);
+        }
+      }
+    }
+
+    window.addEventListener('load', () => {
+      iframeLoaded = true;
+    });
+
+    window.addEventListener('message', async (event) => {
+      if (event.data?.type === 'highlight-element-at-point') {
+        try {
+          const element = document.elementFromPoint(
+            event.data.x,
+            event.data.y,
+          );
+          highlight(element);
+        } catch (e) {
+          highlight(null);
+        }
+      } else if (event.data?.type === 'highlight-element-by-selector') {
+        try {
+          const selector = event.data.selector;
+          if (selector) {
+            const element = document.querySelector(selector);
+            highlight(element);
+          } else {
+            highlight(null);
+          }
+        } catch (e) {
+          highlight(null);
+        }
+      } else if (event.data?.type === 'get-element-at-point') {
+        try {
+          const element = document.elementFromPoint(
+            event.data.x,
+            event.data.y,
+          );
+          const hostPort = (await bootstrapChannel).port;
+          if (!element) {
+            hostPort.postMessage({
+              type: 'element-at-point-error',
+              error: 'No element found at point',
+              requestId: event.data.requestId,
+            });
+            return;
+          }
+          const selector = getElementSelector(element);
+
+          let levelsUp = 0;
+          let root = element;
+          while(levelsUp < MAX_ANCESTOR_LEVEL && root.parentElement && root.parentElement.tagName.toLowerCase() !== 'html') {
+            root = root.parentElement;
+            levelsUp++;
+          }
+          const domString = getDomTreeAsString(root, 0, levelsUp + MAX_DESCENDANT_LEVEL);
+
+          const styles = window.getComputedStyle(element);
+          const css = {};
+          for (let i = 0; i < styles.length; i++) {
+            const key = styles[i];
+            css[key] = styles.getPropertyValue(key);
+          }
+          hostPort.postMessage({
+            type: 'element-at-point-result',
+            element: {
+              selector: selector,
+              domString: domString,
+              css: css,
+              x: event.data.x,
+              y: event.data.y,
+            },
+            requestId: event.data.requestId,
+          });
+        } catch (e) {
+          const hostPort = (await bootstrapChannel).port;
+          hostPort.postMessage({
+            type: 'element-at-point-error',
+            error: e.message,
+            requestId: event.data.requestId,
+          });
+        }
+      } else if (event.data?.type === 'change-element-style') {
+        try {
+          const selector = event.data.selector;
+          if (selector) {
+            const element = document.querySelector(selector);
+            if (element) {
+              element.style.setProperty(
+                event.data.property,
+                event.data.value,
+                'important',
+              );
+              positionFocusTag();
+            }
+          }
+        } catch (e) {}
+      }
+    });
+  }
+
+  window.addEventListener('keydown', async (event) => {
+    if (event.key === 'Escape' && window.aistudio?.handleFullscreenEsc) {
+      const hostPort = (await bootstrapChannel).port;
+      hostPort.postMessage({type: 'exit-fullscreen'});
+    }
+  });
+})();
+// # sourceURL=iframe_shim.js
+        </script>
+        <base href="https://ai.studio">
+
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NÉO_DZ | CORE_INTERFACE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fira Code', monospace;
+            background-color: #0a0a0a;
+            color: #00ff41;
+        }
+        /* Scanline effect */
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 255, 65, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 6s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+        .glow {
+            text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+        }
+        .terminal-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .terminal-scroll::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: #003b00;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #00ff41;
+        }
+
+        /* Copy Source Button Styling */
+        #copy-source-code {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            z-index: 60;
+            background: rgba(0, 20, 0, 0.8);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 8px 12px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+            font-weight: bold;
+        }
+        #copy-source-code:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+        #copy-source-code:active {
+            transform: scale(0.95);
+        }
+        #copy-source-code.success {
+            border-color: #fff;
+            color: #fff;
+            background: rgba(0, 255, 65, 0.4);
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.relative{position:relative}.inset-0{inset:0px}.z-50{z-index:50}.m-0{margin:0px}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.ml-auto{margin-left:auto}.flex{display:flex}.hidden{display:none}.h-screen{height:100vh}.h-2{height:0.5rem}.h-fit{height:-moz-fit-content;height:fit-content}.h-full{height:100%}.w-full{width:100%}.w-screen{width:100vw}.w-2{width:0.5rem}.w-64{width:16rem}.max-w-md{max-width:28rem}.shrink-0{flex-shrink:0}.flex-grow{flex-grow:1}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.whitespace-nowrap{white-space:nowrap}.whitespace-pre-wrap{white-space:pre-wrap}.break-words{overflow-wrap:break-word}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-\[1px\]{border-width:1px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-r{border-right-width:1px}.border-t{border-top-width:1px}.border-none{border-style:none}.border-\[\#00ff41\]{--tw-border-opacity:1;border-color:rgb(0 255 65 / var(--tw-border-opacity, 1))}.border-\[\#003b00\]{--tw-border-opacity:1;border-color:rgb(0 59 0 / var(--tw-border-opacity, 1))}.border-\[\#00ff41\]\/10{border-color:rgb(0 255 65 / 0.1)}.border-\[\#00ff41\]\/30{border-color:rgb(0 255 65 / 0.3)}.bg-black{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-\[\#050505\]{--tw-bg-opacity:1;background-color:rgb(5 5 5 / var(--tw-bg-opacity, 1))}.bg-\[\#003b00\]{--tw-bg-opacity:1;background-color:rgb(0 59 0 / var(--tw-bg-opacity, 1))}.bg-\[\#0a0a0a\]{--tw-bg-opacity:1;background-color:rgb(10 10 10 / var(--tw-bg-opacity, 1))}.bg-green-500{--tw-bg-opacity:1;background-color:rgb(34 197 94 / var(--tw-bg-opacity, 1))}.bg-transparent{background-color:transparent}.p-0{padding:0px}.p-6{padding:1.5rem}.p-8{padding:2rem}.p-2{padding:0.5rem}.p-4{padding:1rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.pb-1{padding-bottom:0.25rem}.pl-3{padding-left:0.75rem}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[10px\]{font-size:10px}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-\[8px\]{font-size:8px}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.uppercase{text-transform:uppercase}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.leading-relaxed{line-height:1.625}.tracking-tighter{letter-spacing:-0.05em}.tracking-widest{letter-spacing:0.1em}.text-\[\#00ff41\]{--tw-text-opacity:1;color:rgb(0 255 65 / var(--tw-text-opacity, 1))}.text-\[\#00ff41\]\/60{color:rgb(0 255 65 / 0.6)}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-green-400{--tw-text-opacity:1;color:rgb(74 222 128 / var(--tw-text-opacity, 1))}.text-green-500{--tw-text-opacity:1;color:rgb(34 197 94 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-green-800{--tw-text-opacity:1;color:rgb(22 101 52 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.opacity-60{opacity:0.6}.opacity-80{opacity:0.8}.opacity-50{opacity:0.5}.opacity-70{opacity:0.7}.shadow-\[0_0_20px_rgba\(0\2c 255\2c 65\2c 0\.2\)\]{--tw-shadow:0 0 20px rgba(0,255,65,0.2);--tw-shadow-colored:0 0 20px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-\[\#00ff41\] *::selection{--tw-bg-opacity:1;background-color:rgb(0 255 65 / var(--tw-bg-opacity, 1))}.selection\:text-black *::selection{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.selection\:bg-\[\#00ff41\]::selection{--tw-bg-opacity:1;background-color:rgb(0 255 65 / var(--tw-bg-opacity, 1))}.selection\:text-black::selection{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.hover\:border-\[\#00ff41\]:hover{--tw-border-opacity:1;border-color:rgb(0 255 65 / var(--tw-border-opacity, 1))}.hover\:bg-\[\#00ff41\]:hover{--tw-bg-opacity:1;background-color:rgb(0 255 65 / var(--tw-bg-opacity, 1))}.hover\:bg-\[\#003b00\]:hover{--tw-bg-opacity:1;background-color:rgb(0 59 0 / var(--tw-bg-opacity, 1))}.hover\:bg-\[\#00ff41\]\/10:hover{background-color:rgb(0 255 65 / 0.1)}.hover\:text-black:hover{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.focus\:ring-0:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}@media (min-width: 640px){.sm\:inline{display:inline}.sm\:hidden{display:none}}@media (min-width: 768px){.md\:inline{display:inline}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}}@media (min-width: 1024px){.lg\:flex{display:flex}}</style><script src="https://cdn.jsdelivr.net/npm/html2canvas-pro"></script></head>
+<body class="overflow-hidden m-0 p-0">
+    <div id="root"><div class="h-screen w-screen flex flex-col bg-black text-[#00ff41] overflow-hidden selection:bg-[#00ff41] selection:text-black"><div class="flex flex-col md:flex-row justify-between items-start md:items-center p-4 border-b border-[#003b00] bg-[#050505] gap-4"><div class="flex flex-col"><h1 class="text-xl font-bold tracking-widest glow">CŒUR SYSTÈME</h1><div class="flex items-center gap-2 text-xs"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span><span class="opacity-70">LIEN SÉCURISÉ : ACTIF</span></div></div><div class="flex gap-4 text-sm font-medium"><span class="px-2 py-1 border border-[#003b00] hover:bg-[#003b00] cursor-pointer">AR</span><span class="px-2 py-1 border border-[#00ff41] bg-[#003b00] cursor-pointer">FR</span><span class="px-2 py-1 border border-[#003b00] hover:bg-[#003b00] cursor-pointer">EN</span></div><div class="text-xl font-mono tracking-tighter tabular-nums">08:08:54</div></div><div class="flex flex-grow overflow-hidden"><aside class="hidden lg:flex flex-col w-64 border-r border-[#003b00] p-4 text-[10px] space-y-6 opacity-80 uppercase tracking-widest font-mono"><div><div class="border-b border-[#003b00] mb-2 pb-1 font-bold">SYSTÈME</div><div class="space-y-1"><div class="flex justify-between"><span>HOST:</span> <span class="text-white">NÉO_DZ_SRV_01</span></div><div class="flex justify-between"><span>ENV:</span> <span class="text-white">termux_x64</span></div><div class="flex justify-between"><span>KERNEL:</span> <span class="text-white">v1.0.5-stable</span></div></div></div><div><div class="border-b border-[#003b00] mb-2 pb-1 font-bold">RÉSEAU</div><div class="space-y-1"><div class="flex justify-between"><span>LIAISON:</span> <span class="text-green-500">OPTIMALE</span></div><div class="flex justify-between"><span>PROXY:</span> <span class="text-white">ACTIF</span></div><div class="flex justify-between"><span>IP:</span> <span class="text-white">192.168.1.104</span></div></div></div><div class="flex-grow"></div><div class="text-center p-2 border border-[#003b00] text-[8px]">© 2025 NÉO_DZ TECHNOLOGIES<br>ALL RIGHTS RESERVED</div></aside><main class="flex-grow flex flex-col relative"><div class="flex flex-col h-full bg-[#0a0a0a] relative overflow-hidden"><div class="scanline"></div><div class="flex-grow overflow-y-auto p-4 terminal-scroll space-y-3 font-mono text-sm"><div class="group relative border-l border-[#00ff41]/10 pl-3"><div class="flex flex-col md:flex-row items-start gap-2 mb-1"><span class="text-gray-600 shrink-0 select-none hidden md:inline opacity-50 text-xs">[20:50:13]</span><button class="text-[10px] px-2 py-0.5 border border-[#00ff41]/30 hover:border-[#00ff41] hover:bg-[#00ff41]/10 transition-colors uppercase tracking-tighter shrink-0 h-fit ml-auto text-[#00ff41]/60">COPY</button></div><div class="whitespace-pre-wrap break-words text-[#00ff41]">[BOOT] Initialisation de NÉO_DZ...</div></div><div class="group relative border-l border-[#00ff41]/10 pl-3"><div class="flex flex-col md:flex-row items-start gap-2 mb-1"><span class="text-gray-600 shrink-0 select-none hidden md:inline opacity-50 text-xs">[20:50:14]</span><button class="text-[10px] px-2 py-0.5 border border-[#00ff41]/30 hover:border-[#00ff41] hover:bg-[#00ff41]/10 transition-colors uppercase tracking-tighter shrink-0 h-fit ml-auto text-[#00ff41]/60">COPY</button></div><div class="whitespace-pre-wrap break-words text-[#00ff41]">[SYSTÈME] Noyau : NÉO-CORE v1.0.5</div></div><div class="group relative border-l border-[#00ff41]/10 pl-3"><div class="flex flex-col md:flex-row items-start gap-2 mb-1"><span class="text-gray-600 shrink-0 select-none hidden md:inline opacity-50 text-xs">[20:50:14]</span><button class="text-[10px] px-2 py-0.5 border border-[#00ff41]/30 hover:border-[#00ff41] hover:bg-[#00ff41]/10 transition-colors uppercase tracking-tighter shrink-0 h-fit ml-auto text-[#00ff41]/60">COPY</button></div><div class="whitespace-pre-wrap break-words text-[#00ff41]">[SYSTEM] ENV: Termux Virtualized Shell</div></div><div class="group relative border-l border-[#00ff41]/10 pl-3"><div class="flex flex-col md:flex-row items-start gap-2 mb-1"><span class="text-gray-600 shrink-0 select-none hidden md:inline opacity-50 text-xs">[20:50:14]</span><button class="text-[10px] px-2 py-0.5 border border-[#00ff41]/30 hover:border-[#00ff41] hover:bg-[#00ff41]/10 transition-colors uppercase tracking-tighter shrink-0 h-fit ml-auto text-[#00ff41]/60">COPY</button></div><div class="whitespace-pre-wrap break-words text-green-500">[SUCCÈS] Connexion établie.</div></div><div class="group relative border-l border-[#00ff41]/10 pl-3"><div class="flex flex-col md:flex-row items-start gap-2 mb-1"><span class="text-gray-600 shrink-0 select-none hidden md:inline opacity-50 text-xs">[20:50:14]</span><button class="text-[10px] px-2 py-0.5 border border-[#00ff41]/30 hover:border-[#00ff41] hover:bg-[#00ff41]/10 transition-colors uppercase tracking-tighter shrink-0 h-fit ml-auto text-[#00ff41]/60">COPY</button></div><div class="whitespace-pre-wrap break-words text-green-400 font-medium">NÉO_DZ
+Bienvenue u0_a290. NÉO est opérationnel. Langue : Français.</div></div><div class="group relative border-l border-[#00ff41]/10 pl-3"><div class="flex flex-col md:flex-row items-start gap-2 mb-1"><span class="text-gray-600 shrink-0 select-none hidden md:inline opacity-50 text-xs">[08:08:31]</span><span class="text-white font-bold opacity-80">u0_a290@neo-core:~$</span><button class="text-[10px] px-2 py-0.5 border border-[#00ff41]/30 hover:border-[#00ff41] hover:bg-[#00ff41]/10 transition-colors uppercase tracking-tighter shrink-0 h-fit ml-auto text-[#00ff41]/60">COPY</button></div><div class="whitespace-pre-wrap break-words text-white font-bold">ls</div></div><div class="group relative border-l border-[#00ff41]/10 pl-3"><div class="flex flex-col md:flex-row items-start gap-2 mb-1"><span class="text-gray-600 shrink-0 select-none hidden md:inline opacity-50 text-xs">[08:08:32]</span><button class="text-[10px] px-2 py-0.5 border border-[#00ff41]/30 hover:border-[#00ff41] hover:bg-[#00ff41]/10 transition-colors uppercase tracking-tighter shrink-0 h-fit ml-auto text-[#00ff41]/60">COPY</button></div><div class="whitespace-pre-wrap break-words text-green-400 font-medium">```
+[BOOT] u0_a290 interface initialized.
+[KERNEL] NÉO-CORE v1.0.5 active.
+
+Listing directory contents of /home/u0_a290:
+
+.bashrc       [FILE] Configuration script
+.profile      [FILE] Session initialization
+data/         [DIR] Encrypted data storage
+logs/         [DIR] System activity logs
+scripts/      [DIR] Execution modules
+README.md     [FILE] System overview document
+
+[BUFFER] 5 items listed. Awaiting next command.
+```</div></div></div><form class="p-4 border-t border-[#003b00] bg-[#050505] flex items-center gap-2"><span class="text-white font-bold whitespace-nowrap hidden sm:inline">u0_a290@neo-core:~$</span><span class="text-white font-bold sm:hidden">$</span><input class="bg-transparent border-none outline-none text-[#00ff41] flex-grow font-mono focus:ring-0 p-0" placeholder="Interroger le cœur NÉO..." type="text" value=""></form></div></main></div><div class="fixed inset-0 pointer-events-none border-[1px] border-[#00ff41]/10 z-50"></div></div></div>
+
+    <button id="copy-source-code" onclick="copyEntireSource()">
+        [COPY_SOURCE]
+    </button>
+
+    <script>
+        async function copyEntireSource() {
+            const btn = document.getElementById('copy-source-code');
+            const originalText = btn.innerText;
+            try {
+                // Get the current HTML including the doctype
+                const source = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+                await navigator.clipboard.writeText(source);
+                
+                btn.innerText = '[SOURCE_COPIED]';
+                btn.classList.add('success');
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('success');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy system source:', err);
+                btn.innerText = '[ERR_COPY_FAILED]';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                }, 2000);
+            }
+        }
+    </script>
+
+
+
+        <script type="module" onerror="console.warn('Failed to load the app. Try reloading it.')">import '@/index';</script>
+        </body></html>
