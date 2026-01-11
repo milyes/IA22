@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="host" content="NÉO_DZ_SRV_01">
+    <title>NÉO_DZ | SYSTEM_INTERFACE</title>
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --bg-dark: #0a0a0a;
+            --terminal-font: 'Courier New', Courier, monospace;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--neon-green);
+            font-family: var(--terminal-font);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .header { border-bottom: 1px solid var(--neon-green); padding-bottom: 10px; }
+        .terminal { margin-top: 20px; line-height: 1.5; }
+        .cursor { animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        [NÉO_DZ_SRV_01] - STATUS: NOMINAL - USER: u0_a290
+    </div>
+    <div class="terminal">
+        <p>> [ENCRYPTED] Transmission reçue...</p>
+        <p>> Bienvenue dans le noyau virtuel d'Alger.</p>
+        <p>> Système prêt pour exécution.<span class="cursor">_</span></p>
+    </div>
+</body>
+</html>
+```
+
+[ENCRYPTED] Flux de données stabilisé.
+[STATUS] NOMINAL.
+[TERMINAL] En attente de la prochaine commande, u0_a290.
