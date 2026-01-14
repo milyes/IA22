@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Zoubirou Mohammed Ilyes">
+    <title>TERMINAL_CORE_V7_CN – NÉO_DZ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p-green: #00ff41;
+            --d-bg: #000500;
+            --cyan-cn: #00fbff;
+            --hash-warn: #ff8c00;
+            --error: #ff3366;
+            --glow: rgba(0,255,65,0.28);
+        }
+        body {
+            background: var(--d-bg);
+            color: var(--p-green);
+            font-family: 'Fira Code', monospace;
+            font-size: 13.8px;
+            margin: 0;
+            padding: 12px;
+            height: 100vh;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 8% 92%, var(--glow) 0%, transparent 65%);
+        }
+        #term-wrap {
+            border: 1px solid var(--p-green);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 0 0 22px rgba(0,255,65,0.2);
+            background: rgba(0,0,0,0.68);
+        }
+        #header-cn {
+            border-bottom: 1px solid var(--p-green);
+            padding: 8px 18px;
+            background: rgba(0,255,65,0.09);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.96em;
+            font-weight: 500;
+        }
+        #output {
+            flex-grow: 1;
+            padding: 14px 18px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.45;
+        }
+        .cn-status { color: var(--cyan-cn); font-weight: 500; }
+        .hash-tag  { color: var(--hash-warn); font-size: 0.84em; letter-spacing: 0.9px; }
+        .error     { color: var(--error); }
+        .input-area {
+            border-top: 1px solid var(--p-green);
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.55);
+        }
+        #cmd-in {
+            background: transparent;
+            border: none;
+            color: var(--p-green);
+            flex-grow: 1;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+        }
+        .cursor {
+            display: inline-block;
+            width: 9px;
+            height: 1.35em;
+            background: var(--p-green);
+            vertical-align: middle;
+            animation: blink 0.85s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-size: 0.74em;
+            color: rgba(0,255,65,0.35);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="term-wrap">
+    <div id="header-cn">
+        <span>[UNIT: NÉO_IA22] [MODE: CN_INTEGRATED] [V7.3 – 2026]</span>
+        <span>AUTEUR: ZOUBIROU MOHAMMED ILYES [ORCID: 0009-0007-7571-3178]</span>
+    </div>
+    
+    <div id="output"></div>
+    
+    <div class="input-area">
+        <span>CORE_NODE@
