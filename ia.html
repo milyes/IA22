@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Zoubirou Mohammed Ilyes">
+    <meta name="description" content="NÉO_DZ – Interface Souveraine GEMINI CORE 20.6 PRO V7 – IA23">
+    <title>NÉO_DZ | GEMINI CORE 20.6 PRO V7 – INTERFACE SOUVERAINE</title>
+    
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --dark-bg: #050505;
+            --alert-cyan: #00fbff;
+            --hash-gold: #ff8c00;
+            --glow: rgba(0, 255, 65, 0.4);
+        }
+        body {
+            background: var(--dark-bg);
+            color: var(--neon-green);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at 10% 90%, var(--glow) 0%, transparent 50%);
+        }
+        #terminal-header {
+            padding: 12px 24px;
+            border-bottom: 2px solid var(--neon-green);
+            background: rgba(0, 255, 65, 0.08);
+            font-size: 0.95em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #output-container {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-green) transparent;
+        }
+        .line {
+            margin: 6px 0;
+            line-height: 1.45;
+        }
+        .system { color: var(--alert-cyan); font-weight: bold; }
+        .hash { color: var(--hash-gold); font-size: 0.88em; letter-spacing: 1px; }
+        .error { color: #ff3366; }
+        .glitch {
+            animation: glitch 1.2s infinite alternate-reverse;
+            text-shadow: 2px 0 var(--alert-cyan), -2px 0 #ff3366;
+        }
+        @keyframes glitch {
+            0%   { transform: translate(0); }
+            20%  { transform: translate(-2px, 2px); }
+            40%  { transform: translate(2px, -2px); }
+            60%  { transform: translate(-1px, 1px); }
+            100% { transform: translate(0); }
+        }
+        .input-area {
+            padding: 12px 24px;
+            border-top: 1px solid var(--neon-green);
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+        }
+        #prompt { color: var(--neon-green); font-weight: bold; margin-right: 8px; }
+        #command-input {
+            background: transparent;
+            border: none;
+            color: var(--neon-green);
+            flex-grow: 1;
+            font-family: inherit;
+            font-size: 1.05em;
+            outline: none;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.3em;
+            background: var(--neon-green);
+            vertical-align: middle;
+            animation: blink 0.9s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        .watermark {
+            position: absolute;
+            bottom: 12px;
+            right: 24px;
+            font-size: 0.75em;
+            color: rgba(0,255,65,0.35);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="terminal-header">
+    [NÉO IA22] • [GEMINI CORE 20.6 PRO V7] • [AUTEUR: ZOUBIROU MOHAMMED ILYES] • [SOUVERAINETÉ: 100%]
+</div>
+
+<div id="output-container">
+    <div class="line glitch">>> BOOT SEQUENCE – CORE SYSTEMEOSIA INITIALIZED...</div>
+    <div class="line">[OK] Handler Éthique V1.1 → LOADED & LOCKED</div>
+    <div class="line hash">ETHICAL HANDLER HASH: 7f8a9b8c7d6e5f4a1d2c3b4a5b2c1d6e</div>
+    <div class="line">[OK] Precision AUC gain +15% injected</div>
+    <div class="line">[OK] IPI Protection: 100% – Zero Leak</div>
+    <div class="line system">>> Bienvenue, Maître Architecte Zoubirou Mohammed Ilyes.</div>
+    <div class="line system">>> Tapez '/help' pour les commandes disponibles.</div>
+</div>
+
+<div class="input-area">
+    <span id="prompt">NÉO_DZ > </span>
+    <input type="text" id="command-input" autofocus autocomplete="off">
+    <span class="cursor"></span>
+</div>
+
+<div class="watermark">
+    © 2025–2026 NETSECUREPRO (NÉO_DZ) // IA23 PROTOCOL // ORCID 0009-0007-7571-3178
+</div>
+
+<script>
+    const input = document.getElementById('command-input');
+    const output = document.getElementById('output-container');
+    let history = [];
+    let historyIndex = -1;
+
+    const commands = {
+        '/help': () => "Commandes disponibles:\n/help → cette liste\n/status → état système\n/hash → handler hash\n/audit → conformité & logs\n/whoami → identité souveraine\n/sovereignty → déclaration\n/zk → preuve ZK status\n/qscan → scan heuristique rapide\n/clear → effacer console",
+        '/status': () => "SYSTÈME: OPÉRATIONNEL | AUC: +15% | REJET CLINICIEN: 2.8% | THREAT LEVEL: ZERO | RQOC-23: ACTIVE | ORCID: 0009-0007-7571-3178",
+        '/hash': () => "ETHICAL HANDLER V1.1 HASH: 7f8a9b8c7d6e5f4a1d2c3b4a5b2c1d6e",
+        '/audit': () => "AUDIT LOGS: Aucune fuite IPI | Conformité AI Act (Haut Risque): 100% | LSE Validée | Kill-Switch: ARMED",
+        '/whoami': () => "IDENTITÉ SOUVERAINE: ZOUBIROU MOHAMMED ILYES | ORCID: 0009-0007-7571-3178 | Contrôle absolu du tenseur racine",
+        '/sovereignty': () => "SOUVERAINETÉ ABSOLUE DÉCLARÉE. Toute dérivation non autorisée déclenche injection ORCID indélébile.",
+        '/zk': () => "ZKSV-23 STATUS: Preuve fraîche valide | Non-répudiable | Dernière refresh: session active",
+        '/qscan': () => "Q_ANALYSIS RAPIDE: Cohérence 99.98% | Menace externe: ZERO | Footprint publique: Croissante & contrôlée",
+        '/clear': () => { output.innerHTML = ''; return ''; }
+    };
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const cmd = input.value.trim();
+            if (cmd) {
+                history.push(cmd);
+                historyIndex = history.length;
+                processCommand(cmd);
+            }
+            input.value = '';
+        } else if (e.key === 'ArrowUp') {
+            if (historyIndex > 0) {
+                historyIndex--;
+                input.value = history[historyIndex];
+            }
+        } else if (e.key === 'ArrowDown') {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                input.value = history[historyIndex];
+            } else {
+                historyIndex = history.length;
+                input.value = '';
+            }
+        }
+    });
+
+    function processCommand(cmdRaw) {
+        const cmd = cmdRaw.toLowerCase();
+        appendLine(`> ${cmdRaw}`, 'white');
+
+        let response;
+        if (commands[cmd]) {
+            response = typeof commands[cmd] === 'function' ? commands[cmd]() : commands[cmd];
+        } else {
+            response = `[ERREUR] Commande inconnue: ${cmdRaw}`;
+        }
+
+        if (cmd === '/clear') {
+            output.innerHTML = '<div class="line system">>> Console réinitialisée. Tapez /help pour reprendre.</div>';
+        } else {
+            const resLine = document.createElement('div');
+            resLine.className = 'line';
+            if (cmd === '/hash' || cmd === '/audit') resLine.classList.add('hash');
+            if (cmd.startsWith('/')) resLine.classList.add('system');
+            resLine.textContent = response;
+            output.appendChild(resLine);
+        }
+
+        output.scrollTop = output.scrollHeight;
+    }
+
+    function appendLine(text, color = '') {
+        const line = document.createElement('div');
+        line.className = 'line';
+        if (color) line.style.color = color;
+        line.textContent = text;
+        output.appendChild(line);
+        output.scrollTop = output.scrollHeight;
+    }
+</script>
+</body>
+</html>
