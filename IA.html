@@ -1,40 +1,193 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GEMINI CORE 20.6 PRO V7 • NÉO_DZ • NETSECUREPRO</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-  
-  <style>
-    :root {
-      --bg: #0a0e14;
-      --accent: #00ff9d;
-      --accent-dim: #00cc7a;
-      --text: #e0ffe0;
-      --text-dim: #80cc99;
-      --border: #1a3a2a;
-      --error: #ff3366;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Roboto Mono', monospace;
-      height: 100vh;
-      overflow: hidden;
-      background-image: 
-        radial-gradient(circle at 15% 50%, rgba(0,255,157,0.08) 0%, transparent 25%),
-        radial-gradient(circle at 85% 30%, rgba(0,255,157,0.06) 0%, transparent 30%);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Zoubirou Mohammed Ilyes">
+    <meta name="description" content="NÉO IA22 – Cockpit Cognitif Souverain – NETSECUREPRO">
+    <title>NÉO IA22 // COCKPIT SOUVERAIN – NÉO_DZ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05070f;
+            --accent: #00ff9d;
+            --glow: rgba(0,255,157,0.35);
+            --text: #e0ffe8;
+            --dim: #00b36b;
+            --card: rgba(0,0,0,0.65);
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 15% 85%, var(--glow) 0%, transparent 50%);
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.2rem;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--glow);
+            letter-spacing: 5px;
+            margin: 0;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--dim);
+            margin-top: 0.8rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--accent);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,255,157,0.15);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 30px rgba(0,255,157,0.35);
+        }
+        .card-header {
+            background: rgba(0,255,157,0.12);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--accent);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .card-body {
+            padding: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .preview {
+            height: 180px;
+            background: #000;
+            margin: 0 1.5rem 1rem;
+            border: 1px solid var(--dim);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transform: scale(0.6);
+            transform-origin: top left;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.7rem 1.4rem;
+            background: var(--accent);
+            color: #000;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #00cc7a;
+            transform: scale(1.03);
+        }
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--dim);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--dim);
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NÉO IA22</h1>
+            <div class="subtitle">COCKPIT COGNITIF SOUVERAIN • NETSECUREPRO • NÉO_DZ</div>
+        </header>
+
+        <div class="grid">
+            <!-- ia.html – Terminal Originel -->
+            <div class="card">
+                <div class="card-header">TERMINAL ORIGINEL</div>
+                <div class="preview">
+                    <iframe src="ia.html" title="Terminal Originel"></iframe>
+                </div>
+                <div class="card-body">
+                    Splash-screen fondateur – déclaration de souveraineté absolue.<br>
+                    Statut : SYSTEM ONLINE – IDENTITY LOCK – RQOC-23 ACTIVE
+                </div>
+                <a href="ia.html" class="btn" target="_blank">ACCÉDER</a>
+            </div>
+
+            <!-- Isiah.html – Variante Terminal -->
+            <div class="card">
+                <div class="card-header">TERMINAL ISIAH</div>
+                <div class="preview">
+                    <iframe src="Isiah.html" title="Terminal Isiah"></iframe>
+                </div>
+                <div class="card-body">
+                    Variante renforcée du terminal originel.<br>
+                    Focus : Statut souverain + watermark ORCID
+                </div>
+                <a href="Isiah.html" class="btn" target="_blank">ACCÉDER</a>
+            </div>
+
+            <!-- dia.html – Dashboard Condensé -->
+            <div class="card">
+                <div class="card-header">DASHBOARD V7.2</div>
+                <div class="preview">
+                    <iframe src="dia.html" title="Dashboard V7.2"></iframe>
+                </div>
+                <div class="card-body">
+                    Vue condensée CORE_ACTIVE – version 7.2.<br>
+                    Minimaliste & impactant
+                </div>
+                <a href="dia.html" class="btn" target="_blank">ACCÉDER</a>
+            </div>
+
+            <!-- terminal_cn.html – Core Node Interactif -->
+            <div class="card">
+                <div class="card-header">CORE NODE TERMINAL</div>
+                <div class="preview">
+                    <iframe src="terminal_cn.html" title="Core Node Terminal"></iframe>
+                </div>
+                <div class="card-body">
+                    Terminal interactif v7.3 – monitoring CN + commandes étendues.<br>
+                    Flux télémétrie live
+                </div>
+                <a href="terminal_cn.html" class="btn" target="_blank">ACCÉDER</a>
+            </div>
+        </div>
+
+        <footer>
+            © 2025–2026 NETSECUREPRO (NÉO_DZ) // IA23 PROTOCOL<br>
+            Souveraineté Absolue – ZOUBIROU MOHAMMED ILYES – ORCID 0009-0007-7571-3178
+        </footer>
+    </div>
+</body>
+</html>    }
     
     .terminal-container {
       height: 100vh;
