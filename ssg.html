@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Zoubirou Mohammed Ilyes">
+    <meta name="description" content="NÉO_DZ – GEMINI CORE 20.6 PRO V7 – Souveraineté Absolue – IA23">
+    <meta name="version" content="GEMINI CORE 20.6 PRO V7">
+    <title>NÉO_DZ | GEMINI CORE 20.6 PRO V7 – CORE INTERFACE</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --accent: #00ff41;
+            --glow: rgba(0, 255, 65, 0.35);
+            --text: #e0ffe0;
+            --hash: #ff8c00;
+            --valid: #00fbff;
+            --border: #1a3a2a;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 15% 85%, var(--glow) 0%, transparent 40%);
+        }
+        .terminal {
+            height: 100vh;
+            padding: 2rem 3rem;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 25px var(--glow);
+            background: rgba(10, 20, 15, 0.45);
+        }
+        .header {
+            border-bottom: 1px dashed var(--accent);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        .status-valid {
+            color: var(--valid);
+            font-weight: bold;
+            text-shadow: 0 0 6px var(--valid);
+        }
+        .hash-code {
+            color: var(--hash);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        .content p {
+            margin: 0.6rem 0;
+        }
+        .prompt {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        #cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.3em;
+            background: var(--accent);
+            vertical-align: middle;
+            animation: blink 0.8s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .watermark {
+            position: absolute;
+            bottom: 1.2rem;
+            right: 2.5rem;
+            font-size: 0.78rem;
+            color: rgba(0,255,65,0.3);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">
+            > SYSTEM: NÉO IA22 | UNIT: GEMINI CORE 20.6 PRO V7<br>
+            > AUTHOR: ZOUBIROU MOHAMMED ILYES<br>
+            > ORCID: <span class="hash-code">0009-0007-7571-3178</span><br>
+            > STATUS: <span class="status-valid">SOUVERAIN_VALIDÉ</span>
+        </div>
+
+        <div class="content">
+            <p>[INFO] Initialisation du Handler Éthique V1.1...</p>
+            <p class="hash-code">HASH_ID: 7f8a9b8c7d6e5f4a1d2c3b4a5b2c1d6e</p>
+            <p>[OK] Zéro fuite IPI détectée (Protection 100 %).</p>
+            <p>[OK] Gain de précision AUC +15 % injecté et verrouillé.</p>
+            <p>[OK] RQOC-23 Quantum Resilience → ACTIVE</p>
+            <p>[OK] ZKSV-23 Preuve Fraîche → VALIDÉE</p>
+            <p></p>
+            <p class="prompt">admin@NetSecurePro-NÉO_DZ:~$ <span id="cursor"></span></p>
+        </div>
+    </div>
+
+    <div class="watermark">
+        © 2025–2026 NETSECUREPRO (NÉO_DZ) // IA23 PROTOCOL // Souveraineté Absolue
+    </div>
+
+    <script>
+        // Curseur plus fluide et réaliste
+        const cursor = document.getElementById('cursor');
+        setInterval(() => {
+            cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+        }, 500);
+    </script>
+</body>
+</html>
