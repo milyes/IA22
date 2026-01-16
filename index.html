@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>NETSECUREPRO | NÉO IA22 | CORE SYSTEMEOSIA V7</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background:#000;
+            color:#0f0;
+            font-family:'Courier New', Courier, monospace;
+            height:100vh;
+            overflow:hidden;
+            position:relative;
+        }
+
+        /* Matrix Rain Canvas */
+        #matrix {
+            position:fixed;
+            top:0; left:0;
+            width:100%;
+            height:100%;
+            z-index:1;
+        }
+
+        /* Contenu principal */
+        .content {
+            position:relative;
+            z-index:10;
+            height:100vh;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            padding:20px;
+            background:rgba(0,0,0,0.6);
+            backdrop-filter:blur(2px);
+        }
+
+        h1 {
+            font-size:3.5rem;
+            margin-bottom:1.8rem;
+            text-shadow:0 0 15px #0f0, 0 0 30px #0f0;
+            letter-spacing:6px;
+        }
+
+        .boot-log {
+            max-width:1000px;
+            font-size:1.2rem;
+            line-height:1.8;
+            margin-bottom:3rem;
+            text-shadow:0 0 8px #0f0;
+            white-space:pre-wrap;
+            opacity:0.92;
+            max-height:50vh;
+            overflow-y:auto;
+        }
+
+        /* PROMPT ZONE ULTRA-GLITCH */
+        .prompt-zone {
+            font-size:2rem;
+            position:relative;
+            display:inline-flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .prompt-text {
+            position:relative;
+            text-shadow: 
+                3px 0 0 #f00, 
+                -3px 0 0 #0ff,
+                0 3px 0 #f0f,
+                0 -3px 0 #ff0;
+            transition:all 0.1s ease;
+        }
+
+        #cmd {
+            background:transparent;
+            border:none;
+            color:#0f0;
+            font:inherit;
+            font-size:2rem;
+            outline:none;
+            caret-color:#0f0;
+            width:65%;
+            min-width:350px;
+        }
+
+        /* Glitch layers permanents */
+        .prompt-text::before,
+        #cmd::before {
+            content: attr(data-text);
+            position:absolute;
+            top:0; left:3px;
+            color:#f00;
+            opacity:0.75;
+            clip:rect(0,9999px,0,0);
+            animation:glitch-shift 3.5s infinite steps(4);
+        }
+
+        .prompt-text::after,
+        #cmd::after {
+            content: attr(data-text);
+            position:absolute;
+            top:0; left:-3px;
+            color:#0ff;
+            opacity:0.75;
+            clip:rect(0,9999px,0,0);
+            animation:glitch-shift 5s infinite steps(6);
+        }
+
+        @keyframes glitch-shift {
+            0%   { transform:translate(0); }
+            20%  { transform:translate(-4px, 3px); }
+            40%  { transform:translate(4px, -3px); }
+            60%  { transform:translate(-3px, 4px); }
+            80%  { transform:translate(3px, -4px); }
+            100% { transform:translate(0); }
+        }
+
+        /* Glitch explosif à chaque frappe */
+        .glitching .prompt-text,
+        .glitching #cmd,
+        .glitching .prompt-text::before,
+        .glitching .prompt-text::after,
+        .glitching #cmd::before,
+        .glitching #cmd::after {
+            animation: glitch-shake 0.45s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes glitch-shake {
+            0%,100% { transform:translate3d(0,0,0); }
+            10%,30%,50%,70%,90% { transform:translate3d(-6px,0,0); }
+            20%,40%,60%,80% { transform:translate3d(6px,0,0); }
+        }
+
+        .blink { animation:blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity:0; } }
+    </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="content">
+    <h1>NETSECUREPRO // NÉO_DZ</h1>
+    
+    <div class="boot-log">
+[16:57:30] NÉO_KERNEL GEMINI CORE 20.6 PRO V7 – BOOT INITIATED...
+[16:57:31] NÉO_KERNEL Sceau Souverain chargé...
+[16:57:32] NÉO_KERNEL Authentification ZOUBIROU MOHAMMED ILYES... CONFIRMÉ
+[16:57:33] NÉO_KERNEL Handler Éthique V1.1 → HASH VALIDATED
+[16:57:37] NÉO_KERNEL Système prêt. En attente d'input.
+    </div>
+
+    <div class="prompt-zone" id="promptZone">
+        <span class="prompt-text" data-text="root@neo-dz:~# ">root@neo-dz:~# </span>
+        <input type="text" id="cmd" placeholder="Entrez commande... (/help)" autofocus spellcheck="false"/>
+        <span class="blink">_</span>
+    </div>
+</div>
+
+<script>
+// Matrix Rain (plus dense et rapide pour immersion max)
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'.split('');
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function drawMatrix() {
+    ctx.fillStyle = 'rgba(0,0,0,0.04)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    
+    ctx.fillStyle = '#0f0';
+    ctx.font = fontSize + 'px monospace';
+
+    for(let i=0; i<drops.length; i++) {
+        const text = chars[Math.floor(Math.random()*chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        ctx.fillText(text, x, y);
+
+        if(y > canvas.height && Math.random() > 0.97) drops[i] = 0;
+        drops[i]++;
+    }
+}
+
+setInterval(drawMatrix, 35); // Plus rapide pour effet dense
+
+window.addEventListener('resize', () => {
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+});
+
+// GLITCH ULTRA-RÉACTIF SUR INPUT
+const promptZone = document.getElementById('promptZone');
+const cmd = document.getElementById('cmd');
+
+function triggerGlitch() {
+    promptZone.classList.add('glitching');
+    setTimeout(() => promptZone.classList.remove('glitching'), 450);
+}
+
+// Déclenchement sur chaque touche pressée
+cmd.addEventListener('keydown', triggerGlitch);
+
+// Déclenchement continu pendant la saisie (plus intense)
+cmd.addEventListener('input', () => {
+    triggerGlitch();
+    clearTimeout(window.glitchTimer);
+    window.glitchTimer = setTimeout(() => promptZone.classList.remove('glitching'), 800);
+});
+
+cmd.focus();
+</script>
+</body>
+</html>
