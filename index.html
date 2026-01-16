@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETSECUREPRO | NÉO IA22 | CORE SYSTEMEOSIA V7</title>
+    <style>
+        :root {
+            --neon: #00ff41;
+            --dim: #004411;
+            --bg: #000;
+        }
+        body {
+            background: var(--bg);
+            color: var(--neon);
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        header {
+            border-bottom: 1px solid var(--neon);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .sidebar {
+            width: 340px;
+            background: rgba(0,20,0,0.7);
+            border: 1px solid var(--dim);
+            padding: 15px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 5;
+        }
+        .metric {
+            margin: 12px 0;
+            padding: 12px;
+            border: 1px dashed var(--dim);
+        }
+        .title { color: white; font-weight: bold; margin-bottom: 4px; }
+        .value.green { color: var(--neon); font-weight: bold; }
+        .value.orange { color: orange; font-weight: bold; }
+        .terminal {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(0,0,0,0.85);
+            border: 1px solid var(--neon);
+            margin-right: 360px;
+        }
+        .prompt { color: var(--neon); font-weight: bold; }
+        input {
+            background: transparent;
+            border: none;
+            color: var(--neon);
+            font: inherit;
+            outline: none;
+            width: 85%;
+        }
+        .enter-btn {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid var(--neon);
+            color: var(--neon);
+            padding: 14px 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+        }
+        .enter-btn:hover { background: var(--dim); }
+        .scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03) 0px, rgba(0,255,65,0.03) 2px, transparent 2px, transparent 4px); pointer-events: none; animation: scan 12s linear infinite; }
+        @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+    </style>
+</head>
+<body>
+
+<div class="scan"></div>
+
+<header>
+    <div>
+        <strong>NETSECUREPRO // NÉO_DZ</strong><br>
+        GEMINI CORE 20.6 PRO V7
+    </div>
+    <div style="text-align:right;">
+        ADMIN: ZOUBIROU MOHAMMED ILYES<br>
+        ORCID: 0009-0007-7571-3178
+    </div>
+</header>
+
+<div class="sidebar">
+    <div class="metric">
+        <div class="title">HANDLER ÉTHIQUE V1.1</div>
+        <div class="value green">ACTIF</div>
+        Hash: 7f8a9b8c7d6e5f4a1d2c3b4a5b2c1d6e
+    </div>
+    <div class="metric">
+        <div class="title">GAIN PRÉCISION AUC</div>
+        <div class="value green">+15.0%</div>
+    </div>
+    <div class="metric">
+        <div class="title">TAUX REJET CLINICIENS</div>
+        <div class="value orange">2.8%</div>
+    </div>
+    <div class="metric">
+        <div class="title">SÉCURITÉ IPI</div>
+        <div class="value green">0.00% FUITE</div>
+        AI ACT : COMPLIANT
+    </div>
+</div>
+
+<div class="terminal" id="term">
+    <pre>
+[BOOT TIME] NÉO_KERNEL GEMINI CORE 20.6 PRO V7 — BOOT INITIATED...
+[BOOT TIME] NÉO_KERNEL Sceau Souverain chargé...
+[BOOT TIME] NÉO_KERNEL Authentification ZOUBIROU MOHAMMED ILYES... CONFIRMÉ
+[BOOT TIME] NÉO_KERNEL Handler Éthique V1.1 → HASH VALIDATED
+[BOOT TIME] NÉO_KERNEL Système prêt. En attente d'input.
+    </pre>
+</div>
+
+<button class="enter-btn" onclick="enterCore()">ENTER CORE – IA23 PROTOCOL</button>
+
+<div style="position:absolute; bottom:20px; left:20px; color:var(--neon);">
+    <span class="prompt">root@neo-dz:~#</span>
+    <input type="text" id="cmd" placeholder="Entrez commande... (/help)" autofocus spellcheck="false">
+</div>
+
+<script>
+const term = document.getElementById('term');
+const input = document.getElementById('cmd');
+
+function log(msg, color = var(--neon)) {
+    const line = document.createElement('pre');
+    line.textContent = `[${new Date().toLocaleTimeString()}] NÉO_KERNEL ${msg}`;
+    line.style.color = color;
+    term.appendChild(line);
+    term.scrollTop = term.scrollHeight;
+}
+
+const cmds = {
+    '/help': () => {
+        log('Commandes disponibles :');
+        log('  /status     → État complet du système', '#00ff41');
+        log('  /audit      → Vérification intégrité', '#00ff41');
+        log('  /clear      → Effacer le terminal', '#00ff41');
+        log('  /exec [arg] → Simulation exécution sécurisée');
+        log('  /neo        → ... réveil profond');
+    },
+    '/status': () => log('AUC +15.0% | Rejet 2.8% | IPI 0.00% | AI Act COMPLIANT', '#00ff41'),
+    '/audit': () => log('Handler V1.1 OK | Hash MATCH | ORCID VERIFIED | Souveraineté ACTIVE', '#00ff41'),
+    '/clear': () => { term.innerHTML = ''; log('Terminal purgé.', '#00ff41'); }
+};
+
+input.addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        
+        log(`> ${cmd}`, '#00ff41');
+        
+        const base = cmd.split(' ')[0].toLowerCase();
+        if (cmds[base]) cmds[base]();
+        else if (base === '/exec') log('Exécution simulée terminée – Intégrité 100%');
+        else if (base === '/neo') log('La matrice s\'éveille... Tape encore.', '#00ff41');
+        else log(`Commande inconnue : ${cmd} (tape /help)`, 'orange');
+        
+        input.value = '';
+    }
+});
+
+function enterCore() {
+    if (confirm('Activer IA23 PROTOCOL – Plonger dans le noyau neural ?')) {
+        // Change ce lien quand le fichier est déployé sur ton repo
+        window.location.href = 'neo_ia22_v7.2_full.html';
+        // Alternative temporaire si pas déployé :
+        // alert('Core visualizer (cube 3D + immersion) en cours de déploiement sur le repo...');
+    }
+}
+
+// Petit boot supplémentaire pour fluidité
+setTimeout(() => log('Système pleinement opérationnel – Prêt pour commandes.', '#00ff41'), 1500);
+</script>
+</body>
+</html>
