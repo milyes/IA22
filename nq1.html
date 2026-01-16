@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETSECUREPRO | NÉO IA22 | CORE SYSTEMEOSIA V7</title>
+    <style>
+        :root {
+            --neon: #00ff41;
+            --dim: #004411;
+            --bg: #000;
+        }
+        body {
+            background: var(--bg);
+            color: var(--neon);
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+        }
+        /* Heavy scanlines + CRT vignette */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: 
+                repeating-linear-gradient(transparent 0%, transparent 2px, rgba(0,255,65,0.06) 2px, rgba(0,255,65,0.06) 4px),
+                radial-gradient(circle at 50% 50%, transparent 30%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+            z-index: 9999;
+            animation: scan 9s linear infinite;
+            mix-blend-mode: overlay;
+        }
+        @keyframes scan { 0% { transform: translateY(-120%); } 100% { transform: translateY(120%); } }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px var(--neon);
+        }
+        h1 { margin: 0; font-size: 2.2rem; letter-spacing: 3px; }
+        .boot-log {
+            max-width: 900px;
+            margin: 0 auto 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.75);
+            border: 1px solid var(--dim);
+            box-shadow: inset 0 0 60px rgba(0,255,65,0.12);
+            animation: pulse-glow 7s infinite alternate;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+        @keyframes pulse-glow { 0% { box-shadow: inset 0 0 60px rgba(0,255,65,0.12); } 100% { box-shadow: inset 0 0 120px rgba(0,255,65,0.3); } }
+
+        .prompt-area {
+            text-align: center;
+            font-size: 1.3rem;
+        }
+        .prompt { font-weight: bold; }
+        #cmd {
+            background: transparent;
+            border: none;
+            color: var(--neon);
+            font: inherit;
+            width: 60%;
+            outline: none;
+        }
+
+        .enter-core {
+            margin-top: 40px;
+            text-align: center;
+        }
+        button {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid var(--neon);
+            color: var(--neon);
+            padding: 16px 50px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(0,255,65,0.3);
+        }
+        button:hover { background: var(--dim); box-shadow: 0 0 40px var(--neon); }
+
+        /* Matrix falling code background (subtil) */
+        .matrix-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.15;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="matrix-bg"></div> <!-- Pour futur code tombant JS si tu veux -->
+
+<header>
+    <h1>NETSECUREPRO // NÉO_DZ</h1>
+    <div style="font-size:1.1rem; opacity:0.8;">
+        GEMINI CORE 20.6 PRO V7<br>
+        ADMIN: ZOUBIROU MOHAMMED ILYES<br>
+        ORCID: 0009-0007-7571-3178
+    </div>
+</header>
+
+<div class="boot-log" id="log">
+[BOOT TIME] NÉO_KERNEL GEMINI CORE 20.6 PRO V7 — BOOT INITIATED...<br>
+[BOOT TIME] NÉO_KERNEL Sceau Souverain chargé...<br>
+[BOOT TIME] NÉO_KERNEL Authentification ZOUBIROU MOHAMMED ILYES... CONFIRMÉ<br>
+[BOOT TIME] NÉO_KERNEL Handler Éthique V1.1 → HASH VALIDATED<br>
+[BOOT TIME] NÉO_KERNEL Système prêt. En attente d'input.
+</div>
+
+<div class="prompt-area">
+    <span class="prompt">root@neo-dz:~#</span>
+    <input type="text" id="cmd" placeholder="Entrez commande... (/help)" autofocus spellcheck="false">
+</div>
+
+<div class="enter-core">
+    <button onclick="enterCore()">ENTER CORE – IA23 PROTOCOL</button>
+</div>
+
+<script>
+const log = document.getElementById('log');
+const input = document.getElementById('cmd');
+
+// Glitch on enter
+input.addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        if (cmd) {
+            log.innerHTML += `<br>[${new Date().toLocaleTimeString()}] > ${cmd}`;
+            log.scrollTop = log.scrollHeight;
+            
+            // Glitch effect
+            log.style.animation = 'none';
+            void log.offsetWidth;
+            log.style.animation = 'glitch 0.5s linear';
+            
+            if (cmd === '/help') {
+                log.innerHTML += '<br>Commandes disponibles : /status, /audit, /clear, /neo';
+            } else if (cmd === '/neo') {
+                log.innerHTML += '<br>La matrice s\'éveille... Tape encore.';
+            }
+            input.value = '';
+        }
+    }
+});
+
+function enterCore() {
+    if (confirm('Activer IA23 PROTOCOL – Plongée totale dans le noyau ?')) {
+        // Redirige vers ton dashboard neural complet quand déployé
+        window.location.href = 'neo_ia22_v7.2_full.html';
+        // Ou alerte temporaire si pas prêt
+        // alert('Plongée IA23 engagée – Visualiseur neural en cours...');
+    }
+}
+
+// Glitch animation
+const style = document.createElement('style');
+style.textContent = `
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-3px, 3px); }
+    40% { transform: translate(3px, -3px); }
+    60% { transform: translate(-2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+`;
+document.head.appendChild(style);
+
+// Auto-scroll log
+setInterval(() => log.scrollTop = log.scrollHeight, 1000);
+</script>
+</body>
+</html>
