@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NÉO IA22 | ADVANCED CORE DASHBOARD V7.2</title>
+    <style>
+        :root {
+            --neon: #00ff41;
+            --dim-green: #004411;
+            --bg: #050505;
+            --grid: #1a1a1a;
+            --text: #ccc;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', Consolas, monospace;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        header {
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--neon);
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            z-index: 10;
+        }
+
+        header strong { color: var(--neon); text-shadow: 0 0 8px var(--neon); }
+
+        .main-container {
+            position: relative;
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            height: 100%;
+        }
+
+        .side-panel {
+            background: rgba(0, 20, 0, 0.75);
+            border-right: 1px solid var(--dim-green);
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+        }
+
+        .side-panel.right { border-right: none; border-left: 1px solid var(--dim-green); }
+
+        .status-block {
+            border: 1px dashed var(--dim-green);
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .status-title { color: #fff; font-weight: bold; margin-bottom: 6px; }
+
+        .progress-bar {
+            background: #111;
+            height: 8px;
+            margin-top: 6px;
+        }
+
+        .progress-fill {
+            background: var(--neon);
+            height: 100%;
+            width: 0%;
+            transition: width 1.2s ease;
+        }
+
+        .visualizer {
+            position: relative;
+            background: radial-gradient(circle at center, #0a1a0a 0%, #000 80%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        canvas {
+            position: absolute;
+            inset: 0;
+            opacity: 0.35;
+        }
+
+        .scene {
+            width: 240px;
+            height: 240px;
+            transform-style: preserve-3d;
+            animation: rotateCore 14s infinite linear;
+            transition: all 1.2s ease;
+        }
+
+        .scene.exploded {
+            animation: none;
+            transform: scale(1.15) rotateX(20deg) rotateY(30deg);
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            border: 2px solid var(--neon);
+            background: rgba(0, 255, 65, 0.08);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(0,255,65,0.3) inset;
+            backface-visibility: visible;
+            transition: all 1s ease;
+        }
+
+        .front  { transform: rotateY(0deg) translateZ(120px); }
+        .back   { transform: rotateY(180deg) translateZ(120px); }
+        .right  { transform: rotateY(90deg) translateZ(120px); }
+        .left   { transform: rotateY(-90deg) translateZ(120px); }
+        .top    { transform: rotateX(90deg) translateZ(120px); }
+        .bottom { transform: rotateX(-90deg) translateZ(120px); }
+
+        .scene.exploded .front  { transform: rotateY(0deg) translateZ(300px); }
+        .scene.exploded .back   { transform: rotateY(180deg) translateZ(300px); }
+        .scene.exploded .right  { transform: rotateY(90deg) translateZ(300px); }
+        .scene.exploded .left   { transform: rotateY(-90deg) translateZ(300px); }
+        .scene.exploded .top    { transform: rotateX(90deg) translateZ(300px); }
+        .scene.exploded .bottom { transform: rotateX(-90deg) translateZ(300px); }
+
+        .inner-core {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #fff 10%, transparent 70%);
+            box-shadow: 0 0 60px var(--neon);
+            border-radius: 50%;
+            top: 60px;
+            left: 60px;
+            animation: pulseCore 3s infinite alternate;
+        }
+
+        @keyframes rotateCore { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
+        @keyframes pulseCore { 0% { transform: scale(0.85); opacity: 0.6; } 100% { transform: scale(1.15); opacity: 1; } }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 20;
+        }
+
+        button {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid var(--neon);
+            color: var(--neon);
+            padding: 10px 22px;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        button:hover { background: var(--dim-green); }
+
+        footer {
+            padding: 12px 25px;
+            border-top: 1px solid #222;
+            font-size: 0.75rem;
+            color: #555;
+            text-align: center;
+            background: rgba(0,0,0,0.6);
+        }
+
+        .log-entry { color: #888; margin: 4px 0; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <strong>NÉO IA22</strong> // ADVANCED CORE DASHBOARD V7.2
+        </div>
+        <div style="text-align: right; font-size: 0.9rem;">
+            ADMIN: ZOUBIROU MOHAMMED ILYES<br>
+            [SOUVERAIN VALIDÉ] | H-ID: 7f8a9b8c7d6e5f4a1d2c3b4a5b2c1d6e
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- LEFT PANEL: STATUS & METRICS -->
+        <aside class="side-panel">
+            <div class="status-block">
+                <div class="status-title">CORE STATUS</div>
+                CORE_ACTIVE<br>
+                <span class="log-entry">Dashboard V7.2 chargé – Souveraineté verrouillée</span>
+                <span class="log-entry">Synchronisation CORE SYSTEMEOSIA → nominal</span>
+            </div>
+            <div class="status-block">
+                <div class="status-title">LAYER 1: IPI FILTER</div>
+                LOCKED | 100%
+                <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+            </div>
+            <div class="status-block">
+                <div class="status-title">LAYER 2: ETHICAL HANDLER V1.1</div>
+                ACTIVE | Integrity 100%
+                <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+            </div>
+        </aside>
+
+        <!-- CENTER: NEURAL VISUALIZER -->
+        <div class="visualizer">
+            <canvas id="neuralCanvas"></canvas>
+            
+            <div class="scene" id="coreScene">
+                <div class="inner-core"></div>
+                <div class="cube-face front">IPI</div>
+                <div class="cube-face back">ETHICS</div>
+                <div class="cube-face right">LOGIC</div>
+                <div class="cube-face left">DATA</div>
+                <div class="cube-face top">V7.2</div>
+                <div class="cube-face bottom">SECURE</div>
+            </div>
+
+            <div class="controls">
+                <button onclick="toggleExplode()">EXPLODE CORE</button>
+                <button onclick="toggleRotation()">FREEZE / ROTATE</button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: PROTOCOL INFO -->
+        <aside class="side-panel right">
+            <div class="status-block">
+                <div class="status-title">IA23 PROTOCOL</div>
+                Souveraineté Absolue<br>
+                <span style="color: orange;">AI Act: HIGH RISK / COMPLIANT</span>
+            </div>
+            <div class="status-block">
+                <div class="status-title">TENSOR STREAM (simulé)</div>
+                <div id="tensorStream" style="font-size:0.65rem; word-break:break-all; color:#555; height:180px; overflow:hidden;">
+                    INIT...
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        © 2025–2026 NETSECUREPRO (NÉO_DZ) // IA23 PROTOCOL // Souveraineté Absolue
+    </footer>
+
+    <script>
+        // --- Core Controls ---
+        const scene = document.getElementById('coreScene');
+        let exploded = false;
+        let rotating = true;
+
+        function toggleExplode() {
+            exploded = !exploded;
+            scene.classList.toggle('exploded', exploded);
+            console.log(exploded ? "CORE EXPLODED – Layers revealed" : "CORE RECONSTRUCTED");
+        }
+
+        function toggleRotation() {
+            rotating = !rotating;
+            scene.style.animationPlayState = rotating ? 'running' : 'paused';
+        }
+
+        // --- Tensor Stream Simulation ---
+        const tensorEl = document.getElementById('tensorStream');
+        setInterval(() => {
+            let str = '';
+            for(let i = 0; i < 120; i++) {
+                str += Math.floor(Math.random()*16).toString(16).toUpperCase();
+            }
+            tensorEl.textContent = str;
+        }, 120);
+
+        // --- Neural Particles Background ---
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+        let w, h, particles = [];
+
+        function resize() {
+            w = canvas.width = canvas.parentElement.offsetWidth;
+            h = canvas.height = canvas.parentElement.offsetHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.size = Math.random() * 2.5 + 0.8;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > w) this.vx *= -1;
+                if (this.y < 0 || this.y > h) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(0,255,65,0.7)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for(let i = 0; i < 80; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0,0,w,h);
+            ctx.strokeStyle = 'rgba(0,255,65,0.12)';
+            ctx.lineWidth = 1;
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+                particles.forEach(p2 => {
+                    const d = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (d < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Initial log pulse on progress bars (visual activity)
+        setInterval(() => {
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                const base = bar.parentElement.previousElementSibling.textContent.includes('100%') ? 100 : 95;
+                bar.style.width = (base + Math.sin(Date.now() / 700) * 5) + '%';
+            });
+        }, 100);
+    </script>
+</body>
+</html>
