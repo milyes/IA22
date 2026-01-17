@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GEMINI CORE MASTER V7 • NÉO_DZ</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #0a0e14;
+      --green: #00ff41;
+      --green-dim: #00aa2a;
+      --text: #e0ffe0;
+      --red: #ff2a6d;
+      --gray: #444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'VT323', monospace;
+      font-size: 1.4rem;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      image-rendering: pixelated;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 8px var(--green);
+    }
+
+    h1 {
+      font-size: 3.2rem;
+      color: var(--green);
+      letter-spacing: 4px;
+      animation: glitch 4s infinite;
+    }
+
+    .subtitle {
+      font-size: 1.8rem;
+      color: var(--green-dim);
+      margin: 0.4rem 0;
+    }
+
+    .info {
+      font-size: 1.3rem;
+      opacity: 0.8;
+      margin: 0.6rem 0;
+    }
+
+    .terminal {
+      flex: 1;
+      background: rgba(0,0,0,0.6);
+      border: 2px solid var(--green-dim);
+      border-radius: 6px;
+      padding: 1.2rem;
+      overflow-y: auto;
+      box-shadow: inset 0 0 30px rgba(0,255,65,0.12);
+      position: relative;
+    }
+
+    .terminal::before {
+      content: "root@neo-dz:~# ";
+      color: var(--green);
+      position: absolute;
+      top: 1.2rem;
+      left: 1.2rem;
+      pointer-events: none;
+    }
+
+    .line {
+      margin: 0.4rem 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .prompt {
+      display: flex;
+      align-items: center;
+      margin-top: 0.8rem;
+    }
+
+    .prompt::before {
+      content: "root@neo-dz:~# ";
+      color: var(--green);
+      margin-right: 0.6rem;
+    }
+
+    #input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--green);
+      font-family: inherit;
+      font-size: inherit;
+      outline: none;
+      caret-color: var(--green);
+    }
+
+    .blink {
+      animation: blink 1.1s step-end infinite;
+    }
+
+    .status-ok { color: var(--green); }
+    .status-warning { color: #ffcc00; }
+    .status-error { color: var(--red); }
+
+    .boot-sequence {
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 1;
+      transition: opacity 1.5s 4s;
+    }
+
+    .boot-sequence.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    @keyframes glitch {
+      0%   { text-shadow: 2px 0 var(--red), -2px 0 var(--green); }
+      10%  { text-shadow: -2px 0 var(--red), 2px 0 var(--green); }
+      20%  { text-shadow: 2px 0 var(--red), -2px 0 var(--green); }
+      30%  { text-shadow: none; }
+      100% { text-shadow: none; }
+    }
+
+    @media (max-width: 768px) {
+      body { font-size: 1.2rem; }
+      h1 { font-size: 2.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Boot screen -->
+  <div class="boot-sequence" id="boot">
+    <h1>GEMINI CORE MASTER V7</h1>
+    <div class="subtitle">NETSECUREPRO // NÉO_DZ</div>
+    <div class="info">SYSTEM BOOT INITIATED...</div>
+    <div class="info blink">[16:57:30] NÉO_KERNEL LOADING...</div>
+  </div>
+
+  <header>
+    <h1>GEMINI CORE 20.6 PRO V7</h1>
+    <div class="subtitle">NETSECUREPRO // NÉO_DZ</div>
+    <div class="info">
+      ADMIN: ZOUBIROU MOHAMMED ILYES • ORCID: 0009-0007-7571-3178
+    </div>
+    <div class="info status-ok">
+      HANDLER ÉTHIQUE V1.1 • HASH VALIDÉ • IPI LEAK 0.00%
+    </div>
+  </header>
+
+  <div class="terminal" id="terminal">
+    <div class="line status-ok">[16:57:30] NÉO_KERNEL BOOT INITIATED...</div>
+    <div class="line">[16:57:31] Sceau Souverain chargé...</div>
+    <div class="line">[16:57:32] Authentification... CONFIRMÉ</div>
+    <div class="line status-ok">[16:57:33] Handler Éthique V1.1 – HASH VALIDATED</div>
+    <div class="line">[16:57:37] Système prêt. En attente d'input.</div>
+    <div class="line"></div>
+  </div>
+
+  <div class="prompt">
+    <input type="text" id="input" autocomplete="off" autofocus spellcheck="false"/>
+    <span class="blink">█</span>
+  </div>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const input = document.getElementById('input');
+    const boot = document.getElementById('boot');
+
+    // Cacher l'écran de boot après ~5s
+    setTimeout(() => {
+      boot.classList.add('hidden');
+    }, 5000);
+
+    // Focus permanent sur l'input
+    document.addEventListener('click', () => input.focus());
+    input.focus();
+
+    // Commandes de base (simulation très simple)
+    const commands = {
+      clear: () => {
+        terminal.innerHTML = '';
+        printLine('Terminal cleared.');
+      },
+      help: () => {
+        printLine('Commandes disponibles :');
+        printLine('  help        → cette aide');
+        printLine('  clear       → effacer le terminal');
+        printLine('  status      → état du noyau');
+        printLine('  hash        → afficher hash éthique');
+        printLine('  whoami      → identité actuelle');
+      },
+      status: () => {
+        printLine('GEMINI CORE 20.6 PRO V7');
+        printLine('Statut : OPERATIONAL');
+        printLine('Handler Éthique : ACTIVE');
+        printLine('IPI Leak : 0.00%');
+        printLine('Latence cognitive : <100ms');
+      },
+      hash: () => {
+        printLine('Hash Handler Éthique V1.1 :');
+        printLine('7f8a9b8c7d6e5f4a1d2c3b4a5b2c1d6e');
+      },
+      whoami: () => {
+        printLine('Zoubirou Mohammed Ilyes');
+        printLine('Architecte Système / ADMIN');
+        printLine('ORCID: 0009-0007-7571-3178');
+      }
+    };
+
+    function printLine(text, className = '') {
+      const line = document.createElement('div');
+      line.className = 'line ' + className;
+      line.textContent = text;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const cmd = this.value.trim();
+        
+        if (cmd) {
+          printLine('root@neo-dz:~# ' + cmd);
+          
+          if (cmd in commands) {
+            commands[cmd]();
+          } else if (cmd.startsWith('ai ')) {
+            printLine('→ Envoi vers GEMINI CORE... (simulation)');
+            printLine('Réponse : Traitement souverain terminé. Hash validé.', 'status-ok');
+          } else {
+            printLine(`Commande non reconnue: ${cmd}`, 'status-error');
+            printLine('Tapez "help" pour voir les commandes disponibles.');
+          }
+        }
+
+        this.value = '';
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+    });
+  </script>
+</body>
+</html>
