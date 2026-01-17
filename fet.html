@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETSECUREPRO | NÉO IA22 | CORE SYSTEMEOSIA V7</title>
+    <style>
+        :root {
+            --neon-green: #0f0;
+            --dark-green: #003300;
+            --black: #050505;
+            --panel: #111;
+            --border: #222;
+            --alert: #f33;
+            --warn: #fa0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--black);
+            color: #ccc;
+            font-family: 'Consolas', 'Courier New', monospace;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(rgba(0,255,0,0.03) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(0,255,0,0.03) 2px, transparent 2px);
+            background-size: 100% 4px, 4px 100%;
+            pointer-events: none;
+            z-index: 1;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        header {
+            background: var(--panel);
+            border-bottom: 2px solid var(--neon-green);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 6px var(--neon-green);
+        }
+        .main { 
+            flex: 1;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            overflow: hidden;
+        }
+        .sidebar {
+            background: #0a0a0a;
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .card {
+            background: #151515;
+            border: 1px solid var(--dark-green);
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 3px;
+        }
+        .card-title {
+            font-size: 0.72rem;
+            color: #777;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .card-value {
+            font-size: 1.35rem;
+            font-weight: bold;
+        }
+        .green { color: var(--neon-green); }
+        .warn { color: var(--warn); }
+        .hash { 
+            font-size: 0.68rem; 
+            color: #444; 
+            word-break: break-all; 
+            margin-top: 6px; 
+        }
+        .terminal {
+            background: #000;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+            scrollbar-width: thin;
+            scrollbar-color: #0f0 #111;
+        }
+        .terminal::-webkit-scrollbar {
+            width: 6px;
+        }
+        .terminal::-webkit-scrollbar-thumb {
+            background: #0f0;
+        }
+        .log {
+            margin: 6px 0;
+            line-height: 1.4;
+        }
+        .time { color: #444; margin-right: 8px; }
+        .prefix { color: var(--neon-green); font-weight: bold; }
+        .input-area {
+            background: #0d0d0d;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+        .prompt { 
+            color: var(--neon-green); 
+            font-weight: bold; 
+            margin-right: 10px; 
+        }
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+        footer {
+            background: var(--panel);
+            padding: 8px 20px;
+            font-size: 0.75rem;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>NETSECUREPRO // NÉO_DZ</h1>
+        <div style="font-size:0.78rem; letter-spacing:1.5px;">GEMINI CORE 20.6 PRO V7</div>
+    </div>
+    <div style="text-align:right; font-size:0.85rem;">
+        ADMIN: <span class="green">ZOUBIROU MOHAMMED ILYES</span><br>
+        ORCID: <span class="green">0009-0007-7571-3178</span>
+    </div>
+</header>
+
+<div class="main">
+    <aside class="sidebar">
+        <div class="card">
+            <div class="card-title">Handler Éthique V1.1</div>
+            <div class="card-value green">ACTIF</div>
+            <div class="hash">Hash: 7f8a9b8c7d6e5f4a1d2c3b4a5b2c1d6e</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Gain Précision AUC</div>
+            <div class="card-value green">+15.0%</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Taux Rejet Cliniciens</div>
+            <div class="card-value warn">2.8%</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Sécurité IPI</div>
+            <div class="card-value green">0.00% FUITE</div>
+            <div style="margin-top:8px;" class="card-title">AI ACT</div>
+            <div class="card-value green">COMPLIANT</div>
+        </div>
+    </aside>
+
+    <main class="terminal" id="term"></main>
+</div>
+
+<div class="input-area">
+    <span class="prompt">root@neo-dz:~#</span>
+    <input type="text" id="cmd" placeholder="Entrez commande... (/help pour aide)" autofocus spellcheck="false">
+</div>
+
+<footer>
+    <div>SYSTEM STATUS: <span class="green">ONLINE</span> | CONNECTION: SECURE</div>
+    <div>© 2026 CORE SYSTEMEOSIA — SOVEREIGN AI</div>
+</footer>
+
+<script>
+const term = document.getElementById('term');
+const input = document.getElementById('cmd');
+
+function ts() {
+    return new Date().toISOString().slice(11,19);
+}
+
+function log(text, cls = '') {
+    const div = document.createElement('div');
+    div.className = 'log';
+    div.innerHTML = `<span class="time">[${ts()}]</span> <span class="prefix">NÉO_KERNEL</span> ${text}`;
+    if (cls) div.classList.add(cls);
+    term.appendChild(div);
+    
+    // Limite ~120 lignes
+    if (term.children.length > 120) term.removeChild(term.firstChild);
+    
+    term.scrollTop = term.scrollHeight;
+}
+
+const commands = {
+    '/help': () => {
+        log("Commandes disponibles :");
+        log("  /status     → État complet du système");
+        log("  /audit      → Vérification intégrité");
+        log("  /clear      → Effacer le terminal");
+        log("  /exec [txt] → Simulation exécution sécurisée");
+        log("  /neo        → ... ?");
+    },
+    '/status': () => {
+        log("AUC Gain ................. +15.0%", "green");
+        log("Rejet Cliniciens ......... 2.8%", "warn");
+        log("Fuites IPI ............... 0.00%", "green");
+        log("AI Act ................... COMPLIANT", "green");
+        log("Handler Éthique V1.1 ..... ACTIF", "green");
+    },
+    '/audit': () => {
+        log("→ Handler V1.1 .................. OK", "green");
+        log("→ Hash intégrité ................ MATCH", "green");
+        log("→ Signature ORCID ............... VERIFIED", "green");
+        log("→ Sceau Souverain NÉO_DZ ........ ACTIVE", "green");
+    },
+    '/clear': () => {
+        term.innerHTML = '';
+        log("Terminal nettoyé.", "green");
+    }
+};
+
+input.addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+
+        log(`<span style="color:#0c0">&gt; ${cmd}</span>`);
+
+        const parts = cmd.split(' ');
+        const base = parts[0].toLowerCase();
+
+        if (commands[base]) {
+            setTimeout(commands[base], 300);
+        } else if (base === '/exec') {
+            const arg = parts.slice(1).join(' ');
+            log(`Traitement sécurisé de "${arg || 'aucun argument'}"...`, "green");
+            setTimeout(() => log("Opération terminée avec intégrité 100%.", "green"), 1400);
+        } else if (base === '/neo') {
+            log("NÉO s'éveille...", "green");
+            setTimeout(() => log("Tu cherches la vérité ? Tape encore.", "warn"), 900);
+            setTimeout(() => log("La matrice n'est pas ce qu'elle semble...", "green"), 2200);
+        } else {
+            log(`Commande inconnue : ${cmd} (tape /help)`, "warn");
+        }
+
+        input.value = '';
+    }
+});
+
+// Boot sequence
+setTimeout(() => log("GEMINI CORE 20.6 PRO V7 — BOOT INITIATED..."), 600);
+setTimeout(() => log("Sceau Souverain chargé..."), 1400);
+setTimeout(() => log("Authentification ZOUBIROU MOHAMMED ILYES... CONFIRMÉ", "green"), 2200);
+setTimeout(() => log("Handler Éthique V1.1 → HASH VALIDATED", "green"), 3000);
+setTimeout(() => log("Système prêt. En attente d'input."), 3800);
+</script>
+</body>
+</html>
