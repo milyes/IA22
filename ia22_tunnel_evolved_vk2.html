@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NÉO IA22 — TUNNEL 7D.2 — TORE RÉEL</title>
+    <style>
+        :root { --neon-cyan:#00ffff; --neon-magenta:#ff00ff; --bg:#000; }
+        body,html { margin:0; padding:0; height:100%; overflow:hidden; background:var(--bg); font-family:'Courier New',monospace; color:var(--neon-cyan); }
+        #scene { position:fixed; inset:0; }
+        #hud { position:absolute; inset:20px; pointer-events:none; z-index:10; display:flex; flex-direction:column; justify-content:space-between; }
+        .hud-top { font-size:1.1rem; text-shadow:0 0 10px var(--neon-cyan); }
+        .hud-bottom { color:var(--neon-magenta); animation:blink 1.4s infinite; }
+        @keyframes blink { 50% { opacity:0.3; } }
+        #audio { display:none; }
+    </style>
+</head>
+<body>
+
+<div id="hud">
+    <div class="hud-top">NÉO IA22 — TUNNEL 7D.2<br>SOUVERAIN : Zoubirou Mohammed Ilyes</div>
+    <div class="hud-bottom" id="hud-status">[PHASE] → TRAVERSÉE ACTIVE<br>INTÉGRITÉ : 100% | HASH : 7f8a9b8c...</div>
+</div>
+
+<div id="scene"></div>
+
+<audio id="binaural" loop>
+    <source src="https://assets.codepen.io/605876/432hz-alpha-theta-binaural.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.168.0/examples/js/loaders/PLYLoader.min.js"></script>
+<script>
+// ──── CONFIGURATION ────────────────────────────────────────────────────────
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000);
+const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 3000);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+document.getElementById('scene').appendChild(renderer.domElement);
+
+// ──── TUNNEL CSS (fond) ────────────────────────────────────────────────────
+const tunnel = document.createElement('div');
+tunnel.id = 'tunnel-css';
+tunnel.style.cssText = 'position:fixed;inset:0;perspective:1200px;pointer-events:none;';
+document.body.appendChild(tunnel);
+for(let i=1;i<=3;i++){
+    const l = document.createElement('div');
+    l.style.cssText = `position:absolute;inset:0;background:radial-gradient(circle,#0a1a1a 0%,#000 70%);animation:tunnel ${12+i*6}s linear infinite;opacity:${0.8-i*0.2};transform:translateZ(-${i*200}px);`;
+    tunnel.appendChild(l);
+}
+
+// ──── AUDIO BINAURAL 432 Hz ────────────────────────────────────────────────
+const audio = document.getElementById('binaural');
+audio.volume = 0.18;
+setTimeout(() => { audio.play().catch(e=>console.log("Audio blocked:",e)); }, 3000);
+
+// ──── CHARGEMENT DU FUSED PLY RÉEL ─────────────────────────────────────────
+let pointsMesh = null;
+const loader = new THREE.PLYLoader();
+loader.load('https://milyes.github.io/SYSTEMEOSIA/NEO_VILLARCEAU_CLOUD.ply.txt', geometry => {
+    geometry.computeBoundingSphere();
+    geometry.center(); // recentrage automatique
+
+    const material = new THREE.PointsMaterial({
+        size: 0.06,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.92,
+        blending: THREE.AdditiveBlending
+    });
+
+    pointsMesh = new THREE.Points(geometry, material);
+    scene.add(pointsMesh);
+
+    // Ajustement caméra initial
+    const dist = geometry.boundingSphere.radius * 2.5;
+    camera.position.z = dist;
+}, undefined, err => console.error("PLY load error:", err));
+
+// ──── CONTRÔLES & ANIMATION ────────────────────────────────────────────────
+let mouseX=0, mouseY=0, warp=1, startTime=performance.now()/1000;
+document.addEventListener('mousemove', e=>{ mouseX=(e.clientX/innerWidth)*2-1; mouseY=-(e.clientY/innerHeight)*2+1; });
+document.addEventListener('mousedown', ()=>warp=6);
+document.addEventListener('mouseup', ()=>warp=1);
+
+function animate() {
+    requestAnimationFrame(animate);
+    const t = (performance.now()/1000) - startTime;
+
+    if(pointsMesh){
+        pointsMesh.rotation.y += (mouseX*0.4 - pointsMesh.rotation.y)*0.05;
+        pointsMesh.rotation.x += (mouseY*0.4 - pointsMesh.rotation.x)*0.05;
+        pointsMesh.position.z = Math.sin(t*0.6)*0.8 - t*0.9*warp;
+    }
+
+    // Morphose tunnel → tore (12-18s)
+    if(t>12 && t<18){
+        const p = (t-12)/6;
+        if(pointsMesh) pointsMesh.scale.setScalar(1 + p*5);
+    }
+
+    // Mise à jour HUD
+    document.getElementById('hud-status').innerHTML = `
+PHASE : ${t<12?'TUNNEL':'VILLARCEAU 7D'}<br>
+VITESSE : ${warp>1?'WARP ×'+warp:'STABLE'}<br>
+Z : ${camera.position.z.toFixed(1)}<br>
+HASH : 7f8a9b8c...
+    `;
+
+    renderer.render(scene, camera);
+}
+animate();
+
+// Resize
+window.addEventListener('resize', ()=>{
+    camera.aspect = innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
