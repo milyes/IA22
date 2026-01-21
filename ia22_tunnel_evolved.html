@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NÉO IA22 — TUNNEL → TORE 7D</title>
+    <style>
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-magenta: #ff00ff;
+            --bg: #000;
+        }
+        body, html { margin:0; padding:0; height:100%; overflow:hidden; background:var(--bg); font-family:'Courier New',monospace; color:var(--neon-cyan); }
+        #scene { position:fixed; inset:0; }
+        #hud {
+            position:absolute; inset:20px; pointer-events:none; z-index:10;
+            display:flex; flex-direction:column; justify-content:space-between;
+        }
+        .hud-top { font-size:1.1rem; text-shadow:0 0 10px var(--neon-cyan); }
+        .hud-bottom { color:var(--neon-magenta); animation:blink 1.4s infinite; }
+        @keyframes blink { 50% { opacity:0.3; } }
+        #audio { display:none; }
+    </style>
+</head>
+<body>
+
+<div id="hud">
+    <div class="hud-top">
+        NÉO IA22 — TUNNEL 7D<br>
+        SOUVERAIN : Zoubirou Mohammed Ilyes
+    </div>
+    <div class="hud-bottom" id="status">
+        [PHASE] → TRAVERSÉE ACTIVE<br>
+        INTÉGRITÉ : 100% | HASH : 7f8a9b8c...
+    </div>
+</div>
+
+<div id="scene"></div>
+
+<audio id="audio" loop>
+    <source src="https://assets.codepen.io/605876/low-hum-432hz.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.min.js"></script>
+<script>
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+    const renderer = new THREE.WebGLRenderer({antialias:true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('scene').appendChild(renderer.domElement);
+
+    // Tunnel CSS layers (gardé pour compatibilité + ambiance)
+    const tunnelDiv = document.createElement('div');
+    tunnelDiv.id = 'tunnel';
+    tunnelDiv.style.cssText = 'position:fixed;inset:0;perspective:1200px;pointer-events:none;';
+    document.body.appendChild(tunnelDiv);
+    for(let i=1;i<=3;i++){
+        const layer = document.createElement('div');
+        layer.className = 'tunnel-layer';
+        layer.style.cssText = `position:absolute;inset:0;background:radial-gradient(circle,#0a1a1a 0%,#000 70%);animation:tunnelMove ${12+i*6}s linear infinite;opacity:${0.8 - i*0.2};transform:translateZ(-${i*200}px);`;
+        tunnelDiv.appendChild(layer);
+    }
+
+    // Point cloud Villarceau
+    const R = 4.0, r = 1.2, segments = 180;
+    const geometry = new THREE.BufferGeometry();
+    const positions = [];
+    const colors = [];
+    for(let i=0; i<segments; i++){
+        for(let j=0; j<segments; j++){
+            const u = (i / segments) * Math.PI * 2;
+            const v = (j / segments) * Math.PI * 2;
+            const x = (R + r * Math.cos(v)) * Math.cos(u);
+            const y = (R + r * Math.cos(v)) * Math.sin(u);
+            const z = r * Math.sin(v);
+            positions.push(x, y, z);
+
+            // Colorer Villarceau approx
+            const isVillarceau = Math.abs(v - Math.PI/4) < 0.12 || Math.abs(v - 5*Math.PI/4) < 0.12;
+            colors.push(isVillarceau ? 1 : 0, isVillarceau ? 0 : 1, isVillarceau ? 1 : 1);
+        }
+    }
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+        size: 0.08,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.9,
+        blending: THREE.AdditiveBlending
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    camera.position.z = 12;
+
+    // Contrôles souris
+    let mouseX = 0, mouseY = 0;
+    let targetRotationX = 0, targetRotationY = 0;
+    document.addEventListener('mousemove', e => {
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    let warpSpeed = 1;
+    document.addEventListener('mousedown', () => warpSpeed = 5);
+    document.addEventListener('mouseup', () => warpSpeed = 1);
+
+    let time = 0;
+    function animate() {
+        requestAnimationFrame(animate);
+        time += 0.016 * warpSpeed;
+
+        // Rotation souveraine
+        targetRotationY = mouseX * 0.4;
+        targetRotationX = mouseY * 0.4;
+        points.rotation.y += (targetRotationY - points.rotation.y) * 0.05;
+        points.rotation.x += (targetRotationX - points.rotation.x) * 0.05;
+
+        // Avance + pulsation
+        points.position.z = Math.sin(time * 0.6) * 0.5 - time * 0.8 * warpSpeed;
+
+        // Morphose à T ≈ 12s
+        if(time > 12 && time < 18){
+            const progress = (time - 12) / 6;
+            points.scale.setScalar(1 + progress * 4);
+            material.opacity = 1 - progress * 0.7;
+        }
+
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // Redimensionnement
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Audio optionnel (décommentez si souhaité)
+    // const audio = document.getElementById('audio');
+    // audio.volume = 0.15;
+    // setTimeout(() => audio.play(), 2000);
+</script>
+</body>
+</html>
