@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETSECUREPRO - NÉO IA22 CORE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen flex flex-col overflow-hidden">
+
+    <!-- HEADER SYSTÈME -->
+    <header class="border-b border-slate-800 p-4 flex justify-between items-center glass-panel z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse"></div>
+            <h1 class="text-sm font-bold tracking-tighter uppercase">NetSecurePro <span class="text-indigo-500">NÉO_DZ</span></h1>
+        </div>
+        <div class="flex gap-4 text-[10px] items-center">
+            <span class="px-2 py-1 bg-slate-800 rounded">CORE: 20.6 PRO V7</span>
+            <span class="px-2 py-1 bg-indigo-900/30 text-indigo-400 border border-indigo-500/30 rounded uppercase">Auteur: Z. M. Ilyes</span>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        
+        <!-- SECTION LECTEUR (GAUCHE) -->
+        <section class="flex-[2] relative bg-black flex items-center justify-center group">
+            <!-- DIAGNOSTIC OVERLAY (Module 4) -->
+            <div id="metrics-overlay" class="absolute top-6 right-6 z-40 space-y-2 pointer-events-none">
+                <div class="glass-panel border border-white/10 p-4 rounded-lg text-[10px] min-w-[140px]">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div id="status-indicator" class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                        <span id="status-text" class="font-bold">SYSTÈME OPTIMAL</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1 opacity-70">
+                        <span>BITRATE:</span> <span id="metric-bitrate" class="text-right">0 kbps</span>
+                        <span>BUFFER:</span> <span id="metric-buffer" class="text-right">0.0s</span>
+                        <span>HEALTH:</span> <span id="metric-health" class="text-right text-indigo-400">100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PLAYER VIDEO -->
+            <video id="main-player" class="w-full h-full object-contain" controls crossorigin="anonymous"></video>
+
+            <!-- EPG INFO OVERLAY -->
+            <div class="absolute bottom-10 left-10 z-40 pointer-events-none translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                <div class="glass-panel p-6 border-l-4 border-indigo-500 rounded-r-xl">
+                    <span id="current-category" class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">LIVE_TV</span>
+                    <h2 id="current-title" class="text-2xl font-bold">NETSECUREPRO STREAM ENGINE</h2>
+                    <p id="current-epg" class="text-sm text-slate-400 mt-1 italic">Veuillez sélectionner un flux...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION PLAYLIST (DROITE - POSTDISPLAY GRID) -->
+        <aside class="flex-1 border-l border-slate-800 bg-slate-900/50 flex flex-col">
+            <div class="p-4 border-b border-slate-800">
+                <input type="text" placeholder="RECHERCHER UN FLUX..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-xs focus:border-indigo-500 outline-none transition-all">
+            </div>
+            
+            <div id="flux-container" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                <!-- Les composants PostDisplay seront injectés ici via JS -->
+                <!-- Exemple de structure PostDisplay générée -->
+                <div class="p-4 bg-slate-800/40 border border-slate-700 rounded-xl hover:border-indigo-500 transition-all cursor-pointer group">
+                    <div class="flex gap-4">
+                        <div class="w-20 h-12 bg-black rounded overflow-hidden">
+                            <img src="https://via.placeholder.com/150" class="w-full h-full object-cover opacity-50 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-sm font-bold truncate">Flux Test NÉO-01</h3>
+                            <p class="text-[10px] text-slate-500 truncate italic">Chargement EPG...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- FOOTER STATUS -->
+    <footer class="bg-indigo-600 text-[9px] px-4 py-1 flex justify-between font-bold tracking-widest uppercase">
+        <span>Terminal Status: Operational</span>
+        <span>Secure Packets: Encrypted AES-256</span>
+        <span id="clock">00:00:00</span>
+    </footer>
+
+    <script>
+        // Mise à jour de l'horloge système
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // Initialisation basique HLS
+        const video = document.getElementById('main-player');
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.attachMedia(video);
+            // hls.loadSource('URL_TEST.m3u8');
+        }
+    </script>
+</body>
+</html>
