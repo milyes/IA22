@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>NETSECUREPRO - NÉO IA22 CORE</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- HLS.js -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <style>
+    body { font-family: 'JetBrains Mono', monospace; }
+    .glass-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #4f46e5;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-900 text-slate-100 h-screen flex flex-col">
+
+<!-- HEADER -->
+<header class="glass-panel p-4 flex justify-between items-center">
+  <div class="text-xl font-bold">NetSecurePro NÉO_DZ</div>
+  <div class="text-sm text-slate-300">
+    CORE: 20.6 PRO V7 · Auteur: Z. M. Ilyes
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="flex flex-1 overflow-hidden">
+
+  <!-- PLAYER + ANALYZER -->
+  <section class="flex-1 p-4 flex flex-col gap-4">
+
+    <!-- QUALITY BADGE -->
+    <div class="glass-panel p-3 rounded-xl">
+      <div id="metric-status" class="font-bold text-emerald-400">
+        SYSTÈME OPTIMAL
+      </div>
+      <div class="text-xs mt-1">
+        BITRATE: <span id="metric-bitrate">0</span> kbps ·
+        BUFFER: <span id="metric-buffer">0.0</span>s ·
+        HEALTH: <span id="metric-health">100</span>%
+      </div>
+
+      <div class="w-full h-1 bg-slate-700 rounded mt-2">
+        <div id="metric-bar" class="h-1 bg-emerald-500 rounded" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="glass-panel rounded-xl p-2 flex-1">
+      <video
+        id="main-player"
+        class="w-full h-full bg-black rounded-lg"
+        controls
+        autoplay
+      ></video>
+    </div>
+
+  </section>
+
+  <!-- STREAM LIST -->
+  <aside class="w-80 glass-panel p-4 overflow-y-auto custom-scrollbar">
+    <div class="font-bold mb-2">LIVE_TV</div>
+
+    <div
+      class="p-3 rounded-lg bg-slate-800 hover:bg-slate-700 cursor-pointer"
+      onclick="playStream(TEST_STREAM)"
+    >
+      <div class="font-semibold">Flux Test NÉO-01</div>
+      <div class="text-xs text-slate-400">Chargement EPG...</div>
+    </div>
+  </aside>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="glass-panel p-2 flex justify-between text-xs text-slate-400">
+  <div>Terminal Status: Operational · AES-256</div>
+  <div id="clock">00:00:00</div>
+</footer>
+
+<!-- CORE SCRIPT -->
+<script>
+/* 🕒 Horloge */
+setInterval(() => {
+  document.getElementById("clock").innerText =
+    new Date().toLocaleTimeString();
+}, 1000);
+
+/* 🎥 HLS CORE */
+const video = document.getElementById("main-player");
+let hls = null;
+
+/* 🔬 Fake stream test */
+const TEST_STREAM = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
+
+function playStream(url) {
+  if (hls) {
+    hls.destroy();
+  }
+
+  if (Hls.isSupported()) {
+    hls = new Hls({ lowLatencyMode: true });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+
+    bindAnalyzer(hls);
+  } else {
+    video.src = url;
+  }
+}
+
+/* 🧠 ANALYZER (HOOK SIMPLE FRONT) */
+function bindAnalyzer(hlsInstance) {
+  setInterval(() => {
+    if (!hlsInstance || !video.buffered.length) return;
+
+    const level = hlsInstance.levels[hlsInstance.currentLevel];
+    const buffer =
+      video.buffered.end(video.buffered.length - 1) - video.currentTime;
+
+    const bitrate = level ? Math.round(level.bitrate / 1000) : 0;
+
+    let health = 100;
+    if (buffer < 2) health -= 30;
+    if (hlsInstance.currentLevel === -1) health -= 20;
+
+    updateUI(bitrate, buffer, health);
+  }, 2000);
+}
+
+/* 🎛 UI Update */
+function updateUI(bitrate, buffer, health) {
+  document.getElementById("metric-bitrate").innerText = bitrate;
+  document.getElementById("metric-buffer").innerText = buffer.toFixed(2);
+  document.getElementById("metric-health").innerText = health;
+
+  const bar = document.getElementById("metric-bar");
+  bar.style.width = health + "%";
+  bar.className =
+    "h-1 rounded " +
+    (health > 70
+      ? "bg-emerald-500"
+      : health > 40
+      ? "bg-amber-500"
+      : "bg-red-600 animate-pulse");
+}
+</script>
+
+</body>
+</html>
