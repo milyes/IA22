@@ -1,0 +1,102 @@
+NETSECUREPRO - NÉO IA22 CORE
+    
+    
+    
+    
+        body { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+    
+
+
+
+    
+    
+        
+            
+            NetSecurePro NÉO_DZ
+        
+        
+            CORE: 20.6 PRO V7
+            Auteur: Z. M. Ilyes
+        
+    
+
+    
+        
+        
+        
+            
+            
+                
+                    
+                        
+                        SYSTÈME OPTIMAL
+                    
+                    
+                        BITRATE: 0 kbps
+                        BUFFER: 0.0s
+                        HEALTH: 100%
+                    
+                
+            
+
+            
+            
+
+            
+            
+                
+                    LIVE_TV
+                    NETSECUREPRO STREAM ENGINE
+                    Veuillez sélectionner un flux...
+                
+            
+        
+
+        
+        
+            
+                
+            
+            
+            
+                
+                
+                
+                    
+                        
+                            
+                        
+                        
+                            Flux Test NÉO-01
+                            Chargement EPG...
+                        
+                    
+                
+            
+        
+
+    
+
+    
+    
+        Terminal Status: Operational
+        Secure Packets: Encrypted AES-256
+        00:00:00
+    
+
+    
+        // Mise à jour de l'horloge système
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // Initialisation basique HLS
+        const video = document.getElementById('main-player');
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.attachMedia(video);
+            // hls.loadSource('URL_TEST.m3u8');
+        }
