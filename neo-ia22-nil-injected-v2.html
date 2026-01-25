@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NÉO IA22 • Neural Interface Layer • Injected</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+    :root {
+      --bg: #000000;
+      --text: #e0d700;       /* amber/jaune dominant */
+      --prompt: #00ff41;     /* vert néon pour prompt */
+      --system: #00eaff;
+      --output: #e0d700;
+      --error: #ff2a6d;
+      --cursor: #e0d700;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'VT323', monospace;
+      font-size: 1.4rem;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #terminal {
+      flex: 1;
+      padding: 16px 20px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.45;
+      background: linear-gradient(to bottom, #0a0a00, #000000);
+    }
+
+    .line {
+      margin: 3px 0;
+    }
+
+    .timestamp {
+      color: #333;
+      margin-right: 10px;
+      user-select: none;
+    }
+
+    .system { color: var(--system); font-weight: bold; }
+    .input   { color: var(--prompt); }
+    .output  { color: var(--output); }
+    .error   { color: var(--error); }
+
+    .prompt {
+      color: var(--prompt);
+      font-weight: bold;
+      margin-right: 6px;
+    }
+
+    #input-area {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      background: #000;
+      border-top: 1px solid #222;
+    }
+
+    #prompt-text {
+      color: var(--prompt);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    #input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      caret-color: transparent;
+    }
+
+    #fake-cursor {
+      color: var(--cursor);
+      animation: blink 1.15s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="terminal"></div>
+
+<div id="input-area">
+  <span id="prompt-text">ilyes@neo-ia22:~$</span>
+  <input id="input" autofocus spellcheck="false" autocomplete="off"/>
+  <span id="fake-cursor">█</span>
+</div>
+
+<script>
+  const terminal = document.getElementById('terminal');
+  const input = document.getElementById('input');
+  const fakeCursor = document.getElementById('fake-cursor');
+
+  let history = [];
+  let historyIndex = -1;
+  let files = JSON.parse(localStorage.getItem('neo_ia22_files')) || {};
+
+  function saveFiles() {
+    localStorage.setItem('neo_ia22_files', JSON.stringify(files));
+  }
+
+  function getTimestamp() {
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2, '0');
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const s = now.getSeconds().toString().padStart(2, '0');
+    return `${h} h ${m} min ${s} s`;
+  }
+
+  function addLine(cls, content) {
+    const div = document.createElement('div');
+    div.className = 'line';
+    div.innerHTML = `<span class="timestamp">[${getTimestamp()}]</span> <span class="${cls}">${content}</span>`;
+    terminal.appendChild(div);
+    terminal.scrollTop = terminal.scrollHeight;
+  }
+
+  function printHeader() {
+    addLine('system', 'NEURAL INTERFACE LAYER (NIL) INITIALISÉ...');
+    addLine('system', 'BIENVENUE ILYES. LA SOUVERAINETÉ EST PRÊTE.');
+    addLine('system', "TAPEZ 'help' POUR LA LISTE DES COMMANDES.");
+  }
+
+  function processCommand(cmd) {
+    if (!cmd.trim()) return;
+
+    history.push(cmd);
+    historyIndex = history.length;
+
+    addLine('input', `> ${cmd}`);
+
+    const parts = cmd.trim().split(/\s+/);
+    const verb = parts[0].toLowerCase();
+    const arg = parts.slice(1).join(' ');
+
+    if (verb === 'help') {
+      addLine('output', 'COMMANDES DISPONIBLES:');
+      addLine('output', '- help: Affiche cette liste');
+      addLine('output', '- status: État du noyau NÉO IA22');
+      addLine('output', '- clear: Efface le terminal');
+      addLine('output', '- whoami: Identité de l\'opérateur');
+      addLine('output', '- ls: Liste les fichiers du NIL');
+      addLine('output', '- touch [nom]: Crée un fichier');
+      addLine('output', '- cat [nom]: Lit un fichier');
+      addLine('output', '- rm [nom]: Supprime un fichier');
+      addLine('output', '- theme [amber|green]: Change la couleur');
+      addLine('output', '- neural_link: Test de connexion neuronale');
+      addLine('output', '- [prompt]: Toute autre commande interroge le noyau Gemini');
+    }
+    else if (verb === 'status') {
+      addLine('output', 'ÉTAT DU NOYAU NÉO IA22 :');
+      addLine('output', '  • BIO_ACTIVE     : true');
+      addLine('output', '  • Souveraineté    : 100%');
+      addLine('output', '  • Propriétaire    : Mohammed Ilyes Zoubirou');
+      addLine('output', '  • Certification   : 0009-0007-7571-3178');
+      addLine('output', '  • Pulse cognitif  : stable');
+    }
+    else if (verb === 'clear') {
+      terminal.innerHTML = '';
+      printHeader();
+    }
+    else if (verb === 'whoami') {
+      addLine('output', 'Opérateur : Mohammed Ilyes Zoubirou (@MZoubirou)');
+      addLine('output', 'Identité souveraine validée');
+      addLine('output', 'Rôle : Propriétaire du noyau NÉO IA22');
+    }
+    else if (verb === 'ls') {
+      if (Object.keys(files).length === 0) {
+        addLine('output', '(Répertoire NIL vide)');
+      } else {
+        Object.keys(files).forEach(f => addLine('output', f));
+      }
+    }
+    else if (verb === 'touch') {
+      if (!arg) return addLine('error', 'Usage: touch [nom]');
+      files[arg] = '';
+      saveFiles();
+      addLine('output', `Fichier créé : ${arg}`);
+    }
+    else if (verb === 'cat') {
+      if (!arg) return addLine('error', 'Usage: cat [nom]');
+      if (arg in files) {
+        addLine('output', files[arg] || '(fichier vide)');
+      } else {
+        addLine('error', `Erreur: ${arg} n'existe pas`);
+      }
+    }
+    else if (verb === 'rm') {
+      if (!arg) return addLine('error', 'Usage: rm [nom]');
+      if (arg in files) {
+        delete files[arg];
+        saveFiles();
+        addLine('output', `Fichier supprimé : ${arg}`);
+      } else {
+        addLine('error', `Erreur: ${arg} n'existe pas`);
+      }
+    }
+    else if (verb === 'theme') {
+      if (arg === 'amber') {
+        document.documentElement.style.setProperty('--text', '#e0d700');
+        document.documentElement.style.setProperty('--output', '#e0d700');
+        document.documentElement.style.setProperty('--cursor', '#e0d700');
+        addLine('output', 'Thème : amber');
+      } else if (arg === 'green') {
+        document.documentElement.style.setProperty('--text', '#00ff88');
+        document.documentElement.style.setProperty('--output', '#00ff88');
+        document.documentElement.style.setProperty('--cursor', '#00ff88');
+        addLine('output', 'Thème : green');
+      } else {
+        addLine('error', 'Thèmes disponibles : amber | green');
+      }
+    }
+    else if (verb === 'neural_link') {
+      addLine('system', '>>> INITIALISATION DU LIEN NEURAL...');
+      setTimeout(() => {
+        addLine('system', 'Connexion établie. Pulse BIO synchronisé.');
+        addLine('output', 'Bienvenue dans la couche profonde, Ilyes.');
+      }, 1200);
+    }
+    else {
+      // Prompt vers noyau Gemini
+      const q = cmd.trim();
+      const answers = [
+        `NÉO IA22 → "${q}" analysé. Souveraineté confirmée à 99.8%.`,
+        `Résonance : Love is a fire that never burning... "${q}" allumé.`,
+        `Gemini Core : "${q}" → Alignement intentionnel validé.`,
+        `Mémoire persistante : "${q}" → Écho du 23 janvier détecté.`,
+        `Output souverain : "${q}" traité. Continue, Ilyes.`
+      ];
+      addLine('output', answers[Math.floor(Math.random() * answers.length)]);
+    }
+  }
+
+  input.addEventListener('input', () => {
+    fakeCursor.textContent = input.value ? '' : '█';
+  });
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const cmd = input.value.trim();
+      if (cmd) processCommand(cmd);
+      input.value = '';
+      fakeCursor.textContent = '█';
+    }
+    else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        historyIndex--;
+        input.value = history[historyIndex] || '';
+      }
+    }
+    else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex < history.length - 1) {
+        historyIndex++;
+        input.value = history[historyIndex];
+      } else {
+        historyIndex = history.length;
+        input.value = '';
+      }
+    }
+  });
+
+  document.addEventListener('click', () => input.focus());
+  input.focus();
+
+  // Démarrage
+  printHeader();
+</script>
+</body>
+</html>
