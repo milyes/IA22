@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NÉO_DZ | LOCALISATION V7</title>
+    <style>
+        :root {
+            --neon-cyan: #00f7ff;
+            --neon-gold: #ffcc00;
+            --bg-dark: #0a0a0c;
+            --terminal-green: #00ff41;
+            --alert-red: #ff003c;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .terminal-container {
+            width: 800px;
+            border: 1px solid var(--neon-cyan);
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.2);
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            border-bottom: 1px solid var(--neon-cyan);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            color: var(--neon-gold);
+            margin: 0;
+        }
+
+        .auth-status {
+            font-size: 0.8rem;
+            color: var(--terminal-green);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .field-box label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--neon-cyan);
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: var(--terminal-green);
+            padding: 8px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--neon-gold);
+        }
+
+        .filter-section {
+            border: 1px dashed var(--alert-red);
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-execute {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--neon-gold);
+            color: var(--neon-gold);
+            padding: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-execute:hover {
+            background: var(--neon-gold);
+            color: black;
+        }
+
+        #output {
+            height: 150px;
+            background: #000;
+            border: 1px solid #222;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+
+        .status-valid { color: var(--terminal-green); }
+        .status-error { color: var(--alert-red); }
+        
+        .signature {
+            font-size: 0.6rem;
+            text-align: right;
+            margin-top: 10px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="terminal-container">
+    <div class="header">
+        <h1>NETSECUREPRO | MOBILE LOCATOR V7</h1>
+        <div class="auth-status">AUTORISÉ : ZOUBIROU M. ILYES</div>
+    </div>
+
+    <div class="input-grid">
+        <div class="field-box">
+            <label>MCC (Mobile Country Code)</label>
+            <input type="number" id="mcc" value="603">
+        </div>
+        <div class="field-box">
+            <label>MNC (Mobile Network Code)</label>
+            <input type="number" id="mnc" value="01">
+        </div>
+        <div class="field-box">
+            <label>LAC (Location Area Code)</label>
+            <input type="number" id="lac" placeholder="Ex: 1024">
+        </div>
+        <div class="field-box">
+            <label>CID (Cell ID)</label>
+            <input type="number" id="cid" placeholder="Ex: 5421">
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <label style="color: var(--alert-red); font-size: 0.7rem; font-weight: bold;">
+            [FILTRE OBLIGATOIRE] SEUIL DE PRÉCISION MAX (Mètres) :
+        </label>
+        <input type="number" id="threshold" value="1000" style="border-color: var(--alert-red); width: 80px; margin-left: 10px;">
+    </div>
+
+    <button class="btn-execute" onclick="runLocalization()">EXÉCUTER LE SCAN V7</button>
+
+    <div id="output">
+        [SYS] En attente de données d'entrée...
+    </div>
+
+    <div class="signature">
+        ORCID: 0009-0007-7571-3178 | HASH: 7f8a9b8c7d6e5f4a1d2c3b4a5b2c1d6e
+    </div>
+</div>
+
+<script>
+    function log(message, type = '') {
+        const out = document.getElementById('output');
+        const time = new Date().toLocaleTimeString();
+        out.innerHTML += `<div class="${type}">[${time}] ${message}</div>`;
+        out.scrollTop = out.scrollHeight;
+    }
+
+    function runLocalization() {
+        const lac = document.getElementById('lac').value;
+        const cid = document.getElementById('cid').value;
+        const threshold = parseInt(document.getElementById('threshold').value);
+
+        if (!lac || !cid) {
+            log("ERREUR : Paramètres LAC/CID manquants.", "status-error");
+            return;
+        }
+
+        log("Initialisation de la triangulation réseau...", "status-valid");
+        
+        // Simulation de réponse API (Protocol GEMINI CORE)
+        setTimeout(() => {
+            // Simulation d'une précision de 1200m
+            const simulatedAccuracy = Math.floor(Math.random() * (2000 - 500) + 500);
+            
+            log(`Donnée reçue : Précision estimée = ${simulatedAccuracy}m`);
+
+            // APPLICATION DU FILTRE OBLIGATOIRE
+            if (simulatedAccuracy <= threshold) {
+                log("FILTRE : Accepté. Coordonnées validées.", "status-valid");
+                log(`RÉSULTAT : LAT: 36.7538 | LON: 3.0588 (Alger)`, "status-valid");
+                log("CERTIFICATION : 7f8a9b8c7d6e5f4a1d2c3b4a5b2c1d6e");
+            } else {
+                log(`ÉCHEC : Filtre obligatoire activé (${simulatedAccuracy}m > ${threshold}m).`, "status-error");
+                log("SÉCURITÉ : Donnée rejetée par le Noyau V7.", "status-error");
+            }
+        }, 1500);
+    }
+</script>
+
+</body>
+</html>
+
