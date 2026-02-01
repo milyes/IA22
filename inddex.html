@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DZROUGE IA TERMINAL</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #0a0a0a;
+      color: #ff3366;               /* Rouge DZROUGE signature */
+      font-family: 'Courier New', Courier, monospace;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #terminal {
+      padding: 1rem;
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #ff3366 #1a1a1a;
+    }
+    .banner {
+      color: #ff6699;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 8px #ff3366;
+    }
+    .line {
+      white-space: pre-wrap;
+      margin-bottom: 0.4rem;
+      line-height: 1.4;
+    }
+    .prompt {
+      color: #ff99cc;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+    .input-line {
+      display: flex;
+      align-items: center;
+    }
+    input {
+      background: transparent;
+      border: none;
+      color: #ff3366;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      flex: 1;
+      caret-color: #ff6699;
+    }
+    input::selection {
+      background: #ff3366;
+      color: #000;
+    }
+    .response {
+      color: #ff99cc;
+    }
+    .success { color: #00ff88; }
+    .error   { color: #ff4444; }
+  </style>
+</head>
+<body>
+
+<div id="terminal">
+
+  <div class="banner">
+    ╔════════════════════════════════════╗  
+    ║     🌐 DZROUGE IA TERMINAL v1.1    ║  
+    ╚════════════════════════════════════╝
+  </div>
+
+  <div class="line">
+    Bienvenue dans le terminal souverain DZROUGE  
+    Tapez 'help' pour voir les commandes disponibles.
+  </div>
+
+  <div class="line">────────────────────────────────────────────</div>
+
+  <!-- Les lignes seront ajoutées ici dynamiquement -->
+
+  <div class="input-line">
+    <span class="prompt">DZROUGE $</span>
+    <input id="cmd" type="text" autocomplete="off" autofocus />
+  </div>
+
+</div>
+
+<script>
+// ────────────────────────────────────────────
+// CONFIG
+// ────────────────────────────────────────────
+const terminal = document.getElementById('terminal');
+const input    = document.getElementById('cmd');
+
+let commandHistory = [];
+let historyIndex = -1;
+
+// ────────────────────────────────────────────
+// Helpers
+// ────────────────────────────────────────────
+function print(text, className = '') {
+  const div = document.createElement('div');
+  div.className = 'line ' + className;
+  div.textContent = text;
+  terminal.insertBefore(div, terminal.lastElementChild);
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+function clearTerminal() {
+  // On garde la bannière et la ligne de séparation
+  terminal.innerHTML = `
+    <div class="banner">
+      ╔════════════════════════════════════╗  
+      ║     🌐 DZROUGE IA TERMINAL v1.1    ║  
+      ╚════════════════════════════════════╝
+    </div>
+    <div class="line">
+      Bienvenue dans le terminal souverain DZROUGE  
+      Tapez 'help' pour voir les commandes disponibles.
+    </div>
+    <div class="line">────────────────────────────────────────────</div>
+    <div class="input-line">
+      <span class="prompt">DZROUGE $</span>
+      <input id="cmd" type="text" autocomplete="off" autofocus />
+    </div>
+  `;
+  // Re-bind le nouvel input
+  document.getElementById('cmd').focus();
+  bindInput();
+}
+
+// Effet typewriter simple
+function typeResponse(text, className = 'response', delay = 30) {
+  const div = document.createElement('div');
+  div.className = 'line ' + className;
+  terminal.insertBefore(div, terminal.lastElementChild);
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < text.length) {
+      div.textContent += text[i];
+      terminal.scrollTop = terminal.scrollHeight;
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, delay);
+}
+
+// ────────────────────────────────────────────
+// Command processor
+// ────────────────────────────────────────────
+function processCommand(cmd) {
+  cmd = cmd.trim();
+  if (!cmd) return;
+
+  print("DZROUGE $ " + cmd, 'prompt');
+
+  switch (cmd.toLowerCase()) {
+    case 'help':
+      print("Commandes disponibles :", 'success');
+      print("  help          → cette aide");
+      print("  clear         → effacer le terminal");
+      print("  analyse       → lancer une analyse IA rapide");
+      print("  status        → état du système");
+      print("  version       → version actuelle");
+      print("  exit          → quitter (simulation)");
+      print("  1             → Analyse IA (raccourci)");
+      print("  2             → Connexion NetSecurePro");
+      break;
+
+    case 'clear':
+      clearTerminal();
+      break;
+
+    case 'analyse':
+    case '1':
+      print("🧠 Lancement analyse IA souveraine...", 'success');
+      setTimeout(() => {
+        typeResponse("✔ IA22_LOGIC opérationnel", 'success');
+        typeResponse("✔ Entropy: 7.98 bits/byte", 'success');
+        typeResponse("✔ AES-256-GCM activé", 'success');
+        typeResponse("✔ Prêt pour forensics ou hardening", 'success');
+      }, 800);
+      break;
+
+    case '2':
+      print("🔗 Connexion sécurisée NetSecurePro...", 'success');
+      setTimeout(() => {
+        typeResponse("✔ Canal chiffré établi", 'success');
+        typeResponse("✔ Authentification biométrique validée", 'success');
+      }, 1200);
+      break;
+
+    case 'status':
+      print("État actuel :", 'success');
+      print("  IA22_LOGIC   → online");
+      print("  Vision module → chargé");
+      print("  Réseau       → connecté (latency 42ms)");
+      print("  Verrouillage → actif (lockeO)");
+      break;
+
+    case 'version':
+      print("DZROUGE IA TERMINAL v1.1 – © 2026 MOHAMMED ILYES ZOUBIROU", 'success');
+      break;
+
+    case 'exit':
+      print("👋 Terminal en veille... À bientôt.", 'success');
+      input.disabled = true;
+      input.value = "session terminée";
+      break;
+
+    default:
+      print(`❌ Commande '${cmd}' inconnue. Tapez 'help'.`, 'error');
+  }
+
+  // Ajout à l'historique
+  commandHistory.unshift(cmd);
+  historyIndex = -1;
+}
+
+// ────────────────────────────────────────────
+// Input handling + history
+// ────────────────────────────────────────────
+function bindInput() {
+  const cmdInput = document.getElementById('cmd');
+  if (!cmdInput) return;
+
+  cmdInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const cmd = cmdInput.value.trim();
+      if (cmd) processCommand(cmd);
+      cmdInput.value = '';
+    }
+    else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex < commandHistory.length - 1) {
+        historyIndex++;
+        cmdInput.value = commandHistory[historyIndex] || '';
+      }
+    }
+    else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex > -1) {
+        historyIndex--;
+        cmdInput.value = historyIndex === -1 ? '' : commandHistory[historyIndex];
+      }
+    }
+  });
+
+  cmdInput.focus();
+}
+
+bindInput();
+
+// Focus permanent quand on clique ailleurs
+document.addEventListener('click', () => {
+  document.getElementById('cmd')?.focus();
+});
+</script>
+
+</body>
+</html>
