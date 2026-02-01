@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>DZROUGE IA TERMINAL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    background: #000;
+    color: #00ff88;
+    font-family: monospace;
+}
+
+#terminal {
+    padding: 20px;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.line {
+    white-space: pre-wrap;
+    margin-bottom: 5px;
+}
+
+.prompt {
+    color: #00ffaa;
+}
+
+.input-line {
+    display: flex;
+}
+
+input {
+    background: transparent;
+    border: none;
+    color: #00ff88;
+    font-family: monospace;
+    font-size: 16px;
+    outline: none;
+    flex: 1;
+}
+
+.banner {
+    color: #00aaff;
+    margin-bottom: 10px;
+}
+</style>
+</head>
+
+<body>
+<div id="terminal">
+
+<div class="banner">
+=== 🌐 DZROUGE IA TERMINAL ===
+</div>
+
+<div class="line">
+[1] Analyse IA  
+[2] Connexion NetSecurePro  
+[3] Clear Terminal  
+[4] Quitter
+</div>
+
+<div class="input-line">
+<span class="prompt">DZROUGE $ </span>
+<input id="cmd" autofocus />
+</div>
+
+</div>
+
+<script>
+const terminal = document.getElementById("terminal");
+const input = document.getElementById("cmd");
+
+function print(text, color = "#00ff88") {
+    const div = document.createElement("div");
+    div.className = "line";
+    div.style.color = color;
+    div.textContent = text;
+    terminal.insertBefore(div, terminal.lastElementChild);
+    terminal.scrollTop = terminal.scrollHeight;
+}
+
+function processCommand(cmd) {
+    print("DZROUGE $ " + cmd, "#00ffaa");
+
+    switch (cmd) {
+        case "1":
+            print("🧠 Analyse IA en cours...");
+            setTimeout(() => {
+                print("✔ Système stable");
+                print("✔ Modules chargés");
+                print("✔ IA locale opérationnelle");
+            }, 800);
+            break;
+
+        case "2":
+            print("🔗 Connexion à NetSecurePro...");
+            setTimeout(() => {
+                print("✔ Accès sécurisé établi");
+                print("✔ Canal IA synchronisé");
+            }, 800);
+            break;
+
+        case "3":
+            terminal.innerHTML = `
+            <div class="banner">=== 🌐 DZROUGE IA TERMINAL ===</div>
+            <div class="line">[1] Analyse IA  \n[2] Connexion NetSecurePro  \n[3] Clear Terminal  \n[4] Quitter</div>
+            <div class="input-line">
+            <span class="prompt">DZROUGE $ </span>
+            <input id="cmd" autofocus />
+            </div>`;
+            bindInput();
+            return;
+
+        case "4":
+            print("👋 Fermeture du terminal...");
+            input.disabled = true;
+            break;
+
+        default:
+            print("❌ Commande inconnue");
+    }
+}
+
+function bindInput() {
+    const newInput = document.getElementById("cmd");
+    newInput.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            const cmd = newInput.value.trim();
+            newInput.value = "";
+            processCommand(cmd);
+        }
+    });
+}
+
+bindInput();
+</script>
+
+</body>
+</html>
