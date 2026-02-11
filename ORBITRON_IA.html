@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORBITRON.IA | OS MENTAL V2.5</title>
+    <style>
+        :root {
+            --neon: #00f2ff;
+            --bg: #020508;
+            --panel: rgba(0, 15, 25, 0.85);
+            --border: rgba(0, 242, 255, 0.4);
+            --danger: #ff003c;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: var(--bg);
+            font-family: 'Segoe UI', sans-serif;
+            color: var(--neon);
+            overflow: hidden;
+        }
+
+        canvas#matrix {
+            position: fixed; top: 0; left: 0; z-index: -1;
+            opacity: 0.2;
+        }
+
+        #top-bar {
+            height: 40px; background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid var(--neon);
+            display: flex; align-items: center; padding: 0 20px;
+            justify-content: space-between; font-size: 0.8em;
+            letter-spacing: 1px;
+        }
+
+        .window {
+            position: absolute; background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
+
+        .window-header {
+            padding: 8px 12px; background: rgba(0, 242, 255, 0.1);
+            cursor: move; display: flex; justify-content: space-between;
+            font-weight: bold; font-size: 0.75em; border-bottom: 1px solid var(--border);
+        }
+
+        .window-content { padding: 12px; height: 200px; overflow-y: auto; }
+
+        #terminal-output { font-family: 'Consolas', monospace; color: #00ff41; font-size: 0.85em; }
+        
+        input {
+            width: 100%; background: transparent; border: none;
+            color: white; outline: none; border-top: 1px solid var(--border);
+            padding: 8px 0; margin-top: 10px; font-family: monospace;
+        }
+
+        /* Mode Alerte Rouge */
+        .alert-mode {
+            border-color: var(--danger) !important;
+            color: var(--danger) !important;
+            box-shadow: 0 0 30px rgba(255, 0, 60, 0.5) !important;
+        }
+        .alert-bg { background-color: rgba(255, 0, 0, 0.1) !important; animation: blink 0.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+    </style>
+</head>
+<body id="main-body">
+
+<canvas id="matrix"></canvas>
+
+<div id="top-bar">
+    <div>IA22_LOGIC // NODE: 04-ORBITRON</div>
+    <div id="status-text">ICE_SHIELD: ACTIVE</div>
+    <div id="clock">00:00:00</div>
+</div>
+
+<div class="window" id="win-term" style="top: 60px; left: 20px; width: 350px;">
+    <div class="window-header"><span>>_ COMMAND_CENTER</span><span>[X]</span></div>
+    <div class="window-content" id="term-scroll">
+        <div id="terminal-output">[SYSTEM] Noyau IA22 prêt...<br>[SYSTEM] Mode Matrix actif.</div>
+        <input type="text" id="cmd-input" placeholder="Tapez /help..." autofocus>
+    </div>
+</div>
+
+<div class="window" id="win-flux" style="top: 320px; left: 20px; width: 350px;">
+    <div class="window-header"><span>SYNAPTIC_FLUX</span><span>[X]</span></div>
+    <div class="window-content" style="display:flex; align-items:center; justify-content:center;">
+        <canvas id="flux-canvas" width="300" height="150"></canvas>
+    </div>
+</div>
+
+<script>
+    // --- MATRIX EFFECT ---
+    const mCanvas = document.getElementById('matrix');
+    const mCtx = mCanvas.getContext('2d');
+    mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
+    const chars = "0101010101ABCDEF";
+    const drops = Array(Math.floor(mCanvas.width/15)).fill(1);
+    function drawMatrix() {
+        mCtx.fillStyle = "rgba(2, 5, 8, 0.1)"; mCtx.fillRect(0,0,mCanvas.width,mCanvas.height);
+        mCtx.fillStyle = "#00f2ff"; mCtx.font = "15px monospace";
+        drops.forEach((y, i) => {
+            const text = chars[Math.floor(Math.random()*chars.length)];
+            mCtx.fillText(text, i*15, y*15);
+            if(y*15 > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(drawMatrix, 50);
+
+    // --- TERMINAL LOGIC ---
+    const input = document.getElementById('cmd-input');
+    const output = document.getElementById('terminal-output');
+    const body = document.getElementById('main-body');
+
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const cmd = input.value.toLowerCase().trim();
+            output.innerHTML += `<br><span style="color:white">> ${cmd}</span>`;
+            
+            let res = "[!] COMMANDE INCONNUE.";
+            
+            if (cmd === 'help' || cmd === '/help') {
+                res = "LOGICIELS :<br>- scan : Analyse<br>- mutate : Cycle IA22<br>- alert : Test ICE";
+            } else if (cmd === 'scan' || cmd === '/scan') {
+                res = "[VIRAL_MODULE] Analyse... Menaces : 0.";
+            } else if (cmd === 'alert' || cmd === '/alert') {
+                res = "[DANGER] PROTOCOLE ICE_BREAKER DÉTECTÉ !";
+                triggerAlert();
+            }
+
+            setTimeout(() => {
+                output.innerHTML += `<br><span style="color:var(--neon)">${res}</span>`;
+                document.getElementById('term-scroll').scrollTop = 9999;
+            }, 200);
+            input.value = '';
+        }
+    });
+
+    function triggerAlert() {
+        body.classList.add('alert-bg');
+        document.querySelectorAll('.window').forEach(w => w.classList.add('alert-mode'));
+        document.getElementById('status-text').innerText = "ICE_SHIELD: COMPROMISED";
+        document.getElementById('status-text').style.color = "red";
+        setTimeout(() => {
+            body.classList.remove('alert-bg');
+            document.querySelectorAll('.window').forEach(w => w.classList.remove('alert-mode'));
+            document.getElementById('status-text').innerText = "ICE_SHIELD: ACTIVE";
+            document.getElementById('status-text').style.color = "var(--neon)";
+        }, 5000);
+    }
+
+    // --- DRAG LOGIC ---
+    document.querySelectorAll('.window').forEach(win => {
+        const h = win.querySelector('.window-header');
+        h.onmousedown = (e) => {
+            let sx = e.clientX - win.offsetLeft, sy = e.clientY - win.offsetTop;
+            document.onmousemove = (e) => { win.style.left = e.pageX - sx + 'px'; win.style.top = e.pageY - sy + 'px'; };
+            document.onmouseup = () => document.onmousemove = null;
+        };
+    });
+
+    // Clock
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+</script>
+</body>
+</html>
