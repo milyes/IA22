@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>ORBITRON.IA | OS MENTAL V2.0</title>
+    <style>
+        :root {
+            --neon: #00f2ff;
+            --bg: #020508;
+            --panel: rgba(0, 15, 25, 0.9);
+            --border: rgba(0, 242, 255, 0.4);
+            --danger: #ff003c;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: var(--bg);
+            font-family: 'Segoe UI', Orbitron, sans-serif;
+            color: var(--neon);
+            overflow: hidden;
+            background-image: radial-gradient(circle at center, #001a20 0%, #020508 100%);
+        }
+
+        /* Effet Grille de Fond */
+        .grid-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Barre de Tâches Supérieure */
+        #top-bar {
+            height: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid var(--neon);
+            display: flex; align-items: center;
+            padding: 0 20px; justify-content: space-between;
+            z-index: 100; position: relative;
+        }
+
+        /* Fenêtres Déplaçables */
+        .window {
+            position: absolute;
+            min-width: 300px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .window-header {
+            padding: 8px 12px;
+            background: rgba(0, 242, 255, 0.15);
+            cursor: move;
+            display: flex; justify-content: space-between;
+            font-weight: bold; font-size: 0.8em;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .window-content {
+            padding: 15px;
+            height: 250px;
+            overflow-y: auto;
+        }
+
+        /* Styles Spécifiques */
+        #terminal-output {
+            font-family: 'Consolas', monospace;
+            color: #00ff41; font-size: 0.9em;
+        }
+
+        .stat-row {
+            display: flex; justify-content: space-between;
+            margin-bottom: 5px; font-size: 0.8em;
+        }
+
+        .progress-bar {
+            height: 4px; background: #002222;
+            width: 100%; margin-top: 5px;
+        }
+        .progress-fill {
+            height: 100%; background: var(--neon);
+            width: 0%; transition: width 0.5s;
+        }
+
+        input {
+            width: 100%; background: transparent; border: none;
+            color: white; outline: none; padding: 5px 0;
+            border-top: 1px solid var(--border); margin-top: 10px;
+        }
+
+        .btn-launch {
+            background: var(--neon); color: black;
+            border: none; padding: 10px; cursor: pointer;
+            font-weight: bold; text-transform: uppercase;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="grid-overlay"></div>
+
+<div id="top-bar">
+    <div>IA22_LOGIC // NODE: 04-ORBITRON</div>
+    <div id="status-text">ICE_SHIELD: ACTIVE</div>
+    <div id="clock">00:00:00</div>
+</div>
+
+<div class="window" style="top: 80px; left: 350px; width: 600px;">
+    <div class="window-header"><span>>_ COMMAND_CENTER</span><span>[X]</span></div>
+    <div class="window-content" id="terminal-window">
+        <div id="terminal-output">[SYSTEM] Noyau IA22 prêt...<br>[SYSTEM] En attente d'entrée...</div>
+        <input type="text" id="cmd-input" placeholder="Saisir protocole...">
+    </div>
+</div>
+
+<div class="window" style="top: 80px; left: 20px; width: 300px;">
+    <div class="window-header"><span>SYSTEM_MODULES</span><span>[X]</span></div>
+    <div class="window-content">
+        <div class="stat-row"><span>CORE_MODULE</span><span style="color:var(--terminal-green)">ONLINE</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 85%;"></div></div>
+        <br>
+        <div class="stat-row"><span>VIRAL_MODULE</span><span style="color:var(--terminal-green)">SCANNING</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="viral-bar" style="width: 20%;"></div></div>
+        <br>
+        <div class="stat-row"><span>MEMORY_KERNEL</span><span>ACTIVE</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 62%;"></div></div>
+    </div>
+</div>
+
+<div class="window" style="top: 400px; left: 20px; width: 300px;">
+    <div class="window-header"><span>SYNAPTIC_FLUX</span><span>[X]</span></div>
+    <div class="window-content" style="display: flex; align-items: center; justify-content: center;">
+        <canvas id="flux-canvas" width="250" height="150"></canvas>
+    </div>
+</div>
+
+<script>
+    // --- GESTION DU DRAG & DROP DES FENÊTRES ---
+    const windows = document.querySelectorAll('.window');
+    windows.forEach(win => {
+        const header = win.querySelector('.window-header');
+        header.onmousedown = function(e) {
+            let shiftX = e.clientX - win.getBoundingClientRect().left;
+            let shiftY = e.clientY - win.getBoundingClientRect().top;
+            win.style.zIndex = 1000;
+
+            function moveAt(pageX, pageY) {
+                win.style.left = pageX - shiftX + 'px';
+                win.style.top = pageY - shiftY + 'px';
+            }
+
+            function onMouseMove(e) { moveAt(e.pageX, e.pageY); }
+            document.addEventListener('mousemove', onMouseMove);
+            header.onmouseup = function() {
+                document.removeEventListener('mousemove', onMouseMove);
+                win.style.zIndex = 10;
+                header.onmouseup = null;
+            };
+        };
+    });
+
+    // --- TERMINAL LOGIC ---
+    const input = document.getElementById('cmd-input');
+    const output = document.getElementById('terminal-output');
+
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const cmd = input.value.toLowerCase();
+            output.innerHTML += `<br><span style="color:white">> ${cmd}</span>`;
+            
+            let res = "[!] COMMANDE INCONNUE.";
+            if (cmd === '/scan') res = "[VIRAL_MODULE] Aucun malware détecté dans le flux.";
+            if (cmd === '/mutate') res = "[IA22] Mutation du transcodeur effectuée. Identité sécurisée.";
+            if (cmd === 'gs-alpha-99') res = "[ACCESS] PRIVILÈGE ÉLEVÉ : OMNISCIENCE DÉBLOQUÉE.";
+
+            setTimeout(() => {
+                output.innerHTML += `<br>${res}`;
+                document.getElementById('terminal-window').scrollTop = 9999;
+            }, 300);
+            input.value = '';
+        }
+    });
+
+    // --- ANIMATIONS & CLOCK ---
+    setInterval(() => {
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        document.getElementById('viral-bar').style.width = (Math.random() * 100) + "%";
+    }, 1000);
+
+    // Flux Visualizer
+    const canvas = document.getElementById('flux-canvas');
+    const ctx = canvas.getContext('2d');
+    function draw() {
+        ctx.clearRect(0,0,250,150);
+        ctx.strokeStyle = '#00f2ff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for(let i=0; i<250; i++) {
+            ctx.lineTo(i, 75 + Math.sin(i*0.1 + Date.now()*0.01) * 20);
+        }
+        ctx.stroke();
+        requestAnimationFrame(draw);
+    }
+    draw();
+
+</script>
+</body>
+</html>
