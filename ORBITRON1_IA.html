@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ORBITRON // UBUNTU INTELLIGENCE</title>
+    <style>
+        :root {
+            --neon: #00f2ff;
+            --ubuntu-orange: #E95420;
+            --ubuntu-purple: #772953;
+            --bg: #020508;
+            --panel: rgba(0, 15, 25, 0.9);
+            --border: rgba(0, 242, 255, 0.4);
+            --danger: #ff003c;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: var(--bg);
+            font-family: 'Ubuntu', 'Segoe UI', sans-serif;
+            color: var(--neon);
+            overflow: hidden;
+        }
+
+        /* Arrière-plan Matrix Digital Rain */
+        canvas#matrix {
+            position: fixed; top: 0; left: 0; z-index: -1;
+            opacity: 0.15;
+        }
+
+        /* Barre de statut supérieure */
+        #top-bar {
+            height: 35px; background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid var(--neon);
+            display: flex; align-items: center; padding: 0 15px;
+            justify-content: space-between; font-size: 0.7em;
+            letter-spacing: 1px;
+        }
+
+        /* Système de fenêtres déplaçables */
+        .window {
+            position: absolute; background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+            backdrop-filter: blur(8px);
+            z-index: 10; display: flex; flex-direction: column;
+            min-width: 280px; transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        .window-header {
+            padding: 8px 12px; background: rgba(0, 242, 255, 0.1);
+            cursor: move; display: flex; justify-content: space-between;
+            font-weight: bold; font-size: 0.65em; border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+        }
+
+        /* Style Spécifique Ubuntu */
+        .ubuntu-header {
+            background: var(--ubuntu-orange) !important;
+            color: white !important;
+        }
+
+        .window-content { padding: 12px; flex-grow: 1; overflow-y: auto; font-size: 0.85em; }
+
+        /* Terminal UI */
+        #terminal-output { color: #00ff41; font-family: 'Consolas', monospace; line-height: 1.5; }
+        
+        input {
+            width: 100%; background: transparent; border: none;
+            color: white; outline: none; border-top: 1px solid var(--border);
+            padding: 10px 0; margin-top: 10px; font-family: inherit;
+        }
+
+        /* Mode Alerte Rouge */
+        .alert-active { border-color: var(--danger) !important; box-shadow: 0 0 30px rgba(255, 0, 60, 0.5) !important; }
+        .alert-text { color: var(--danger) !important; font-weight: bold; }
+
+        a { color: var(--neon); text-decoration: none; border-bottom: 1px dotted var(--neon); }
+        a:hover { color: white; border-bottom-style: solid; }
+
+        .btn-launch {
+            display: inline-block; margin-top: 10px; padding: 8px 15px;
+            background: var(--ubuntu-orange); color: white;
+            text-decoration: none; font-weight: bold; border-radius: 2px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body id="main-body">
+
+<canvas id="matrix"></canvas>
+
+<div id="top-bar">
+    <div id="brand">ORBITRON // <span style="color:var(--ubuntu-orange)">UBUNTU INTELLIGENCE</span></div>
+    <div id="status-text">ICE_SHIELD: ACTIVE</div>
+    <div id="clock">00:00:00</div>
+</div>
+
+<div class="window" id="win-term" style="top: 50px; left: 15px; width: 360px; height: 350px;">
+    <div class="window-header"><span>>_ COMMAND_CENTER</span><span>[ - ]</span></div>
+    <div class="window-content" id="term-scroll">
+        <div id="terminal-output"></div>
+        <input type="text" id="cmd-input" placeholder="Tapez 'help' ou 'launch'..." autofocus autocomplete="off">
+    </div>
+</div>
+
+<div class="window" id="win-ubuntu" style="top: 80px; right: 15px; width: 320px; display: none;">
+    <div class="window-header ubuntu-header"><span>UBUNTU_INTELLIGENCE // APPS</span><span onclick="toggleUbuntu()" style="cursor:pointer">[ X ]</span></div>
+    <div class="window-content" style="background: rgba(119, 41, 83, 0.2);">
+        <p style="color: var(--ubuntu-orange); font-weight: bold; margin-top: 0;">SYSTÈME DÉPLOYÉ :</p>
+        <p>1. <a href="https://ai.studio/apps/drive/1sU4EL90I-PHWX7EKkr5StyH05NALgEpY" target="_blank">Drive Core Storage</a></p>
+        <p>2. <a href="https://ai.studio/apps/drive/1QA_NDA84nfqBHFV3M299JmCoM-Hz0zb9?fullscreenApplet=true" target="_blank">Fullscreen Applet ⚡</a></p>
+        <hr style="border: 0; border-top: 1px solid var(--ubuntu-orange); margin: 15px 0;">
+        <p style="font-size: 0.7em; line-height: 1.4;">
+            <b>Description :</b> Environnement Ubuntu web sophistiqué piloté par Gemini 3 Flash.
+        </p>
+        <a href="https://ai.studio/apps/drive/1QA_NDA84nfqBHFV3M299JmCoM-Hz0zb9?fullscreenApplet=true" target="_blank" class="btn-launch">LANCER L'APPLET</a>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('cmd-input');
+    const output = document.getElementById('terminal-output');
+    const statusTxt = document.getElementById('status-text');
+    const winUbuntu = document.getElementById('win-ubuntu');
+
+    // Animation Matrix
+    const mCanvas = document.getElementById('matrix');
+    const mCtx = mCanvas.getContext('2d');
+    mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
+    const drops = Array(Math.floor(mCanvas.width/20)).fill(1);
+    function drawMatrix() {
+        mCtx.fillStyle = "rgba(2, 5, 8, 0.15)"; mCtx.fillRect(0,0,mCanvas.width,mCanvas.height);
+        mCtx.fillStyle = "#00f2ff"; mCtx.font = "14px monospace";
+        drops.forEach((y, i) => {
+            const char = Math.random() > 0.5 ? "1" : "0";
+            mCtx.fillText(char, i*20, y*20);
+            if(y*20 > mCanvas.height && Math.random() > 0.98) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(drawMatrix, 50);
+
+    // Initialisation du Terminal
+    window.onload = () => {
+        output.innerHTML = `
+            <span style="color: var(--ubuntu-orange); font-weight: bold;">[OS] Ubuntu Intelligence Activated</span><br>
+            <span style="color: #772953;">[GIT] git clone https://github.com/milyes/UbuntuIntelligence.git</span><br>
+            <hr style="border:0; border-top:1px dotted var(--border); margin:10px 0;">
+            [SYSTEM] Noyau Gemini 3 Flash : CONNECTÉ.<br>
+            [SYSTEM] Mode Matrix : OPÉRATIONNEL.<br>
+            [INFO] Tapez 'help' pour voir les commandes.
+        `;
+    };
+
+    // Logique du Terminal
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const val = input.value.toLowerCase().trim();
+            output.innerHTML += `<br><span style="color:white">> ${val}</span>`;
+            
+            if (val === 'help') {
+                output.innerHTML += `<br><span style="color:var(--neon)">COMMANDES DISPONIBLES :<br>- <b>launch</b> : Ouvrir l'Applet Fullscreen<br>- <b>ubuntu</b> : Afficher le panneau Apps<br>- <b>alert</b> : Tester le protocole ICE<br>- <b>clear</b> : Effacer le terminal</span>`;
+            } 
+            else if (val === 'launch') {
+                output.innerHTML += `<br><span style="color:var(--ubuntu-orange)">[BOOT] Ouverture de l'Applet Fullscreen...</span>`;
+                setTimeout(() => { window.open("https://ai.studio/apps/drive/1QA_NDA84nfqBHFV3M299JmCoM-Hz0zb9?fullscreenApplet=true", "_blank"); }, 800);
+            }
+            else if (val === 'ubuntu') {
+                winUbuntu.style.display = 'flex';
+                output.innerHTML += `<br>[OK] Fenêtre Ubuntu Intelligence déployée.`;
+            }
+            else if (val === 'alert') {
+                output.innerHTML += `<br><span class="alert-text">[DANGER] PROTOCOLE ICE_BREAKER DÉTECTÉ !</span>`;
+                triggerAlert();
+            }
+            else if (val === 'clear') {
+                output.innerHTML = "[SYSTEM] Terminal réinitialisé.";
+            }
+            else {
+                output.innerHTML += `<br><span style="color:var(--danger)">[!] COMMANDE INCONNUE.</span>`;
+            }
+
+            input.value = '';
+            document.getElementById('term-scroll').scrollTop = 9999;
+        }
+    });
+
+    function toggleUbuntu() { winUbuntu.style.display = winUbuntu.style.display === 'none' ? 'flex' : 'none'; }
+
+    function triggerAlert() {
+        document.querySelectorAll('.window').forEach(w => w.classList.add('alert-active'));
+        statusTxt.innerHTML = "ICE_SHIELD: COMPROMISED";
+        statusTxt.classList.add('alert-text');
+        setTimeout(() => {
+            document.querySelectorAll('.window').forEach(w => w.classList.remove('alert-active'));
+            statusTxt.innerHTML = "ICE_SHIELD: ACTIVE";
+            statusTxt.classList.remove('alert-text');
+        }, 4000);
+    }
+
+    // Gestion du déplacement (Drag & Drop)
+    document.querySelectorAll('.window').forEach(win => {
+        const h = win.querySelector('.window-header');
+        h.onmousedown = (e) => {
+            let sx = e.clientX - win.offsetLeft, sy = e.clientY - win.offsetTop;
+            document.onmousemove = (e) => { 
+                win.style.left = e.pageX - sx + 'px'; 
+                win.style.top = e.pageY - sy + 'px'; 
+            };
+            document.onmouseup = () => document.onmousemove = null;
+        };
+        // Support tactile
+        h.ontouchstart = (e) => {
+            let touch = e.touches[0];
+            let sx = touch.clientX - win.offsetLeft, sy = touch.clientY - win.offsetTop;
+            document.ontouchmove = (e) => {
+                let t = e.touches[0];
+                win.style.left = t.pageX - sx + 'px';
+                win.style.top = t.pageY - sy + 'px';
+            };
+            document.ontouchend = () => document.ontouchmove = null;
+        };
+    });
+
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+</script>
+
+</body>
+</html>
