@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ORBITRON OS // Sovereign Intel</title>
+    <style>
+        :root {
+            --neon: #00f2ff;
+            --ubuntu: #E95420;
+            --bg: #020508;
+            --panel: rgba(0, 15, 25, 0.95);
+            --border: rgba(0, 242, 255, 0.4);
+            --danger: #ff003c;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: var(--bg); font-family: 'Ubuntu', sans-serif;
+            color: var(--neon); overflow: hidden; user-select: none;
+        }
+
+        canvas#matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
+
+        /* Top Bar */
+        #top-bar {
+            height: 35px; background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid var(--neon);
+            display: flex; align-items: center; padding: 0 15px;
+            justify-content: space-between; font-size: 0.7em; z-index: 1000;
+        }
+
+        /* Windows */
+        .window {
+            position: absolute; background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.15);
+            backdrop-filter: blur(12px); display: flex; flex-direction: column;
+            min-width: 320px; border-radius: 4px;
+        }
+
+        .window-header {
+            padding: 10px 15px; cursor: move; display: flex; justify-content: space-between;
+            font-weight: bold; font-size: 0.7em; border-bottom: 1px solid var(--border);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .ubuntu-header { background: var(--ubuntu) !important; color: white !important; }
+        .guide-header { background: #0044cc !important; color: white !important; }
+
+        .window-content { padding: 0; flex-grow: 1; overflow: hidden; }
+
+        /* Terminal & Files */
+        #terminal-output { 
+            color: #00ff41; font-family: 'Consolas', monospace; padding: 15px;
+            height: 200px; overflow-y: auto; font-size: 0.85em; line-height: 1.4;
+        }
+        
+        #file-system { display: flex; flex-wrap: wrap; padding: 10px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); }
+
+        .file-icon {
+            width: 65px; height: 75px; display: inline-flex; flex-direction: column;
+            align-items: center; justify-content: center; cursor: grab; margin: 8px;
+            background: rgba(255,255,255,0.05); border-radius: 4px; transition: 0.2s;
+        }
+        .file-icon:hover { background: rgba(0, 242, 255, 0.15); border: 1px solid var(--neon); }
+        .file-name { font-size: 0.6em; color: white; margin-top: 5px; text-align: center; }
+
+        input {
+            width: 100%; background: transparent; border: none; color: white;
+            outline: none; border-top: 1px solid var(--border); padding: 15px; font-family: inherit;
+        }
+
+        iframe { width: 100%; height: 500px; border: none; background: #fff; }
+
+        .btn-action {
+            display: block; margin: 10px; padding: 10px; text-align: center;
+            background: var(--ubuntu); color: white; text-decoration: none;
+            font-weight: bold; font-size: 0.8em; border-radius: 2px;
+        }
+
+        .drop-zone-active { border: 2px dashed var(--ubuntu) !important; background: rgba(233, 84, 32, 0.1) !important; }
+    </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div id="top-bar">
+    <div>ORBITRON_OS v5.0 // <span style="color:var(--ubuntu)">SOVEREIGN_INTEL</span></div>
+    <div id="status-text">ICE_SHIELD: ACTIVE</div>
+    <div id="clock">00:00:00</div>
+</div>
+
+<div class="window" id="win-term" style="top: 50px; left: 20px; width: 420px; z-index: 100;">
+    <div class="window-header"><span>>_ KERNEL_CONSOLE</span><span>[ SYS ]</span></div>
+    <div class="window-content">
+        <div id="terminal-output"></div>
+        <div id="file-system"></div>
+        <input type="text" id="cmd-input" placeholder="Tapez 'guide', 'ubuntu' ou 'create [nom]'..." autofocus>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('cmd-input');
+    const output = document.getElementById('terminal-output');
+    const fileSys = document.getElementById('file-system');
+    let winCount = 0;
+
+    // --- MATRIX BACKGROUND ---
+    const mCanvas = document.getElementById('matrix');
+    const mCtx = mCanvas.getContext('2d');
+    mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
+    const drops = Array(Math.floor(mCanvas.width/20)).fill(1);
+    function drawMatrix() {
+        mCtx.fillStyle = "rgba(2, 5, 8, 0.15)"; mCtx.fillRect(0,0,mCanvas.width,mCanvas.height);
+        mCtx.fillStyle = "#00f2ff"; mCtx.font = "14px monospace";
+        drops.forEach((y, i) => {
+            mCtx.fillText(Math.random() > 0.5 ? "1":"0", i*20, y*20);
+            if(y*20 > mCanvas.height && Math.random() > 0.98) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(drawMatrix, 50);
+
+    // --- WINDOW SYSTEM ---
+    function spawnWindow(title, contentHTML, headerClass = "", width = "600px") {
+        winCount++;
+        const id = `win-${winCount}`;
+        const win = document.createElement('div');
+        win.className = `window`;
+        win.id = id;
+        win.style = `top: ${100 + winCount*20}px; left: ${100 + winCount*20}px; z-index: ${100+winCount}; width: ${width};`;
+
+        win.innerHTML = `
+            <div class="window-header ${headerClass}">
+                <span>${title}</span>
+                <span onclick="document.getElementById('${id}').remove()" style="cursor:pointer">[ X ]</span>
+            </div>
+            <div class="window-content drop-zone">
+                ${contentHTML}
+            </div>
+        `;
+        document.body.appendChild(win);
+        makeDraggable(win);
+        setupDropZone(win.querySelector('.drop-zone'));
+    }
+
+    // --- COMMAND ENGINE ---
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const val = input.value.toLowerCase().trim();
+            output.innerHTML += `<br><span style="color:white">> ${val}</span>`;
+            
+            if (val === 'guide') {
+                spawnWindow('NETSECURE_PRO_IA_GUIDE', `<iframe src="https://milyes.github.io/NetSecurePro_IA_Guide/"></iframe>`, 'guide-header', '800px');
+                output.innerHTML += `<br>[OK] Chargement NetSecurePro...`;
+            } 
+            else if (val === 'ubuntu' || val === 'intel') {
+                spawnWindow(`UBUNTU_NODE_${winCount+1}`, `
+                    <div style="padding:20px; background:rgba(119,41,83,0.15)">
+                        <h3 style="color:var(--ubuntu)">NODE_INTELLIGENCE</h3>
+                        <p style="font-size:0.8em">Liaison établie avec Gemini Core 2.6.</p>
+                        <a href="https://ai.studio/apps/drive/1sU4EL90I-PHWX7EKkr5StyH05NALgEpY?fullscreenApplet=true" target="_blank" class="btn-action">LANCER L'APPLET ⚡</a>
+                        <a href="https://aistudio.google.com/app/prompts?state=%7B%22ids%22:%5B%221sU4EL90I-PHWX7EKkr5StyH05NALgEpY%22%5D%7D" target="_blank" style="color:white; font-size:0.7em; display:block; text-align:center">Éditer le Prompt (AI Studio)</a>
+                    </div>
+                `, 'ubuntu-header', '350px');
+            }
+            else if (val.startsWith('create ')) {
+                const name = val.replace('create ', '');
+                createFileIcon(name);
+                output.innerHTML += `<br>[OK] Fichier '${name}' généré.`;
+            }
+            else if (val === 'help') {
+                output.innerHTML += `<br>COMMANDES : <b>guide</b>, <b>ubuntu</b>, <b>create [nom]</b>, <b>clear</b>, <b>exit</b>.`;
+            }
+            else if (val === 'clear') { output.innerHTML = ""; }
+            else { output.innerHTML += `<br><span style="color:var(--danger)">[!] Commande inconnue.</span>`; }
+            
+            input.value = '';
+            output.scrollTop = output.scrollHeight;
+        }
+    });
+
+    // --- DRAG & DROP SYSTEM ---
+    function createFileIcon(name) {
+        const file = document.createElement('div');
+        file.className = 'file-icon'; file.draggable = true; file.id = 'f-'+Math.random().toString(36).substr(2, 5);
+        file.innerHTML = `<div style="font-size:22px;">📄</div><div class="file-name">${name}</div>`;
+        file.ondragstart = (e) => e.dataTransfer.setData("text", file.id);
+        fileSys.appendChild(file);
+    }
+
+    function setupDropZone(zone) {
+        zone.ondragover = (e) => { e.preventDefault(); zone.classList.add('drop-zone-active'); };
+        zone.ondragleave = () => zone.classList.remove('drop-zone-active');
+        zone.ondrop = (e) => {
+            e.preventDefault(); zone.classList.remove('drop-zone-active');
+            const fileId = e.dataTransfer.getData("text");
+            const file = document.getElementById(fileId);
+            if(file) zone.appendChild(file);
+        };
+    }
+
+    function makeDraggable(win) {
+        const h = win.querySelector('.window-header');
+        h.onmousedown = (e) => {
+            let sx = e.clientX - win.offsetLeft, sy = e.clientY - win.offsetTop;
+            document.onmousemove = (e) => { win.style.left = e.pageX - sx + 'px'; win.style.top = e.pageY - sy + 'px'; };
+            document.onmouseup = () => document.onmousemove = null;
+        };
+    }
+
+    window.onload = () => {
+        output.innerHTML = `<span style="color:var(--neon)">ORBITRON_OS [Version 5.0.26]</span><br>(c) Sovereign Cognitive Kernel. Tous droits réservés.<br><br>> Initialisation des services... OK.<br>> Tapez 'guide' ou 'ubuntu' pour commencer.`;
+        createFileIcon("Orbitron_IA.sys");
+        createFileIcon("Ubuntu_Intel.cfg");
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    };
+</script>
+</body>
+</html>
