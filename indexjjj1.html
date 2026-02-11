@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ORBITRON OS // CORE NAVIGATOR v6.1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon: #00f2ff;
+            --ubuntu: #E95420;
+            --chrome-bg: #2d2e32;
+            --bg: #020508;
+            --panel: rgba(0, 15, 25, 0.92);
+            --border: rgba(0, 242, 255, 0.35);
+            --text: #e0f7ff;
+            --green: #00ff41;
+        }
+
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: var(--bg); font-family: 'Ubuntu Mono', monospace;
+            color: var(--text); overflow: hidden; user-select: none;
+        }
+
+        canvas#matrix { position: fixed; inset: 0; z-index: -1; opacity: 0.14; }
+
+        #top-bar {
+            height: 34px; background: rgba(0,0,0,0.9);
+            border-bottom: 1px solid var(--neon);
+            display: flex; align-items: center; padding: 0 16px;
+            justify-content: space-between; font-size: 0.78em; z-index: 1000;
+            color: var(--neon);
+        }
+
+        .window {
+            position: absolute; background: var(--panel);
+            border: 1px solid var(--border); border-radius: 5px;
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.18);
+            backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; min-width: 340px;
+        }
+
+        .window-header {
+            padding: 8px 14px; cursor: move;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: bold; font-size: 0.75em; text-transform: uppercase;
+            letter-spacing: 0.8px; border-bottom: 1px solid var(--border);
+        }
+
+        .chrome-header { background: var(--chrome-bg); color: #e0e0e0; border-color: #444; }
+        .ubuntu-header { background: var(--ubuntu); color: white; border-color: var(--ubuntu); }
+
+        .window-content { flex: 1; overflow: hidden; }
+
+        /* Terminal */
+        #terminal-output {
+            color: var(--green); padding: 14px 16px;
+            height: 220px; overflow-y: auto; font-size: 0.92em; line-height: 1.45;
+            white-space: pre-wrap; word-break: break-word;
+        }
+
+        #cmd-input {
+            width: 100%; background: transparent; border: none;
+            color: var(--text); outline: none; padding: 12px 16px;
+            font: inherit; caret-color: var(--neon);
+            border-top: 1px solid var(--border);
+        }
+        #cmd-input:focus { box-shadow: 0 0 12px rgba(0,242,255,0.4); }
+
+        /* Chrome UI */
+        .browser-bar {
+            background: var(--chrome-bg); padding: 8px 12px;
+            display: flex; gap: 8px; align-items: center; border-bottom: 1px solid #444;
+        }
+        .nav-btn {
+            background: none; border: none; color: #aaa; font-size: 1.1em;
+            cursor: pointer; padding: 4px 8px; border-radius: 4px;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.08); color: white; }
+        .url-input {
+            flex: 1; background: #1a1b1f; border: 1px solid #444;
+            color: white; padding: 7px 14px; border-radius: 999px;
+            font-size: 0.85em; outline: none;
+        }
+        .url-input:focus { border-color: var(--neon); box-shadow: 0 0 10px var(--neon); }
+
+        /* Scrollbar style */
+        #terminal-output::-webkit-scrollbar { width: 6px; }
+        #terminal-output::-webkit-scrollbar-track { background: rgba(0,0,0,0.4); }
+        #terminal-output::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div id="top-bar">
+    <div>ORBITRON_OS v6.1  //  <span style="color:var(--ubuntu)">SOVEREIGN NAVIGATOR</span></div>
+    <div>ICE_SHIELD: <span style="color:#0f0">ACTIVE</span></div>
+    <div id="clock">00:00:00</div>
+</div>
+
+<div class="window" id="win-term" style="top: 60px; left: 30px; width: 460px; height: 380px; z-index: 100;">
+    <div class="window-header"><span>>_ KERNEL_CONSOLE</span><span>[ CORE ]</span></div>
+    <div class="window-content">
+        <div id="terminal-output"></div>
+        <input type="text" id="cmd-input" placeholder="Tapez 'chrome', 'ubuntu', 'help'..." autofocus spellcheck="false" autocomplete="off">
+    </div>
+</div>
+
+<script>
+// ──────────────────────────────────────────────
+// MATRIX RAIN
+// ──────────────────────────────────────────────
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const drops = Array(Math.floor(canvas.width / 18)).fill(1);
+
+function drawMatrix() {
+    ctx.fillStyle = 'rgba(2,5,8,0.12)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00f2ff';
+    ctx.font = '14px monospace';
+    drops.forEach((y, i) => {
+        const text = Math.random() > 0.5 ? '1' : '0';
+        ctx.fillText(text, i * 18, y * 18);
+        if (y * 18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+    });
+}
+setInterval(drawMatrix, 45);
+
+// ──────────────────────────────────────────────
+// UTILS
+// ──────────────────────────────────────────────
+const output = document.getElementById('terminal-output');
+const input = document.getElementById('cmd-input');
+let winCount = 0;
+
+function print(text, color = 'var(--green)') {
+    output.innerHTML += `<br><span style="color:\( {color}"> \){text}</span>`;
+    output.scrollTop = output.scrollHeight;
+}
+
+function clearTerminal() {
+    output.innerHTML = '';
+}
+
+// ──────────────────────────────────────────────
+// WINDOW DRAG
+// ──────────────────────────────────────────────
+function makeDraggable(el) {
+    const header = el.querySelector('.window-header');
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    header.onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX; pos4 = e.clientY;
+        document.onmouseup = closeDrag;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+        pos3 = e.clientX; pos4 = e.clientY;
+        el.style.top = (el.offsetTop - pos2) + "px";
+        el.style.left = (el.offsetLeft - pos1) + "px";
+    }
+
+    function closeDrag() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
+// ──────────────────────────────────────────────
+// CHROME WINDOW
+// ──────────────────────────────────────────────
+function spawnChrome(startUrl = 'https://www.google.com/search?igu=1') {
+    winCount++;
+    const id = `chrome-${winCount}`;
+    const win = document.createElement('div');
+    win.className = 'window';
+    win.id = id;
+    win.style.cssText = `top: ${80 + winCount*30}px; left: ${140 + winCount*30}px; width: 920px; height: 620px; z-index: ${150+winCount};`;
+
+    win.innerHTML = `
+        <div class="window-header chrome-header">
+            <span>CHROME_NODE_${winCount}</span>
+            <span onclick="this.closest('.window').remove()" style="cursor:pointer; color:#ff5555">[ X ]</span>
+        </div>
+        <div class="browser-bar">
+            <button class="nav-btn" onclick="historyGo('${id}', -1)">←</button>
+            <button class="nav-btn" onclick="historyGo('${id}', 1)">→</button>
+            <button class="nav-btn" onclick="reloadFrame('${id}')">↻</button>
+            <input type="text" class="url-input" id="url-\( {id}" value=" \){startUrl}" onkeypress="if(event.key==='Enter') navigate('${id}')">
+            <button onclick="navigate('${id}')" style="background:var(--neon); color:black; border:none; padding:6px 14px; border-radius:20px; cursor:pointer; font-weight:bold">GO</button>
+        </div>
+        <div class="window-content">
+            <iframe id="frame-\( {id}" src=" \){startUrl}" style="width:100%; height:100%; border:none; background:#fff;"></iframe>
+        </div>
+    `;
+    document.body.appendChild(win);
+    makeDraggable(win);
+    print(`[OK] Navigateur CHROME_NODE_${winCount} lancé`, 'var(--neon)');
+}
+
+// Helpers pour chrome
+function navigate(id) {
+    let url = document.getElementById(`url-${id}`)?.value.trim();
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    try { new URL(url); } catch { url = `https://www.google.com/search?q=${encodeURIComponent(url)}`; }
+    const frame = document.getElementById(`frame-${id}`);
+    if (frame) frame.src = url;
+}
+
+function reloadFrame(id) {
+    const frame = document.getElementById(`frame-${id}`);
+    if (frame) frame.contentWindow.location.reload();
+}
+
+function historyGo(id, delta) {
+    const frame = document.getElementById(`frame-${id}`);
+    if (frame) frame.contentWindow.history.go(delta);
+}
+
+// ──────────────────────────────────────────────
+// UBUNTU WINDOW
+// ──────────────────────────────────────────────
+function spawnUbuntu() {
+    winCount++;
+    const id = `ubuntu-${winCount}`;
+    const win = document.createElement('div');
+    win.className = 'window';
+    win.id = id;
+    win.style.cssText = `top: ${100 + winCount*40}px; left: ${60 + winCount*30}px; width: 380px; z-index: ${150+winCount};`;
+
+    win.innerHTML = `
+        <div class="window-header ubuntu-header">
+            <span>UBUNTU_INTEL NODE</span>
+            <span onclick="this.closest('.window').remove()" style="cursor:pointer">[ X ]</span>
+        </div>
+        <div class="window-content" style="padding:30px 20px; text-align:center; background:rgba(233,84,32,0.08);">
+            <h3 style="color:var(--ubuntu); margin:0 0 20px;">GEMINI CORE LINK</h3>
+            <a href="https://ai.studio/apps/drive/1sU4EL90I-PHWX7EKkr5StyH05NALgEpY?fullscreenApplet=true"
+               target="_blank" rel="noopener noreferrer"
+               style="display:inline-block; background:var(--ubuntu); color:white; font-weight:bold; padding:14px 28px; border-radius:6px; text-decoration:none; box-shadow:0 0 15px rgba(233,84,32,0.5);">
+               LANCER L'APPLET IA ⚡
+            </a>
+            <p style="margin-top:20px; font-size:0.8em; color:#aaa;">
+                ID: 1sU4EL...EpY<br>Mode: Fullscreen
+            </p>
+        </div>
+    `;
+    document.body.appendChild(win);
+    makeDraggable(win);
+    print(`[OK] UBUNTU_INTEL_NODE_${winCount} déployé`, 'var(--ubuntu)');
+}
+
+// ──────────────────────────────────────────────
+// BOOT SEQUENCE
+// ──────────────────────────────────────────────
+const bootMessages = [
+    "[KERNEL] ORBITRON OS v6.1 booting...",
+    "[SEC] ICE_SHIELD → ACTIVE",
+    "[NET] Quantum node Montréal online",
+    "[CORE] Navigator module loaded",
+    "Tapez 'help' pour les commandes disponibles."
+];
+
+let bootIndex = 0;
+function bootSequence() {
+    if (bootIndex < bootMessages.length) {
+        print(bootMessages[bootIndex], bootIndex === 0 ? 'var(--neon)' : 'var(--green)');
+        bootIndex++;
+        setTimeout(bootSequence, 800);
+    } else {
+        input.focus();
+    }
+}
+
+// ──────────────────────────────────────────────
+// COMMAND HANDLER
+// ──────────────────────────────────────────────
+input.addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+
+        print(`> ${cmd}`, 'white');
+        const lower = cmd.toLowerCase();
+
+        if (lower === 'chrome') {
+            spawnChrome();
+        } else if (lower === 'ubuntu') {
+            spawnUbuntu();
+        } else if (lower === 'help') {
+            print("Commandes disponibles :", 'var(--neon)');
+            print("  chrome          → Lance un navigateur");
+            print("  ubuntu          → Ouvre le node IA");
+            print("  matrix on/off   → Contrôle le fond Matrix");
+            print("  clear           → Efface le terminal");
+            print("  reboot          → Redémarre l'OS");
+            print("  whoami          → Infos utilisateur");
+            print("  date            → Date/heure système");
+        } else if (lower === 'clear') {
+            clearTerminal();
+        } else if (lower === 'matrix on') {
+            canvas.style.opacity = '0.14';
+            print("[OK] Matrix flux activé");
+        } else if (lower === 'matrix off') {
+            canvas.style.opacity = '0';
+            print("[OK] Matrix flux désactivé");
+        } else if (lower === 'reboot') {
+            print("[REBOOT] Redémarrage en cours...", 'var(--ubuntu)');
+            setTimeout(() => location.reload(), 1800);
+        } else if (lower === 'whoami') {
+            print("Utilisateur : SOVEREIGN // @MZoubirou", 'var(--neon)');
+            print("Localisation node : Montréal, QC");
+        } else if (lower === 'date') {
+            print(new Date().toLocaleString('fr-CA', { timeZone: 'America/Toronto' }));
+        } else {
+            print("[ERR] Commande inconnue. Tapez 'help'.", '#ff5555');
+        }
+
+        input.value = '';
+        input.focus();
+    }
+});
+
+// ──────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────
+window.addEventListener('load', () => {
+    setInterval(() => {
+        document.getElementById('clock').textContent = new Date().toLocaleTimeString('fr-CA', { timeZone: 'America/Toronto' });
+    }, 1000);
+
+    bootSequence();
+});
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>
