@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>MILYES_IA v9 - TERMINAL SOUVERAIN</title>
+    <style>
+        :root { --bg: #050505; --green: #00ff41; --dim-green: #003b00; }
+        body { background: var(--bg); color: var(--green); font-family: 'Courier New', monospace; padding: 20px; text-shadow: 0 0 5px var(--green); }
+        #output { height: 80vh; overflow-y: auto; border: 1px solid var(--dim-green); padding: 10px; margin-bottom: 10px; white-space: pre-wrap; }
+        .prompt-line { display: flex; align-items: center; }
+        input { background: transparent; border: none; color: var(--green); font-family: inherit; font-size: 1em; outline: none; flex-grow: 1; }
+        .system-msg { color: #00bcff; font-weight: bold; }
+        .header { border-bottom: 2px solid var(--green); margin-bottom: 10px; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        [SYSTEM] MILYES_IA v9 - INTERFACE SOUVERAINE | NETSECUREPRO<br>
+        PROPRIÉTAIRE : MOHAMMED ILYES ZOUBIROU | STATUS: OMEGA_ACTIVE
+    </div>
+    <div id="output"></div>
+    <div class="prompt-line">
+        <span>MILYES_IA@SOUVERAIN:_</span>
+        <input type="text" id="cmd" autofocus>
+    </div>
+
+    <script>
+        const out = document.getElementById('output');
+        const input = document.getElementById('cmd');
+
+        function print(text, type = '') {
+            const div = document.createElement('div');
+            if(type) div.className = type;
+            div.innerText = text;
+            out.appendChild(div);
+            out.scrollTop = out.scrollHeight;
+        }
+
+        print("[OK] Connexion au noyau local établie.", "system-msg");
+        print("[INFO] Serveur actif sur port 8080. Prêt pour instructions.");
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const val = input.value.trim().toUpperCase();
+                print(`> ${val}`);
+                if (val === 'SCAN') print("--- SCAN RÉSEAU : Aucune intrusion détectée ---");
+                else if (val === 'STATUS') print("CPU: 0.12% | UPTIME: 1042:16:02:11 | ENCRYPTION: KYBER-1024");
+                else if (val === 'HELP') print("Commandes: STATUS, SCAN, LOGS, SECURE, CLEAR");
+                else if (val === 'CLEAR') out.innerHTML = '';
+                else print("ERREUR: Commande non reconnue par MILYES_IA v9.", "system-msg");
+                input.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
