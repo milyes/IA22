@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ORBITRON // UBUNTU INTELLIGENCE HUB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto+Mono:wght@300;400&display=swap');
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#000814;
+      color:#00ff9d;
+      font-family:'Roboto Mono', monospace;
+      min-height:100vh;
+      overflow-y:auto;
+    }
+    header {
+      background:linear-gradient(to right, #001020, #000814);
+      border-bottom:2px solid #00ff9d44;
+      padding:12px 20px;
+      font-family:'Orbitron', sans-serif;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:1.1rem;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+    .title { color:#ffaa00; letter-spacing:2px; text-shadow:0 0 8px #ffaa0044; }
+    .shield { color:#00ff9d; font-weight:bold; text-shadow:0 0 8px #00ff9d44; }
+
+    #main-container {
+      max-width:1100px;
+      margin:0 auto;
+      padding:20px;
+    }
+
+    #command-center {
+      background:#0a1421;
+      border:1px solid #00ff9d33;
+      border-radius:6px;
+      padding:16px;
+      min-height:300px;
+      margin-bottom:20px;
+      box-shadow:0 0 20px #00ff9d11;
+    }
+
+    .prompt-line {
+      margin:8px 0;
+      color:#ffaa00;
+      font-weight:bold;
+    }
+    .output {
+      color:#00ff9d;
+      margin-left:20px;
+      white-space:pre-wrap;
+    }
+    .input-line {
+      display:flex;
+      align-items:center;
+      margin-top:12px;
+    }
+    .prompt-symbol { color:#ffaa00; margin-right:8px; }
+    #cmdInput {
+      flex:1;
+      background:transparent;
+      border:none;
+      color:#00ff9d;
+      font:inherit;
+      outline:none;
+      font-size:1.05rem;
+    }
+
+    /* Apps section (s’affiche sur la même page) */
+    #apps-section {
+      display:none;
+      background:#0f1a2e;
+      border:1px solid #ff550033;
+      border-radius:6px;
+      padding:20px;
+      margin-top:24px;
+      box-shadow:0 0 20px #ff550022;
+    }
+    .apps-header {
+      color:#ff5500;
+      font-family:'Orbitron', sans-serif;
+      font-size:1.4rem;
+      margin-bottom:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .close-apps { color:#ff5555; cursor:pointer; font-size:1.6rem; }
+    .app-item {
+      padding:12px;
+      border-bottom:1px solid #00ff9d22;
+      color:#88ffcc;
+    }
+    .app-item strong { color:#00ff9d; }
+    .launch-btn {
+      background:#ff5500;
+      color:white;
+      border:none;
+      padding:14px;
+      border-radius:4px;
+      font-weight:bold;
+      cursor:pointer;
+      margin-top:20px;
+      width:100%;
+      font-size:1.2rem;
+      transition:all 0.3s;
+    }
+    .launch-btn:hover { background:#ff7733; transform:scale(1.02); }
+
+    .cursor {
+      display:inline-block;
+      width:8px;
+      height:1.1em;
+      background:#00ff9d;
+      animation:blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity:0; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="title">ORBITRON // UBUNTU INTELLIGENCE</div>
+  <div class="shield">ICE_SHIELD: <span id="timer">ACTIVE</span></div>
+</header>
+
+<div id="main-container">
+
+  <div id="command-center">
+    <div id="output">
+      [OS] Ubuntu Intelligence Activated<br>
+      [SYSTEM] Noyau IA22 prêt.<br>
+      [INFO] Commandes disponibles : help, launch, ubuntu, clear, status<br><br>
+      Tapez une commande ci-dessous :<br><br>
+    </div>
+
+    <div class="input-line">
+      <span class="prompt-symbol">>_</span>
+      <input type="text" id="cmdInput" autofocus autocomplete="off">
+    </div>
+  </div>
+
+  <!-- APPS SECTION (s’affiche sur la même page) -->
+  <div id="apps-section">
+    <div class="apps-header">
+      UBUNTU_INTELLIGENCE // APPS
+      <span class="close-apps" onclick="closeApps()">[X]</span>
+    </div>
+    <div class="app-item">
+      1. <strong>Drive Core Storage</strong><br>
+      Stockage central sécurisé du noyau
+    </div>
+    <div class="app-item">
+      2. <strong>Fullscreen Applet</strong> ⚡<br>
+      Environnement Ubuntu web sophistiqué piloté par Gemini 3 Flash
+    </div>
+    <button class="launch-btn" onclick="launchFullscreen()">LANCER L'APPLET</button>
+  </div>
+
+</div>
+
+<script>
+// Timer ICE_SHIELD dynamique
+let h = 9, m = 49, s = 24;
+function updateTimer() {
+  s++;
+  if (s >= 60) { s = 0; m++; }
+  if (m >= 60) { m = 0; h++; }
+  document.getElementById('timer').textContent = 
+    String(h).padStart(2,'0') + ' h ' + 
+    String(m).padStart(2,'0') + ' min ' + 
+    String(s).padStart(2,'0') + ' s';
+}
+setInterval(updateTimer, 1000);
+
+// Terminal commandes
+const cmdInput = document.getElementById('cmdInput');
+const output = document.getElementById('output');
+const appsSection = document.getElementById('apps-section');
+
+cmdInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const cmd = cmdInput.value.trim().toLowerCase();
+    if (!cmd) return;
+
+    // Afficher la commande tapée
+    const cmdLine = document.createElement('div');
+    cmdLine.className = 'prompt-line';
+    cmdLine.innerHTML = `<span class="prompt-symbol">> </span>${cmd}`;
+    output.appendChild(cmdLine);
+
+    let response = '';
+    switch (cmd) {
+      case 'help':
+        response = '[INFO] Commandes : help, launch, ubuntu, clear, status';
+        break;
+      case 'launch':
+        appsSection.style.display = 'block';
+        response = '[LAUNCH] UBUNTU_INTELLIGENCE // APPS chargé. Choisissez une application ci-dessous.';
+        break;
+      case 'ubuntu':
+        response = '[UBUNTU] Mode Intelligence Ubuntu souverain activé.';
+        break;
+      case 'clear':
+        output.innerHTML = '';
+        break;
+      case 'status':
+        response = '[STATUS] ICE_SHIELD ACTIVE • Sync 78% • Noyau nominal';
+        break;
+      default:
+        response = 'Commande inconnue. Tapez help.';
+    }
+
+    if (response) {
+      const respDiv = document.createElement('div');
+      respDiv.className = 'output';
+      respDiv.textContent = response;
+      output.appendChild(respDiv);
+    }
+
+    cmdInput.value = '';
+    output.scrollTop = output.scrollHeight;
+    cmdInput.focus();
+  }
+});
+
+// Fermer apps
+function closeApps() {
+  appsSection.style.display = 'none';
+}
+
+// Lancer fullscreen (sur la même page)
+function launchFullscreen() {
+  document.documentElement.requestFullscreen().catch(err => {
+    alert('Impossible de passer en plein écran : ' + err.message);
+  });
+  // Option : masquer header/command-center si besoin
+  // document.querySelector('header').style.display = 'none';
+  // document.getElementById('command-center').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
