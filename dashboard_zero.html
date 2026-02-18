@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Transforming | Objectif ZÉRO</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --dark: #1a1a1a;
+            --success: #28a745;
+            --danger: #dc3545;
+            --bg: #f4f7f6;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--dark); }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        header { border-bottom: 3px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
+        h1 { margin: 0; font-size: 24px; text-transform: uppercase; }
+        .status-badge { background: var(--primary); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; float: right; }
+        
+        .section { margin-bottom: 25px; }
+        h2 { font-size: 18px; color: var(--primary); border-left: 4px solid var(--primary); padding-left: 10px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .card { padding: 15px; border-radius: 8px; border: 1px solid #ddd; background: #fff; text-align: center; }
+        .card.zero { border-top: 5px solid var(--success); }
+        .card.dont { border-top: 5px solid var(--danger); }
+        .card h3 { margin: 5px 0; font-size: 16px; }
+
+        .footer { margin-top: 30px; font-size: 12px; text-align: center; color: #888; border-top: 1px solid #eee; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <span class="status-badge">IS TRANSFORMING</span>
+        <h1>Stratégie : Objectif ZÉRO</h1>
+    </header>
+
+    <div class="section">
+        <h2>🚫 I Don't Want (Restrictions)</h2>
+        <div class="grid">
+            <div class="card dont">
+                <h3>Manual Data</h3>
+                <p>Aucune saisie manuelle acceptée.</p>
+            </div>
+            <div class="card dont">
+                <h3>Fragmented Comm</h3>
+                <p>Pas d'emails isolés (BIM Only).</p>
+            </div>
+            <div class="card dont">
+                <h3>Paper Reports</h3>
+                <p>Flux 100% digitalisé.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🎯 Objectifs ZÉRO</h2>
+        <div class="grid">
+            <div class="card zero">
+                <h3>Zéro Accident</h3>
+                <p>Sécurité prédictive.</p>
+            </div>
+            <div class="card zero">
+                <h3>Zéro Déchet</h3>
+                <p>Logistique Just-in-Time.</p>
+            </div>
+            <div class="card zero">
+                <h3>Zéro Défaut</h3>
+                <p>Conformité Jumeau Numérique.</p>
+            </div>
+            <div class="card zero">
+                <h3>Zéro Papier</h3>
+                <p>Standard Digital First.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📜 Clause Contractuelle</h2>
+        <blockquote style="background: #f9f9f9; border-left: 10px solid #ccc; margin: 1.5em 10px; padding: 0.5em 10px;">
+            "Le prestataire accepte l'objectif Zéro Papier/Déchet. Aucun rapport manuel ne sera accepté pour la facturation."
+        </blockquote>
+    </div>
+
+    <div class="footer">
+        Généré pour le projet de transformation Construction 2026.
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z-CORE | Master Toolkit v5.0</title>
+    <style>
+        /* Design High-Tech / Mode Sombre */
+        :root { --gold: #d4af37; --dark: #000; --gray: #1a1a1a; --success: #28a745; --bg: #0a0a0a; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 0; overflow-x: hidden; }
+        
+        /* Écran de Verrouillage */
+        #auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg); transition: 0.5s; }
+        .lock-card { background: var(--gray); padding: 40px; border-radius: 24px; border: 1px solid var(--gold); text-align: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
+        input[type="password"] { background: #000; border: 1px solid #333; color: var(--gold); padding: 15px; border-radius: 12px; width: 180px; text-align: center; font-size: 1.5rem; margin-bottom: 25px; outline: none; }
+        
+        /* Interface Principale */
+        #main-content { display: none; padding: 20px; max-width: 600px; margin: auto; animation: fadeIn 0.8s; }
+        header { border-bottom: 2px solid var(--gold); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .badge { background: var(--gold); color: #000; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 10px; text-transform: uppercase; }
+
+        /* Dashboard & Progress */
+        .progress-bar { background: #222; height: 8px; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+        #progress-fill { background: var(--gold); width: 0%; height: 100%; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Cards Grid */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .card { background: var(--gray); border: 1px solid #222; padding: 18px; border-radius: 16px; cursor: pointer; transition: 0.3s; position: relative; }
+        .card.active { border-color: var(--success); background: #0a1a0e; box-shadow: inset 0 0 15px rgba(40,167,69,0.1); }
+        .card h3 { margin: 0 0 5px 0; font-size: 13px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+        .card p { margin: 0; font-size: 11px; color: #888; }
+        .ts { font-size: 9px; color: var(--success); position: absolute; bottom: 8px; right: 10px; font-weight: bold; }
+
+        /* Input & Actions */
+        textarea { width: 100%; background: #111; border: 1px solid #222; color: #fff; padding: 15px; border-radius: 14px; margin-top: 20px; box-sizing: border-box; font-family: inherit; font-size: 14px; line-height: 1.5; outline: none; }
+        textarea:focus { border-color: var(--gold); }
+        .actions { margin-top: 25px; display: flex; flex-direction: column; gap: 12px; }
+        .btn { padding: 16px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-gold { background: var(--gold); color: #000; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
+        .btn-gold:active { transform: scale(0.98); }
+        .btn-outline { background: transparent; border: 1px solid #333; color: #666; font-size: 11px; margin-top: 10px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .footer-note { text-align: center; font-size: 9px; color: #444; margin-top: 40px; text-transform: uppercase; letter-spacing: 2px; }
+    </style>
+</head>
+<body onload="init()">
+
+    <div id="auth-screen">
+        <div class="lock-card">
+            <h1 style="color:var(--gold); margin:0; font-size: 28px; letter-spacing: 3px;">Z-CORE</h1>
+            <p style="color:#555; font-size: 10px; margin-bottom: 20px;">AUTHENTIFICATION REQUISE</p>
+            <input type="password" id="pass-input" placeholder="••••" autofocus>
+            <br>
+            <button class="btn btn-gold" style="width: 100%;" onclick="unlock()">ENTRER</button>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <header>
+            <div>
+                <h1 style="margin:0; font-size: 22px; letter-spacing: 1px;">COCKPIT AUDIT</h1>
+                <span id="score-label" style="font-size: 12px; color: #888;">Transformation : 0%</span>
+            </div>
+            <span class="badge">PROMPT-TOOLKIT v5</span>
+        </header>
+
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+
+        <div class="grid">
+            <div class="card" id="c1" onclick="toggle(this, '🛡️ Zéro Accident')"><h3>🛡️ Sécurité</h3><p>Risques & EPI</p><span class="ts"></span></div>
+            <div class="card" id="c2" onclick="toggle(this, '📱 Zéro Papier')"><h3>📱 Digital</h3><p>Flux BIM 100%</p><span class="ts"></span></div>
+            <div class="card" id="c3" onclick="toggle(this, '♻️ Zéro Déchet')"><h3>♻️ Logistique</h3><p>Tri & Flux</p><span class="ts"></span></div>
+            <div class="card" id="c4" onclick="toggle(this, '💎 Zéro Défaut')"><h3>💎 Qualité</h3><p>Conformité Scan</p><span class="ts"></span></div>
+        </div>
+
+        <textarea id="observations" rows="5" placeholder="Saisir les observations stratégiques du terrain..." oninput="autoSave()"></textarea>
+
+        <div class="actions">
+            <button class="btn btn-gold" onclick="copyPrompt()">🚀 COPIER LE SUPER-PROMPT IA</button>
+            <button class="btn btn-outline" onclick="resetAll()">Réinitialiser le Dashboard</button>
+        </div>
+
+        <div class="footer-note">PROPRIÉTÉ EXCLUSIVE Z-CORE | 2026</div>
+    </div>
+
+    <script>
+        const PIN = "2026"; // Code d'accès modifiable
+        let activeItems = [];
+
+        function unlock() {
+            const input = document.getElementById('pass-input').value;
+            if(input === PIN) {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                alert("CODE ERRONÉ");
+                document.getElementById('pass-input').value = "";
+            }
+        }
+
+        function toggle(el, name) {
+            el.classList.toggle('active');
+            const tsSpan = el.querySelector('.ts');
+            if(el.classList.contains('active')) {
+                activeItems.push(name);
+                tsSpan.innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } else {
+                activeItems = activeItems.filter(i => i !== name);
+                tsSpan.innerText = "";
+            }
+            updateUI();
+            autoSave();
+        }
+
+        function updateUI() {
+            const percent = Math.round((activeItems.length / 4) * 100);
+            document.getElementById('progress-fill').style.width = percent + '%';
+            document.getElementById('score-label').innerText = "TRANSFORMATION : " + percent + "%";
+        }
+
+        function autoSave() {
+            const state = {
+                items: activeItems,
+                obs: document.getElementById('observations').value,
+                checks: Array.from(document.querySelectorAll('.card.active')).map(c => c.id)
+            };
+            localStorage.setItem('zcore_v5_data', JSON.stringify(state));
+        }
+
+        function init() {
+            const saved = localStorage.getItem('zcore_v5_data');
+            if(saved) {
+                const data = JSON.parse(saved);
+                activeItems = data.items || [];
+                document.getElementById('observations').value = data.obs || "";
+                data.checks.forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) {
+                        el.classList.add('active');
+                        el.querySelector('.ts').innerText = "LOG";
+                    }
+                });
+                updateUI();
+            }
+        }
+
+        function copyPrompt() {
+            const obs = document.getElementById('observations').value || "Aucune observation particulière.";
+            const score = document.getElementById('score-label').innerText;
+            const prompt = `CONTEXTE : Audit de chantier Z-CORE du ${new Date().toLocaleDateString()}.
+STATUT ACTUEL : ${score}.
+OBJECTIFS VALIDÉS : ${activeItems.join(', ') || 'Aucun pour le moment'}.
+OBSERVATIONS TERRAIN : "${obs}"
+
+MISSION : Agis en tant qu'expert Consultant BIM. Analyse ces données. Identifie 2 risques majeurs de dérive et génère un plan d'action de 3 étapes immédiates pour le chef de projet.`;
+            
+            navigator.clipboard.writeText(prompt);
+            alert("🚀 SUPER-PROMPT COPIÉ !\n\nOuvrez Gemini ou ChatGPT et collez le contenu.");
+        }
+
+        function resetAll() {
+            if(confirm("VOULEZ-VOUS RÉINITIALISER TOUTES LES DONNÉES ?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
+

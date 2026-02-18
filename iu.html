@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LanguageLearner</title>
+  
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="LangLearner">
+  <meta name="theme-color" content="#3b82f6">
+
+  <style>
+    :root { --primary: #3b82f6; }
+    body { margin:0; font-family:system-ui,sans-serif; background:linear-gradient(135deg,#3b82f6,#8b5cf6); color:white; padding:2rem 1rem; min-height:100vh; }
+    .container { max-width:500px; margin:0 auto; }
+    h1 { text-align:center; margin-bottom:2rem; }
+    textarea, .result {
+      width:100%; padding:1rem; border:none; border-radius:16px; font-size:1.1rem;
+      box-shadow:0 10px 30px rgba(0,0,0,0.2); resize:none;
+    }
+    textarea { height:120px; margin-bottom:1rem; }
+    .controls { display:flex; gap:10px; margin-bottom:1rem; align-items:center; }
+    select, button { padding:0.8rem 1rem; border:none; border-radius:12px; font-size:1rem; }
+    select { flex:1; background:white; color:#333; }
+    .swap { background:rgba(255,255,255,0.3); font-size:1.5rem; width:50px; }
+    .translate-btn { background:white; color:var(--primary); font-weight:bold; flex:2; }
+    .result {
+      background:rgba(255,255,255,0.15); padding:1.5rem; min-height:100px;
+      backdrop-filter:blur(10px); font-size:1.3rem; line-height:1.5; position:relative;
+    }
+    .speak-btn {
+      background:transparent; border:none; font-size:1.8rem; cursor:pointer;
+      position:absolute; right:12px; top:12px; opacity:0.8;
+    }
+    .speak-btn:hover { opacity:1; }
+    .loading { opacity:0.6; font-style:italic; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LanguageLearner - Traducteur + Prononciation</h1>
+
+    <div style="position:relative">
+      <textarea id="input" placeholder="Écris ou colle ton texte ici..."></textarea>
+      <button class="speak-btn" id="speakSource" title="Écouter le texte source">Speaker</button>
+    </div>
+
+    <div class="controls">
+      <select id="source"></select>
+      <button class="swap" id="swap">Swap</button>
+      <select id="target"></select>
+    </div>
+
+    <button class="translate-btn" id="translate">Traduire maintenant</button>
+
+    <div class="result" id="output">
+      La traduction apparaîtra ici...
+      <button class="speak-btn" id="speakTarget" title="Écouter la traduction">Speaker</button>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://api.mymemory.translated.net/get';
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const sourceSelect = document.getElementById('source');
+    const targetSelect = document.getElementById('target');
+    const translateBtn = document.getElementById('translate');
+    const swapBtn = document.getElementById('swap');
+    const speakSource = document.getElementById('speakSource');
+    const speakTarget = document.getElementById('speakTarget');
+
+    // === Liste des langues (code → nom + code voix compatible Web Speech API) ===
+    const languages = {
+      'auto': {name: 'Détecter la langue', voice: null},
+      'fr': {name: 'Français', voice: 'fr'},
+      'en': {name: 'English', voice: 'en'},
+      'es': {name: 'Español', voice: 'es'},
+      'de': {name: 'Deutsch', voice: 'de'},
+      'it': {name: 'Italiano', voice: 'it'},
+      'pt': {name: 'Português', voice: 'pt'},
+      'ru': {name: 'Русский', voice: 'ru'},
+      'zh': {name: '中文', voice: 'zh'},
+      'ja': {name: '日本語', voice: 'ja'},
+      'ko': {name: '한국어', voice: 'ko'},
+      'ar': {name: 'العربية', voice: 'ar'},
+      'hi': {name: 'हिन्दी', voice: 'hi'},
+      'nl': {name: 'Nederlands', voice: 'nl'},
+      'pl': {name: 'Polski', voice: 'pl'},
+      'tr': {name: 'Türkçe', voice: 'tr'},
+      'th': {name: 'ไทย', voice: 'th'},
+      'vi': {name: 'Tiếng Việt', voice: 'vi'}
+    };
+
+    // Remplir les selects
+    Object.entries(languages).forEach(([code, lang]) => {
+      const opt1 = new Option(lang.name, code);
+      const opt2 = new Option(lang.name, code);
+      if (code === 'auto') opt1.disabled = true;
+      sourceSelect.add(opt1);
+      targetSelect.add(opt2);
+    });
+    sourceSelect.value = 'auto';
+    targetSelect.value = 'en';
+
+    // === Fonction de prononciation ===
+    function speak(text, langCode) {
+      if (!text || !('speechSynthesis' in window)) {
+        alert('Désolé, la synthèse vocale n’est pas disponible sur ce navigateur.');
+        return;
+      }
+
+      // Annule toute lecture en cours
+      speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      if (langCode && langCode !== 'auto') {
+        utterance.lang = langCode.includes('-') ? langCode : `\( {langCode}- \){langCode.toUpperCase()}`;
+      }
+
+      // Optionnel : choisir la meilleure voix disponible
+      const voices = speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const preferred = voices.find(v => v.lang.startsWith(langCode)) || voices.find(v => v.default);
+        if (preferred) utterance.voice = preferred;
+      }
+
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      speechSynthesis.speak(utterance);
+    }
+
+    // Écouter le texte source
+    speakSource.addEventListener('click', () => {
+      const text = input.value.trim();
+      if (text) {
+        const code = sourceSelect.value === 'auto' ? targetSelect.value : sourceSelect.value;
+        speak(text, languages[code]?.voice);
+      }
+    });
+
+    // Écouter la traduction
+    speakTarget.addEventListener('click', () => {
+      const text = output.textContent.trim();
+      if (text && !text.includes('Traduction en cours') && !text.includes('Erreur')) {
+        speak(text, languages[targetSelect.value]?.voice);
+      }
+    });
+
+    // === Traduction (identique à avant mais plus propre) ===
+    async function translate() {
+      const text = input.value.trim();
+      if (!text) return;
+
+      output.classList.add('loading');
+      output.textContent = 'Traduction en cours...';
+
+      const source = sourceSelect.value;
+      const target = targetSelect.value;
+      const url = `\( {API_URL}?q= \){encodeURIComponent(text)}&langpair=\( {source === 'auto' ? 'auto' : source}| \){target}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const translated = data.responseData.translatedText;
+
+        output.classList.remove('loading');
+        output.textContent = translated;
+
+        if (source === 'auto' && data.responseData.detectedLanguage) {
+          sourceSelect.value = data.responseData.detectedLanguage;
+        }
+      } catch {
+        output.classList.remove('loading');
+        output.textContent = 'Erreur réseau. Vérifie ta connexion !';
+      }
+    }
+
+    // Événements
+    translateBtn.addEventListener('click', translate);
+    input.addEventListener('keypress', e => { if (e.ctrlKey && e.key === 'Enter') translate(); });
+    swapBtn.addEventListener('click', () => {
+      if (sourceSelect.value === 'auto') return;
+      [sourceSelect.value, targetSelect.value] = [targetSelect.value, sourceSelect.value];
+      if (input.value && output.textContent && !output.textContent.includes('cours')) {
+        input.value = output.textContent;
+        output.textContent = 'Traduction...';
+      }
+    });
+
+    // Traduction automatique pendant la saisie
+    let timeout;
+    input.addEventListener('input', () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        if (input.value.trim().length > 2) translate();
+      }, 800);
+    });
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+</body>
+</html>
