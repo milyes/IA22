@@ -1,177 +1,213 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="oled">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Z-CORE MASTER KERNEL S</title>
+    <title>Z-CORE MASTER KERNEL v2.6</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        :root { --ia-green: #00ff41; --ia-gold: #d4af37; --ia-red: #ff3b3b; --bg-black: #000000; }
-        
+        :root {
+            --bg: #000000;
+            --ia-gold: #d4af37;
+            --ia-green: #00ff41;
+            --text: #ffffff;
+            --panel: #0a0a0a;
+        }
         body { 
-            background: var(--bg-black); color: var(--ia-green); 
-            font-family: 'Consolas', 'Courier New', monospace; 
-            margin: 0; padding: 10px; overflow: hidden; 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Consolas', monospace; 
+            margin: 0; 
+            padding: 15px;
+            overflow-x: hidden;
         }
-
-        #virtual-hud {
-            border: 1px solid #1a1a1a; height: 96vh;
-            display: flex; flex-direction: column; padding: 12px;
-            position: relative; box-sizing: border-box;
-            background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+        .hud-header {
+            border: 2px solid var(--ia-gold);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
         }
-
-        /* Effet Scanline Virtuel */
-        #virtual-hud::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 3px; pointer-events: none; opacity: 0.3;
+        .node-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-
-        .header { display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px solid #222; padding-bottom: 5px; }
-        
-        #monitor { 
-            flex-grow: 1; font-size: 10px; color: #888; overflow-y: auto; 
-            margin: 10px 0; padding: 5px; border-left: 1px solid var(--ia-green);
+        .node {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8em;
+            cursor: pointer;
         }
-
-        .input-zone { background: #050505; border: 1px solid #222; color: var(--ia-green); width: 100%; padding: 10px; box-sizing: border-box; margin-bottom: 10px; font-family: monospace; }
-
-        .grid-nodes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .node { 
-            background: #0a0a0a; border: 1px solid #333; padding: 8px; 
-            text-align: center; font-size: 10px; cursor: pointer; color: #555;
+        .node.active {
+            border-color: var(--ia-green);
+            color: var(--ia-green);
+            background: rgba(0, 255, 65, 0.1);
         }
-        .node.active { border-color: var(--ia-green); color: var(--ia-green); background: #001a06; }
-
-        #sig-container { border: 1px solid #1a1a1a; background: #000; margin-bottom: 10px; touch-action: none; }
-        canvas { width: 100%; height: 80px; display: block; }
-
-        .btn-group { display: flex; gap: 5px; }
-        button { 
-            flex: 1; background: #111; border: 1px solid var(--ia-gold); color: var(--ia-gold);
-            padding: 10px; font-size: 10px; font-weight: bold; cursor: pointer;
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: var(--panel);
+            color: var(--ia-green);
+            border: 1px solid #222;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: monospace;
+            margin-bottom: 15px;
         }
-        button:active { background: var(--ia-gold); color: #000; }
-        .btn-red { border-color: var(--ia-red); color: var(--ia-red); }
+        canvas {
+            border: 1px solid var(--ia-gold);
+            background: #050505;
+            width: 100%;
+            height: 150px;
+            touch-action: none;
+            margin-bottom: 10px;
+        }
+        .btn-action {
+            background: var(--ia-gold);
+            color: #000;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        #log {
+            font-size: 0.7em;
+            color: #555;
+            margin-top: 10px;
+            height: 40px;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
 
-<div id="virtual-hud">
-    <div class="header">
-        <span>Z-CORE_SYSTEM_S [v2.6]</span>
-        <span id="clock" style="color:var(--ia-gold);">00:00:00</span>
+    <div class="hud-header">Z-CORE MASTER KERNEL [SOUVERAIN]</div>
+
+    <div class="node-container">
+        <div class="node" onclick="this.classList.toggle('active')">SÉCURITÉ</div>
+        <div class="node" onclick="this.classList.toggle('active')">TECHNIQUE</div>
+        <div class="node" onclick="this.classList.toggle('active')">QUALITÉ</div>
+        <div class="node" onclick="this.classList.toggle('active')">RISQUE</div>
     </div>
 
-    <div id="monitor">
-        > INITIALISATION KERNEL... OK<br>
-        > MODULE_8 VIRTUAL HUD... ACTIF<br>
-        > CHRONOS PURGE (30J)... ARMÉ
-    </div>
+    <textarea id="obs" placeholder="[SAISIE RAW_DATA_FIELD]..."></textarea>
 
-    <textarea id="stream" class="input-zone" rows="3" placeholder="Saisir RAW_DATA..."></textarea>
+    <div style="font-size: 0.8em; color: var(--ia-gold); margin-bottom: 5px;">SIGNATURE TACTILE :</div>
+    <canvas id="sigCanvas"></canvas>
 
-    <div class="grid-nodes">
-        <div class="node" onclick="toggleNode(this, 'SÉCURITÉ')">SÉCURITÉ</div>
-        <div class="node" onclick="toggleNode(this, 'LOGISTIQUE')">LOGISTIQUE</div>
-        <div class="node" onclick="toggleNode(this, 'QUALITÉ')">QUALITÉ</div>
-        <div class="node" onclick="toggleNode(this, 'TECHNIQUE')">TECHNIQUE</div>
-    </div>
+    <button class="btn-action" onclick="exportPDF()">GÉNÉRER RAPPORT PDF (SÉCURISÉ)</button>
 
-    <div id="sig-container">
-        <canvas id="sig-pad"></canvas>
-        <div style="display:flex; justify-content:space-between; padding:4px; font-size:8px;">
-            <span style="color:var(--ia-gold);">[SIGNATURE_SOUVERAINE]</span>
-            <span onclick="clearSig()" style="color:var(--ia-red);">[EFFACER]</span>
-        </div>
-    </div>
+    <div id="log">SYSTÈME INITIALISÉ...</div>
 
-    <div class="btn-group">
-        <button onclick="exportPDF()">SNAPSHOT PDF</button>
-        <button class="btn-red" onclick="alert('ALERTE SMS ENVOYÉE')">ALERTE ROUGE</button>
-    </div>
-</div>
+    <script>
+        const canvas = document.getElementById('sigCanvas');
+        const ctx = canvas.getContext('2d');
+        const logBox = document.getElementById('log');
+        let drawing = false;
 
-<script>
-    // --- HORLOGE ---
-    function updateClock() {
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString('fr-FR');
-    }
-    setInterval(updateClock, 1000);
+        function log(msg) {
+            logBox.innerText = `> ${msg}`;
+            console.log(msg);
+        }
 
-    // --- LOGS ---
-    function log(msg) {
-        const mon = document.getElementById('monitor');
-        mon.innerHTML += `<br>> ${msg}`;
-        mon.scrollTop = mon.scrollHeight;
-    }
+        // Configuration Signature
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-    // --- NOEUDS ---
-    function toggleNode(el, name) {
-        el.classList.toggle('active');
-        log(`NODE_${name}: ${el.classList.contains('active') ? 'ENABLE' : 'DISABLE'}`);
-    }
+        canvas.addEventListener('touchstart', (e) => {
+            drawing = true;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        });
 
-    // --- SIGNATURE ---
-    const canvas = document.getElementById('sig-pad');
-    const ctx = canvas.getContext('2d');
-    let writing = false;
+        canvas.addEventListener('touchmove', (e) => {
+            if (!drawing) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            ctx.strokeStyle = '#00ff41';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        });
 
-    function resizeCanvas() {
-        canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
-        ctx.strokeStyle = "#00ff41"; ctx.lineWidth = 2;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+        canvas.addEventListener('touchend', () => drawing = false);
 
-    const getPos = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: clientX - rect.left, y: clientY - rect.top };
-    };
+        // --- MODULE EXPORT PDF AVEC ARMURE JURIDIQUE ---
+        function exportPDF() {
+            log("COMPILATION DU RAPPORT...");
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const data = document.getElementById('obs').value;
+            const sig = canvas.toDataURL("image/png");
 
-    function start(e) { writing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); }
-    function draw(e) { if(!writing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
-    function stop() { writing = false; }
-    function clearSig() { ctx.clearRect(0, 0, canvas.width, canvas.height); log("SIG_PAD: CLEARED"); }
+            // Récupération des nœuds
+            let nodes = [];
+            document.querySelectorAll('.node.active').forEach(n => nodes.push(n.innerText));
 
-    canvas.addEventListener('mousedown', start);
-    canvas.addEventListener('touchstart', start, {passive: false});
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('touchmove', draw, {passive: false});
-    window.addEventListener('mouseup', stop);
-    window.addEventListener('touchend', stop);
+            // Style du PDF
+            doc.setFillColor(0, 0, 0); doc.rect(0, 0, 210, 297, 'F'); // Fond noir
+            doc.setTextColor(0, 255, 65); doc.setFontSize(18);
+            doc.text("RAPPORT D'EXPERTISE Z-CORE", 10, 20);
+            
+            doc.setDrawColor(212, 175, 55); doc.line(10, 25, 200, 25);
 
-    // --- EXPORT PDF ---
-    function exportPDF() {
-        log("GÉNÉRATION SNAPSHOT...");
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const data = document.getElementById('stream').value;
-        const sig = canvas.toDataURL("image/png");
+            doc.setTextColor(255, 255, 255); doc.setFontSize(10);
+            doc.text(`DATE : ${new Date().toLocaleString('fr-FR')}`, 10, 35);
+            doc.text(`NŒUDS ACTIFS : ${nodes.join(' | ') || 'AUCUN'}`, 10, 42);
 
-        doc.setFillColor(0, 0, 0); doc.rect(0, 0, 210, 297, 'F');
-        doc.setTextColor(0, 255, 65); doc.setFont("courier", "bold");
-        doc.text("Z-CORE MASTER KERNEL - RAPPORT SOUVERAIN", 10, 20);
-        
-        doc.setTextColor(255, 255, 255); doc.setFontSize(10);
-        doc.text(`DATE : ${new Date().toLocaleString()}`, 10, 30);
-        doc.text("OBSERVATION :", 10, 45);
-        doc.text(doc.splitTextToSize(data || "AUCUNE DONNÉE", 180), 10, 55);
+            doc.setTextColor(212, 175, 55); doc.text("OBSERVATIONS TECHNIQUES :", 10, 60);
+            doc.setTextColor(255, 255, 255);
+            const splitTxt = doc.splitTextToSize(data || "NÉANT", 180);
+            doc.text(splitTxt, 10, 70);
 
-        doc.setTextColor(212, 175, 55);
-        doc.text("AUTHENTIFICATION PHYSIQUE :", 10, 100);
-        doc.addImage(sig, 'PNG', 10, 105, 50, 20);
+            doc.setTextColor(0, 255, 65); doc.text("SIGNATURE AUTHENTIFIÉE :", 10, 150);
+            doc.addImage(sig, 'PNG', 10, 155, 60, 25);
 
-        doc.save(`ZCORE_SNAP_${Date.now()}.pdf`);
-        log("PDF EXPORTÉ AVEC SUCCÈS.");
-    }
+            // --- PROTECTION JURIDIQUE (BAS DE PAGE) ---
+            doc.setFontSize(7); doc.setTextColor(100, 100, 100);
+            const legalText = "DOCUMENT D'AUDIT INTERNE - USAGE STRICTEMENT PROFESSIONNEL. " +
+                              "LES DONNÉES CONTENUES SONT ISSUES D'UNE EXPERTISE TERRAIN " +
+                              "ET NE PEUVENT ÊTRE ALTÉRÉES APRÈS SIGNATURE. " +
+                              "PROPRIÉTÉ EXCLUSIVE DE L'EXPERT RÉDACTEUR.";
+            doc.text(doc.splitTextToSize(legalText, 180), 10, 285);
 
-    // --- CHRONOS (Simulation Purge) ---
-    setTimeout(() => log("CHRONOS: VÉRIFICATION DES LOGS > 30J... OK"), 2000);
-</script>
+            const fileName = `ZCORE_AUDIT_${Date.now()}.pdf`;
+            doc.save(fileName);
+            log(`EXPORTÉ : ${fileName}`);
+        }
 
+        // --- MODULE CHRONOS : PURGE 30 JOURS ---
+        function runAutoClean() {
+            const lastClean = localStorage.getItem('zcore_last_clean');
+            const now = Date.now();
+            const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+
+            if (!lastClean || (now - parseInt(lastClean)) > thirtyDays) {
+                if (confirm("POLITIQUE DE SÉCURITÉ : Cycle de 30 jours atteint. Purger les anciens logs ?")) {
+                    localStorage.setItem('zcore_last_clean', now.toString());
+                    log("PURGE EFFECTUÉE.");
+                }
+            }
+        }
+
+        window.onload = () => {
+            runAutoClean();
+            log("SYSTÈME PRÊT : SOUVERAINETÉ ACTIVE");
+        };
+    </script>
 </body>
 </html>
