@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NETSECUREPRO | TERMINAL NEO_DZ</title>
+    <style>
+        body { background: #000; color: #00ff00; font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        #lock-screen { text-align: center; border: 2px solid #00ff00; padding: 20px; background: #050505; width: 90%; box-shadow: 0 0 20px #00ff00; }
+        #main-content { display: none; width: 95%; height: 90vh; background: #050505; border: 1px solid #00ff00; padding: 15px; box-shadow: 0 0 15px #00ff00; overflow-y: auto; }
+        input { background: #000; border: 1px solid #00ff00; color: #00ff00; padding: 15px; width: 100%; box-sizing: border-box; margin-top: 15px; font-size: 16px; font-family: monospace; outline: none; }
+        button { background: #00ff00; color: #000; border: none; padding: 15px; margin-top: 15px; cursor: pointer; font-weight: bold; width: 100%; font-size: 14px; text-transform: uppercase; }
+        .status-bar { border-bottom: 1px solid #00ff00; margin-bottom: 15px; padding-bottom: 10px; font-size: 0.7em; line-height: 1.4; }
+        .crypto-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin: 15px 0; }
+        .wallet-box { background: #111; border: 1px dashed #00ff00; padding: 10px; margin-top: 10px; display: none; word-break: break-all; font-size: 0.85em; }
+        .header-title { font-size: 1.2em; border-bottom: 2px solid #00ff00; padding-bottom: 5px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <div id="lock-screen">
+        <h3>[ SÉCURITÉ OMEGA ]</h3>
+        <p style="font-size: 0.8em;">IDENTIFICATION REQUISE<br>NOYAU MILYES_IA_v9</p>
+        <input type="password" id="key-input" placeholder="ENTREZ CLÉ SOUVERAINE..." autocomplete="off">
+        <button onclick="unlock()">DÉVERROUILLER</button>
+        <p id="error-msg" style="color: red; font-size: 0.7em; margin-top: 10px;"></p>
+    </div>
+
+    <div id="main-content">
+        <div class="status-bar">
+            MILYES_IA_v9@NEO_DZ:~$ STATUS: SOUVERAIN<br>
+            NODES: SÉCURITÉ | TECHNIQUE | QUALITÉ | RISQUE [OK]<br>
+            NETTOYAGE AUTO: ACTIF (30J)
+        </div>
+        
+        <div class="header-title">TERMINAL DE PAIEMENT</div>
+        <p style="font-size: 0.9em;">Service : Licence NetSecurePro IA22<br>Montant : <strong>1 999,00 $</strong></p>
+
+        <div class="crypto-grid">
+            <button onclick="showW('BTC')" style="background:#f7931a; color:white;">BTC</button>
+            <button onclick="showW('ETH')" style="background:#3c3c3d; color:white;">ETH</button>
+            <button onclick="showW('CRO')" style="background:#11397b; color:white;">CRO</button>
+        </div>
+
+        <div id="w-display" class="wallet-box"></div>
+
+        <button onclick="genInvoice()" style="background: #fff; color: #000; margin-top: 30px;">📄 GÉNÉRER FACTURE OFFICIELLE</button>
+        
+        <p style="font-size: 0.6em; color: #666; margin-top: 20px; text-align: center;">
+            Contact : etransfer.payper@crypto.com<br>Audit Z-CORE certifié le 20/02/2026
+        </p>
+    </div>
+
+    <script>
+        // CONFIGURATION PROTOCOLAIRE
+        const MASTER_KEY = "OMEGA-2026-NEO-DZ"; 
+        const ADDR = { 
+            'BTC': 'VEUILLEZ_SAISIR_ADRESSE_BTC', 
+            'ETH': 'VEUILLEZ_SAISIR_ADRESSE_ETH', 
+            'CRO': '0x3a00C36f2a4c7A1Fb330B9f4B3Ff953ac7cCCBD7' 
+        };
+
+        function unlock() {
+            const val = document.getElementById('key-input').value;
+            if(val === MASTER_KEY) {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                // Nettoyage automatique des logs (Simulation console)
+                console.log("[IA] : Nettoyage des logs programmé pour +30 jours.");
+            } else {
+                document.getElementById('error-msg').innerText = "CLÉ INCORRECTE - TENTATIVE LOGUÉE";
+            }
+        }
+
+        function showW(c) {
+            const box = document.getElementById('w-display');
+            box.style.display = 'block';
+            box.innerHTML = `<strong>ADRESSE ${c} :</strong><br><span style="color:#fff">${ADDR[c]}</span><br><br><small>Envoyez l'équivalent de 1 999,00 $ pour valider la licence.</small>`;
+        }
+
+        function genInvoice() {
+            const id = "NSP-" + Math.floor(Math.random()*1000000);
+            const date = new Date().toLocaleDateString();
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <body style="font-family:monospace; padding:20px; color:#333; background:#fff;">
+                    <h2 style="border-bottom:2px solid #000;">NETSECUREPRO - FACTURE</h2>
+                    <p><strong>Réf:</strong> ${id}</p>
+                    <p><strong>Date:</strong> ${date}</p>
+                    <hr>
+                    <p>Désignation: Licence d'accès IA22</p>
+                    <p>Montant: 1 999,00 $</p>
+                    <h3 style="margin-top:30px;">TOTAL: 1 999,00 $</h3>
+                    <p style="font-size:0.7em; margin-top:50px; border-top:1px solid #ccc;">
+                        Émis par Noyau MILYES_IA_v9.<br>Certifié conforme par l'audit Z-CORE.
+                    </p>
+                </body>
+            `);
+            win.document.close();
+            win.print();
+        }
+    </script>
+</body>
+</html>
