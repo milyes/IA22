@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>NETSECUREPRO | TERMINAL SOUVERAIN</title>
+    <style>
+        body { background: #000; color: #00ff00; font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        #lock-screen { text-align: center; border: 2px solid #00ff00; padding: 40px; background: #050505; box-shadow: 0 0 20px #00ff00; }
+        #main-content { display: none; width: 80%; max-width: 800px; background: #050505; border: 1px solid #00ff00; padding: 20px; box-shadow: 0 0 15px #00ff00; overflow-y: auto; max-height: 90vh; }
+        input { background: #000; border: 1px solid #00ff00; color: #00ff00; padding: 10px; width: 100%; box-sizing: border-box; margin-top: 10px; font-family: monospace; outline: none; }
+        button { background: #00ff00; color: #000; border: none; padding: 10px 20px; margin-top: 20px; cursor: pointer; font-weight: bold; width: 100%; }
+        button:hover { background: #00cc00; }
+        .status-bar { border-bottom: 1px solid #00ff00; margin-bottom: 20px; padding-bottom: 10px; font-size: 0.8em; }
+        .crypto-btns { display: flex; gap: 10px; margin: 20px 0; }
+        .wallet-box { background: #111; border: 1px dashed #00ff00; padding: 15px; margin-top: 10px; display: none; word-break: break-all; }
+    </style>
+</head>
+<body>
+
+    <div id="lock-screen">
+        <h2>[ SÉCURITÉ OMEGA ]</h2>
+        <p>IDENTIFICATION REQUISE - NOYAU MILYES_IA_v9</p>
+        <input type="password" id="key-input" placeholder="ENTREZ CLÉ SOUVERAINE...">
+        <button onclick="unlock()">DÉVERROUILLER</button>
+        <p id="error-msg" style="color: red; font-size: 0.8em; margin-top: 10px;"></p>
+    </div>
+
+    <div id="main-content">
+        <div class="status-bar">
+            MILYES_IA_v9@NEO_DZ:~$ STATUS: SOUVERAIN | UPTIME: 742h | NODES: 4/4 [OK]
+        </div>
+        
+        <h3>💳 MODULE DE PAIEMENT SÉCURISÉ</h3>
+        <p>Service : Licence NetSecurePro IA22<br>Montant : <strong>1 999,00 $</strong></p>
+
+        <div class="crypto-btns">
+            <button onclick="showW('BTC')" style="background:#f7931a; color:white;">BTC</button>
+            <button onclick="showW('ETH')" style="background:#3c3c3d; color:white;">ETH</button>
+            <button onclick="showW('CRO')" style="background:#11397b; color:white;">CRO</button>
+        </div>
+
+        <div id="w-display" class="wallet-box"></div>
+
+        <button onclick="genInvoice()" style="background: #fff; color: #000;">📄 GÉNÉRER FACTURE OFFICIELLE</button>
+    </div>
+
+    <script>
+        const MASTER_KEY = "OMEGA-2026-NEO-DZ"; // Votre clé générée
+        const ADDR = { 'BTC': 'ADRESSE_BTC_A_SAISIR', 'ETH': 'ADRESSE_ETH_A_SAISIR', 'CRO': 'ADRESSE_CRO_A_SAISIR' };
+
+        function unlock() {
+            const val = document.getElementById('key-input').value;
+            if(val === MASTER_KEY) {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                document.getElementById('error-msg').innerText = "CLÉ INCORRECTE - TENTATIVE LOGUÉE";
+            }
+        }
+
+        function showW(c) {
+            const box = document.getElementById('w-display');
+            box.style.display = 'block';
+            box.innerHTML = `<strong>ADRESSE ${c} :</strong><br>${ADDR[c]}<br><small>(Veuillez envoyer l'équivalent de 1 999,00 $)</small>`;
+        }
+
+        function genInvoice() {
+            const win = window.open('', '_blank');
+            const id = "NSP-" + Math.floor(Math.random()*1000000);
+            win.document.write(`
+                <body style="font-family:monospace; padding:50px;">
+                    <h1>NETSECUREPRO - FACTURE</h1>
+                    <p>Réf: ${id} | Date: ${new Date().toLocaleDateString()}</p>
+                    <hr>
+                    <p>Désignation: Licence IA22 | Total: 1 999,00 $</p>
+                    <p style="margin-top:50px; font-size:0.8em;">Certifié par audit Z-CORE.</p>
+                </body>
+            `);
+            win.print();
+        }
+    </script>
+</body>
+</html>
