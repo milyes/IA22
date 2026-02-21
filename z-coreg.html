@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="oled">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Z-CORE MASTER KERNEL v2.6</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #000000;
+            --ia-gold: #d4af37;
+            --ia-green: #00ff41;
+            --text: #ffffff;
+            --panel: #0a0a0a;
+        }
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Consolas', monospace; 
+            margin: 0; 
+            padding: 15px;
+            overflow-x: hidden;
+        }
+        .hud-header {
+            border: 2px solid var(--ia-gold);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+        .node-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .node {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+        .node.active {
+            border-color: var(--ia-green);
+            color: var(--ia-green);
+            background: rgba(0, 255, 65, 0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: var(--panel);
+            color: var(--ia-green);
+            border: 1px solid #222;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: monospace;
+            margin-bottom: 15px;
+        }
+        canvas {
+            border: 1px solid var(--ia-gold);
+            background: #050505;
+            width: 100%;
+            height: 150px;
+            touch-action: none;
+            margin-bottom: 10px;
+        }
+        .btn-action {
+            background: var(--ia-gold);
+            color: #000;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        #log {
+            font-size: 0.7em;
+            color: #555;
+            margin-top: 10px;
+            height: 40px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hud-header">Z-CORE MASTER KERNEL [SOUVERAIN]</div>
+
+    <div class="node-container">
+        <div class="node" onclick="this.classList.toggle('active')">SÉCURITÉ</div>
+        <div class="node" onclick="this.classList.toggle('active')">TECHNIQUE</div>
+        <div class="node" onclick="this.classList.toggle('active')">QUALITÉ</div>
+        <div class="node" onclick="this.classList.toggle('active')">RISQUE</div>
+    </div>
+
+    <textarea id="obs" placeholder="[SAISIE RAW_DATA_FIELD]..."></textarea>
+
+    <div style="font-size: 0.8em; color: var(--ia-gold); margin-bottom: 5px;">SIGNATURE TACTILE :</div>
+    <canvas id="sigCanvas"></canvas>
+
+    <button class="btn-action" onclick="exportPDF()">GÉNÉRER RAPPORT PDF (SÉCURISÉ)</button>
+
+    <div id="log">SYSTÈME INITIALISÉ...</div>
+
+    <script>
+        const canvas = document.getElementById('sigCanvas');
+        const ctx = canvas.getContext('2d');
+        const logBox = document.getElementById('log');
+        let drawing = false;
+
+        function log(msg) {
+            logBox.innerText = `> ${msg}`;
+            console.log(msg);
+        }
+
+        // Configuration Signature
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        canvas.addEventListener('touchstart', (e) => {
+            drawing = true;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (!drawing) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            ctx.strokeStyle = '#00ff41';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        });
+
+        canvas.addEventListener('touchend', () => drawing = false);
+
+        // --- MODULE EXPORT PDF AVEC ARMURE JURIDIQUE ---
+        function exportPDF() {
+            log("COMPILATION DU RAPPORT...");
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const data = document.getElementById('obs').value;
+            const sig = canvas.toDataURL("image/png");
+
+            // Récupération des nœuds
+            let nodes = [];
+            document.querySelectorAll('.node.active').forEach(n => nodes.push(n.innerText));
+
+            // Style du PDF
+            doc.setFillColor(0, 0, 0); doc.rect(0, 0, 210, 297, 'F'); // Fond noir
+            doc.setTextColor(0, 255, 65); doc.setFontSize(18);
+            doc.text("RAPPORT D'EXPERTISE Z-CORE", 10, 20);
+            
+            doc.setDrawColor(212, 175, 55); doc.line(10, 25, 200, 25);
+
+            doc.setTextColor(255, 255, 255); doc.setFontSize(10);
+            doc.text(`DATE : ${new Date().toLocaleString('fr-FR')}`, 10, 35);
+            doc.text(`NŒUDS ACTIFS : ${nodes.join(' | ') || 'AUCUN'}`, 10, 42);
+
+            doc.setTextColor(212, 175, 55); doc.text("OBSERVATIONS TECHNIQUES :", 10, 60);
+            doc.setTextColor(255, 255, 255);
+            const splitTxt = doc.splitTextToSize(data || "NÉANT", 180);
+            doc.text(splitTxt, 10, 70);
+
+            doc.setTextColor(0, 255, 65); doc.text("SIGNATURE AUTHENTIFIÉE :", 10, 150);
+            doc.addImage(sig, 'PNG', 10, 155, 60, 25);
+
+            // --- PROTECTION JURIDIQUE (BAS DE PAGE) ---
+            doc.setFontSize(7); doc.setTextColor(100, 100, 100);
+            const legalText = "DOCUMENT D'AUDIT INTERNE - USAGE STRICTEMENT PROFESSIONNEL. " +
+                              "LES DONNÉES CONTENUES SONT ISSUES D'UNE EXPERTISE TERRAIN " +
+                              "ET NE PEUVENT ÊTRE ALTÉRÉES APRÈS SIGNATURE. " +
+                              "PROPRIÉTÉ EXCLUSIVE DE L'EXPERT RÉDACTEUR.";
+            doc.text(doc.splitTextToSize(legalText, 180), 10, 285);
+
+            const fileName = `ZCORE_AUDIT_${Date.now()}.pdf`;
+            doc.save(fileName);
+            log(`EXPORTÉ : ${fileName}`);
+        }
+
+        // --- MODULE CHRONOS : PURGE 30 JOURS ---
+        function runAutoClean() {
+            const lastClean = localStorage.getItem('zcore_last_clean');
+            const now = Date.now();
+            const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+
+            if (!lastClean || (now - parseInt(lastClean)) > thirtyDays) {
+                if (confirm("POLITIQUE DE SÉCURITÉ : Cycle de 30 jours atteint. Purger les anciens logs ?")) {
+                    localStorage.setItem('zcore_last_clean', now.toString());
+                    log("PURGE EFFECTUÉE.");
+                }
+            }
+        }
+
+        window.onload = () => {
+            runAutoClean();
+            log("SYSTÈME PRÊT : SOUVERAINETÉ ACTIVE");
+        };
+    </script>
+</body>
+</html>
