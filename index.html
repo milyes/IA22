@@ -1,718 +1,219 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mohammed Ilyes Zoubirou — NetSecurePro | IA Souveraine & Cybersécurité</title>
-  <meta name="description" content="Développeur IA souverain – Créateur de NetSecurePro, IA22_LOGIC et protocoles d’autonomie numérique. Contact : milyes@netsecurepro.ca"/>
-  <meta name="author" content="Mohammed Ilyes Zoubirou"/>
-  <meta name="robots" content="index, follow"/>
-
-  <!-- Open Graph / Réseaux sociaux -->
-  <meta property="og:title" content="Mohammed Ilyes Zoubirou — NetSecurePro"/>
-  <meta property="og:description" content="IA souveraine, cybersécurité cognitive, santé connectée, modularité totale."/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://netsecurepro.ca"/>
-  <meta property="og:image" content="https://milyes.github.io/assets/og-netsecurepro.jpg"/> <!-- remplace par ta vraie image -->
-
-  <!-- Favicon (à remplacer) -->
-  <link rel="icon" href="https://milyes.github.io/favicon.ico"/>
-
-  <!-- Google Fonts (optionnel – supprime la ligne si tu veux 0 dépendance externe) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --primary: #0d47a1;
-      --primary-dark: #002171;
-      --text: #e0e0e0;
-      --bg: #0a0e17;
-      --card: #111827;
-      --border: #1e293b;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
-    header {
-      background: linear-gradient(to bottom, #0f172a, #0a0e17);
-      padding: 5rem 0 4rem;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
-
-    h1 {
-      font-size: 3.2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: white;
-    }
-
-    .subtitle {
-      font-size: 1.35rem;
-      color: #94a3b8;
-      margin-bottom: 1.5rem;
-    }
-
-    .email-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: rgba(13, 71, 161, 0.15);
-      color: #60a5fa;
-      padding: 0.75rem 1.5rem;
-      border-radius: 9999px;
-      font-weight: 500;
-      border: 1px solid rgba(96, 165, 250, 0.3);
-      transition: all 0.3s ease;
-    }
-
-    .email-badge:hover {
-      background: rgba(13, 71, 161, 0.25);
-      transform: translateY(-2px);
-    }
-
-    main {
-      padding: 4rem 0;
-    }
-
-    section {
-      margin-bottom: 5rem;
-    }
-
-    h2 {
-      font-size: 2.25rem;
-      color: white;
-      margin-bottom: 1.5rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    h2:after {
-      content: '';
-      position: absolute;
-      bottom: -0.5rem;
-      left: 0;
-      width: 60px;
-      height: 4px;
-      background: var(--primary);
-      border-radius: 2px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.75rem;
-      margin-top: 2rem;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.75rem;
-      transition: all 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
-      border-color: var(--primary);
-      box-shadow: 0 20px 30px rgba(13, 71, 161, 0.12);
-    }
-
-    .card h3 {
-      font-size: 1.4rem;
-      color: #e2e8f0;
-      margin-bottom: 0.75rem;
-    }
-
-    .card p {
-      color: #94a3b8;
-      font-size: 1.05rem;
-    }
-
-    .cta {
-      text-align: center;
-      margin: 5rem 0;
-    }
-
-    .cta a {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      padding: 1rem 2.5rem;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.15rem;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .cta a:hover {
-      background: var(--primary-dark);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(13, 71, 161, 0.35);
-    }
-
-    footer {
-      background: #0a0e17;
-      border-top: 1px solid var(--border);
-      padding: 3rem 0 2rem;
-      text-align: center;
-      color: #64748b;
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 640px) {
-      h1 { font-size: 2.5rem; }
-      .grid { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sitemap du Projet IA22</title>
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f4f8;
+    color: #333;
+}
+h1 {
+    color: #004d99;
+    border-bottom: 2px solid #004d99;
+    padding-bottom: 10px;
+}
+main {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.file-list {
+    list-style: none;
+    padding: 0;
+    column-count: 3;
+    column-gap: 30px;
+}
+.file-list li {
+    padding: 5px 0;
+    break-inside: avoid;
+}
+.file-list li a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+}
+.file-list li a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+.non-html-section {
+    margin-top: 30px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+</style>
 </head>
 <body>
+<main>
+<h1>Liste Complète des Fichiers HTML (Sitemap)</h1>
+<p>Cliquez sur un lien pour accéder à la page correspondante.</p>
 
-  <header>
-    <div class="container">
-      <h1>Mohammed Ilyes Zoubirou</h1>
-      <p class="subtitle">Développeur IA souverain · Créateur de NetSecurePro & IA22_LOGIC</p>
+<ul class="file-list">
+<li><a href="IA22_LOGIC_MEDICAL.html">IA22_LOGIC_MEDICAL.html</a></li>
+<li><a href="MILYES_IA22A_BINGO.html">MILYES_IA22A_BINGO.html</a></li>
+<li><a href="NetSecurePro">NetSecurePro</a></li>
+<li><a href="IA">IA</a></li>
+<li><a href="Neural">Neural</a></li>
+<li><a href="Core">Core</a></li>
+<li><a href="SYSTEM.html">SYSTEM.html</a></li>
+<li><a href="Présentation">Présentation</a></li>
+<li><a href="du">du</a></li>
+<li><a href="Terminal">Terminal</a></li>
+<li><a href="IA">IA</a></li>
+<li><a href="Multimodal">Multimodal</a></li>
+<li><a href="(1).html">(1).html</a></li>
+<li><a href="ai_studio_code">ai_studio_code</a></li>
+<li><a href="(84).html">(84).html</a></li>
+<li><a href="ai_terminal_sovereign.html">ai_terminal_sovereign.html</a></li>
+<li><a href="dashboard_zero.html">dashboard_zero.html</a></li>
+<li><a href="ft.html">ft.html</a></li>
+<li><a href="ia22_android.view.ViewRootImp.html">ia22_android.view.ViewRootImp.html</a></li>
+<li><a href="ia22_tunnel_evolved.html">ia22_tunnel_evolved.html</a></li>
+<li><a href="index">index</a></li>
+<li><a href="(2).html">(2).html</a></li>
+<li><a href="index.html">index.html</a></li>
+<li><a href="index1.html">index1.html</a></li>
+<li><a href="iu.html">iu.html</a></li>
+<li><a href="list.html">list.html</a></li>
+<li><a href="lol.html">lol.html</a></li>
+<li><a href="neo_loca1tor.html">neo_loca1tor.html</a></li>
+<li><a href="neo_locator.html">neo_locator.html</a></li>
+<li><a href="now.html">now.html</a></li>
+<li><a href="ov1.html">ov1.html</a></li>
+<li><a href="paranormal_dashboard.html">paranormal_dashboard.html</a></li>
+<li><a href="pdf76.html">pdf76.html</a></li>
+<li><a href="prompt-Toolkit.html">prompt-Toolkit.html</a></li>
+<li><a href="server">server</a></li>
+<li><a href="(1).html">(1).html</a></li>
+<li><a href="ui.html">ui.html</a></li>
+<li><a href="z-chhoreg.html">z-chhoreg.html</a></li>
+<li><a href="z-core.html">z-core.html</a></li>
+<li><a href="z-coreg.html">z-coreg.html</a></li>
+<li><a href="z.html">z.html</a></li>
+<li><a href="zty-core.html">zty-core.html</a></li>
+</ul>
 
-      <a href="mailto:milyes@netsecurepro.ca" class="email-badge">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="4" width="20" height="16" rx="2"/>
-          <path d="M2 8l9.5 6.5L22 8"/>
-        </svg>
-        milyes@netsecurepro.ca
-      </a>
-    </div>
-  </header>
+<div class="non-html-section">
+<h3>Autres fichiers présents</h3>
+<ul>
+<li>89043051202300838924008211438645.png</li>
+<li>ARCHIVES</li>
+<li>Chrome</li>
+<li>shared</li>
+<li>link.url</li>
+<li>Copy</li>
+<li>of</li>
+<li>Termux</li>
+<li>Toolkit</li>
+<li>Hub</li>
+<li>_</li>
+<li>Google</li>
+<li>AI</li>
+<li>Studio.txt</li>
+<li>Gemini</li>
+<li>Core</li>
+<li>2</li>
+<li>(2).6</li>
+<li>PRO</li>
+<li>-</li>
+<li>Sovereign</li>
+<li>Cognitive</li>
+<li>Kernel</li>
+<li>Gemini</li>
+<li>Core</li>
+<li>2.6</li>
+<li>PRO</li>
+<li>-</li>
+<li>Sovereign</li>
+<li>Cognitive</li>
+<li>Kernel</li>
+<li>Google</li>
+<li>shared</li>
+<li>link</li>
+<li>(2).url</li>
+<li>Google</li>
+<li>shared</li>
+<li>link.url</li>
+<li>IA_LOGIC_MULTICLASS_CLI_FULL.sh</li>
+<li>IA_PARKINSON_LOGIC_STARTER</li>
+<li>(1)</li>
+<li>MILYES_IA</li>
+<li>v9</li>
+<li>_</li>
+<li>Google</li>
+<li>AI</li>
+<li>Studio</li>
+<li>(2).url</li>
+<li>MILYES_IA</li>
+<li>v9</li>
+<li>_</li>
+<li>Google</li>
+<li>AI</li>
+<li>Studio.url</li>
+<li>NetSecurePro_</li>
+<li>Gemini</li>
+<li>Core</li>
+<li>Engine</li>
+<li>20.6</li>
+<li>PRO</li>
+<li>V7</li>
+<li>FINALE</li>
+<li>NetSecurePro_AudioStreamKit</li>
+<li>NetSecurePro_IA_Guide_2025-08-29.json</li>
+<li>Notes_250723_132715.pptx</li>
+<li>NÉO_DZ</li>
+<li>Terminal</li>
+<li>IA</li>
+<li>V20.6</li>
+<li>PRO</li>
+<li>V</li>
+<li>_</li>
+<li>Google</li>
+<li>AI</li>
+<li>Studio.url</li>
+<li>README.MD</li>
+<li>SYSTEMEOSIAILYES-</li>
+<li>Webinaire_Academos_2026_260121_142031.pdf</li>
+<li>Z-CORE</li>
+<li>MASTER</li>
+<li>KERNEL</li>
+<li>v2.6</li>
+<li>(2).url</li>
+<li>Z-CORE</li>
+<li>MASTER</li>
+<li>KERNEL</li>
+<li>v2.6.url</li>
+<li>__pycache__</li>
+<li>ai_engine.py</li>
+<li>dashboard.zip</li>
+<li>html_NEO_DZ_v2.sh</li>
+<li>image.jpg</li>
+<li>ip.txt</li>
+<li>launcher_html.sh</li>
+<li>main.py</li>
+<li>milel.txt</li>
+<li>mini_terminal_avance.py</li>
+<li>multi_terminal_netsecure.sh</li>
+<li>mymap_NETSECUREPRO_EMPRUNTS_IA.txt</li>
+<li>sw.js</li>
+<li>templates</li>
+<li>termux_custom_options.txt</li>
+<li>termux_detected_commands.txt</li>
+<li>termux_log.txt</li>
+</ul>
+</div>
 
-  <main class="container">
-    <section>
-      <h2>Valeurs fondamentales</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Souveraineté numérique</h3>
-          <p>Contrôle total des données, zéro dépendance cloud forcée, opposition systématique aux trackers.</p>
-        </div>
-        <div class="card">
-          <h3>Modularité extrême</h3>
-          <p>Chaque composant est indépendant, clonable et spécialisable (MULTICLASS_CLONE).</p>
-        </div>
-        <div class="card">
-          <h3>Transparence & Sécurité</h3>
-          <p>Code ouvert, chiffrement fort (AΩMΞ), purge systématique (Zéro Rétention).</p>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>Projets phares</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>NetSecurePro</h3>
-          <p>Plateforme IA souveraine pour cybersécurité cognitive, santé connectée et automatisation locale.</p>
-        </div>
-        <div class="card">
-          <h3>IA22_LOGIC</h3>
-          <p>Framework modulaire distribué avec directives fondatrices (voix multiples, transparence, initiation consciente).</p>
-        </div>
-        <div class="card">
-          <h3>Protocole MILYES</h3>
-          <p>Identité numérique autonome et protocole orbital d’activation souveraine.</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="cta">
-      <a href="mailto:milyes@netsecurepro.ca">Contact direct → milyes@netsecurepro.ca</a>
-    </div>
-  </main>
-
-  <footer>
-    <div class="container">
-      <p>© 2026 Mohammed Ilyes Zoubirou – Tous droits réservés</p>
-      <p>NetSecurePro – IA souveraine, modulaire, éthique. Aucune collecte de données.</p>
-    </div>
-  </footer>
-
-</body>
-</html>      box-sizing: border-box;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
-    header {
-      background: linear-gradient(to bottom, #0d1117, #0a0e17);
-      padding: 6rem 0 5rem;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
-
-    h1 {
-      font-size: clamp(2.5rem, 8vw, 4rem);
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-      color: white;
-    }
-
-    .subtitle {
-      font-size: 1.4rem;
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .email-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.8rem;
-      background: rgba(13, 110, 253, 0.12);
-      color: var(--accent);
-      padding: 0.9rem 1.8rem;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      border: 1px solid rgba(13, 110, 253, 0.3);
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .email-badge:hover {
-      background: rgba(13, 110, 253, 0.22);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(13, 110, 253, 0.2);
-    }
-
-    main {
-      padding: 5rem 0;
-    }
-
-    section {
-      margin-bottom: 6rem;
-    }
-
-    h2 {
-      font-size: 2.5rem;
-      color: white;
-      margin-bottom: 2rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    h2:after {
-      content: '';
-      position: absolute;
-      bottom: -0.6rem;
-      left: 0;
-      width: 80px;
-      height: 5px;
-      background: var(--primary);
-      border-radius: 3px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-      margin-top: 2.5rem;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      transition: all 0.35s ease;
-      backdrop-filter: blur(8px);
-    }
-
-    .card:hover {
-      transform: translateY(-10px);
-      border-color: var(--primary);
-      box-shadow: 0 25px 50px -12px rgba(13, 110, 253, 0.18);
-    }
-
-    .card h3 {
-      font-size: 1.5rem;
-      color: white;
-      margin-bottom: 1rem;
-    }
-
-    .card p {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-    }
-
-    .cta {
-      text-align: center;
-      margin: 6rem 0;
-    }
-
-    .cta a {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      padding: 1.2rem 3rem;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.25rem;
-      text-decoration: none;
-      transition: all 0.35s ease;
-    }
-
-    .cta a:hover {
-      background: var(--primary-dark);
-      transform: translateY(-4px);
-      box-shadow: 0 15px 35px rgba(13, 110, 253, 0.3);
-    }
-
-    footer {
-      background: #0a0e17;
-      border-top: 1px solid var(--border);
-      padding: 4rem 0 2rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 640px) {
-      header { padding: 4rem 0 3rem; }
-      h1 { font-size: 2.8rem; }
-      .grid { grid-template-columns: 1fr; }
-      .cta a { padding: 1rem 2.2rem; font-size: 1.1rem; }
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <div class="container">
-      <h1>Mohammed Ilyes Zoubirou</h1>
-      <p class="subtitle">Développeur IA souverain – Créateur de NetSecurePro, IA22_LOGIC et protocoles d’autonomie numérique</p>
-
-      <a href="mailto:milyes@netsecurepro.ca" class="email-badge" aria-label="Contacter par email">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="4" width="20" height="16" rx="2"/>
-          <path d="M2 8l9.5 6.5L22 8"/>
-        </svg>
-        milyes@netsecurepro.ca
-      </a>
-    </div>
-  </header>
-
-  <main class="container">
-    <section>
-      <h2>Valeurs fondamentales</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Souveraineté numérique totale</h3>
-          <p>Contrôle absolu des données, zéro dépendance cloud forcée, opposition systématique aux trackers et à l’exfiltration.</p>
-        </div>
-        <div class="card">
-          <h3>Modularité extrême</h3>
-          <p>Chaque composant est indépendant, clonable et spécialisable (MULTICLASS_CLONE, IA22_LOGIC).</p>
-        </div>
-        <div class="card">
-          <h3>Transparence & Sécurité radicale</h3>
-          <p>Code ouvert, chiffrement fort (AΩMΞ), purge systématique (Zéro Rétention), opposition active aux GAFAM.</p>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>Projets phares</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>NetSecurePro</h3>
-          <p>Plateforme IA souveraine pour cybersécurité cognitive, santé connectée, automatisation locale et modularité extrême.</p>
-        </div>
-        <div class="card">
-          <h3>IA22_LOGIC</h3>
-          <p>Framework modulaire distribué avec directives fondatrices : voix multiples, transparence absolue, initiation consciente.</p>
-        </div>
-        <div class="card">
-          <h3>Protocole MILYES</h3>
-          <p>Identité numérique autonome, protocole orbital d’activation souveraine et système de duplication intelligent.</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="cta">
-      <a href="mailto:milyes@netsecurepro.ca" aria-label="Contacter Mohammed Ilyes Zoubirou">
-        Contact direct → milyes@netsecurepro.ca
-      </a>
-    </div>
-  </main>
-
-  <footer>
-    <div class="container">
-      <p>© 2026 Mohammed Ilyes Zoubirou – Tous droits réservés</p>
-      <p>NetSecurePro – IA souveraine, modulaire, éthique. Aucune collecte de données. Zéro dépendance forcée.</p>
-    </div>
-  </footer>
-
-</body>
-</html>      box-sizing: border-box;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
-    header {
-      background: linear-gradient(to bottom, #0d1117, #0a0e17);
-      padding: 6rem 0 5rem;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
-
-    h1 {
-      font-size: clamp(2.5rem, 8vw, 4rem);
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-      color: white;
-    }
-
-    .subtitle {
-      font-size: 1.4rem;
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .email-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.8rem;
-      background: rgba(13, 110, 253, 0.12);
-      color: var(--accent);
-      padding: 0.9rem 1.8rem;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      border: 1px solid rgba(13, 110, 253, 0.3);
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .email-badge:hover {
-      background: rgba(13, 110, 253, 0.22);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(13, 110, 253, 0.2);
-    }
-
-    main {
-      padding: 5rem 0;
-    }
-
-    section {
-      margin-bottom: 6rem;
-    }
-
-    h2 {
-      font-size: 2.5rem;
-      color: white;
-      margin-bottom: 2rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    h2:after {
-      content: '';
-      position: absolute;
-      bottom: -0.6rem;
-      left: 0;
-      width: 80px;
-      height: 5px;
-      background: var(--primary);
-      border-radius: 3px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-      margin-top: 2.5rem;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      transition: all 0.35s ease;
-      backdrop-filter: blur(8px);
-    }
-
-    .card:hover {
-      transform: translateY(-10px);
-      border-color: var(--primary);
-      box-shadow: 0 25px 50px -12px rgba(13, 110, 253, 0.18);
-    }
-
-    .card h3 {
-      font-size: 1.5rem;
-      color: white;
-      margin-bottom: 1rem;
-    }
-
-    .card p {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-    }
-
-    .cta {
-      text-align: center;
-      margin: 6rem 0;
-    }
-
-    .cta a {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      padding: 1.2rem 3rem;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.25rem;
-      text-decoration: none;
-      transition: all 0.35s ease;
-    }
-
-    .cta a:hover {
-      background: var(--primary-dark);
-      transform: translateY(-4px);
-      box-shadow: 0 15px 35px rgba(13, 110, 253, 0.3);
-    }
-
-    footer {
-      background: #0a0e17;
-      border-top: 1px solid var(--border);
-      padding: 4rem 0 2rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 640px) {
-      header { padding: 4rem 0 3rem; }
-      h1 { font-size: 2.8rem; }
-      .grid { grid-template-columns: 1fr; }
-      .cta a { padding: 1rem 2.2rem; font-size: 1.1rem; }
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <div class="container">
-      <h1>Mohammed Ilyes Zoubirou</h1>
-      <p class="subtitle">Développeur IA souverain – Créateur de NetSecurePro, IA22_LOGIC et protocoles d’autonomie numérique</p>
-
-      <a href="mailto:milyes@netsecurepro.ca" class="email-badge" aria-label="Contacter par email">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="4" width="20" height="16" rx="2"/>
-          <path d="M2 8l9.5 6.5L22 8"/>
-        </svg>
-        milyes@netsecurepro.ca
-      </a>
-    </div>
-  </header>
-
-  <main class="container">
-    <section>
-      <h2>Valeurs fondamentales</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Souveraineté numérique totale</h3>
-          <p>Contrôle absolu des données, zéro dépendance cloud forcée, opposition systématique aux trackers et à l’exfiltration.</p>
-        </div>
-        <div class="card">
-          <h3>Modularité extrême</h3>
-          <p>Chaque composant est indépendant, clonable et spécialisable (MULTICLASS_CLONE, IA22_LOGIC).</p>
-        </div>
-        <div class="card">
-          <h3>Transparence & Sécurité radicale</h3>
-          <p>Code ouvert, chiffrement fort (AΩMΞ), purge systématique (Zéro Rétention), opposition active aux GAFAM.</p>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2>Projets phares</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>NetSecurePro</h3>
-          <p>Plateforme IA souveraine pour cybersécurité cognitive, santé connectée, automatisation locale et modularité extrême.</p>
-        </div>
-        <div class="card">
-          <h3>IA22_LOGIC</h3>
-          <p>Framework modulaire distribué avec directives fondatrices : voix multiples, transparence absolue, initiation consciente.</p>
-        </div>
-        <div class="card">
-          <h3>Protocole MILYES</h3>
-          <p>Identité numérique autonome, protocole orbital d’activation souveraine et système de duplication intelligent.</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="cta">
-      <a href="mailto:milyes@netsecurepro.ca" aria-label="Contacter Mohammed Ilyes Zoubirou">
-        Contact direct → milyes@netsecurepro.ca
-      </a>
-    </div>
-  </main>
-
-  <footer>
-    <div class="container">
-      <p>© 2026 Mohammed Ilyes Zoubirou – Tous droits réservés</p>
-      <p>NetSecurePro – IA souveraine, modulaire, éthique. Aucune collecte de données. Zéro dépendance forcée.</p>
-    </div>
-  </footer>
-
+</main>
+<footer>
+<p>Généré automatiquement par IA – NetSecurePro / IA22</p>
+</footer>
 </body>
 </html>
