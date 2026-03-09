@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSecurePro MILYES Terminal</title>
+<style>
+body { background: #0b0b0b; color: #00ffcc; font-family: monospace; padding: 20px; }
+#terminal { width: 100%; height: 90vh; overflow-y: auto; border: 1px solid #00ffcc; padding: 10px; }
+input { width: 100%; padding: 10px; background: #0b0b0b; border: 1px solid #00ffcc; color: #00ffcc; font-family: monospace; font-size: 1em; }
+</style>
+</head>
+<body>
+<h2>NetSecurePro MILYES Terminal</h2>
+<div id="terminal"></div>
+<input id="cmdInput" type="text" placeholder="Entrez commande MILYES...">
+<script>
+const terminal = document.getElementById('terminal');
+const input = document.getElementById('cmdInput');
+const API_URL = 'http://127.0.0.1:5000/execute'; // URL API Flask
+const API_KEY = 'IA22-6-1046-6080-9227-PERPETUAL';
+
+function appendOutput(text){
+    terminal.innerHTML += text.replace(/\n/g,'<br>') + '<br>';
+    terminal.scrollTop = terminal.scrollHeight;
+}
+
+input.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+        const cmd = input.value.trim();
+        if(!cmd) return;
+        appendOutput(`> ${cmd}`);
+        input.value = '';
+        fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command_id: cmd.replace('/cmd_',''), api_key: API_KEY })
+        })
+        .then(res => res.json())
+        .then(data => appendOutput(data.output))
+        .catch(err => appendOutput('Erreur API : ' + err));
+    }
+});
+appendOutput('Terminal MILYES prêt. Tapez /cmd_1 → /cmd_40');
+</script>
+</body>
+</html>
