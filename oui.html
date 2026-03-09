@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSecurePro MILYES Terminal</title>
+<style>
+body { background: #0b0b0b; color: #00ffcc; font-family: monospace; padding: 20px; }
+#terminal { width: 100%; height: 80vh; overflow-y: auto; border: 1px solid #00ffcc; padding: 10px; margin-bottom: 10px; }
+input { width: 100%; padding: 10px; background: #0b0b0b; border: 1px solid #00ffcc; color: #00ffcc; font-family: monospace; font-size: 1em; }
+button { padding: 10px 20px; background: #00ffcc; border: none; color: #0b0b0b; font-weight: bold; cursor: pointer; }
+button:hover { background: #00cc99; }
+h2 { color: #00ffcc; }
+</style>
+</head>
+<body>
+
+<h2>NetSecurePro MILYES Terminal</h2>
+<div id="terminal"></div>
+<input id="cmdInput" type="text" placeholder="Entrez une commande MILYES (ex: /cmd_1)">
+<button onclick="sendCommand()">Exécuter</button>
+
+<script>
+const terminal = document.getElementById('terminal');
+const input = document.getElementById('cmdInput');
+const API_URL = 'http://127.0.0.1:5000/execute'; // Remplace par ton endpoint Flask
+const API_KEY = 'IA22-6-1046-6080-9227-PERPETUAL';
+
+function appendOutput(text){
+    terminal.innerHTML += text.replace(/\n/g,'<br>') + '<br>';
+    terminal.scrollTop = terminal.scrollHeight;
+}
+
+function sendCommand(){
+    const cmd = input.value.trim();
+    if(!cmd) return;
+    appendOutput(`> ${cmd}`);
+    input.value = '';
+    fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command_id: cmd.replace('/cmd_',''), api_key: API_KEY })
+    })
+    .then(res => res.json())
+    .then(data => appendOutput(data.output))
+    .catch(err => appendOutput('Erreur API : ' + err));
+}
+
+// Permet d'exécuter avec Enter
+input.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+        sendCommand();
+    }
+});
+
+appendOutput('Terminal MILYES prêt. Tapez /cmd_1 → /cmd_40');
+</script>
+
+</body>
+</html>
