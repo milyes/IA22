@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>NetSecurePro IA Console</title>
+<style>
+    body {
+        background: #050505;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: "Courier New", monospace;
+    }
+
+    .terminal {
+        background: #0b0f0b;
+        color: #37ff6f;
+        padding: 25px;
+        border-radius: 8px;
+        width: 750px;
+        height: 420px;
+        overflow-y: auto;
+        box-shadow: 0 0 25px rgba(0,255,120,0.2);
+        white-space: pre-line;
+        font-size: 16px;
+    }
+
+    .titlebar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+    }
+
+    .red { background: #ff5f5a; }
+    .yellow { background: #ffbd4a; }
+    .green { background: #28c840; }
+</style>
+</head>
+<body>
+
+<div class="terminal" id="console">
+    <div class="titlebar">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+    </div>
+</div>
+
+<script>
+const lines = [
+    "NetSecurePro IA v1.0 — Initialisation du noyau…",
+    "[✓] CORE_ENGINE : Environnement chargé.",
+    "[✓] SECURE_SCAN : Module actif.",
+    "[✓] THREAT_VECTOR : Analyseur prêt.",
+    "[✓] MEMORY_SHIELD : Protection active.",
+    "[✓] DATA_GUARD : Intégrité vérifiée.",
+    "[✓] Vérification cryptographique : OK.",
+    "",
+    "— Démarrage des services avancés —",
+    "[✓] BehaviourMap : Aucun comportement anormal détecté.",
+    "[✓] SignalWatch : 0 menaces potentielles.",
+    "[✓] VectorScope : Analyse en temps réel active.",
+    "",
+    "— Préparation du système —",
+    "[✓] Configuration appliquée.",
+    "[✓] Système optimisé.",
+    "",
+    "Console NetSecurePro IA : Prête."
+];
+
+const el = document.getElementById("console");
+
+let index = 0;
+function typeLine() {
+    if (index < lines.length) {
+        el.innerHTML += lines[index] + "\n";
+        el.scrollTop = el.scrollHeight;
+        index++;
+        setTimeout(typeLine, 450);
+    }
+}
+
+typeLine();
+</script>
+
+</body>
+</html>
