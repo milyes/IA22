@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEXI-MIND — NetSecurePro</title>
+<style>
+  body { font-family: Inter, system-ui, Arial; max-width: 900px; margin: 2rem auto; padding: 1rem; background: #f4f4f9; color: #111; }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+  header img { width: 64px; height: 64px; }
+  header h1 { margin: 0; font-size: 1.8rem; }
+  .card { border: 1px solid #e6e6e6; border-radius: 8px; padding: 1rem; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+  label { display: block; margin-top: 0.5rem; }
+  textarea { width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; resize: vertical; }
+  select, input[type="file"] { margin-top: 0.2rem; }
+  button { margin-top: 1rem; padding: 0.5rem 1rem; border: none; background: #2d89ef; color: white; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #1b61c2; }
+  pre { white-space: pre-wrap; background: #f0f0f0; padding: 1rem; border-radius: 6px; margin-top: 1rem; }
+  footer { margin-top: 2rem; color: #666; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://via.placeholder.com/64" alt="NetSecurePro Logo">
+  <div>
+    <h1>LEXI-MIND — Résumé Intelligent</h1>
+    <div>Par <strong>Zoubirou Mohammed Ilyes</strong> — NetSecurePro | ORCID: <a href="https://orcid.org/0009-0007-7571-3178" target="_blank">0009-0007-7571-3178</a></div>
+  </div>
+</header>
+
+<div class="card">
+  <form id="lexiForm" enctype="multipart/form-data">
+    <label>Fichier (txt/pdf/docx):
+      <input type="file" name="file">
+    </label>
+    <label>Ou texte :
+      <textarea name="text" rows="6" placeholder="Collez votre texte ici..."></textarea>
+    </label>
+    <label>Tonalité :
+      <select name="tone">
+        <option value="neutre">Neutre</option>
+        <option value="formel">Formel</option>
+        <option value="vulgarise">Vulgarisé</option>
+      </select>
+    </label>
+    <label>Longueur :
+      <select name="length">
+        <option value="court">Court</option>
+        <option value="moyen">Moyen</option>
+        <option value="long">Long</option>
+      </select>
+    </label>
+    <button type="button" onclick="generateSummary()">Générer résumé</button>
+  </form>
+
+  <h3>Résultat</h3>
+  <pre id="out">Aucun résumé encore.</pre>
+</div>
+
+<footer>© 2025 NetSecurePro — Zoubirou Mohammed Ilyes</footer>
+
+<script>
+/* Clés API fictives permanentes */
+const kyesapi = [
+  "IA22-0-8f2a-b9c1-4e7d-PERPETUAL",
+  "IA22-0-3d91-f0a2-7b5e-PERPETUAL",
+  "IA22-0-14b-6d8e-9a2f-PERPETUAL",
+  "IA22-0-5e7g-2h91-0j1k-PERPETUAL"
+];
+
+/* Fonction générer résumé */
+async function generateSummary() {
+  const form = document.getElementById('lexiForm');
+  const data = new FormData(form);
+  const out = document.getElementById('out');
+  out.innerText = 'Traitement...';
+
+  try {
+    /* Sélection aléatoire d'une clé fictive */
+    const apiKey = kyesapi[Math.floor(Math.random() * kyesapi.length)];
+
+    /* Appel API (fictif) */
+    const resp = await fetch('/summarize', { method: 'POST', body: data, headers: { 'X-API-KEY': apiKey } });
+    const json = await resp.json();
+
+    if(json.error) {
+      out.innerText = `Erreur: ${json.error}\nDétail: ${json.detail || ''}`;
+    } else {
+      out.innerText = `Résumé (${json.tone}, ${json.length}):\n\n${json.summary}`;
+    }
+  } catch(e) {
+    // fallback local si l'API n'est pas disponible
+    const text = form.text.value || 'Aucun texte fourni pour le résumé.';
+    const words = text.split(' ');
+    const n = form.length.value === 'court' ? 80 : form.length.value === 'moyen' ? 200 : 400;
+    const summary = words.slice(0, n).join(' ') + (words.length > n ? '...' : '');
+    out.innerText = `[Résumé fallback local]\n\n${summary}`;
+  }
+}
+</script>
+
+</body>
+</html>
