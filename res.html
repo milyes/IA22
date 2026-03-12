@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COCKPIT IA22 V2.0 - SOUVERAIN</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --matrix-green: #00ff41;
+            --bg-dark: #0a0a0a;
+            --border-glow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--matrix-green);
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Barre de recherche Mobile / Desktop */
+        .search-bar {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--matrix-green);
+            padding: 10px;
+            box-shadow: var(--border-glow);
+        }
+
+        /* Radar Simulé */
+        #radar-container {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            height: 200px;
+            border: 1px solid var(--matrix-green);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,255,65,0.1) 0%, transparent 70%);
+        }
+
+        /* Carte avec filtre Matrix */
+        #map {
+            height: 100vh;
+            width: 100vw;
+            filter: grayscale(100%) invert(90%) hue-rotate(90deg) brightness(0.7);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-bar">
+        <input type="text" placeholder="CMD: SCAN_NETWORK / SEARCH_SECURE..." style="background:transparent; border:none; color:inherit; width:100%; outline:none;">
+    </div>
+
+    <div id="map"></div>
+    <div id="radar-container"><canvas id="radarCanvas"></canvas></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialisation Carte centrée sur Montréal
+        const map = L.map('map', { zoomControl: false }).setView([45.5017, -73.5673], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // Simulation de balayage Radar
+        const canvas = document.getElementById('radarCanvas');
+        const ctx = canvas.getContext('2d');
+        // Logique de rotation et détection de points simulés...
+    </script>
+</body>
+</html>
