@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA22 Ultimate Prototype</title>
+
+<style>
+body{
+    background:#000;
+    color:#00ff88;
+    font-family:monospace;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+}
+header{
+    background:#111;
+    padding:15px;
+    border-bottom:2px solid #00ff88;
+    text-align:center;
+}
+h1{
+    margin:0;
+    font-size:18px;
+}
+#terminal{
+    flex:1;
+    padding:20px;
+    overflow-y:auto;
+    border-bottom:2px solid #00ff88;
+}
+.inputBox{
+    display:flex;
+    border-top:1px solid #00ff88;
+}
+input{
+    flex:1;
+    padding:15px;
+    background:#000;
+    border:none;
+    color:#00ff88;
+    font-family:monospace;
+}
+button{
+    width:120px;
+    background:#002b18;
+    border:none;
+    color:#00ff88;
+    cursor:pointer;
+}
+button:hover{
+    background:#004f2b;
+}
+.line{margin-bottom:10px;}
+.user{color:#fff;}
+.ai{color:#00ff88;}
+.moduleBtn{
+    margin:5px;
+    padding:8px;
+    background:#001f0f;
+    border:1px solid #00ff88;
+    cursor:pointer;
+}
+.moduleBtn:hover{background:#003f22;}
+</style>
+</head>
+<body>
+
+<header>
+<h1>IA22 Ultimate Prototype - NetSecurePro</h1>
+</header>
+
+<div id="terminal"></div>
+
+<div style="padding:10px;">
+<input id="input" placeholder="Entrer commande ou donnée...">
+<button onclick="send()">Envoyer</button>
+</div>
+
+<div style="padding:10px;">
+<button class="moduleBtn" onclick="boot()">BOOT</button>
+<button class="moduleBtn" onclick="core()">CORE</button>
+<button class="moduleBtn" onclick="logic()">LOGIC</button>
+<button class="moduleBtn" onclick="recognition()">RECOGNITION</button>
+<button class="moduleBtn" onclick="vision()">VISION</button>
+<button class="moduleBtn" onclick="qr()">QR</button>
+<button class="moduleBtn" onclick="announce()">ANNOUNCE</button>
+</div>
+
+<script>
+const terminal=document.getElementById("terminal");
+
+function log(text,cls){
+    const div=document.createElement("div");
+    div.className="line "+cls;
+    div.textContent=text;
+    terminal.appendChild(div);
+    terminal.scrollTop=terminal.scrollHeight;
+}
+
+// Simulation modules
+function boot(){log("BOOT : Initialisation du système IA22...","ai");}
+function core(){log("CORE : Modules principaux chargés.","ai");}
+function logic(){log("LOGIC : Moteur d'analyse actif.","ai");}
+function recognition(){log("RECOGNITION : Microphone & texte simulés activés.","ai");}
+function vision(){log("VISION : Caméra / vision IA simulée activée.","ai");}
+function qr(){log("QR : Scanner / générateur QR simulé actif.","ai");}
+function announce(){log("ANNOUNCE : Résultats prêts à être affichés.","ai");}
+
+// Simulation IA analyse des données
+function aiResponse(text){
+    text=text.trim();
+    if(!text) return "IA : aucune donnée reçue.";
+    let result="IA : Analyse en cours...\n";
+    result+="----------------------------\n";
+    result+="Entrée : "+text+"\n";
+    result+="Date : "+new Date().toLocaleString()+"\n";
+
+    if(/^\d+$/.test(text)){
+        result+="Type détecté : Nombre\nLongueur : "+text.length;
+        if(text.length>=10) result+="\nInterprétation : possible numéro mobile";
+    } else if(text.includes("@")){
+        result+="Type détecté : Email\nFormat probable validé";
+    } else if(/^(\d{1,3}\.){3}\d{1,3}$/.test(text)){
+        result+="Type détecté : Adresse IP\nFormat IPv4 probable";
+    } else {
+        result+="Type détecté : Texte\nAnalyse linguistique basique";
+    }
+    result+="\nStatut : Analyse terminée.";
+    return result;
+}
+
+// Envoi utilisateur
+function send(){
+    const input=document.getElementById("input");
+    const text=input.value.trim();
+    if(!text) return;
+    log("USER : "+text,"user");
+    setTimeout(()=>{
+        log(aiResponse(text),"ai");
+    },300);
+    input.value="";
+}
+</script>
+
+</body>
+</html>
