@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV | Mohammed Ilyes Zoubirou</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        :root {
+            --bg: #080c10;
+            --surface: #0f1419;
+            --surface2: #161d26;
+            --border: #1e2d3d;
+            --accent: #7c3aed;
+            --accent2: #06d6a0;
+            --accent3: #f59e0b;
+            --text: #e2e8f0;
+            --text-dim: #64748b;
+            --text-mid: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px 32px;
+        }
+
+        /* ── HEADER ── */
+        .cv-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 24px;
+            align-items: start;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        .name {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .title-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent2);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .title-tag::before { content: '// '; opacity: 0.5; }
+
+        .contact-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: right;
+        }
+
+        .contact-item {
+            font-size: 0.82rem;
+            color: var(--text-mid);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .contact-item strong {
+            color: var(--accent);
+            margin-right: 6px;
+        }
+
+        /* ── SECTION ── */
+        .section {
+            margin-bottom: 36px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 0.72rem;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border), transparent);
+        }
+
+        /* ── PROFIL ── */
+        .profil-text {
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            line-height: 1.8;
+            padding: 16px 20px;
+            background: var(--surface);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+        }
+
+        /* ── SKILLS GRID ── */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .skill-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .skill-card:hover { border-color: var(--accent); }
+
+        .skill-card-title {
+            font-size: 0.72rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent2);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .skill-card p {
+            font-size: 0.85rem;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+
+        /* ── PROJECTS ── */
+        .project-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .project-card:hover { border-color: var(--accent); }
+
+        .project-name {
+            font-weight: 600;
+            font-size: 0.98rem;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .project-desc {
+            font-size: 0.85rem;
+            color: var(--text-mid);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .badge-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid;
+        }
+
+        .badge-purple { color: var(--accent); border-color: rgba(124,58,237,0.4); background: rgba(124,58,237,0.08); }
+        .badge-green  { color: var(--accent2); border-color: rgba(6,214,160,0.4); background: rgba(6,214,160,0.08); }
+        .badge-amber  { color: var(--accent3); border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.08); }
+
+        .project-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            white-space: nowrap;
+            padding-top: 2px;
+        }
+
+        /* ── CERTS ── */
+        .cert-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cert-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.88rem;
+            padding: 10px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .cert-icon {
+            font-size: 1rem;
+        }
+
+        .cert-name { flex: 1; color: var(--text); }
+        .cert-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent2);
+        }
+
+        /* ── FOOTER ── */
+        .cv-footer {
+            margin-top: 48px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 600px) {
+            .cv-header { grid-template-columns: 1fr; }
+            .contact-grid { text-align: left; }
+            .skills-grid { grid-template-columns: 1fr; }
+            .name { font-size: 1.8rem; }
+        }
+
+        @media print {
+            body { background: #fff; color: #000; }
+            .surface, .project-card, .skill-card, .cert-item { background: #f8f8f8 !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- HEADER -->
+    <header class="cv-header">
+        <div>
+            <div class="name">Mohammed Ilyes<br>Zoubirou</div>
+            <div class="title-tag">Architecte Principal — Solutions Souveraines & Cybersécurité</div>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-item"><strong>LOC</strong>Montréal, Canada</div>
+            <div class="contact-item"><strong>GIT</strong>github.com/milyes76</div>
+            <div class="contact-item"><strong>ORC</strong>0009-0007-7571-3178</div>
+            <div class="contact-item"><strong>EML</strong>m.zoubirou@example.com</div>
+        </div>
+    </header>
+
+    <!-- PROFIL -->
+    <section class="section">
+        <div class="section-header">
+            <h2>Profil</h2>
+            <div class="section-line"></div>
+        </div>
+        <p class="profil-text">
+            Expert en architecture de systèmes critiques et infrastructures souveraines. Spécialisé dans la conception de solutions de sécurité avancées, l'automatisation via environnements mobiles (Termux) et la protection des données par cryptographie AES-256. Engagé dans le développement d'IA cognitives et sécurisées en isolation totale.
+        </p>
+    </section>
+
+    <!-- EXPERTISES -->
+    <section class="section">
+        <div class="section-header">
+            <h2>Expertises Techniques</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <div class="skill-card-title">Cyber-Ops & Sécurité</div>
+                <p>Zero Trust, Audit de ports, Durcissement SSH, Cryptographie AES-256</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-card-title">Cloud & Virtualisation</div>
+                <p>VMware Engine (GCVE), Automatisation, Architectures hybrides</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-card-title">Développement & IA</div>
+                <p>Python, Shell Scripting, IA Souveraine, Systèmes cognitifs</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJETS -->
+    <section class="section">
+        <div class="section-header">
+            <h2>Projets Majeurs</h2>
+            <div class="section-line"></div>
+        </div>
+
+        <div class="project-card">
+            <div>
+                <div class="project-name">Projet OMNIA — Cockpit V7</div>
+                <div class="project-desc">Développement d'un terminal de contrôle sécurisé et VPN souverain pour une gestion d'infrastructure en isolation totale.</div>
+                <div class="badge-row">
+                    <span class="badge badge-purple">Sécurité</span>
+                    <span class="badge badge-green">VPN</span>
+                    <span class="badge badge-amber">Souveraineté</span>
+                </div>
+            </div>
+            <div class="project-year">2025 — présent</div>
+        </div>
+
+        <div class="project-card">
+            <div>
+                <div class="project-name">SYSTEMEOSIA</div>
+                <div class="project-desc">Conception d'un OS cognitif dédié à la fusion de données sécurisées et aux applications de santé technologique.</div>
+                <div class="badge-row">
+                    <span class="badge badge-purple">IA</span>
+                    <span class="badge badge-green">Data Fusion</span>
+                    <span class="badge badge-amber">Health-Tech</span>
+                </div>
+            </div>
+            <div class="project-year">2026</div>
+        </div>
+    </section>
+
+    <!-- CERTIFICATIONS -->
+    <section class="section">
+        <div class="section-header">
+            <h2>Certifications</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="cert-list">
+            <div class="cert-item">
+                <span class="cert-icon">☁️</span>
+                <span class="cert-name">Google Cloud VMware Engine (GCVE)</span>
+                <span class="cert-year">2026</span>
+            </div>
+            <div class="cert-item">
+                <span class="cert-icon">⚙️</span>
+                <span class="cert-name">VMware Automation Specialist</span>
+                <span class="cert-year">2026</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="cv-footer">
+        <span>Mohammed Ilyes Zoubirou — CV</span>
+        <span id="date-footer"></span>
+    </footer>
+
+</div>
+<script>
+    document.getElementById('date-footer').textContent =
+        new Date().toLocaleDateString('fr-CA', {year:'numeric', month:'long'});
+</script>
+</body>
+</html>

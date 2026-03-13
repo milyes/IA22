@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COCKPIT TERMINAL</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+        :root {
+            --green: #00ff41;
+            --green-dim: #00aa2b;
+            --green-dark: #003d0e;
+            --bg: #050a05;
+            --glow: 0 0 12px rgba(0,255,65,0.6);
+            --glow-lg: 0 0 30px rgba(0,255,65,0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--green);
+            font-family: 'Share Tech Mono', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: 48px 1fr 140px;
+            grid-template-columns: 220px 1fr 220px;
+        }
+
+        /* ── HEADER ── */
+        header {
+            grid-column: 1 / -1;
+            border-bottom: 1px solid var(--green-dim);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            background: rgba(0,255,65,0.03);
+        }
+        .logo { font-family: 'Orbitron', monospace; font-size: 13px; letter-spacing: 4px; }
+        .clock { font-size: 12px; opacity: 0.7; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: var(--glow); animation: pulse 1.5s infinite; display: inline-block; margin-right: 6px; }
+
+        /* ── LEFT PANEL ── */
+        .panel-left {
+            border-right: 1px solid var(--green-dark);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        /* ── MAP CENTER ── */
+        #map {
+            filter: grayscale(100%) invert(85%) hue-rotate(95deg) brightness(0.55) contrast(1.1);
+        }
+
+        /* ── RIGHT PANEL ── */
+        .panel-right {
+            border-left: 1px solid var(--green-dark);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            grid-column: 1 / -1;
+            border-top: 1px solid var(--green-dim);
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .cmd-input-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            gap: 10px;
+        }
+        .cmd-prompt { color: var(--green); opacity: 0.7; font-size: 13px; }
+        #cmdInput {
+            background: transparent;
+            border: none;
+            color: var(--green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            flex: 1;
+            outline: none;
+            caret-color: var(--green);
+        }
+        .cmd-log {
+            flex: 2;
+            padding: 8px 14px;
+            border-left: 1px solid var(--green-dark);
+            font-size: 11px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+        .log-line { opacity: 0.7; line-height: 1.6; }
+        .log-line.ok { color: var(--green); }
+        .log-line.warn { color: #ffcc00; }
+        .log-line.err { color: #ff4444; }
+
+        /* ── WIDGET ── */
+        .widget {
+            border: 1px solid var(--green-dark);
+            padding: 10px;
+            position: relative;
+        }
+        .widget-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        /* ── RADAR ── */
+        #radarCanvas {
+            width: 100%;
+            aspect-ratio: 1;
+            display: block;
+        }
+
+        /* ── METRICS ── */
+        .metric { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 11px; }
+        .metric-bar { height: 3px; background: var(--green-dark); flex: 1; margin: 0 8px; position: relative; overflow: hidden; }
+        .metric-fill { height: 100%; background: var(--green); box-shadow: var(--glow); transition: width 0.5s; }
+        .metric-val { min-width: 32px; text-align: right; font-size: 10px; }
+
+        /* ── NETWORK NODES ── */
+        .node-list { font-size: 11px; }
+        .node { display: flex; gap: 8px; align-items: center; padding: 3px 0; border-bottom: 1px solid rgba(0,255,65,0.07); }
+        .node-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .node-dot.online { background: var(--green); box-shadow: var(--glow); }
+        .node-dot.warn { background: #ffcc00; }
+        .node-dot.offline { background: #ff4444; }
+        .node-name { flex: 1; opacity: 0.85; }
+        .node-ping { opacity: 0.5; font-size: 10px; }
+
+        /* ── SCAN FEED ── */
+        .scan-feed { font-size: 10px; height: 100px; overflow-y: auto; }
+        .scan-line { padding: 1px 0; opacity: 0.6; animation: fadeIn 0.3s; }
+        .scan-line::before { content: '> '; opacity: 0.4; }
+
+        /* ── COORDS ── */
+        .coord-box { font-size: 11px; line-height: 2; }
+        .coord-box span { opacity: 0.5; margin-right: 8px; }
+
+        /* ── ANIMATIONS ── */
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:0.6;transform:none} }
+        @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--green-dark); }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo"><span class="status-dot"></span>COCKPIT TERMINAL v2.0</div>
+    <div class="clock" id="clock">--:--:--</div>
+    <div style="font-size:11px;opacity:0.5" id="coords-header">LAT — LON —</div>
+</header>
+
+<!-- LEFT PANEL -->
+<div class="panel-left">
+    <div class="widget">
+        <div class="widget-title">Métriques Système</div>
+        <div class="metric"><span>CPU</span><div class="metric-bar"><div class="metric-fill" id="m-cpu" style="width:0%"></div></div><span class="metric-val" id="v-cpu">0%</span></div>
+        <div class="metric"><span>RAM</span><div class="metric-bar"><div class="metric-fill" id="m-ram" style="width:0%"></div></div><span class="metric-val" id="v-ram">0%</span></div>
+        <div class="metric"><span>NET</span><div class="metric-bar"><div class="metric-fill" id="m-net" style="width:0%"></div></div><span class="metric-val" id="v-net">0%</span></div>
+        <div class="metric"><span>GPU</span><div class="metric-bar"><div class="metric-fill" id="m-gpu" style="width:0%"></div></div><span class="metric-val" id="v-gpu">0%</span></div>
+    </div>
+
+    <div class="widget">
+        <div class="widget-title">Nœuds Réseau</div>
+        <div class="node-list" id="nodeList"></div>
+    </div>
+
+    <div class="widget">
+        <div class="widget-title">Position</div>
+        <div class="coord-box">
+            <div><span>LAT</span><span id="c-lat">45.5017° N</span></div>
+            <div><span>LON</span><span id="c-lon">73.5673° W</span></div>
+            <div><span>ALT</span><span id="c-alt">29m</span></div>
+            <div><span>ACC</span><span id="c-acc">±3m</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- MAP -->
+<div id="map"></div>
+
+<!-- RIGHT PANEL -->
+<div class="panel-right">
+    <div class="widget">
+        <div class="widget-title">Radar</div>
+        <canvas id="radarCanvas"></canvas>
+    </div>
+
+    <div class="widget">
+        <div class="widget-title">Scan Feed</div>
+        <div class="scan-feed" id="scanFeed"></div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="cmd-input-wrap">
+        <span class="cmd-prompt">root@cockpit:~$</span>
+        <input type="text" id="cmdInput" placeholder="entrer commande..." autocomplete="off" spellcheck="false">
+    </div>
+    <div class="cmd-log" id="cmdLog"></div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ── CLOCK ──
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+        now.toLocaleTimeString('fr-CA', {hour12:false}) + ' UTC' + (now.getTimezoneOffset()/-60 >= 0 ? '+' : '') + (now.getTimezoneOffset()/-60);
+}
+setInterval(updateClock, 1000); updateClock();
+
+// ── MAP ──
+const map = L.map('map', { zoomControl: false, attributionControl: false })
+    .setView([45.5017, -73.5673], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+const marker = L.circleMarker([45.5017, -73.5673], {
+    radius: 8, color: '#00ff41', fillColor: '#00ff41', fillOpacity: 0.8, weight: 2
+}).addTo(map);
+
+map.on('mousemove', e => {
+    document.getElementById('coords-header').textContent =
+        `LAT ${e.latlng.lat.toFixed(4)} LON ${e.latlng.lng.toFixed(4)}`;
+});
+
+// ── RADAR ──
+const canvas = document.getElementById('radarCanvas');
+const ctx = canvas.getContext('2d');
+let angle = 0;
+const dots = Array.from({length:8}, () => ({
+    a: Math.random()*Math.PI*2, r: 0.2+Math.random()*0.7, age: Math.random()*Math.PI*2
+}));
+
+function drawRadar() {
+    const W = canvas.offsetWidth; canvas.width = W; canvas.height = W;
+    const cx = W/2, cy = W/2, R = W/2 - 4;
+    ctx.clearRect(0,0,W,W);
+
+    // Rings
+    ctx.strokeStyle = 'rgba(0,255,65,0.15)';
+    ctx.lineWidth = 1;
+    [0.25,0.5,0.75,1].forEach(f => {
+        ctx.beginPath(); ctx.arc(cx,cy,R*f,0,Math.PI*2); ctx.stroke();
+    });
+
+    // Cross
+    ctx.beginPath(); ctx.moveTo(cx-R,cy); ctx.lineTo(cx+R,cy);
+    ctx.moveTo(cx,cy-R); ctx.lineTo(cx,cy+R); ctx.stroke();
+
+    // Sweep
+    const grad = ctx.createConicalGradient ? null : null;
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(angle);
+    const sweep = ctx.createLinearGradient(0,0,R,0);
+    sweep.addColorStop(0,'rgba(0,255,65,0.6)');
+    sweep.addColorStop(1,'rgba(0,255,65,0)');
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,R,-0.4,0); ctx.closePath();
+    ctx.fillStyle = sweep; ctx.fill();
+    ctx.restore();
+
+    // Dots
+    dots.forEach(d => {
+        const diff = ((angle - d.a) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+        if (diff < 0.3) d.age = 0;
+        const fade = Math.max(0, 1 - d.age/(Math.PI*1.5));
+        if (fade > 0.01) {
+            const x = cx + Math.cos(d.a)*R*d.r;
+            const y = cy + Math.sin(d.a)*R*d.r;
+            ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2);
+            ctx.fillStyle = `rgba(0,255,65,${fade})`;
+            ctx.shadowColor = '#00ff41'; ctx.shadowBlur = 8; ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+        d.age += 0.015;
+    });
+
+    angle = (angle + 0.025) % (Math.PI*2);
+    requestAnimationFrame(drawRadar);
+}
+drawRadar();
+
+// ── METRICS ──
+const metricTargets = {cpu:0,ram:0,net:0,gpu:0};
+function updateMetrics() {
+    ['cpu','ram','net','gpu'].forEach(k => {
+        metricTargets[k] = Math.max(5, Math.min(95, metricTargets[k] + (Math.random()-0.5)*15));
+        const v = Math.round(metricTargets[k]);
+        document.getElementById('m-'+k).style.width = v+'%';
+        document.getElementById('v-'+k).textContent = v+'%';
+    });
+}
+setInterval(updateMetrics, 1200); updateMetrics();
+
+// ── NODES ──
+const nodes = [
+    {name:'GW-MONTREAL-01', status:'online', ping:'4ms'},
+    {name:'SRV-SECURE-02', status:'online', ping:'12ms'},
+    {name:'NODE-VPN-03', status:'warn', ping:'89ms'},
+    {name:'RELAY-TOR-04', status:'online', ping:'22ms'},
+    {name:'DNS-BACKUP-05', status:'offline', ping:'—'},
+];
+const nl = document.getElementById('nodeList');
+nodes.forEach(n => {
+    nl.innerHTML += `<div class="node"><div class="node-dot ${n.status}"></div><span class="node-name">${n.name}</span><span class="node-ping">${n.ping}</span></div>`;
+});
+
+// ── SCAN FEED ──
+const scanMessages = [
+    'Scan réseau 192.168.1.0/24...','Port 443 ouvert sur 192.168.1.1',
+    'Handshake TLS 1.3 établi','Aucune intrusion détectée',
+    'Mise à jour des routes BGP','Tunnel chiffré actif',
+    'Latence moyenne: 8ms','Paquets perdus: 0.01%',
+    'Certificat SSL valide (364j)','Connexion sécurisée confirmée',
+    'Scan UDP 53 — DNS OK','MTU auto-ajusté: 1500',
+];
+const feed = document.getElementById('scanFeed');
+let si = 0;
+function addScanLine() {
+    const line = document.createElement('div');
+    line.className = 'scan-line';
+    line.textContent = scanMessages[si++ % scanMessages.length];
+    feed.prepend(line);
+    if (feed.children.length > 20) feed.removeChild(feed.lastChild);
+}
+setInterval(addScanLine, 1800); addScanLine();
+
+// ── COMMAND INPUT ──
+const cmds = {
+    help: () => ['COMMANDES: help, scan, status, clear, ping, map [ville]'],
+    scan: () => ['Scan lancé...','Analyse des ports en cours...','192.168.1.1 — OUVERT (80,443)','192.168.1.42 — OUVERT (22,8080)','Scan terminé. 2 hôtes actifs.'],
+    status: () => [`Système: OPÉRATIONNEL`,`Uptime: ${Math.floor(Math.random()*999)}h`,`Connexions actives: ${Math.floor(Math.random()*50)+1}`,'Mémoire: OK','Sécurité: ACTIVE'],
+    clear: () => { document.getElementById('cmdLog').innerHTML=''; return ['Terminal effacé.']; },
+    ping: () => [`PING 8.8.8.8 — ${Math.floor(Math.random()*20)+2}ms TTL=64`,'Paquets: envoyés=4, reçus=4, perdus=0'],
+};
+
+document.getElementById('cmdInput').addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const raw = e.target.value.trim();
+    if (!raw) return;
+    e.target.value = '';
+    const log = document.getElementById('cmdLog');
+
+    const addLog = (txt, cls='ok') => {
+        const div = document.createElement('div');
+        div.className = 'log-line ' + cls;
+        div.textContent = txt;
+        log.prepend(div);
+    };
+
+    addLog('$ ' + raw, 'ok');
+    const [cmd] = raw.toLowerCase().split(' ');
+    if (cmds[cmd]) {
+        cmds[cmd]().forEach(l => addLog(l, 'ok'));
+    } else {
+        addLog(`Commande inconnue: ${cmd}. Tapez 'help'.`, 'warn');
+    }
+});
+</script>
+</body>
+</html>
