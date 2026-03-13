@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>◇ MILYES_IA | NetSecurePro Dashboard</title>
+    <style>
+        :root {
+            --ghost-green: #00ff41;
+            --nsp-blue: #007bff;
+            --bg-dark: #0a0a0a;
+            --panel-bg: #111;
+            --text-gray: #888;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .terminal-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(0, 255, 65, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: #1a1a1a;
+            padding: 15px 25px;
+            border-bottom: 2px solid var(--ghost-green);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 { font-size: 1.4rem; color: var(--ghost-green); }
+        .brand p { font-size: 0.7rem; color: var(--text-gray); }
+
+        .btn-portal {
+            background: var(--nsp-blue);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-portal:hover { background: #0056b3; box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); }
+
+        .main-content { padding: 25px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #000;
+            padding: 15px;
+            border-left: 3px solid var(--ghost-green);
+            border-radius: 4px;
+        }
+
+        .stat-card label { display: block; font-size: 0.7rem; color: var(--text-gray); margin-bottom: 5px; }
+        .stat-card span { font-size: 1.1rem; color: var(--ghost-green); font-weight: bold; }
+
+        .console-output {
+            background: #000;
+            color: var(--ghost-green);
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #222;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .cursor { display: inline-block; width: 8px; height: 15px; background: var(--ghost-green); animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 0.7rem;
+            color: #444;
+            border-top: 1px solid #222;
+        }
+
+        .btn-action {
+            background: #222;
+            color: var(--ghost-green);
+            border: 1px solid var(--ghost-green);
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .btn-action:hover { background: var(--ghost-green); color: #000; }
+    </style>
+</head>
+<body>
+
+<div class="terminal-container">
+    <header>
+        <div class="brand">
+            <h1>◇ MILYES_IA v12</h1>
+            <p>SOUVERAINETÉ NUMÉRIQUE | @MZoubirou</p>
+        </div>
+        <a href="https://netsecurepro.ca" target="_blank" class="btn-portal">NETSECUREPRO.CA</a>
+    </header>
+
+    <div class="main-content">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <label>STATUT SYSTÈME</label>
+                <span id="sys-status">ACTIF</span>
+            </div>
+            <div class="stat-card">
+                <label>VECTEUR LOGIC</label>
+                <span>SÉCURISÉ</span>
+            </div>
+            <div class="stat-card">
+                <label>NODE DOMAIN</label>
+                <span>NSP_CAN_QC</span>
+            </div>
+        </div>
+
+        <div class="console-output" id="console">
+            [>] Initialisation du protocole MILYES...<br>
+            [>] Synchronisation orbitale terminée.<br>
+            [>] Connexion établie avec NetSecurePro.ca Hub.<br>
+            [>] En attente de directive...<br>
+            <span class="cursor"></span>
+        </div>
+
+        <button class="btn-action" onclick="runScan()">LANCER DIAGNOSTIC GHOST</button>
+    </div>
+
+    <div class="footer">
+        © 2026 ARCHITECTURE NÉO_DZ | MOHAMMED ILYES ZOUBIROU | ALL RIGHTS RESERVED
+    </div>
+</div>
+
+<script>
+    function runScan() {
+        const consoleLog = document.getElementById('console');
+        const status = document.getElementById('sys-status');
+        
+        status.innerHTML = "SCANNING...";
+        status.style.color = "#ffcc00";
+        
+        const messages = [
+            "<br>[*] Analyse des sockets locaux...",
+            "[*] Bypass SELinux restrictions...",
+            "[*] Vérification des ports ouverts (Nmap simulation)...",
+            "[!] Alerte : Tentative de connexion bloquée par NSP_Firewall.",
+            "[*] Génération du hash SHA256 : " + Math.random().toString(36).substring(2, 15),
+            "[OK] Diagnostic terminé. Aucun malware détecté.",
+            "[>] Rapport prêt pour synchronisation cloud."
+        ];
+
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i < messages.length) {
+                consoleLog.innerHTML += messages[i] + "<br>";
+                consoleLog.scrollTop = consoleLog.scrollHeight;
+                i++;
+            } else {
+                clearInterval(interval);
+                status.innerHTML = "OPÉRATIONNEL";
+                status.style.color = "#00ff41";
+                consoleLog.innerHTML += '<span class="cursor"></span>';
+            }
+        }, 600);
+    }
+</script>
+
+</body>
+</html>
