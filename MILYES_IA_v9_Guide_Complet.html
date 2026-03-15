@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MILYES_IA v9 — Guide Complet</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --g: #00ff88; --g2: #00cc66; --g3: #004422; --g4: #001a0d;
+  --dim: #00aa55; --red: #ff3366; --amber: #ffaa00;
+  --blue: #00aaff; --purple: #cc88ff;
+  --bg: #010d05; --bg2: #020f07;
+  --text: #c8ffd8; --muted: #5aaa7a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+/* ── SCANLINE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.02) 2px,rgba(0,255,136,0.02) 4px);
+  pointer-events: none; z-index: 999;
+}
+
+/* ── LAYOUT ── */
+.container { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* ── COVER PAGE ── */
+.cover {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 60px 24px;
+  border-bottom: 1px solid var(--g3);
+  position: relative; overflow: hidden;
+}
+
+.cover::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,255,136,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cover-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: var(--g);
+  margin-bottom: 8px;
+}
+
+.cover-sub {
+  font-family: 'Orbitron', monospace;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--dim);
+  margin-bottom: 40px;
+}
+
+.cover-divider {
+  width: 200px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--g2), transparent);
+  margin: 0 auto 40px;
+}
+
+.cover-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(16px, 2.5vw, 22px);
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.cover-meta {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 2;
+}
+
+.cover-badge {
+  display: inline-block;
+  border: 1px solid var(--g3);
+  padding: 4px 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--dim);
+  border-radius: 2px;
+  margin: 4px;
+}
+
+.cover-badges { margin-top: 32px; }
+
+/* ── TOC ── */
+.toc {
+  background: var(--bg2);
+  border: 1px solid var(--g3);
+  border-radius: 4px;
+  padding: 32px;
+  margin: 48px 0;
+}
+
+.toc-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  margin-bottom: 20px;
+}
+
+.toc-list { list-style: none; }
+
+.toc-list li { margin-bottom: 6px; }
+
+.toc-list a {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12.5px;
+  color: var(--g2);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.15s;
+}
+
+.toc-list a:hover { color: var(--g); }
+.toc-list a .n { color: var(--muted); min-width: 28px; }
+.toc-sub { padding-left: 36px; margin-top: 4px; }
+.toc-sub a { font-size: 11.5px; color: var(--muted); }
+.toc-sub a:hover { color: var(--g2); }
+
+/* ── SECTIONS ── */
+.section { padding: 56px 0 32px; border-top: 1px solid var(--g3); }
+.section:first-of-type { border-top: none; }
+
+.section-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--g);
+  margin-bottom: 24px;
+}
+
+.section-title span { color: var(--g2); }
+
+h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin: 32px 0 12px;
+}
+
+h4 {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  margin: 20px 0 8px;
+  text-transform: uppercase;
+}
+
+p { color: var(--muted); margin-bottom: 14px; line-height: 1.75; }
+strong { color: var(--text); font-weight: 600; }
+
+/* ── CODE BLOCKS ── */
+pre {
+  background: #000;
+  border: 1px solid var(--g3);
+  border-left: 3px solid var(--g2);
+  border-radius: 3px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--g2);
+}
+
+code {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  background: var(--g4);
+  color: var(--g);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+pre code { background: none; padding: 0; color: inherit; }
+
+.comment { color: #3a7a4a; }
+.keyword { color: var(--purple); }
+.string  { color: var(--amber); }
+.tag-c   { color: var(--red); }
+.val     { color: var(--blue); }
+.ok-c    { color: var(--g); }
+
+/* ── TERMINAL BLOCKS ── */
+.terminal-block {
+  background: #000;
+  border: 1px solid var(--g3);
+  border-radius: 3px;
+  padding: 16px 18px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 16px 0;
+}
+
+.t-sys  { color: var(--dim); }
+.t-ok   { color: var(--g); }
+.t-warn { color: var(--amber); }
+.t-err  { color: var(--red); }
+.t-ia   { color: var(--purple); }
+.t-info { color: var(--blue); }
+.t-ps   { color: var(--g2); margin-right: 6px; }
+.t-tag  { border: 1px solid currentColor; padding: 0 4px; font-size: 10px; border-radius: 2px; margin-right: 4px; }
+
+/* ── CARDS / CALLOUTS ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--g3);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin: 16px 0;
+}
+
+.card.warn { border-color: #553300; }
+.card.info { border-color: #003355; }
+.card.ia22 { border-color: #330055; }
+.card.ok   { border-color: var(--g3); }
+
+.card-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.card.warn .card-label { color: var(--amber); }
+.card.info .card-label { color: var(--blue); }
+.card.ia22 .card-label { color: var(--purple); }
+.card.ok   .card-label { color: var(--dim); }
+
+/* ── COMMAND TABLE ── */
+.cmd-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+}
+
+.cmd-table th {
+  background: var(--g4);
+  color: var(--dim);
+  font-size: 10px;
+  letter-spacing: 2px;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--g3);
+  font-family: 'Orbitron', monospace;
+}
+
+.cmd-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #001a0d;
+  vertical-align: top;
+}
+
+.cmd-table tr:last-child td { border-bottom: none; }
+.cmd-table td:first-child { color: var(--g); white-space: nowrap; }
+.cmd-table td:nth-child(2) { color: var(--muted); font-family: 'Inter', sans-serif; }
+.cmd-table td:nth-child(3) { color: var(--dim); }
+
+/* ── FLOW / ARCHITECTURE DIAGRAM ── */
+.arch {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 24px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.arch-node {
+  background: var(--bg2);
+  border: 1px solid var(--g3);
+  border-radius: 3px;
+  padding: 10px 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  text-align: center;
+  min-width: 110px;
+}
+
+.arch-node .an-label { color: var(--dim); font-size: 9px; letter-spacing: 1px; margin-bottom: 4px; font-family: 'Orbitron', monospace; }
+.arch-node .an-val   { color: var(--g); font-weight: 700; }
+.arch-node.ia22      { border-color: #330055; }
+.arch-node.ia22 .an-val { color: var(--purple); }
+.arch-node.api       { border-color: #003355; }
+.arch-node.api .an-val  { color: var(--blue); }
+.arch-arrow { color: var(--g3); font-size: 18px; padding: 0 6px; flex-shrink: 0; }
+
+/* ── METRICS GRID ── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.metric-card {
+  background: var(--bg2);
+  border: 1px solid var(--g3);
+  border-radius: 3px;
+  padding: 14px 16px;
+}
+
+.mc-label { font-family: 'Orbitron', monospace; font-size: 8px; letter-spacing: 2px; color: var(--dim); margin-bottom: 6px; }
+.mc-val   { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; color: var(--g); }
+.mc-val.amber { color: var(--amber); }
+.mc-val.purple { color: var(--purple); }
+.mc-bar   { height: 2px; background: var(--g3); margin-top: 8px; border-radius: 1px; }
+.mc-fill  { height: 2px; background: var(--g); border-radius: 1px; }
+.mc-fill.amber { background: var(--amber); }
+.mc-fill.purple { background: var(--purple); }
+
+/* ── LIST STYLES ── */
+ul.neo { list-style: none; padding: 0; margin: 12px 0; }
+ul.neo li {
+  padding: 6px 0 6px 20px;
+  position: relative;
+  color: var(--muted);
+  border-bottom: 1px solid #001a0d;
+  font-size: 13px;
+}
+ul.neo li:last-child { border-bottom: none; }
+ul.neo li::before { content: '▸'; position: absolute; left: 0; color: var(--g2); }
+
+ol.neo { padding-left: 0; counter-reset: neo-counter; list-style: none; margin: 12px 0; }
+ol.neo li {
+  counter-increment: neo-counter;
+  padding: 8px 0 8px 36px;
+  position: relative;
+  color: var(--muted);
+  border-bottom: 1px solid #001a0d;
+  font-size: 13px;
+}
+ol.neo li:last-child { border-bottom: none; }
+ol.neo li::before {
+  content: counter(neo-counter, decimal-leading-zero);
+  position: absolute; left: 0;
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  color: var(--dim);
+  top: 10px;
+}
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 80px;
+  padding: 24px 0;
+  border-top: 1px solid var(--g3);
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--g3);
+  letter-spacing: 2px;
+}
+
+/* ── PAGE HEADER STICKY ── */
+.page-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(1,13,5,0.95);
+  border-bottom: 1px solid var(--g3);
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(4px);
+}
+
+.ph-logo { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 900; letter-spacing: 3px; color: var(--g); }
+.ph-right { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--dim); }
+
+/* ── INLINE BADGE ── */
+.badge {
+  display: inline-block;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.badge.ok     { background: var(--g3); color: var(--g); }
+.badge.warn   { background: #332200; color: var(--amber); }
+.badge.new    { background: #220044; color: var(--purple); }
+.badge.api    { background: #001833; color: var(--blue); }
+
+/* ── HIGHLIGHT BOX ── */
+.highlight {
+  border-left: 3px solid var(--g);
+  background: var(--bg2);
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--g2);
+}
+
+.highlight.purple { border-left-color: var(--purple); color: var(--purple); }
+.highlight.amber  { border-left-color: var(--amber);  color: var(--amber); }
+.highlight.red    { border-left-color: var(--red);    color: var(--red); }
+
+/* ── VERSION HISTORY ── */
+.version-row {
+  display: flex;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #001a0d;
+  align-items: flex-start;
+}
+.version-row:last-child { border-bottom: none; }
+.ver-num { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700; color: var(--g); min-width: 60px; }
+.ver-date { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--dim); min-width: 80px; }
+.ver-desc { font-size: 12.5px; color: var(--muted); }
+
+/* ── PRINT ── */
+@media print {
+  body::before { display: none; }
+  .page-header { display: none; }
+  body { background: white; color: black; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── STICKY HEADER ── -->
+<div class="page-header">
+  <span class="ph-logo">MILYES_IA <span style="color:var(--dim);font-weight:400;font-size:9px">v9</span></span>
+  <span class="ph-right">GUIDE COMPLET // NetSecurePro</span>
+</div>
+
+<!-- ══════════════════════════════════════════
+     COVER
+════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-logo">MILYES_IA</div>
+  <div class="cover-sub">v9.0 // NEO_DZ SYSTEM</div>
+  <div class="cover-divider"></div>
+  <div class="cover-title">GUIDE COMPLET D'UTILISATION</div>
+  <div class="cover-meta">
+    Auteur : Mohammed Ilyes Zoubirou<br/>
+    Organisation : NetSecurePro<br/>
+    Version : 9.0.0 — Build 2025<br/>
+    Classification : SOUVERAIN / CONFIDENTIEL
+  </div>
+  <div class="cover-badges">
+    <span class="cover-badge">API ANTHROPIC</span>
+    <span class="cover-badge">IA22 FALLBACK</span>
+    <span class="cover-badge">STREAM LIVE</span>
+    <span class="cover-badge">SOUVERAINETÉ</span>
+    <span class="cover-badge">CYBERSÉCURITÉ</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CONTAINER
+════════════════════════════════════════════ -->
+<div class="container">
+
+  <!-- ── TABLE DES MATIÈRES ── -->
+  <div class="toc">
+    <div class="toc-title">// TABLE DES MATIÈRES</div>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="n">01.</span> Présentation du système</a></li>
+      <li><a href="#s2"><span class="n">02.</span> Architecture & composants</a></li>
+      <li><a href="#s3"><span class="n">03.</span> Installation & déploiement</a></li>
+      <li><a href="#s4"><span class="n">04.</span> Interface NEO_DZ — Console</a></li>
+      <li>
+        <a href="#s5"><span class="n">05.</span> Commandes & référence</a></li>
+        <ul class="toc-sub">
+          <li><a href="#s5-1">— Commandes natives</a></li>
+          <li><a href="#s5-2">— Mode ask (IA libre)</a></li>
+          <li><a href="#s5-3">— Commandes libres</a></li>
+        </ul>
+      <li><a href="#s6"><span class="n">06.</span> Mode IA22 souverain</a></li>
+      <li><a href="#s7"><span class="n">07.</span> API Anthropic — Intégration</a></li>
+      <li><a href="#s8"><span class="n">08.</span> Métriques temps réel</a></li>
+      <li><a href="#s9"><span class="n">09.</span> Personnalisation avancée</a></li>
+      <li><a href="#s10"><span class="n">10.</span> Sécurité & bonnes pratiques</a></li>
+      <li><a href="#s11"><span class="n">11.</span> Dépannage & FAQ</a></li>
+      <li><a href="#s12"><span class="n">12.</span> Historique des versions</a></li>
+    </ul>
+  </div>
+
+  <!-- ══ SECTION 1 ══ -->
+  <div class="section" id="s1">
+    <div class="section-num">// SECTION 01</div>
+    <div class="section-title"><span>MILYES_IA</span> — Présentation du Système</div>
+
+    <p>MILYES_IA v9 est un assistant IA souverain conçu et développé exclusivement pour <strong>Mohammed Ilyes Zoubirou</strong> dans le cadre des activités de <strong>NetSecurePro</strong>. Il combine une interface console futuriste (NEO_DZ) avec l'intelligence de l'API Anthropic et un système de fallback local baptisé <strong>IA22_LOGIC</strong>.</p>
+
+    <div class="card ok">
+      <div class="card-label">// OBJECTIFS PRINCIPAUX</div>
+      <ul class="neo">
+        <li>Souveraineté numérique — contrôle total sur l'IA utilisée</li>
+        <li>Sécurité opérationnelle — fallback local en cas de coupure réseau</li>
+        <li>Interface console professionnelle style cyberpunk/terminal</li>
+        <li>Spécialisation cybersécurité, réseaux, Linux et IA</li>
+        <li>Intégration directe avec l'API Anthropic (streaming live)</li>
+      </ul>
+    </div>
+
+    <h3>PRINCIPES FONDATEURS</h3>
+    <p>Le système repose sur trois piliers :</p>
+    <ol class="neo">
+      <li><strong>Souveraineté</strong> — L'IA appartient à l'opérateur, pas à un tiers. Mode IA22 hors-ligne disponible à tout moment.</li>
+      <li><strong>Sécurité</strong> — Aucun code malveillant, aucune exfiltration de données, architecture transparente et auditables.</li>
+      <li><strong>Résilience</strong> — Si l'API cloud tombe, IA22_LOGIC prend le relais sans interruption de service.</li>
+    </ol>
+  </div>
+
+  <!-- ══ SECTION 2 ══ -->
+  <div class="section" id="s2">
+    <div class="section-num">// SECTION 02</div>
+    <div class="section-title">Architecture <span>&</span> Composants</div>
+
+    <p>MILYES_IA v9 est structuré en couches distinctes permettant une maintenance indépendante de chaque composant.</p>
+
+    <div class="arch">
+      <div class="arch-node">
+        <div class="an-label">INTERFACE</div>
+        <div class="an-val">NEO_DZ</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node api">
+        <div class="an-label">PRIMAIRE</div>
+        <div class="an-val">API CLOUD</div>
+      </div>
+      <div class="arch-arrow">⇌</div>
+      <div class="arch-node ia22">
+        <div class="an-label">FALLBACK</div>
+        <div class="an-val">IA22 LOCAL</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="an-label">OUTPUT</div>
+        <div class="an-val">TERMINAL</div>
+      </div>
+    </div>
+
+    <h3>COMPOSANTS DÉTAILLÉS</h3>
+
+    <h4>1. Interface NEO_DZ</h4>
+    <p>Console HTML/CSS/JS autonome. Affiche les logs, accepte les commandes clavier, simule un environnement terminal professionnel avec effets scanline et métriques temps réel.</p>
+
+    <h4>2. Moteur de commandes</h4>
+    <p>Parseur de commandes natif qui distingue les commandes internes (<code>scan</code>, <code>status</code>, <code>inject IA22</code>…) des requêtes libres envoyées directement à l'IA.</p>
+
+    <h4>3. API Anthropic (claude-sonnet-4)</h4>
+    <p>Endpoint <code>https://api.anthropic.com/v1/messages</code> avec system prompt souverain préconfiguré. Responses streamed ligne par ligne pour l'effet terminal.</p>
+
+    <h4>4. IA22_LOGIC Fallback</h4>
+    <p>Module local activé manuellement (<code>inject IA22</code>) ou automatiquement en cas d'échec de l'API. Opère en mode hors-ligne, priorité souveraineté absolue.</p>
+
+    <h4>5. Métriques temps réel</h4>
+    <p>CPU Neural, Charge Neurale, Paquets/s et Tokens/Req se mettent à jour toutes les 1.8 secondes avec indicateurs visuels dynamiques.</p>
+  </div>
+
+  <!-- ══ SECTION 3 ══ -->
+  <div class="section" id="s3">
+    <div class="section-num">// SECTION 03</div>
+    <div class="section-title">Installation <span>&</span> Déploiement</div>
+
+    <p>MILYES_IA v9 est un fichier HTML standalone. Aucune installation serveur requise pour l'usage de base.</p>
+
+    <h3>PRÉREQUIS</h3>
+    <ul class="neo">
+      <li>Navigateur moderne (Chrome 90+, Firefox 88+, Edge 90+, Safari 15+)</li>
+      <li>Connexion internet pour l'API Anthropic (optionnel en mode IA22)</li>
+      <li>Clé API Anthropic valide (plan Pro recommandé)</li>
+    </ul>
+
+    <h3>DÉPLOIEMENT LOCAL</h3>
+    <div class="terminal-block">
+      <div><span class="t-ps">[SYS]</span><span class="t-sys"># Ouvrir directement dans le navigateur</span></div>
+      <div><span class="t-ps">$</span><span class="t-ok"> open MILYES_IA_v9_NEO_DZ_live_AI.html</span></div>
+      <div style="margin-top:8px"><span class="t-ps">[SYS]</span><span class="t-sys"># Ou via serveur local (recommandé pour CORS)</span></div>
+      <div><span class="t-ps">$</span><span class="t-ok"> python3 -m http.server 8080</span></div>
+      <div><span class="t-ps">$</span><span class="t-ok"> open http://localhost:8080/MILYES_IA_v9_NEO_DZ_live_AI.html</span></div>
+    </div>
+
+    <h3>DÉPLOIEMENT SERVEUR</h3>
+    <div class="terminal-block">
+      <div><span class="t-ps">[NET]</span><span class="t-info"># Copier sur serveur web (Nginx/Apache)</span></div>
+      <div><span class="t-ps">$</span><span class="t-ok"> scp MILYES_IA_v9_NEO_DZ_live_AI.html user@server:/var/www/html/</span></div>
+      <div><span class="t-ps">$</span><span class="t-ok"> chmod 644 /var/www/html/MILYES_IA_v9_NEO_DZ_live_AI.html</span></div>
+    </div>
+
+    <div class="card warn">
+      <div class="card-label">// AVERTISSEMENT SÉCURITÉ</div>
+      <p style="margin:0;font-size:13px;">Si déployé sur un serveur public, protéger l'accès par authentification HTTP (Basic Auth ou OAuth). La console expose l'API Anthropic et ne doit pas être accessible publiquement sans protection.</p>
+    </div>
+
+    <h3>CONFIGURATION DE LA CLÉ API</h3>
+    <p>La clé API est gérée automatiquement par l'environnement Claude. Pour un déploiement autonome externe, modifier le fichier HTML :</p>
+    <pre><span class="comment">// Localiser cette section dans le script :</span>
+<span class="keyword">const</span> resp = <span class="keyword">await</span> fetch(<span class="string">'https://api.anthropic.com/v1/messages'</span>, {
+  method: <span class="string">'POST'</span>,
+  headers: {
+    <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>,
+    <span class="string">'x-api-key'</span>: <span class="string">'sk-ant-VOTRE_CLÉ_ICI'</span>, <span class="comment">// Ajouter ici</span>
+    <span class="string">'anthropic-version'</span>: <span class="string">'2023-06-01'</span>
+  },
+  ...</pre>
+
+    <div class="card warn">
+      <div class="card-label">// SÉCURITÉ CLÉ API</div>
+      <p style="margin:0;font-size:13px;">Ne jamais committer une clé API dans un dépôt public. Utiliser des variables d'environnement ou un backend proxy pour les déploiements de production.</p>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 4 ══ -->
+  <div class="section" id="s4">
+    <div class="section-num">// SECTION 04</div>
+    <div class="section-title">Interface <span>NEO_DZ</span> — Console</div>
+
+    <p>La console NEO_DZ est l'interface principale de MILYES_IA. Elle est organisée en deux zones distinctes.</p>
+
+    <h3>ZONE TERMINAL (GAUCHE)</h3>
+    <p>Affiche tous les logs système, les réponses IA et les sorties de commandes. Défilement automatique vers le bas à chaque nouvelle entrée.</p>
+
+    <div class="terminal-block">
+      <div><span class="t-ps">[09:41:22]</span> <span class="t-tag t-ok">SYS</span><span class="t-ok">MILYES_IA v9.0 // NEO_DZ LIVE TERMINAL</span></div>
+      <div><span class="t-ps">[09:41:22]</span> <span class="t-tag t-info">NET</span><span class="t-info">API Anthropic connectée — stream activé</span></div>
+      <div><span class="t-ps">[09:41:23]</span> <span class="t-sys">Module souveraineté... OK</span></div>
+      <div><span class="t-ps">[09:41:23]</span> <span class="t-tag t-warn">IA22</span><span class="t-warn">IA22_LOGIC fallback... EN VEILLE</span></div>
+      <div style="height:6px;background:#001a0d;margin:6px 0;"></div>
+      <div><span class="t-ps">[09:41:24]</span> <span class="t-info">Système prêt. Tapez <strong>help</strong> ou toute commande libre.</span></div>
+    </div>
+
+    <h3>BARRE DE SAISIE</h3>
+    <p>Saisie des commandes en bas du terminal. Appuyer sur <code>Entrée</code> pour exécuter. Compatible clavier complet.</p>
+
+    <h3>SIDEBAR MÉTRIQUES (DROITE)</h3>
+    <p>Affiche en temps réel les 4 métriques systèmes ainsi que les boutons de commandes rapides et les indicateurs de statut API.</p>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="mc-label">CPU NEURAL</div>
+        <div class="mc-val">42%</div>
+        <div class="mc-bar"><div class="mc-fill" style="width:42%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-label">NEURAL LOAD</div>
+        <div class="mc-val amber">67%</div>
+        <div class="mc-bar"><div class="mc-fill amber" style="width:67%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-label">PACKETS/S</div>
+        <div class="mc-val">9 482</div>
+        <div class="mc-bar"><div class="mc-fill" style="width:63%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-label">IA TOKENS</div>
+        <div class="mc-val purple">384</div>
+        <div class="mc-bar"><div class="mc-fill purple" style="width:38%"></div></div>
+      </div>
+    </div>
+
+    <h3>INDICATEURS DE STATUT</h3>
+    <ul class="neo">
+      <li><strong style="color:var(--g)">●</strong> Vert fixe — Service actif et connecté</li>
+      <li><strong style="color:var(--amber)">●</strong> Ambre clignotant — En veille ou avertissement</li>
+      <li><strong style="color:var(--red)">●</strong> Rouge clignotant rapide — Hors ligne ou erreur</li>
+      <li><strong style="color:var(--purple)">●</strong> Violet clignotant — Mode IA22 actif ou stream en cours</li>
+    </ul>
+  </div>
+
+  <!-- ══ SECTION 5 ══ -->
+  <div class="section" id="s5">
+    <div class="section-num">// SECTION 05</div>
+    <div class="section-title">Commandes <span>&</span> Référence</div>
+
+    <div id="s5-1">
+      <h3>COMMANDES NATIVES</h3>
+      <p>Ces commandes sont traitées localement sans appel API.</p>
+
+      <table class="cmd-table">
+        <thead>
+          <tr>
+            <th>COMMANDE</th>
+            <th>DESCRIPTION</th>
+            <th>TYPE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>scan</td>
+            <td>Lance un scan réseau et génère un rapport de sécurité via l'IA. Détecte ports ouverts, services, anomalies et fournit des recommandations.</td>
+            <td style="color:var(--blue)">IA + LOCAL</td>
+          </tr>
+          <tr>
+            <td>status</td>
+            <td>Affiche le rapport complet du système : CPU Neural, Charge Neurale, Paquets/s, mode actif, tokens consommés lors de la dernière requête.</td>
+            <td style="color:var(--dim)">LOCAL</td>
+          </tr>
+          <tr>
+            <td>inject IA22</td>
+            <td>Active le mode souverain IA22_LOGIC. Déconnecte l'API cloud, charge la logique locale et bascule tous les indicateurs en mode hors-ligne. Irréversible dans la session.</td>
+            <td style="color:var(--purple)">SOUVERAIN</td>
+          </tr>
+          <tr>
+            <td>help</td>
+            <td>Affiche la liste de toutes les commandes disponibles avec descriptions.</td>
+            <td style="color:var(--dim)">LOCAL</td>
+          </tr>
+          <tr>
+            <td>clear</td>
+            <td>Efface tout le contenu du terminal. Utile pour repartir d'une session propre.</td>
+            <td style="color:var(--dim)">LOCAL</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="s5-2">
+      <h3>COMMANDE ASK — IA LIBRE</h3>
+      <p>La commande <code>ask</code> permet d'interroger MILYES_IA avec n'importe quelle question ou instruction technique.</p>
+
+      <div class="terminal-block">
+        <div><span class="t-ps">milyes@neo_dz:~$</span><span class="t-ok"> ask explique le protocole TLS 1.3</span></div>
+        <div><span class="t-ps">[09:42:01]</span> <span class="t-tag t-info">ASK</span><span class="t-info">Query: "explique le protocole TLS 1.3"</span></div>
+        <div><span class="t-sys" style="margin-left:46px;font-style:italic">> IA22 processing...</span></div>
+        <div style="border-left:2px solid var(--g3);padding-left:10px;margin:6px 0 6px 46px;color:#aaffcc">
+          <div>[INFO] TLS 1.3 — Transport Layer Security version 1.3</div>
+          <div>[OK] Handshake réduit à 1-RTT (vs 2-RTT en TLS 1.2)</div>
+          <div>[OK] Suppression des algorithmes faibles : RC4, 3DES, SHA-1</div>
+          <div>[SEC] Forward Secrecy obligatoire via ECDHE/DHE</div>
+          <div>[INFO] Sessions resumption via PSK (Pre-Shared Key)</div>
+          <div>[OK] Chiffrements supportés : AES-GCM, ChaCha20-Poly1305</div>
+        </div>
+      </div>
+
+      <h4>EXEMPLES D'UTILISATION ASK</h4>
+      <ul class="neo">
+        <li><code>ask analyse les risques d'un port 22 exposé</code></li>
+        <li><code>ask génère une règle iptables pour bloquer les scans nmap</code></li>
+        <li><code>ask explique la différence entre IDS et IPS</code></li>
+        <li><code>ask écris un script bash de monitoring réseau</code></li>
+        <li><code>ask qu'est-ce que le OWASP Top 10 2024</code></li>
+      </ul>
+    </div>
+
+    <div id="s5-3">
+      <h3>COMMANDES LIBRES</h3>
+      <p>Tout texte qui ne correspond pas à une commande native est automatiquement envoyé à l'IA. Cela permet une interaction naturelle sans préfixe.</p>
+
+      <div class="terminal-block">
+        <div><span class="t-ps">milyes@neo_dz:~$</span><span class="t-ok"> quels sont les meilleurs outils OSINT en 2025</span></div>
+        <div><span class="t-ps">[09:45:12]</span> <span class="t-tag t-info">AI</span><span class="t-info">Commande libre détectée: "quels sont les meilleurs outils OSINT en 2025"</span></div>
+        <div><span class="t-sys" style="margin-left:46px;font-style:italic">> IA22 processing...</span></div>
+        <div style="border-left:2px solid var(--g3);padding-left:10px;margin:6px 0 6px 46px;color:#aaffcc">
+          <div>[INFO] Top outils OSINT actifs en 2025 :</div>
+          <div>- Maltego CE — cartographie de relations et entités</div>
+          <div>- TheHarvester — emails, domaines, IPs depuis sources publiques</div>
+          <div>- Shodan — moteur de recherche devices/IoT connectés</div>
+          <div>- SpiderFoot — automatisation OSINT multi-sources</div>
+          <div>- OSINT Framework — catalogue structuré d'outils</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 6 ══ -->
+  <div class="section" id="s6">
+    <div class="section-num">// SECTION 06</div>
+    <div class="section-title">Mode <span>IA22</span> Souverain</div>
+
+    <p>IA22_LOGIC est le module de souveraineté de MILYES_IA. Il garantit la continuité opérationnelle et l'indépendance vis-à-vis des services cloud tiers.</p>
+
+    <div class="card ia22">
+      <div class="card-label">// DÉFINITION SOUVERAINETÉ</div>
+      <p style="margin:0;font-size:13px;color:var(--purple)">La souveraineté numérique signifie que l'opérateur garde le contrôle total de son IA — ses données, ses requêtes, sa logique — sans dépendance externe forcée.</p>
+    </div>
+
+    <h3>ACTIVATION MANUELLE</h3>
+    <div class="terminal-block">
+      <div><span class="t-ps">milyes@neo_dz:~$</span><span class="t-ok"> inject IA22</span></div>
+      <div><span class="t-ps">[10:01:00]</span> <span class="t-tag t-ia">IA22</span><span class="t-ia">Injection IA22_LOGIC...</span></div>
+      <div><span class="t-ps">[10:01:00]</span> <span class="t-warn">Déconnexion API cloud...</span></div>
+      <div><span class="t-ps">[10:01:01]</span> <span class="t-ia">Chargement logique locale IA22_LOGIC v2.1...</span></div>
+      <div><span class="t-ps">[10:01:01]</span> <span class="t-tag t-ia">IA22</span><span class="t-ia">IA22 ACTIF — souveraineté maximale engagée.</span></div>
+    </div>
+
+    <h3>ACTIVATION AUTOMATIQUE (FALLBACK)</h3>
+    <p>Si l'API Anthropic devient inaccessible (réseau coupé, quota dépassé, erreur serveur), IA22 s'active automatiquement :</p>
+
+    <div class="terminal-block">
+      <div><span class="t-ps">[10:05:33]</span> <span class="t-tag t-warn">IA22</span><span class="t-warn">API hors ligne — IA22 fallback activé</span></div>
+      <div><span class="t-ps">[10:05:33]</span> <span class="t-ia">Mode souverain local engagé.</span></div>
+    </div>
+
+    <h3>COMPORTEMENTS EN MODE IA22</h3>
+    <ul class="neo">
+      <li>L'indicateur API PRIMAIRE passe au rouge clignotant</li>
+      <li>L'indicateur IA22 FALLBACK s'allume en violet</li>
+      <li>Le curseur de saisie change de couleur (vert → violet)</li>
+      <li>Les métriques CPU Neural augmentent (charge locale simulée)</li>
+      <li>Le champ "Mode actif" dans <code>status</code> affiche "IA22 SOUVERAIN LOCAL"</li>
+    </ul>
+
+    <div class="highlight purple">
+      IA22_LOGIC v2.1 — Modules chargés : souveraineté, sécurité, cybersec, réseaux, Linux.
+      Opération garantie sans connexion réseau. Tokens consommés : 0 (traitement local).
+    </div>
+  </div>
+
+  <!-- ══ SECTION 7 ══ -->
+  <div class="section" id="s7">
+    <div class="section-num">// SECTION 07</div>
+    <div class="section-title">API Anthropic <span>—</span> Intégration</div>
+
+    <p>MILYES_IA v9 utilise le modèle <code>claude-sonnet-4-20250514</code> via l'API Anthropic avec un system prompt souverain préconfiguré.</p>
+
+    <h3>SYSTEM PROMPT SOUVERAIN</h3>
+    <pre><span class="string">Tu es MILYES_IA v9, assistant IA souverain et exclusif
+de Mohammed Ilyes Zoubirou (NetSecurePro).
+
+Style: réponses courtes, techniques, directes.
+Format console/terminal.
+Préfixe les infos avec des tags : [INFO], [WARN], [OK], [SCAN], [NET], [SEC].
+
+Langue: français par défaut.
+Spécialisation: cybersécurité, réseaux, Linux, IA souveraine.
+
+Mode IA22: opération hors-ligne, logique locale,
+priorité souveraineté absolue.
+
+Concision: max 8 lignes par réponse.
+Format: pas de markdown — tirets courts si liste.</span></pre>
+
+    <h3>FLUX D'UNE REQUÊTE</h3>
+    <ol class="neo">
+      <li>L'utilisateur tape une commande dans le terminal</li>
+      <li>Le parseur détecte si c'est une commande native ou libre</li>
+      <li>L'appel API est construit avec le system prompt + message utilisateur</li>
+      <li>La réponse est reçue en JSON et parsée (<code>data.content[0].text</code>)</li>
+      <li>Les lignes sont affichées une à une avec un délai 60–100ms (effet terminal)</li>
+      <li>Les tokens consommés sont extraits de <code>data.usage</code> et mis à jour en sidebar</li>
+    </ol>
+
+    <h3>GESTION DES ERREURS API</h3>
+
+    <table class="cmd-table">
+      <thead>
+        <tr><th>ERREUR</th><th>COMPORTEMENT</th><th>ACTION</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Réseau coupé</td>
+          <td>Exception catch()</td>
+          <td style="color:var(--purple)">IA22 auto-activé</td>
+        </tr>
+        <tr>
+          <td>401 Unauthorized</td>
+          <td>data.error retourné</td>
+          <td style="color:var(--amber)">Message d'erreur affiché</td>
+        </tr>
+        <tr>
+          <td>429 Rate Limit</td>
+          <td>data.error retourné</td>
+          <td style="color:var(--amber)">Message + suggestion IA22</td>
+        </tr>
+        <tr>
+          <td>500 Server Error</td>
+          <td>data.error retourné</td>
+          <td style="color:var(--amber)">Message d'erreur affiché</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>MODÈLE UTILISÉ</h3>
+    <div class="terminal-block">
+      <div><span class="t-ps">[NET]</span><span class="t-info"> Modèle    : claude-sonnet-4-20250514</span></div>
+      <div><span class="t-ps">[NET]</span><span class="t-info"> Max tokens: 1000 par requête</span></div>
+      <div><span class="t-ps">[NET]</span><span class="t-info"> Endpoint  : https://api.anthropic.com/v1/messages</span></div>
+      <div><span class="t-ps">[NET]</span><span class="t-info"> Version   : anthropic-api 2023-06-01</span></div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 8 ══ -->
+  <div class="section" id="s8">
+    <div class="section-num">// SECTION 08</div>
+    <div class="section-title">Métriques <span>Temps Réel</span></div>
+
+    <p>La sidebar droite affiche 4 métriques mises à jour toutes les 1800ms. Les valeurs s'adaptent au contexte opérationnel.</p>
+
+    <table class="cmd-table">
+      <thead>
+        <tr><th>MÉTRIQUE</th><th>DESCRIPTION</th><th>COMPORTEMENT</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CPU NEURAL</td>
+          <td>Charge simulée du processeur neuronal de MILYES_IA. Indicateur du niveau d'activité général.</td>
+          <td style="color:var(--g)">+27pt en mode IA22, +27pt pendant stream</td>
+        </tr>
+        <tr>
+          <td>NEURAL LOAD</td>
+          <td>Charge du réseau neuronal (traitement des inférences). Reste élevé en permanence.</td>
+          <td style="color:var(--amber)">+25pt pendant stream, +15pt en IA22</td>
+        </tr>
+        <tr>
+          <td>PACKETS/S</td>
+          <td>Débit réseau simulé en paquets par seconde. Reflète l'activité de communication.</td>
+          <td style="color:var(--g)">+4500 pkt/s pendant une requête API</td>
+        </tr>
+        <tr>
+          <td>IA TOKENS/REQ</td>
+          <td>Tokens réels consommés lors de la dernière requête Anthropic (input + output cumulés).</td>
+          <td style="color:var(--purple)">Valeur réelle extraite de data.usage</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>COULEURS D'ALERTE — CPU NEURAL</h3>
+    <ul class="neo">
+      <li><strong style="color:var(--g)">Vert</strong> — Charge normale (&lt; 55%)</li>
+      <li><strong style="color:var(--amber)">Ambre</strong> — Charge élevée (55–75%)</li>
+      <li><strong style="color:var(--red)">Rouge</strong> — Surcharge (&gt; 75%)</li>
+    </ul>
+  </div>
+
+  <!-- ══ SECTION 9 ══ -->
+  <div class="section" id="s9">
+    <div class="section-num">// SECTION 09</div>
+    <div class="section-title">Personnalisation <span>Avancée</span></div>
+
+    <p>MILYES_IA v9 est conçu pour être modifié et étendu. Voici les points d'extension principaux.</p>
+
+    <h3>AJOUTER UNE COMMANDE NATIVE</h3>
+    <p>Dans l'objet <code>CMDS</code> du script JavaScript :</p>
+    <pre><span class="keyword">const</span> CMDS = {
+  <span class="comment">// ... commandes existantes ...</span>
+
+  <span class="string">'macommande'</span>: () => {
+    sep();
+    line(<span class="string">'Exécution de ma commande...'</span>, <span class="string">'info'</span>, <span class="string">'CUSTOM'</span>);
+    <span class="comment">// Logique locale ici</span>
+    setTimeout(() => {
+      callAPI(<span class="string">'Prompt personnalisé envoyé à l\'IA'</span>);
+    }, <span class="val">300</span>);
+  },
+};</pre>
+
+    <h3>MODIFIER LE SYSTEM PROMPT</h3>
+    <p>Localiser et modifier la constante <code>SYSTEM_PROMPT</code> :</p>
+    <pre><span class="keyword">const</span> SYSTEM_PROMPT = <span class="string">`Tu es MILYES_IA v9...
+<span class="comment">// Ajouter vos instructions spécifiques ici</span>
+Contexte supplémentaire: [VOS DONNÉES]
+Règles métier: [VOS RÈGLES]`</span>;</pre>
+
+    <h3>PERSONNALISER LES COULEURS</h3>
+    <p>Modifier les variables CSS dans <code>:root</code> :</p>
+    <pre><span class="comment">/* Variables de couleur principales */</span>
+<span class="keyword">:root</span> {
+  <span class="string">--g</span>: <span class="val">#00ff88</span>;     <span class="comment">/* Couleur principale verte */</span>
+  <span class="string">--g2</span>: <span class="val">#00cc66</span>;    <span class="comment">/* Vert secondaire */</span>
+  <span class="string">--purple</span>: <span class="val">#cc88ff</span>; <span class="comment">/* Couleur IA22 */</span>
+  <span class="string">--amber</span>: <span class="val">#ffaa00</span>;  <span class="comment">/* Avertissements */</span>
+  <span class="string">--red</span>: <span class="val">#ff3366</span>;    <span class="comment">/* Erreurs */</span>
+  <span class="string">--bg</span>: <span class="val">#010d05</span>;     <span class="comment">/* Fond principal */</span>
+}</pre>
+
+    <h3>ÉTENDRE LES MÉTRIQUES</h3>
+    <p>Pour ajouter une nouvelle métrique en sidebar, dupliquer un bloc <code>.mb</code> dans le HTML et l'alimenter dans la fonction <code>updateMetrics()</code>.</p>
+
+    <h3>INTÉGRATION MCP / OUTILS EXTERNES</h3>
+    <p>Pour connecter des outils externes (Shodan, VirusTotal, etc.), ajouter des fonctions dans l'objet CMDS qui appellent vos APIs internes avant ou après <code>callAPI()</code>.</p>
+
+    <pre><span class="string">'shodan'</span>: (<span class="keyword">args</span>) => {
+  sep();
+  line(<span class="string">`Requête Shodan : ${args}`</span>, <span class="string">'info'</span>, <span class="string">'SHODAN'</span>);
+  <span class="comment">// Appel API Shodan</span>
+  fetch(<span class="string">`https://api.shodan.io/shodan/host/${args}?key=VOTRE_CLÉ`</span>)
+    .then(r => r.json())
+    .then(data => {
+      line(<span class="string">`IP: ${data.ip_str} | OS: ${data.os || 'N/A'}`</span>, <span class="string">'ok'</span>);
+      line(<span class="string">`Ports: ${data.ports?.join(', ')}`</span>, <span class="string">'ok'</span>);
+      sep();
+    });
+}</pre>
+  </div>
+
+  <!-- ══ SECTION 10 ══ -->
+  <div class="section" id="s10">
+    <div class="section-num">// SECTION 10</div>
+    <div class="section-title">Sécurité <span>&</span> Bonnes Pratiques</div>
+
+    <h3>PRINCIPES DE SÉCURITÉ</h3>
+    <ul class="neo">
+      <li>Ne jamais exposer la console sans authentification sur un réseau public</li>
+      <li>Utiliser HTTPS en production pour chiffrer les appels API</li>
+      <li>Gérer les clés API via des variables d'environnement, jamais en clair</li>
+      <li>Limiter les tokens max_tokens à 1000 pour contrôler les coûts</li>
+      <li>Activer IA22 pour les sessions sensibles nécessitant confidentialité totale</li>
+      <li>Auditer régulièrement le system prompt pour éviter les dérives de comportement</li>
+    </ul>
+
+    <h3>POLITIQUE D'UTILISATION</h3>
+    <div class="card warn">
+      <div class="card-label">// USAGE AUTORISÉ</div>
+      <ul class="neo">
+        <li>Analyses de sécurité réseau et systèmes</li>
+        <li>Assistance technique cybersécurité</li>
+        <li>Développement d'outils de défense</li>
+        <li>Documentation et rapports techniques</li>
+        <li>Formation et veille technologique</li>
+      </ul>
+    </div>
+
+    <div class="card warn">
+      <div class="card-label">// USAGE INTERDIT</div>
+      <ul class="neo">
+        <li>Développement de malwares ou code malveillant</li>
+        <li>Attaques sur des systèmes sans autorisation explicite</li>
+        <li>Exfiltration de données sensibles tiers</li>
+        <li>Contournement de mesures de sécurité légitimes</li>
+      </ul>
+    </div>
+
+    <h3>AUDIT ET TRAÇABILITÉ</h3>
+    <p>Chaque interaction est horodatée dans le terminal avec format <code>[HH:MM:SS]</code>. Pour une traçabilité persistante, implémenter un système de logging côté serveur en interceptant les appels <code>callAPI()</code>.</p>
+
+    <pre><span class="comment">// Exemple de logging simple</span>
+<span class="keyword">async function</span> callAPI(<span class="keyword">userMsg</span>) {
+  <span class="comment">// Log avant appel</span>
+  console.log(<span class="string">`[${new Date().toISOString()}] QUERY: ${userMsg}`</span>);
+
+  <span class="comment">// ... appel API existant ...</span>
+
+  <span class="comment">// Log après réponse</span>
+  console.log(<span class="string">`[${new Date().toISOString()}] TOKENS: ${lastTokens}`</span>);
+}</pre>
+  </div>
+
+  <!-- ══ SECTION 11 ══ -->
+  <div class="section" id="s11">
+    <div class="section-num">// SECTION 11</div>
+    <div class="section-title">Dépannage <span>&</span> FAQ</div>
+
+    <h3>PROBLÈMES FRÉQUENTS</h3>
+
+    <h4>L'IA ne répond pas</h4>
+    <div class="card ok">
+      <div class="card-label">// DIAGNOSTIC</div>
+      <ol class="neo">
+        <li>Vérifier la connexion internet</li>
+        <li>Contrôler que la clé API est valide et non expirée</li>
+        <li>Vérifier le quota API Anthropic (console.anthropic.com)</li>
+        <li>Inspecter la console navigateur (F12 → Console) pour les erreurs CORS</li>
+        <li>Si déployé en local sans serveur, utiliser un serveur HTTP (python3 -m http.server)</li>
+      </ol>
+    </div>
+
+    <h4>Erreur CORS</h4>
+    <div class="terminal-block">
+      <div><span class="t-err">Access to fetch at 'https://api.anthropic.com/v1/messages' has been blocked by CORS policy</span></div>
+    </div>
+    <p><strong>Solution :</strong> L'API Anthropic autorise les appels depuis claude.ai mais peut bloquer certains origines custom. Utiliser un proxy backend ou déployer sur claude.ai.</p>
+
+    <h4>La console est vide au démarrage</h4>
+    <p>Le script de boot utilise des <code>setTimeout</code> échelonnés. Si rien n'apparaît après 2 secondes, vérifier que JavaScript est activé dans le navigateur.</p>
+
+    <h4>Les métriques ne se mettent pas à jour</h4>
+    <p>Les timers <code>setInterval</code> peuvent être throttlés si l'onglet est en arrière-plan. Ramener l'onglet au premier plan suffit à les réactiver.</p>
+
+    <h3>FAQ</h3>
+
+    <h4>Peut-on utiliser MILYES_IA hors connexion ?</h4>
+    <p>Oui — activer <code>inject IA22</code> avant de perdre la connexion. IA22_LOGIC fonctionne entièrement en local. Les fonctionnalités nécessitant l'API cloud (réponses IA génératives) ne seront pas disponibles, mais toutes les commandes natives fonctionnent.</p>
+
+    <h4>Les données envoyées à l'API sont-elles stockées ?</h4>
+    <p>Selon la politique d'Anthropic, les données envoyées via API ne sont pas utilisées pour l'entraînement si le paramètre approprié est configuré. Consulter <a href="https://www.anthropic.com/privacy" style="color:var(--blue)">anthropic.com/privacy</a> pour les détails actuels.</p>
+
+    <h4>Peut-on changer le modèle IA utilisé ?</h4>
+    <p>Oui — modifier la valeur <code>model</code> dans la fonction <code>callAPI()</code>. Modèles disponibles : <code>claude-opus-4-6</code> (plus puissant), <code>claude-haiku-4-5-20251001</code> (plus rapide et économique).</p>
+
+    <h4>Comment sauvegarder l'historique du terminal ?</h4>
+    <p>Implémenter un bouton "Export" qui lit le contenu de <code>document.getElementById('term').innerText</code> et le télécharge en fichier .txt ou .log.</p>
+  </div>
+
+  <!-- ══ SECTION 12 ══ -->
+  <div class="section" id="s12">
+    <div class="section-num">// SECTION 12</div>
+    <div class="section-title">Historique <span>des Versions</span></div>
+
+    <div class="version-row">
+      <div class="ver-num">v9.0</div>
+      <div class="ver-date">2025</div>
+      <div class="ver-desc">Version courante. Intégration API Anthropic live, streaming ligne par ligne, métriques temps réel, IA22 fallback automatique, compteur tokens réels, console NEO_DZ complète.</div>
+    </div>
+    <div class="version-row">
+      <div class="ver-num">v8.x</div>
+      <div class="ver-date">2024</div>
+      <div class="ver-desc">Version précédente. Console NEO_DZ sans API live — réponses simulées localement. Commandes scan/status/inject IA22 natives. Interface futuriste établie.</div>
+    </div>
+    <div class="version-row">
+      <div class="ver-num">v7.x</div>
+      <div class="ver-date">2024</div>
+      <div class="ver-desc">Prototype de l'interface terminal. Métriques temps réel introduites. Palette de couleurs noir/vert fixée.</div>
+    </div>
+    <div class="version-row">
+      <div class="ver-num">v1–6</div>
+      <div class="ver-date">2023–24</div>
+      <div class="ver-desc">Versions expérimentales. Établissement du concept souveraineté + sécurité + fallback IA22. Itérations sur l'UX console.</div>
+    </div>
+
+    <h3>ROADMAP v10</h3>
+    <ul class="neo">
+      <li>Mémoire de session persistante (localStorage chiffré)</li>
+      <li>Streaming token-par-token réel (SSE Anthropic)</li>
+      <li>Interface mobile responsive</li>
+      <li>Intégration Shodan / VirusTotal / Censys nativement</li>
+      <li>Export logs chiffrés en AES-256</li>
+      <li>Mode multi-opérateur avec ACL</li>
+      <li>Dashboard métriques avancé avec historiques</li>
+    </ul>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    MILYES_IA v9.0 — GUIDE COMPLET // NetSecurePro // Mohammed Ilyes Zoubirou<br/>
+    SOVEREIGN // SECURE // OPERATIONAL — 2025
+  </div>
+
+</div>
+</body>
+</html>

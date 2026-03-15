@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MILYES_IA v9 — NEO_DZ LIVE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --g: #00ff88; --g2: #00cc66; --g3: #004422; --g4: #001a0d; --dim: #00aa55;
+      --red: #ff3366; --amber: #ffaa00; --blue: #00aaff; --purple: #cc88ff;
+      --bg: #010d05; --bg2: #020f07; --scan: rgba(0,255,136,0.025);
+    }
+    html, body { height: 100%; background: #000; display: flex; align-items: center; justify-content: center; }
+    body { padding: 20px; }
+    #nr {
+      font-family: 'Share Tech Mono', monospace;
+      background: var(--bg); color: var(--g);
+      border: 1px solid var(--g3); border-radius: 4px;
+      overflow: hidden; position: relative;
+      width: 100%; max-width: 900px; min-height: 680px;
+    }
+    #sl {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scan) 2px,var(--scan) 4px);
+      pointer-events: none; z-index: 10;
+    }
+    .nh { background: var(--bg2); border-bottom: 1px solid var(--g3); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 900; letter-spacing: 3px; color: var(--g); }
+    .logo span { color: var(--dim); font-weight: 400; font-size: 10px; }
+    .sb { display: flex; gap: 14px; font-size: 10px; color: var(--dim); align-items: center; }
+    .pulse { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--g); margin-right: 4px; animation: blink 1.2s infinite; }
+    .pulse.r { background: var(--red); }
+    .pulse.a { background: var(--amber); }
+    .pulse.p { background: var(--purple); }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+    @keyframes flicker { 0%,97%,100%{opacity:1} 98.5%{opacity:.88} }
+    .nb { display: grid; grid-template-columns: 1fr 210px; height: 580px; }
+    .term {
+      padding: 10px 14px; overflow-y: auto;
+      border-right: 1px solid var(--g3);
+      font-size: 11.5px; line-height: 1.75;
+      animation: flicker 10s infinite;
+      scrollbar-width: thin; scrollbar-color: var(--g3) transparent;
+    }
+    .term::-webkit-scrollbar { width: 3px; }
+    .term::-webkit-scrollbar-thumb { background: var(--g3); }
+    .ln { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 1px; }
+    .ln.sys { color: var(--dim); } .ln.ok { color: var(--g); } .ln.warn { color: var(--amber); }
+    .ln.err { color: var(--red); } .ln.info { color: var(--blue); } .ln.ia { color: var(--purple); }
+    .ps { color: var(--g2); flex-shrink: 0; font-size: 11px; }
+    .tag { display: inline-block; padding: 0 4px; border: 1px solid currentColor; font-size: 9px; border-radius: 2px; margin-right: 3px; vertical-align: middle; }
+    .ir { display: flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--bg2); border-top: 1px solid var(--g3); border-right: 1px solid var(--g3); }
+    .ir input { flex: 1; background: transparent; border: none; outline: none; color: var(--g); font-family: 'Share Tech Mono', monospace; font-size: 11.5px; caret-color: var(--g); }
+    .ir input::placeholder { color: var(--g3); }
+    .cur { display: inline-block; width: 7px; height: 13px; background: var(--g); animation: blink .8s infinite; vertical-align: middle; }
+    .side { padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+    .mb { border: 1px solid var(--g3); border-radius: 3px; padding: 7px 9px; background: var(--bg2); }
+    .ml { font-size: 9px; color: var(--dim); letter-spacing: 1px; font-family: 'Orbitron', monospace; margin-bottom: 5px; }
+    .mv { font-size: 17px; font-weight: 700; color: var(--g); font-family: 'Orbitron', monospace; }
+    .mv.a { color: var(--amber); } .mv.r { color: var(--red); } .mv.p { color: var(--purple); }
+    .bt { height: 3px; background: var(--g3); border-radius: 2px; margin-top: 5px; }
+    .bf { height: 3px; border-radius: 2px; transition: width .7s ease; }
+    .bf.g { background: var(--g); } .bf.a { background: var(--amber); } .bf.r { background: var(--red); } .bf.p { background: var(--purple); }
+    .cg { display: flex; flex-direction: column; gap: 4px; margin-top: 3px; }
+    .cb {
+      background: var(--g4); border: 1px solid var(--g3); color: var(--g2);
+      font-family: 'Share Tech Mono', monospace; font-size: 10.5px;
+      padding: 4px 8px; text-align: left; cursor: pointer;
+      border-radius: 2px; transition: all .15s; letter-spacing: .3px;
+    }
+    .cb:hover { background: var(--g3); color: var(--g); border-color: var(--g); }
+    .cb:active { transform: scale(.97); }
+    .cb.ia { color: var(--purple); border-color: #220033; }
+    .cb.ia:hover { background: #110022; border-color: var(--purple); }
+    .div { height: 1px; background: var(--g3); margin: 2px 0; }
+    .ai-ind { display: flex; align-items: center; justify-content: space-between; font-size: 10px; padding: 4px 7px; border: 1px solid var(--g3); border-radius: 2px; background: var(--bg2); }
+    .ad { width: 5px; height: 5px; border-radius: 50%; background: var(--g); animation: blink 1.5s infinite; }
+    .ad.off { background: var(--red); animation: blink .35s infinite; }
+    .ad.p { background: var(--purple); animation: blink .6s infinite; }
+    .stream-line { color: #aaffcc; border-left: 2px solid var(--g3); padding-left: 8px; margin: 2px 0 2px 46px; font-size: 11px; line-height: 1.6; }
+    .thinking { color: var(--dim); font-style: italic; margin: 1px 0 1px 46px; font-size: 10.5px; }
+    .wm { position: absolute; bottom: 6px; right: 215px; font-size: 8px; color: var(--g3); letter-spacing: 2px; font-family: 'Orbitron', monospace; pointer-events: none; }
+  </style>
+</head>
+<body>
+<div id="nr">
+  <div id="sl"></div>
+  <div class="nh">
+    <div>
+      <div class="logo">MILYES_IA <span>v9.0 // NEO_DZ LIVE</span></div>
+      <div style="font-size:9px;color:var(--dim);margin-top:2px;letter-spacing:1px">NetSecurePro // Mohammed Ilyes Zoubirou — API ANTHROPIC CONNECTÉE</div>
+    </div>
+    <div class="sb">
+      <span><span class="pulse"></span>ONLINE</span>
+      <span><span class="pulse p" id="ai-pulse"></span>IA LIVE</span>
+      <span><span class="pulse a"></span>IA22</span>
+      <span style="color:var(--dim)" id="clock">--:--:--</span>
+    </div>
+  </div>
+
+  <div class="nb">
+    <div style="display:flex;flex-direction:column">
+      <div class="term" id="term"></div>
+      <div class="ir">
+        <span class="ps">milyes@neo_dz:~$</span>
+        <input type="text" id="ci" placeholder="awaiting command..." autocomplete="off" spellcheck="false"/>
+        <div class="cur" id="cur"></div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="mb">
+        <div class="ml">CPU NEURAL</div>
+        <div class="mv" id="cv">---%</div>
+        <div class="bt"><div class="bf g" id="cb2" style="width:0%"></div></div>
+      </div>
+      <div class="mb">
+        <div class="ml">NEURAL LOAD</div>
+        <div class="mv a" id="nv">---%</div>
+        <div class="bt"><div class="bf a" id="nb2" style="width:0%"></div></div>
+      </div>
+      <div class="mb">
+        <div class="ml">PACKETS/S</div>
+        <div class="mv" id="pv">----</div>
+        <div class="bt"><div class="bf g" id="pb2" style="width:0%"></div></div>
+      </div>
+      <div class="mb">
+        <div class="ml">IA TOKENS/REQ</div>
+        <div class="mv p" id="tv">---</div>
+        <div class="bt"><div class="bf p" id="tb2" style="width:0%"></div></div>
+      </div>
+
+      <div class="div"></div>
+
+      <div class="mb">
+        <div class="ml">COMMANDES</div>
+        <div class="cg">
+          <button class="cb" onclick="runCmd('scan')">&#9654; scan</button>
+          <button class="cb" onclick="runCmd('status')">&#9654; status</button>
+          <button class="cb ia" onclick="runCmd('inject IA22')">&#9733; inject IA22</button>
+          <button class="cb" onclick="runCmd('ask')">&#9654; ask [message]</button>
+          <button class="cb" onclick="runCmd('help')">&#9654; help</button>
+          <button class="cb" onclick="runCmd('clear')">&#9474; clear</button>
+        </div>
+      </div>
+
+      <div class="div"></div>
+
+      <div class="ai-ind">
+        <span style="color:var(--dim)">API ANTHROPIC</span>
+        <div class="ad" id="api-d"></div>
+      </div>
+      <div class="ai-ind">
+        <span style="color:var(--dim)">IA22 FALLBACK</span>
+        <div class="ad off" id="ia22-d"></div>
+      </div>
+      <div class="ai-ind">
+        <span style="color:var(--dim)">STREAM</span>
+        <div class="ad off" id="stream-d"></div>
+      </div>
+    </div>
+  </div>
+  <div class="wm">SOVEREIGN // SECURE // MILYES_IA</div>
+</div>
+
+<script>
+const term = document.getElementById('term');
+const inp  = document.getElementById('ci');
+let ia22Active = false;
+let isStreaming = false;
+let lastTokens = 0;
+
+const SYSTEM_PROMPT = `Tu es MILYES_IA v9, assistant IA souverain et exclusif de Mohammed Ilyes Zoubirou (NetSecurePro).
+Style: réponses courtes, techniques, directes. Format console/terminal. Préfixe les infos avec des tags comme [INFO], [WARN], [OK], [SCAN], [NET], [SEC].
+Langue: français par défaut. Tu es spécialisé en cybersécurité, réseaux, systèmes Linux, et intelligence artificielle souveraine.
+Mode IA22 signifie: opération hors-ligne, logique locale, priorité souveraineté absolue.
+Reste concis: max 8 lignes par réponse. Pas de markdown, pas de listes à puces classiques — utilise des tirets courts (-) si nécessaire.`;
+
+function ts() {
+  return new Date().toLocaleTimeString('fr-FR', {hour12: false});
+}
+
+function line(txt, cls='ok', tag='') {
+  const d = document.createElement('div');
+  d.className = 'ln ' + cls;
+  const tagStr = tag ? `<span class="tag">${tag}</span>` : '';
+  d.innerHTML = `<span class="ps">[${ts()}]</span> ${tagStr}${txt}`;
+  term.appendChild(d);
+  term.scrollTop = term.scrollHeight;
+}
+
+function sep() {
+  const d = document.createElement('div');
+  d.style.cssText = 'height:1px;background:var(--g3);margin:5px 0;';
+  term.appendChild(d);
+}
+
+function setStreaming(on) {
+  isStreaming = on;
+  const sd = document.getElementById('stream-d');
+  const cur = document.getElementById('cur');
+  if (on) {
+    sd.classList.remove('off'); sd.classList.add('p');
+    cur.style.background = 'var(--purple)';
+    inp.disabled = true;
+  } else {
+    sd.classList.add('off'); sd.classList.remove('p');
+    cur.style.background = 'var(--g)';
+    inp.disabled = false;
+    inp.focus();
+  }
+}
+
+async function callAPI(userMsg) {
+  setStreaming(true);
+
+  const thinkEl = document.createElement('div');
+  thinkEl.className = 'thinking';
+  thinkEl.textContent = '> IA22 processing...';
+  term.appendChild(thinkEl);
+  term.scrollTop = term.scrollHeight;
+
+  const streamEl = document.createElement('div');
+  streamEl.className = 'stream-line';
+  term.appendChild(streamEl);
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+
+    const data = await resp.json();
+    thinkEl.remove();
+
+    if (data.content && data.content[0]) {
+      const text = data.content.map(b => b.text || '').join('');
+      const usage = data.usage || {};
+      lastTokens = (usage.input_tokens || 0) + (usage.output_tokens || 0);
+
+      document.getElementById('tv').textContent = lastTokens;
+      document.getElementById('tb2').style.width = Math.min(100, lastTokens / 15) + '%';
+
+      let i = 0;
+      const lines = text.split('\n').filter(l => l.trim());
+
+      function typeNext() {
+        if (i < lines.length) {
+          const l = lines[i];
+          const d = document.createElement('div');
+          d.textContent = l;
+          streamEl.appendChild(d);
+          term.scrollTop = term.scrollHeight;
+          i++;
+          setTimeout(typeNext, 60 + Math.random() * 40);
+        } else {
+          sep();
+          setStreaming(false);
+        }
+      }
+      typeNext();
+
+    } else if (data.error) {
+      thinkEl.remove();
+      streamEl.remove();
+      line('Erreur API: ' + (data.error.message || 'inconnue'), 'err', 'ERR');
+      line('Bascule IA22_LOGIC local...', 'ia', 'IA22');
+      sep();
+      setStreaming(false);
+    }
+  } catch (e) {
+    thinkEl.remove();
+    streamEl.remove();
+    line('API hors ligne — IA22 fallback activé', 'warn', 'IA22');
+    line('Mode souverain local engagé.', 'ia');
+    sep();
+    setStreaming(false);
+    ia22Active = true;
+    document.getElementById('api-d').classList.add('off');
+    document.getElementById('ia22-d').classList.remove('off');
+    document.getElementById('ia22-d').style.background = 'var(--purple)';
+  }
+}
+
+const CMDS = {
+  help: () => {
+    sep();
+    line('COMMANDES DISPONIBLES :', 'info', 'HELP');
+    line('scan          — Scan réseau & sécurité (IA réelle)', 'sys');
+    line('status        — État complet du système', 'sys');
+    line('inject IA22   — Mode souverain local hors-ligne', 'sys');
+    line('ask [message] — Interroge MILYES_IA (ex: ask analyse ce port)', 'sys');
+    line('clear         — Effacer terminal', 'sys');
+    sep();
+  },
+  scan: () => {
+    sep();
+    line('Lancement scan réseau...', 'info', 'SCAN');
+    setTimeout(() => {
+      callAPI('Tu es en mode scan réseau. Génère un rapport de scan réseau fictif mais réaliste pour NetSecurePro: ports ouverts, services détectés, anomalies, recommandations sécurité. Format terminal console.');
+    }, 400);
+  },
+  status: () => {
+    sep();
+    const cpu = Math.floor(Math.random() * 35 + 30);
+    const neural = Math.floor(Math.random() * 25 + 55);
+    const pkt = Math.floor(Math.random() * 4000 + 8000);
+    line('RAPPORT SYSTÈME MILYES_IA v9', 'info', 'STATUS');
+    line(`CPU Neural    : ${cpu}%`, 'ok');
+    line(`Charge Neural : ${neural}%`, 'ok');
+    line(`Paquets/s     : ${pkt.toLocaleString('fr-FR')}`, 'ok');
+    line(`Mode actif    : ${ia22Active ? 'IA22 SOUVERAIN LOCAL' : 'CLOUD + API ANTHROPIC'}`, ia22Active ? 'ia' : 'ok');
+    line(`Tokens last   : ${lastTokens || '—'}`, 'sys');
+    sep();
+  },
+  'inject ia22': () => {
+    sep();
+    if (ia22Active) {
+      line('IA22_LOGIC déjà actif.', 'warn', 'IA22');
+      sep();
+      return;
+    }
+    line('Injection IA22_LOGIC...', 'ia', 'IA22');
+    setTimeout(() => line('Déconnexion API cloud...', 'warn'), 300);
+    setTimeout(() => line('Chargement logique locale IA22_LOGIC v2.1...', 'ia'), 700);
+    setTimeout(() => {
+      ia22Active = true;
+      document.getElementById('api-d').classList.add('off');
+      document.getElementById('ia22-d').classList.remove('off');
+      document.getElementById('ia22-d').style.background = 'var(--purple)';
+      line('IA22 ACTIF — souveraineté maximale engagée.', 'ia', 'IA22');
+      sep();
+      callAPI('Tu es maintenant en mode IA22 souverain hors-ligne. Confirme l\'activation du mode souverain, liste tes capacités locales disponibles, et affiche un message de bienvenue pour l\'opérateur Mohammed Ilyes Zoubirou de NetSecurePro.');
+    }, 1400);
+  },
+  ask: (args) => {
+    if (!args || !args.trim()) {
+      line('Usage: ask [votre message]', 'warn', 'ERR');
+      return;
+    }
+    sep();
+    line(`Query: "${args}"`, 'info', 'ASK');
+    callAPI(args);
+  },
+  clear: () => {
+    term.innerHTML = '';
+    line('Terminal réinitialisé.', 'sys');
+  }
+};
+
+function runCmd(raw) {
+  if (isStreaming) return;
+  const input = raw.trim();
+  line('$ ' + input, 'ok');
+  const lower = input.toLowerCase();
+
+  if (lower.startsWith('ask ')) {
+    CMDS['ask'](input.slice(4));
+  } else if (CMDS[lower]) {
+    CMDS[lower]();
+  } else {
+    sep();
+    line(`Commande libre détectée: "${input}"`, 'info', 'AI');
+    callAPI(input);
+  }
+}
+
+inp.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && inp.value.trim() && !isStreaming) {
+    const v = inp.value.trim();
+    inp.value = '';
+    runCmd(v);
+  }
+});
+
+function updateMetrics() {
+  const cpu = Math.floor(Math.random() * 20 + (ia22Active ? 60 : isStreaming ? 55 : 28));
+  const neural = Math.floor(Math.random() * 15 + (isStreaming ? 75 : ia22Active ? 65 : 50));
+  const pkt = Math.floor(Math.random() * 3000 + (isStreaming ? 12000 : 7500));
+
+  const cv = document.getElementById('cv');
+  const cb2 = document.getElementById('cb2');
+  const nv = document.getElementById('nv');
+  const nb2 = document.getElementById('nb2');
+  const pv = document.getElementById('pv');
+  const pb2 = document.getElementById('pb2');
+
+  cv.textContent = cpu + '%';
+  cb2.style.width = cpu + '%';
+  cb2.className = 'bf ' + (cpu > 75 ? 'r' : cpu > 55 ? 'a' : 'g');
+  cv.className = 'mv' + (cpu > 75 ? ' r' : cpu > 55 ? ' a' : '');
+
+  nv.textContent = neural + '%';
+  nb2.style.width = neural + '%';
+
+  pv.textContent = pkt.toLocaleString('fr-FR');
+  pb2.style.width = Math.min(100, pkt / 180) + '%';
+}
+
+function updateClock() {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('fr-FR', {hour12: false});
+}
+
+setInterval(updateMetrics, 1800);
+setInterval(updateClock, 1000);
+updateClock();
+
+function boot() {
+  const seq = [
+    [() => line('MILYES_IA v9.0 // NEO_DZ LIVE TERMINAL', 'ok', 'SYS'), 0],
+    [() => line('API Anthropic connectée — stream activé', 'ok', 'NET'), 200],
+    [() => line('Module souveraineté... OK', 'sys'), 380],
+    [() => line('IA22_LOGIC fallback... EN VEILLE', 'warn', 'IA22'), 560],
+    [() => sep(), 720],
+    [() => line('Système prêt. Tapez <b>help</b> ou toute commande libre.', 'info'), 820],
+    [() => sep(), 950],
+  ];
+  seq.forEach(([fn, d]) => setTimeout(fn, d));
+}
+
+boot();
+setTimeout(() => inp.focus(), 1000);
+</script>
+</body>
+</html>
