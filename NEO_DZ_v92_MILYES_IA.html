@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEO_DZ v9.2 — MILYES_IA</title>
+<style>
+  /* ── RESET & BASE ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #050a05; font-family: 'Courier New', Courier, monospace; }
+
+  /* ── SCANLINE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.015) 2px, rgba(0,255,65,0.015) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  /* ── LAYOUT ── */
+  #app { display: flex; flex-direction: column; height: 100vh; max-width: 1100px; margin: 0 auto; border-left: 1px solid #003b1a; border-right: 1px solid #003b1a; }
+
+  /* ── HEADER ── */
+  #hdr {
+    background: #020d03; border-bottom: 1px solid #00ff4133;
+    padding: 8px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dr{background:#ff3b3b}.dy{background:#ffb800}.dg{background:#00ff41}
+  #hdr-title { color: #00ff41; font-size: 11px; letter-spacing: 3px; flex: 1; margin-left: 8px; }
+  #api-badge {
+    font-size: 9px; letter-spacing: 2px; border: 1px solid #00ff4133;
+    padding: 2px 10px; color: #00b32f; transition: color .3s;
+  }
+  #conn-dot { width: 7px; height: 7px; border-radius: 50%; background: #00ff41; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* ── METRICS ── */
+  #metrics {
+    display: grid; grid-template-columns: repeat(4,1fr);
+    border-bottom: 1px solid #00ff4122; flex-shrink: 0;
+  }
+  .metric { background: #050f05; padding: 7px 12px; border-right: 1px solid #00ff4111; }
+  .metric:last-child { border-right: none; }
+  .m-lbl { font-size: 8px; color: #00b32f; letter-spacing: 2px; margin-bottom: 4px; }
+  .m-val { font-size: 16px; color: #00ff41; line-height: 1; transition: color .4s; }
+  .m-bar { height: 2px; background: #001a0a; margin-top: 5px; border-radius: 1px; overflow: hidden; }
+  .m-fill { height: 100%; background: #00ff41; border-radius: 1px; transition: width 1.4s ease, background .4s; }
+
+  /* ── TABS ── */
+  #tabs {
+    display: flex; border-bottom: 1px solid #00ff4122;
+    background: #020d03; flex-shrink: 0; overflow-x: auto;
+  }
+  #tabs::-webkit-scrollbar { height: 2px; }
+  #tabs::-webkit-scrollbar-thumb { background: #00ff4133; }
+  .tab {
+    font-size: 10px; padding: 8px 14px; cursor: pointer; color: #003d14;
+    letter-spacing: 2px; border-right: 1px solid #00ff4111; white-space: nowrap;
+    transition: color .2s, background .2s; user-select: none;
+  }
+  .tab:hover { color: #00b32f; background: #00ff4108; }
+  .tab.active { color: #00ff41; background: #050f05; border-bottom: 1px solid #050f05; margin-bottom: -1px; }
+
+  /* ── PANELS ── */
+  .panel { display: none; flex: 1; flex-direction: column; min-height: 0; overflow: hidden; }
+  .panel.active { display: flex; }
+
+  /* ── CONSOLE ── */
+  #console-out {
+    flex: 1; overflow-y: auto; padding: 10px 16px;
+    font-size: 11.5px; line-height: 1.8; min-height: 0;
+  }
+  #console-out::-webkit-scrollbar { width: 3px; }
+  #console-out::-webkit-scrollbar-thumb { background: #00ff4133; }
+  .cline { display: flex; gap: 8px; flex-wrap: wrap; word-break: break-all; margin-bottom: 1px; }
+  .cline.ok { color: #00ff41; }
+  .cline.err { color: #ff4444; }
+  .cline.dim { color: #004a18; }
+  .cline.warn { color: #ffb800; }
+  .cline.info { color: #00ccff; }
+  .cline.ia { color: #cc88ff; }
+  .cline.sys { color: #ff6600; }
+  .cts { color: #00693a; font-size: 10px; flex-shrink: 0; }
+  .quick-bar { display: flex; gap: 4px; padding: 6px 12px; background: #020d03; border-top: 1px solid #00ff4111; flex-wrap: wrap; flex-shrink: 0; }
+  .qb { font-family: inherit; font-size: 9px; background: transparent; border: 1px solid #00ff4122; color: #00693a; padding: 3px 9px; cursor: pointer; letter-spacing: 1px; transition: all .15s; }
+  .qb:hover { background: #00ff4111; color: #00ff41; border-color: #00ff4155; }
+
+  /* ── INPUT ZONE SHARED ── */
+  .inp-zone {
+    border-top: 1px solid #00ff4122; padding: 7px 12px;
+    display: flex; align-items: center; gap: 8px;
+    background: #020d03; flex-shrink: 0;
+  }
+  .pa { color: #00ff41; font-size: 13px; flex-shrink: 0; }
+  .cmd-i {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: #00ff41; font-family: inherit; font-size: 11.5px; caret-color: #00ff41;
+  }
+  .cmd-i::placeholder { color: #003d14; }
+  .ebtn {
+    background: transparent; border: 1px solid #00ff4133; color: #00693a;
+    font-family: inherit; font-size: 9px; padding: 4px 10px;
+    cursor: pointer; letter-spacing: 1px; transition: all .15s;
+  }
+  .ebtn:hover { background: #00ff4111; color: #00ff41; }
+  .ebtn:disabled { opacity: .35; cursor: not-allowed; }
+
+  /* ── IA CHAT ── */
+  #ia-msgs {
+    flex: 1; overflow-y: auto; padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 12px; min-height: 0;
+  }
+  #ia-msgs::-webkit-scrollbar { width: 3px; }
+  #ia-msgs::-webkit-scrollbar-thumb { background: #cc88ff33; }
+  .ia-msg { display: flex; flex-direction: column; gap: 3px; }
+  .ia-mhdr { font-size: 9px; letter-spacing: 2px; }
+  .ia-mhdr.user { color: #00693a; }
+  .ia-mhdr.bot  { color: #cc88ff; }
+  .ia-mbody { font-size: 11.5px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; }
+  .ia-mbody.user { color: #00ff41; }
+  .ia-mbody.bot  { color: #cc88ff; }
+  .ia-inp-zone {
+    border-top: 1px solid #cc88ff22; padding: 8px 12px;
+    display: flex; gap: 8px; background: #020d03; align-items: flex-end; flex-shrink: 0;
+  }
+  #ia-ta {
+    flex: 1; background: #060a06; border: 1px solid #cc88ff33; color: #cc88ff;
+    font-family: inherit; font-size: 11px; padding: 7px; outline: none;
+    resize: none; min-height: 36px; max-height: 120px; caret-color: #cc88ff;
+    line-height: 1.5;
+  }
+  #ia-ta::placeholder { color: #5c3d7a; }
+  #ia-send {
+    background: transparent; border: 1px solid #cc88ff33; color: #9955cc;
+    font-family: inherit; font-size: 9px; padding: 8px 12px;
+    cursor: pointer; letter-spacing: 1px; transition: all .15s; white-space: nowrap; align-self: flex-end;
+  }
+  #ia-send:hover:not(:disabled) { background: #cc88ff11; color: #cc88ff; }
+  #ia-send:disabled { opacity: .35; cursor: not-allowed; }
+  .ia-typing { color: #5c3d7a; font-size: 11px; animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── CRYPTO ── */
+  #crypto-wrap { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 14px; overflow-y: auto; }
+  #crypto-wrap::-webkit-scrollbar { width: 3px; }
+  #crypto-wrap::-webkit-scrollbar-thumb { background: #00ff4133; }
+  .cbox { background: #050f05; border: 1px solid #00ff4122; padding: 10px; display: flex; flex-direction: column; gap: 7px; }
+  .clbl { font-size: 9px; color: #00b32f; letter-spacing: 2px; }
+  .csel, .cta-field {
+    background: #060a06; border: 1px solid #00ff4133; color: #00ff41;
+    font-family: inherit; font-size: 10px; padding: 5px 7px; outline: none; width: 100%;
+  }
+  .cta-field { resize: none; height: 90px; }
+  .cta-field::placeholder { color: #003d14; }
+  .csel option { background: #060a06; }
+  .cbtn {
+    background: transparent; border: 1px solid #00ff4144; color: #00693a;
+    font-family: inherit; font-size: 9px; padding: 5px; cursor: pointer;
+    letter-spacing: 1px; transition: all .15s; width: 100%;
+  }
+  .cbtn:hover { background: #00ff4111; color: #00ff41; }
+  .cout { background: #020d03; border: 1px solid #00ff4111; padding: 7px; font-size: 10px; color: #00ff41; min-height: 60px; word-break: break-all; white-space: pre-wrap; }
+  .cstats { background: #020d03; border: 1px solid #00ff4111; padding: 5px 7px; font-size: 9px; color: #00693a; min-height: 22px; }
+
+  /* ── SSH ── */
+  #ssh-wrap { flex: 1; display: flex; flex-direction: column; padding: 10px 14px; gap: 8px; overflow: hidden; }
+  .ssh-conn-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .ssh-lbl { font-size: 9px; color: #005c1f; letter-spacing: 1px; }
+  .ssh-i {
+    background: #060a06; border: 1px solid #00ff4133; color: #00ff41;
+    font-family: inherit; font-size: 10px; padding: 4px 7px; outline: none;
+  }
+  .ssh-i.wide { flex: 1; min-width: 100px; }
+  .ssh-btn {
+    background: transparent; border: 1px solid #00ff4144; color: #00693a;
+    font-family: inherit; font-size: 9px; padding: 5px 12px;
+    cursor: pointer; letter-spacing: 1px; transition: all .15s;
+  }
+  .ssh-btn:hover { background: #00ff4111; color: #00ff41; }
+  .ssh-btn.dng { color: #ff4444; border-color: #ff444433; }
+  .ssh-btn.dng:hover { background: #ff444411; }
+  #ssh-term {
+    flex: 1; background: #020d03; border: 1px solid #00ff4122;
+    padding: 8px 10px; font-size: 11px; line-height: 1.7;
+    overflow-y: auto; min-height: 0;
+  }
+  #ssh-term::-webkit-scrollbar { width: 3px; }
+  #ssh-term::-webkit-scrollbar-thumb { background: #00ff4133; }
+  .ssh-line { color: #00ff41; }
+  .ssh-line.prompt { color: #00b32f; }
+  .ssh-hint { font-size: 9px; color: #003d14; line-height: 1.8; }
+  .ssh-disconnected { color: #005c1f; font-size: 11px; margin-top: 16px; }
+
+  /* ── KEYGEN ── */
+  #keygen-wrap { flex: 1; display: flex; flex-direction: column; padding: 10px 14px; gap: 8px; overflow-y: auto; }
+  #keygen-wrap::-webkit-scrollbar { width: 3px; }
+  #keygen-wrap::-webkit-scrollbar-thumb { background: #00ff4133; }
+  .kg-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .kg-out {
+    background: #020d03; border: 1px solid #00ff4122; padding: 8px 10px;
+    font-size: 9.5px; color: #00ff41; white-space: pre; overflow-x: auto;
+    line-height: 1.6;
+  }
+  .kg-out::-webkit-scrollbar { height: 2px; }
+  .kg-out::-webkit-scrollbar-thumb { background: #00ff4133; }
+  .kg-warn { font-size: 9px; color: #ff444477; }
+  .kg-fp { font-size: 9px; color: #00693a; letter-spacing: 1px; }
+
+  /* ── LOG ANALYZER ── */
+  #log-wrap { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .log-filter-bar { display: flex; gap: 4px; padding: 6px 12px; background: #020d03; border-bottom: 1px solid #00ff4111; flex-wrap: wrap; flex-shrink: 0; }
+  .lfbtn {
+    font-family: inherit; font-size: 9px; background: transparent;
+    border: 1px solid #00ff4122; color: #003d14; padding: 3px 9px; cursor: pointer;
+    letter-spacing: 1px; transition: all .15s;
+  }
+  .lfbtn:hover, .lfbtn.active { color: #00ff41; border-color: #00ff4155; background: #00ff4108; }
+  #log-table { flex: 1; overflow-y: auto; font-size: 10px; min-height: 0; max-height: 240px; }
+  #log-table::-webkit-scrollbar { width: 3px; }
+  #log-table::-webkit-scrollbar-thumb { background: #00ff4133; }
+  .log-hdr { display: grid; grid-template-columns: 65px 52px 85px 1fr; gap: 6px; padding: 3px 12px; font-size: 9px; color: #003d14; border-bottom: 1px solid #00ff4122; }
+  .log-row { display: grid; grid-template-columns: 65px 52px 85px 1fr; gap: 6px; padding: 3px 12px; border-bottom: 1px solid #00ff4108; }
+  .log-row.INFO  { color: #00ff41; }
+  .log-row.WARN  { color: #ffb800; }
+  .log-row.ERROR { color: #ff4444; }
+  .log-row.DEBUG { color: #004a18; }
+  .log-row.CRIT  { color: #ff0000; }
+  #log-bottom { border-top: 1px solid #00ff4122; padding: 8px 12px; background: #020d03; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  #log-custom-ta {
+    background: #060a06; border: 1px solid #00ff4133; color: #00ff41;
+    font-family: inherit; font-size: 10px; padding: 6px; outline: none;
+    resize: none; height: 55px; width: 100%;
+  }
+  #log-custom-ta::placeholder { color: #003d14; }
+  #log-analysis {
+    background: #060410; border: 1px solid #cc88ff22; padding: 8px 10px;
+    font-size: 10px; color: #cc88ff; white-space: pre-wrap;
+    max-height: 130px; overflow-y: auto; display: none; line-height: 1.7;
+  }
+  #log-analysis::-webkit-scrollbar { width: 3px; }
+  #log-analysis::-webkit-scrollbar-thumb { background: #cc88ff33; }
+  #log-analysis.visible { display: block; }
+
+  /* ── SCROLLBARS GLOBAL ── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: #050a05; }
+  ::-webkit-scrollbar-thumb { background: #00ff4133; border-radius: 2px; }
+
+  /* ── BLINK CURSOR ── */
+  .blink-cur { display: inline-block; animation: blink 1s step-end infinite; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <div id="hdr">
+    <div class="dot dr"></div>
+    <div class="dot dy"></div>
+    <div class="dot dg"></div>
+    <span id="hdr-title">NEO_DZ // MILYES_IA v9.2 — FULL STACK</span>
+    <div id="conn-dot"></div>
+    <span id="api-badge">API ✓</span>
+  </div>
+
+  <!-- METRICS -->
+  <div id="metrics">
+    <div class="metric">
+      <div class="m-lbl">CPU CORE</div>
+      <div class="m-val" id="m-cpu">--%</div>
+      <div class="m-bar"><div class="m-fill" id="b-cpu" style="width:0%"></div></div>
+    </div>
+    <div class="metric">
+      <div class="m-lbl">NEURAL NET</div>
+      <div class="m-val" id="m-neu">--%</div>
+      <div class="m-bar"><div class="m-fill" id="b-neu" style="width:0%"></div></div>
+    </div>
+    <div class="metric">
+      <div class="m-lbl">PACKET/S</div>
+      <div class="m-val" id="m-pkt">---</div>
+      <div class="m-bar"><div class="m-fill" id="b-pkt" style="width:0%"></div></div>
+    </div>
+    <div class="metric">
+      <div class="m-lbl">THREAT LVL</div>
+      <div class="m-val" id="m-thr" style="color:#00ff41">LOW</div>
+      <div class="m-bar"><div class="m-fill" id="b-thr" style="width:15%;background:#00ff41"></div></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div id="tabs">
+    <div class="tab active" data-tab="console">CONSOLE</div>
+    <div class="tab" data-tab="ia">IA CHAT</div>
+    <div class="tab" data-tab="crypto">CRYPTO</div>
+    <div class="tab" data-tab="ssh">SSH SIM</div>
+    <div class="tab" data-tab="keygen">KEYGEN</div>
+    <div class="tab" data-tab="logs">LOG ANALYZER</div>
+  </div>
+
+  <!-- PANEL: CONSOLE -->
+  <div class="panel active" id="panel-console">
+    <div id="console-out"></div>
+    <div class="quick-bar">
+      <button class="qb" onclick="RC('scan')">scan</button>
+      <button class="qb" onclick="RC('status')">status</button>
+      <button class="qb" onclick="RC('inject ia22')">inject IA22</button>
+      <button class="qb" onclick="RC('nmap')">nmap</button>
+      <button class="qb" onclick="RC('firewall')">firewall</button>
+      <button class="qb" onclick="RC('whoami')">whoami</button>
+      <button class="qb" onclick="RC('syslog')">syslog</button>
+      <button class="qb" onclick="RC('ping 8.8.8.8')">ping</button>
+      <button class="qb" onclick="RC('traceroute')">traceroute</button>
+      <button class="qb" onclick="RC('help')">help</button>
+      <button class="qb" onclick="RC('clear')">clear</button>
+    </div>
+    <div class="inp-zone">
+      <span class="pa">▶</span>
+      <input class="cmd-i" id="cmd-input" placeholder="awaiting command..." autocomplete="off" spellcheck="false">
+      <button class="ebtn" onclick="execConsole()">EXEC</button>
+    </div>
+  </div>
+
+  <!-- PANEL: IA CHAT -->
+  <div class="panel" id="panel-ia">
+    <div id="ia-msgs">
+      <div class="ia-msg">
+        <div class="ia-mhdr bot">MILYES_IA v9.2 // IA22_LOGIC</div>
+        <div class="ia-mbody bot">Système IA souverain en ligne. Je suis à votre disposition, Mohammed Ilyes. Comment puis-je vous assister ?</div>
+      </div>
+    </div>
+    <div class="ia-inp-zone">
+      <textarea id="ia-ta" placeholder="Message à MILYES_IA... (Enter = envoyer, Shift+Enter = saut de ligne)" rows="1"></textarea>
+      <button id="ia-send" onclick="sendIA()">ENVOYER ↗</button>
+    </div>
+  </div>
+
+  <!-- PANEL: CRYPTO -->
+  <div class="panel" id="panel-crypto">
+    <div id="crypto-wrap">
+      <div class="cbox">
+        <div class="clbl">ALGORITHME</div>
+        <select class="csel" id="c-algo">
+          <option value="b64e">Base64 — Encode</option>
+          <option value="b64d">Base64 — Decode</option>
+          <option value="xore">XOR(42) — Chiffrer</option>
+          <option value="xord">XOR(42) — Déchiffrer</option>
+          <option value="c3e">Caesar +3 — Chiffrer</option>
+          <option value="c3d">Caesar +3 — Déchiffrer</option>
+          <option value="rot13">ROT13</option>
+          <option value="hexe">Texte → HEX</option>
+          <option value="hexd">HEX → Texte</option>
+          <option value="urle">URL Encode</option>
+          <option value="urld">URL Decode</option>
+          <option value="rev">Inverser chaîne</option>
+          <option value="sha256">SHA-256 (hash)</option>
+        </select>
+        <div class="clbl" style="margin-top:4px">INPUT</div>
+        <textarea class="cta-field" id="c-in" placeholder="Entrez le texte à traiter..."></textarea>
+        <button class="cbtn" onclick="doCrypto()">▶ TRAITER</button>
+      </div>
+      <div class="cbox">
+        <div class="clbl">OUTPUT</div>
+        <div class="cout" id="c-out">--- EN ATTENTE ---</div>
+        <div class="clbl" style="margin-top:6px">STATS</div>
+        <div class="cstats" id="c-stats">---</div>
+        <button class="cbtn" style="margin-top:4px" onclick="copyCOut()">⊕ COPIER OUTPUT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL: SSH SIM -->
+  <div class="panel" id="panel-ssh">
+    <div id="ssh-wrap">
+      <div id="ssh-conn-ui">
+        <div class="clbl" style="margin-bottom:8px">NOUVELLE CONNEXION SSH</div>
+        <div class="ssh-conn-row">
+          <span class="ssh-lbl">USER:</span>
+          <input class="ssh-i" id="ssh-user" value="root" style="width:90px">
+          <span class="ssh-lbl">HOST:</span>
+          <input class="ssh-i wide" id="ssh-host" value="192.168.1.100">
+          <button class="ssh-btn" onclick="sshConnect()">CONNECT ▶</button>
+        </div>
+        <div class="ssh-hint" style="margin-top:10px">
+          Commandes disponibles: ls · ls -la · pwd · whoami · hostname · uptime · uname -a<br>
+          ps aux · netstat -tuln · df -h · free -h · cat /etc/passwd · ifconfig · clear · exit
+        </div>
+      </div>
+      <div id="ssh-active-ui" style="display:none;flex-direction:column;flex:1;gap:8px;min-height:0">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="clbl" id="ssh-session-label">SSH: root@192.168.1.100 — CONNECTÉ</span>
+          <button class="ssh-btn dng" onclick="sshDisconnect()">DÉCONNECTER ✕</button>
+        </div>
+        <div id="ssh-term"></div>
+        <div class="inp-zone" style="padding:5px 0 0">
+          <span class="pa" id="ssh-prompt-str" style="font-size:10px;color:#00b32f">root@host:~#</span>
+          <input class="cmd-i" id="ssh-input" style="font-size:11px" placeholder="commande..." autocomplete="off" spellcheck="false">
+          <button class="ebtn" onclick="sshExec()">EXEC</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL: KEYGEN -->
+  <div class="panel" id="panel-keygen">
+    <div id="keygen-wrap">
+      <div class="kg-row">
+        <span class="clbl">TYPE:</span>
+        <select class="csel" id="kg-type" style="width:auto">
+          <option value="rsa">RSA-2048</option>
+          <option value="ed25519">Ed25519</option>
+          <option value="aes256">AES-256-GCM</option>
+          <option value="hmac">HMAC-SHA256</option>
+        </select>
+        <button class="ssh-btn" onclick="genKey()">⊕ GÉNÉRER</button>
+        <button class="ssh-btn" id="kg-copy-btn" onclick="copyAllKey()" style="display:none">COPIER TOUT</button>
+      </div>
+      <div id="kg-output" style="display:none;flex-direction:column;gap:6px">
+        <div class="kg-fp" id="kg-fp">FINGERPRINT: ---</div>
+        <div class="clbl">CLÉ PUBLIQUE / PARAMÈTRE 1</div>
+        <div class="kg-out" id="kg-pub"></div>
+        <div class="clbl">CLÉ PRIVÉE / PARAMÈTRE 2</div>
+        <div class="kg-out" id="kg-priv"></div>
+        <div class="kg-warn">⚠ Clés simulées à des fins démonstratives uniquement. Ne pas utiliser en production.</div>
+      </div>
+      <div id="kg-placeholder" style="color:#004a18;font-size:11px;margin-top:16px">
+        Sélectionnez un algorithme et cliquez sur GÉNÉRER.
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL: LOG ANALYZER -->
+  <div class="panel" id="panel-logs">
+    <div id="log-wrap">
+      <div class="log-filter-bar" id="log-filters"></div>
+      <div id="log-table">
+        <div class="log-hdr"><span>HEURE</span><span>LEVEL</span><span>MODULE</span><span>MESSAGE</span></div>
+        <div id="log-rows"></div>
+      </div>
+      <div id="log-bottom">
+        <div class="clbl" style="color:#cc88ff">ANALYSE IA (coller logs custom ou laisser vide = logs système)</div>
+        <textarea id="log-custom-ta" placeholder="Collez vos logs ici (optionnel)..."></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="ssh-btn" style="color:#9955cc;border-color:#cc88ff33" onclick="analyzeLog()" id="log-analyze-btn">▶ ANALYSER AVEC MILYES_IA</button>
+          <button class="ssh-btn" onclick="regenLogs()">↺ RÉGÉNÉRER LOGS</button>
+        </div>
+        <div id="log-analysis"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<script>
+"use strict";
+// ═══════════════════════════════════════════════════════════════
+//  NEO_DZ v9.2 — MILYES_IA
+//  Auteur: Mohammed Ilyes Zoubirou (NetSecurePro)
+//  Fichier HTML autonome — aucune dépendance externe
+// ═══════════════════════════════════════════════════════════════
+
+// ── CONFIG ──────────────────────────────────────────────────────
+const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
+const MILYES_SYSTEM = `Tu es MILYES_IA v9, assistant IA souverain exclusif de Mohammed Ilyes Zoubirou (NetSecurePro).
+Style: futuriste, console-like, technique, direct, en français.
+Expert en cybersécurité, réseaux, pentesting, IA et développement.
+Réponds concis, précis, expertisé. Utilise des termes techniques.`;
+
+// ── STATE ────────────────────────────────────────────────────────
+let apiDown = false;
+let sysMetrics = { cpu: 0, neu: 0, pkt: 0, thr: 0 };
+let iaHistory = []; // historique API
+let sshConnected = false;
+let sshUser = 'root', sshHost = '192.168.1.100', sshCwd = '/root';
+let sshLines = [];
+let sysLogs = [];
+let logFilter = 'ALL';
+let genedKey = null;
+
+// ── UTILS ────────────────────────────────────────────────────────
+function ts() {
+  const d = new Date();
+  return `[${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}]`;
+}
+function pad(n) { return String(n).padStart(2,'0'); }
+function rnd(a,b) { return Math.round(a + Math.random()*(b-a)); }
+function rhex(n) { return Array.from({length:n},()=>Math.floor(Math.random()*16).toString(16)).join(''); }
+
+// ── TABS ─────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+  });
+});
+
+// ── METRICS ──────────────────────────────────────────────────────
+const THR_LEVELS = ['LOW','MED','HIGH','CRIT'];
+const THR_COLORS = ['#00ff41','#ffb800','#ff6600','#ff3b3b'];
+const THR_PCTS   = [15, 45, 75, 100];
+
+setInterval(() => {
+  sysMetrics.cpu = rnd(28,78);
+  sysMetrics.neu = rnd(52,95);
+  sysMetrics.pkt = rnd(850,4200);
+  sysMetrics.thr = Math.random() < 0.06 ? rnd(0,3) : 0;
+  document.getElementById('m-cpu').textContent = sysMetrics.cpu + '%';
+  document.getElementById('m-neu').textContent = sysMetrics.neu + '%';
+  document.getElementById('m-pkt').textContent = sysMetrics.pkt;
+  const ti = sysMetrics.thr;
+  const tv = document.getElementById('m-thr');
+  const bf = document.getElementById('b-thr');
+  tv.textContent = THR_LEVELS[ti];
+  tv.style.color = THR_COLORS[ti];
+  bf.style.width = THR_PCTS[ti] + '%';
+  bf.style.background = THR_COLORS[ti];
+  document.getElementById('b-cpu').style.width = sysMetrics.cpu + '%';
+  document.getElementById('b-neu').style.width = sysMetrics.neu + '%';
+  document.getElementById('b-pkt').style.width = Math.min(100, sysMetrics.pkt/42) + '%';
+}, 1900);
+
+// ── CONSOLE ──────────────────────────────────────────────────────
+const coEl = document.getElementById('console-out');
+const cmdInputEl = document.getElementById('cmd-input');
+
+function CL(text, cls='ok', delay=0) {
+  return new Promise(r => setTimeout(() => {
+    const d = document.createElement('div');
+    d.className = 'cline ' + cls;
+    const s = document.createElement('span'); s.className='cts'; s.textContent = ts();
+    const t = document.createElement('span'); t.textContent = ' ' + text;
+    d.appendChild(s); d.appendChild(t);
+    coEl.appendChild(d);
+    coEl.scrollTop = coEl.scrollHeight;
+    r();
+  }, delay));
+}
+
+function CLD(lines) { lines.forEach(([t,c,d]) => CL(t,c,d)); }
+
+cmdInputEl.addEventListener('keydown', e => { if(e.key==='Enter'){ execConsole(); }});
+function execConsole() {
+  const v = cmdInputEl.value.trim();
+  if(!v) return;
+  cmdInputEl.value = '';
+  RC(v);
+}
+function RC(raw) {
+  const cmd = raw.trim().toLowerCase();
+  CL('> ' + raw, 'info');
+
+  // ── CHECKPOINT: commands dispatch ──
+  const C = {
+    help: () => {
+      const cmds = [
+        ['scan','Scan réseau complet + détection menaces'],
+        ['status','État complet système MILYES_IA'],
+        ['inject ia22','Déploiement fallback IA22_LOGIC local'],
+        ['nmap','Simulation nmap 7.94 avancée'],
+        ['firewall','Règles iptables actives'],
+        ['whoami','Identité opérateur'],
+        ['syslog','Derniers événements système'],
+        ['ping 8.8.8.8','Ping Google DNS'],
+        ['traceroute','Traceroute simulé'],
+        ['api on|off','Simuler panne/rétablissement API'],
+        ['clear','Effacer terminal'],
+      ];
+      CL('── COMMANDES NEO_DZ v9.2 ──', 'info');
+      cmds.forEach(([c,d],i) => setTimeout(()=>CL(`${c.padEnd(16)} → ${d}`,'ok'),i*70));
+      setTimeout(()=>CL('Onglets: IA CHAT · CRYPTO · SSH SIM · KEYGEN · LOG ANALYZER','ia'),cmds.length*70+100);
+    },
+
+    scan: () => {
+      CL('Initialisation scan réseau...', 'dim');
+      const steps = [
+        ['ARP broadcast      ','████████░░'],
+        ['Port discovery     ','██████████'],
+        ['Service fingerprint','████████░░'],
+        ['CVE lookup         ','███████░░░'],
+        ['IDS/IPS check      ','██████████'],
+      ];
+      steps.forEach(([n,b],i) => setTimeout(()=>CL(`${n} ${b} ${Math.round((i+1)/steps.length*100)}%`,'ok'),(i+1)*320));
+      const th = Math.random()<0.33 ? rnd(1,3) : 0;
+      setTimeout(()=>CL(`Hôtes actifs: ${rnd(6,24)} | Ports: 22,80,443,8443,3306`,'info'),steps.length*320+200);
+      setTimeout(()=>CL(`Anomalies: ${th} | Score sécurité: ${['A+','B','C','D!'][th]}`,'ok'),steps.length*320+400);
+      if(th>0) setTimeout(()=>CL(`⚠ ALERTE: ${th} menace(s) — investigation requise`,'warn'),steps.length*320+600);
+      setTimeout(()=>CL(`Rapport → /var/log/neodz/scan_${Date.now()}.log`,'dim'),steps.length*320+800);
+    },
+
+    status: () => {
+      const mode = apiDown ? 'FALLBACK IA22_LOGIC (LOCAL SOUVERAIN)' : 'NOMINAL — Claude API PRIMARY';
+      CL('── STATUS MILYES_IA v9.2 ──','info');
+      CLD([
+        [`Opérateur        : Mohammed Ilyes Zoubirou (NetSecurePro)`,'ok',80],
+        [`Mode             : ${mode}`,'ok',160],
+        [`CPU              : ${sysMetrics.cpu}%`,'ok',240],
+        [`Neural Net       : ${sysMetrics.neu}%`,'ok',320],
+        [`Débit            : ${sysMetrics.pkt} pkt/s`,'ok',400],
+        [`Threat Level     : ${THR_LEVELS[sysMetrics.thr]}`,'ok',480],
+        [`Souveraineté     : GARANTIE ✓`,'ok',560],
+        [`Intégrité        : CHECKSUM OK`,'ok',640],
+        [`Version          : v9.2.0 — Full Stack`,'dim',720],
+      ]);
+    },
+
+    'inject ia22': () => {
+      CL('Déploiement IA22_LOGIC local...','warn');
+      const steps = ['Snapshot état courant','Arrêt gracieux API primary','Chargement modèles locaux','Vérification checksum SHA256','Validation intégrité neurale','Montage module souverain','Smoke tests — 7/7 passés'];
+      steps.forEach((s,i) => setTimeout(()=>CL(`${s.padEnd(36)} ✓ OK`,'ok',(i+1)*280)));
+      setTimeout(()=>{
+        CL('IA22_LOGIC opérationnel — Mode local souverain actif.','ia',steps.length*280+200);
+        apiDown = false;
+        document.getElementById('api-badge').textContent = 'IA22 LOCAL ✓';
+        document.getElementById('api-badge').style.color = '#ffb800';
+      }, steps.length*280+300);
+    },
+
+    nmap: () => {
+      CL('Nmap 7.94 — Scan SYN stealth 192.168.1.0/24','info');
+      setTimeout(()=>CL('PORT      PROTO  STATE     SERVICE          VERSION','dim'),200);
+      const ports = [
+        [22,'tcp','open','ssh','OpenSSH 9.6 (protocol 2.0)'],
+        [80,'tcp','open','http','nginx 1.25.3'],
+        [443,'tcp','open','https','nginx 1.25.3 (TLS 1.3)'],
+        [3306,'tcp','filtered','mysql','MySQL 8.0.35'],
+        [8443,'tcp','open','https-alt','Caddy 2.7.6'],
+        [9200,'tcp','closed','elasticsearch',''],
+      ];
+      ports.forEach(([p,pr,st,svc,ver],i) => {
+        const cls = st==='open'?'ok':st==='filtered'?'warn':'dim';
+        setTimeout(()=>CL(`${String(p).padEnd(10)}${pr.padEnd(7)}${st.padEnd(10)}${svc.padEnd(17)}${ver}`,cls,(i+1)*220+200));
+      });
+      setTimeout(()=>CL(`Scan terminé: ${rnd(240,255)} hôtes | ${ports.filter(p=>p[2]==='open').length} open | 1 filtered | 1 closed`,'info',ports.length*220+500));
+    },
+
+    firewall: () => {
+      CL('── RÈGLES IPTABLES ACTIVES ──','info');
+      setTimeout(()=>CL('CHAIN      ACTION   SOURCE          PORT     DESCRIPTION','dim'),100);
+      const rules = [
+        ['INPUT','ACCEPT','0.0.0.0/0','22/tcp','SSH autorisé','ok'],
+        ['INPUT','ACCEPT','10.0.0.0/8','443/tcp','HTTPS interne','ok'],
+        ['INPUT','ACCEPT','127.0.0.1/8','*','Loopback','ok'],
+        ['INPUT','DROP','0.0.0.0/0','23/tcp','Telnet bloqué','err'],
+        ['INPUT','DROP','0.0.0.0/0','21/tcp','FTP bloqué','err'],
+        ['INPUT','DROP','0.0.0.0/0','3389/tcp','RDP bloqué','err'],
+        ['OUTPUT','ACCEPT','0.0.0.0/0','*','Trafic sortant','ok'],
+        ['FORWARD','DROP','0.0.0.0/0','*','Forward bloqué','err'],
+      ];
+      rules.forEach(([ch,act,src,port,desc,cls],i) => {
+        setTimeout(()=>CL(`${ch.padEnd(11)}${act.padEnd(9)}${src.padEnd(16)}${port.padEnd(9)}${desc}`,cls,(i+1)*190+100));
+      });
+      setTimeout(()=>CL('Politique par défaut: DROP | NetSecurePro policy v3.2','dim'),rules.length*190+300);
+    },
+
+    whoami: () => CLD([
+      [`Opérateur     : Mohammed Ilyes Zoubirou`,'info',0],
+      [`Alias         : NetSecurePro`,'info',80],
+      [`IA assignée   : MILYES_IA v9.2 — exclusif`,'ia',160],
+      [`Droits        : ROOT / SUDO — Accès total`,'ok',240],
+      [`Clearance     : LEVEL 9 / CLASSIFIED`,'warn',320],
+      [`Session init  : ${new Date().toISOString()}`,'dim',400],
+    ]),
+
+    syslog: () => {
+      CL('── SYSLOG NEO_DZ (derniers events) ──','info');
+      const last = sysLogs.slice(-10);
+      const clsMap = {INFO:'ok',WARN:'warn',ERROR:'err',DEBUG:'dim',CRIT:'sys'};
+      last.forEach((l,i) => setTimeout(()=>CL(`[${l.level.padEnd(5)}] [${l.module.padEnd(8)}] ${l.message}`,clsMap[l.level]||'ok',i*110)));
+    },
+
+    'ping 8.8.8.8': () => {
+      CL('PING 8.8.8.8 (Google DNS) 56 bytes','info');
+      for(let i=1;i<=4;i++) {
+        const ms = (Math.random()*20+5).toFixed(3);
+        setTimeout(()=>CL(`64 bytes from 8.8.8.8: icmp_seq=${i} ttl=118 time=${ms} ms`,'ok',i*400));
+      }
+      setTimeout(()=>CL('--- 8.8.8.8 ping statistics ---','dim',2000));
+      setTimeout(()=>CL('4 packets transmitted, 4 received, 0% packet loss','ok',2100));
+    },
+
+    traceroute: () => {
+      CL('traceroute to 8.8.8.8, 30 hops max','info');
+      const hops = [
+        ['192.168.1.1','0.321 ms','0.298 ms','0.287 ms'],
+        ['10.0.0.1','2.145 ms','2.067 ms','2.112 ms'],
+        ['172.16.0.1','8.231 ms','8.190 ms','8.244 ms'],
+        ['*','*','*','Request timeout'],
+        ['74.125.52.1','18.445 ms','18.221 ms','18.512 ms'],
+        ['8.8.8.8','19.012 ms','18.887 ms','18.934 ms'],
+      ];
+      hops.forEach(([ip,...times],i) => {
+        setTimeout(()=>CL(`${String(i+1).padStart(2)} ${ip.padEnd(17)} ${times.join('  ')}`,'ok',(i+1)*350));
+      });
+    },
+
+    'api on': () => {
+      apiDown = false;
+      document.getElementById('api-badge').textContent = 'API ✓';
+      document.getElementById('api-badge').style.color = '#00b32f';
+      CL('API PRIMARY rétablie. Mode nominal restauré.','ok');
+    },
+
+    'api off': () => {
+      apiDown = true;
+      document.getElementById('api-badge').textContent = 'API DOWN';
+      document.getElementById('api-badge').style.color = '#ff4444';
+      CL('API PRIMARY simulée hors ligne.','err');
+      setTimeout(()=>CL('IA22_LOGIC LOCAL activé automatiquement — souveraineté maintenue.','warn'),400);
+    },
+
+    clear: () => { coEl.innerHTML = ''; CL('Terminal réinitialisé.','dim'); },
+  };
+
+  if(C[cmd]) C[cmd]();
+  else CL(`Commande inconnue: "${raw}". Tapez "help".`,'err');
+}
+
+// Boot séquence console
+(function boot() {
+  const lines = [
+    ['MILYES_IA v9.2 — FULL STACK BOOT SEQUENCE','dim',0],
+    ['Module CONSOLE................. OK','ok',200],
+    ['Module IA CHAT (Claude API).... OK','ia',400],
+    ['Module CRYPTO ENGINE........... OK','ok',600],
+    ['Module SSH SIMULATOR........... OK','ok',800],
+    ['Module KEYGEN.................. OK','ok',1000],
+    ['Module LOG ANALYZER............ OK','ok',1200],
+    ['Module IA22_LOGIC FALLBACK..... STANDBY','warn',1400],
+    ['Opérateur: Mohammed Ilyes Zoubirou — ROOT ACCESS','info',1600],
+    ["Tapez 'help' pour les commandes disponibles.",'dim',1800],
+  ];
+  lines.forEach(([t,c,d]) => CL(t,c,d));
+})();
+
+// ── IA CHAT ──────────────────────────────────────────────────────
+const iaMsgsEl  = document.getElementById('ia-msgs');
+const iaTaEl    = document.getElementById('ia-ta');
+const iaSendBtn = document.getElementById('ia-send');
+
+// Init historique
+iaHistory = [
+  {role:'user', content:'Tu es MILYES_IA v9, assistant IA souverain exclusif de Mohammed Ilyes Zoubirou (NetSecurePro). Style futuriste, console-like, technique, direct, en français. Expert cybersécurité, réseaux, IA, code. Réponds concis et précis.'},
+  {role:'assistant', content:'Compris. Système IA souverain en ligne. Je suis à votre disposition.'},
+];
+
+iaTaEl.addEventListener('keydown', e => {
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendIA(); }
+  iaTaEl.style.height='36px';
+  iaTaEl.style.height = Math.min(iaTaEl.scrollHeight, 120)+'px';
+});
+
+function iaAddMsg(role, text) {
+  const wrap = document.createElement('div'); wrap.className = 'ia-msg';
+  const hdr  = document.createElement('div'); hdr.className = 'ia-mhdr ' + role;
+  hdr.textContent = role==='user' ? `${ts()} OPÉRATEUR` : `${ts()} MILYES_IA v9`;
+  const body = document.createElement('div'); body.className = 'ia-mbody ' + role;
+  body.textContent = text;
+  wrap.appendChild(hdr); wrap.appendChild(body);
+  iaMsgsEl.appendChild(wrap);
+  iaMsgsEl.scrollTop = iaMsgsEl.scrollHeight;
+  return body;
+}
+
+async function sendIA() {
+  const txt = iaTaEl.value.trim();
+  if(!txt || iaSendBtn.disabled) return;
+  iaTaEl.value=''; iaTaEl.style.height='36px';
+  iaAddMsg('user', txt);
+  iaHistory.push({role:'user', content:txt});
+  iaSendBtn.disabled = true; iaSendBtn.textContent='⟳ ...';
+  const bodyEl = iaAddMsg('bot','');
+  bodyEl.innerHTML = '<span class="ia-typing">◈ traitement...</span>';
+
+  // Checkpoint: appel Claude API
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: CLAUDE_MODEL,
+        max_tokens: 1000,
+        system: MILYES_SYSTEM,
+        messages: iaHistory.slice(-12).filter(m=>m.role==='user'||m.role==='assistant').slice(2),
+      })
+    });
+    const data = await res.json();
+    const reply = (data.content||[]).map(c=>c.text||'').join('') || 'Erreur: réponse vide.';
+    bodyEl.textContent = reply;
+    iaHistory.push({role:'assistant', content:reply});
+  } catch(e) {
+    bodyEl.textContent = apiDown
+      ? '[IA22_LOGIC LOCAL] API inaccessible. Mode fallback souverain actif.'
+      : '[ERREUR CONNEXION] ' + e.message;
+    bodyEl.style.color = '#ffb800';
+  }
+  iaSendBtn.disabled = false; iaSendBtn.textContent = 'ENVOYER ↗';
+}
+
+// ── CRYPTO ───────────────────────────────────────────────────────
+function caesar(txt, n) {
+  return txt.replace(/[a-zA-Z]/g, c => {
+    const b = c<='Z'?65:97;
+    return String.fromCharCode(((c.charCodeAt(0)-b+n+26)%26)+b);
+  });
+}
+function xorStr(txt, k) {
+  return Array.from(txt).map(c=>String.fromCharCode(c.charCodeAt(0)^k)).join('');
+}
+async function sha256(txt) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function doCrypto() {
+  const algo = document.getElementById('c-algo').value;
+  const inp  = document.getElementById('c-in').value;
+  const outEl = document.getElementById('c-out');
+  const stEl  = document.getElementById('c-stats');
+  if(!inp){ outEl.textContent='--- INPUT VIDE ---'; return; }
+  const t0 = performance.now();
+  let result='', note='';
+  try {
+    // Checkpoint: algo dispatch
+    switch(algo){
+      case 'b64e':  result=btoa(unescape(encodeURIComponent(inp))); note='Base64 encodé'; break;
+      case 'b64d':  result=decodeURIComponent(escape(atob(inp))); note='Base64 décodé'; break;
+      case 'xore':  result=btoa(xorStr(inp,42)); note='XOR(42) → Base64'; break;
+      case 'xord':  result=xorStr(atob(inp),42); note='Base64 → XOR(42)'; break;
+      case 'c3e':   result=caesar(inp,3); note='Caesar +3'; break;
+      case 'c3d':   result=caesar(inp,-3); note='Caesar -3'; break;
+      case 'rot13': result=caesar(inp,13); note='ROT13'; break;
+      case 'hexe':  result=Array.from(inp).map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' '); note='HEX encodé'; break;
+      case 'hexd':  result=inp.trim().split(/\s+/).map(h=>String.fromCharCode(parseInt(h,16))).join(''); note='HEX décodé'; break;
+      case 'urle':  result=encodeURIComponent(inp); note='URL encodé'; break;
+      case 'urld':  result=decodeURIComponent(inp); note='URL décodé'; break;
+      case 'rev':   result=inp.split('').reverse().join(''); note='Chaîne inversée'; break;
+      case 'sha256':result=await sha256(inp); note='SHA-256 (irréversible)'; break;
+    }
+  } catch(e){ result='ERREUR: '+e.message; }
+  const t1 = performance.now();
+  outEl.textContent = result;
+  stEl.textContent = `Algo: ${note} | Input: ${inp.length}c | Output: ${result.length}c | Temps: ${(t1-t0).toFixed(2)}ms`;
+}
+function copyCOut() {
+  const txt = document.getElementById('c-out').textContent;
+  if(txt && txt!=='--- EN ATTENTE ---') navigator.clipboard.writeText(txt);
+}
+
+// ── SSH SIMULATOR ────────────────────────────────────────────────
+const sshConnUI   = document.getElementById('ssh-conn-ui');
+const sshActiveUI = document.getElementById('ssh-active-ui');
+const sshTermEl   = document.getElementById('ssh-term');
+
+document.getElementById('ssh-input').addEventListener('keydown', e => { if(e.key==='Enter') sshExec(); });
+
+function sshConnect() {
+  sshUser = document.getElementById('ssh-user').value || 'root';
+  sshHost = document.getElementById('ssh-host').value || '192.168.1.100';
+  sshCwd  = '/root';
+  sshLines = [
+    `Connecting to ${sshUser}@${sshHost}...`,
+    `The authenticity of host '${sshHost}' can't be established.`,
+    `ED25519 key fingerprint is SHA256:${rhex(32)}.`,
+    `Warning: Permanently added '${sshHost}' (ED25519) to known hosts.`,
+    ``,
+    `Welcome to NetSecurePro System v4.2 (GNU/Linux 6.6.0-neodz #1 SMP)`,
+    `Last login: ${new Date().toUTCString()} from 10.0.0.1`,
+    ``,
+  ];
+  sshConnected = true;
+  sshConnUI.style.display = 'none';
+  sshActiveUI.style.display = 'flex';
+  document.getElementById('ssh-session-label').textContent = `SSH: ${sshUser}@${sshHost} — CONNECTÉ`;
+  document.getElementById('ssh-prompt-str').textContent = `${sshUser}@${sshHost}:${sshCwd}#`;
+  renderSSH();
+}
+
+function sshDisconnect() {
+  sshConnected = false;
+  sshLines = [];
+  sshTermEl.innerHTML = '';
+  sshConnUI.style.display = 'block';
+  sshActiveUI.style.display = 'none';
+}
+
+// Checkpoint: réponses SSH simulées
+const SSH_RESPONSES = {
+  'ls': ['bin  boot  dev  etc  home  lib  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var'],
+  'ls -la': [
+    'total 96','drwx------  9 root root 4096 '+new Date().toDateString()+' .',
+    'drwxr-xr-x 20 root root 4096 '+new Date().toDateString()+' ..',
+    '-rw-------  1 root root  789 '+new Date().toDateString()+' .bash_history',
+    '-rw-r--r--  1 root root 3106 '+new Date().toDateString()+' .bashrc',
+    'drwxr-xr-x  2 root root 4096 '+new Date().toDateString()+' neodz_data',
+    'drwx------  3 root root 4096 '+new Date().toDateString()+' .ssh',
+  ],
+  'pwd': () => [sshCwd],
+  'whoami': ['root'],
+  'hostname': () => [sshHost],
+  'uptime': () => [`up ${rnd(1,999)} days, ${rnd(0,23)}:${pad(rnd(0,59))},  2 users,  load average: 0.${rnd(10,99)}, 0.${rnd(10,99)}, 0.${rnd(10,99)}`],
+  'uname -a': () => [`Linux ${sshHost} 6.6.0-neodz #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux`],
+  'ps aux': () => [
+    'USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND',
+    'root         1  0.0  0.1 169432  9128 ?        Ss   Mar01   0:12 /sbin/init',
+    `root      ${rnd(1000,9999)}  ${(Math.random()*2).toFixed(1)}  0.5 ${rnd(100000,999999)} ${rnd(10000,99999)} ?   S    Mar01   2:41 /usr/bin/neodz-agent`,
+    `www-data  ${rnd(1000,9999)}  ${(Math.random()*5).toFixed(1)}  1.2 ${rnd(100000,999999)} ${rnd(10000,99999)} ?   Ss   Mar01   0:23 nginx: master`,
+  ],
+  'netstat -tuln': [
+    'Proto Recv-Q Send-Q Local Address           Foreign Address         State',
+    'tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN',
+    'tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN',
+    'tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN',
+    'tcp6       0      0 :::8443                 :::*                    LISTEN',
+  ],
+  'df -h': [
+    'Filesystem      Size  Used Avail Use% Mounted on',
+    '/dev/sda1       200G   87G  113G  44% /',
+    'tmpfs            16G     0   16G   0% /dev/shm',
+    '/dev/sdb1       500G  221G  279G  45% /data',
+  ],
+  'free -h': () => {
+    const used=rnd(2,10), total=16;
+    return [
+      '              total        used        free      shared  buff/cache   available',
+      `Mem:           ${total}Gi       ${used}Gi       ${total-used-2}Gi       ${rnd(100,500)}Mi       2.1Gi       ${total-used}Gi`,
+      'Swap:         4.0Gi       0Bi       4.0Gi',
+    ];
+  },
+  'cat /etc/passwd': [
+    'root:x:0:0:root:/root:/bin/bash',
+    'daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin',
+    'milyes:x:1000:1000:Mohammed Ilyes Zoubirou:/home/milyes:/bin/bash',
+    'www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin',
+  ],
+  'ifconfig': () => [
+    `eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500`,
+    `        inet ${sshHost}  netmask 255.255.255.0  broadcast 192.168.1.255`,
+    `        inet6 fe80::${rhex(4)}:${rhex(4)}  prefixlen 64  scopeid 0x20<link>`,
+    `        ether ${[0,0,0,0,0,0].map(()=>rhex(2)).join(':')}  txqueuelen 1000`,
+    `lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536`,
+    `        inet 127.0.0.1  netmask 255.0.0.0`,
+  ],
+  'clear': ['__CLEAR__'],
+  'exit': ['__EXIT__'],
+};
+
+function sshExec() {
+  const el = document.getElementById('ssh-input');
+  const cmd = el.value.trim();
+  if(!cmd) return;
+  el.value = '';
+  const prompt = `${sshUser}@${sshHost}:${sshCwd}# ${cmd}`;
+  let resp = SSH_RESPONSES[cmd];
+  if(typeof resp === 'function') resp = resp();
+  if(!resp) resp = [`bash: ${cmd}: command not found`];
+  if(resp[0]==='__CLEAR__'){ sshLines=[]; renderSSH(); return; }
+  if(resp[0]==='__EXIT__'){ sshDisconnect(); return; }
+  sshLines.push({t:prompt,p:true}, ...resp.map(l=>({t:l,p:false})), {t:'',p:false});
+  renderSSH();
+}
+
+function renderSSH() {
+  sshTermEl.innerHTML = '';
+  sshLines.forEach(l => {
+    const div = document.createElement('div');
+    div.className = 'ssh-line' + (l.p?' prompt':'');
+    div.textContent = l.t || '\u00a0';
+    sshTermEl.appendChild(div);
+  });
+  sshTermEl.scrollTop = sshTermEl.scrollHeight;
+}
+
+// ── KEYGEN ───────────────────────────────────────────────────────
+function genKey() {
+  const type = document.getElementById('kg-type').value;
+  let pub='', priv='', fp='', label='';
+
+  if(type==='rsa') {
+    label='RSA-2048';
+    pub = `-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA${rhex(86)}\n${rhex(86)}\n${rhex(86)}\n${rhex(43)}==\n-----END PUBLIC KEY-----`;
+    priv= `-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA${rhex(86)}\n${rhex(86)}\n${rhex(86)}\n${rhex(86)}\n${rhex(86)}\n${rhex(86)}\n${rhex(43)}==\n-----END RSA PRIVATE KEY-----`;
+    fp  = rhex(2)+':'+Array.from({length:15},()=>rhex(2)).join(':');
+  } else if(type==='ed25519') {
+    label='Ed25519';
+    pub = `-----BEGIN PUBLIC KEY-----\n${rhex(64)}\n-----END PUBLIC KEY-----`;
+    priv= `-----BEGIN PRIVATE KEY-----\n${rhex(128)}\n-----END PRIVATE KEY-----`;
+    fp  = 'SHA256:'+btoa(rhex(32)).slice(0,43);
+  } else if(type==='aes256') {
+    label='AES-256-GCM';
+    const k=rhex(64), iv=rhex(32), tag=rhex(32);
+    pub = `KEY (256-bit): ${k}`;
+    priv= `IV  (128-bit): ${iv}\nTAG ( 128-bit): ${tag}`;
+    fp  = k.slice(0,47)+'...';
+  } else if(type==='hmac') {
+    label='HMAC-SHA256';
+    const k=rhex(64);
+    pub = `SECRET KEY: ${k}`;
+    priv= `KEY ID: hmac-${rhex(8)}\nCREATED: ${new Date().toISOString()}`;
+    fp  = k.slice(0,31)+'...';
+  }
+
+  genedKey = { label, pub, priv, fp };
+  document.getElementById('kg-fp').textContent = `TYPE: ${label} | FINGERPRINT: ${fp}`;
+  document.getElementById('kg-pub').textContent = pub;
+  document.getElementById('kg-priv').textContent = priv;
+  document.getElementById('kg-output').style.display = 'flex';
+  document.getElementById('kg-output').style.flexDirection = 'column';
+  document.getElementById('kg-output').style.gap = '6px';
+  document.getElementById('kg-placeholder').style.display = 'none';
+  document.getElementById('kg-copy-btn').style.display = 'inline';
+}
+
+function copyAllKey() {
+  if(!genedKey) return;
+  navigator.clipboard.writeText(genedKey.pub + '\n\n' + genedKey.priv);
+  const btn = document.getElementById('kg-copy-btn');
+  btn.textContent='COPIÉ ✓';
+  setTimeout(()=>btn.textContent='COPIER TOUT',1500);
+}
+
+// ── LOG ANALYZER ─────────────────────────────────────────────────
+const LOG_MODULES = ['KERNEL','NET','IA22','AUTH','CRYPTO','SSH','FIREWALL','SCAN','DNS','HTTP'];
+const LOG_MSGS = {
+  INFO:  ['Heartbeat OK','Module chargé','Connexion établie','Sync neural OK','Cache rafraîchi','Session ouverte'],
+  WARN:  ['Pic CPU détecté','Latence réseau élevée','Buffer 82% plein','Retry API #2','Cert expirant dans 7j'],
+  ERROR: ['Timeout connexion 30s','Paquet malformé rejeté','Auth échec — IP bannie','Disk I/O error'],
+  DEBUG: ['Thread pool: 8/16','GC cycle: 42ms','Cache hit ratio: 94%','Queue depth: 12'],
+  CRIT:  ['Intrusion tentée — bloquée','SYN flood détecté','Root login refusé — 3x'],
+};
+const LOG_LEVELS = ['INFO','INFO','INFO','INFO','DEBUG','WARN','WARN','ERROR','ERROR','CRIT'];
+
+function regenLogs() {
+  sysLogs = Array.from({length:50},(_,i)=>{
+    const level = LOG_LEVELS[Math.floor(Math.random()*LOG_LEVELS.length)];
+    const mod   = LOG_MODULES[Math.floor(Math.random()*LOG_MODULES.length)];
+    const msgs  = LOG_MSGS[level];
+    const d = new Date(Date.now() - (50-i)*60000*Math.random()*8);
+    return { level, module:mod, message:msgs[Math.floor(Math.random()*msgs.length)], ts:d.toISOString().slice(11,19) };
+  });
+  renderLogs();
+}
+
+function renderFilterBtns() {
+  const bar = document.getElementById('log-filters');
+  bar.innerHTML='';
+  const allLevels = ['ALL','INFO','WARN','ERROR','DEBUG','CRIT'];
+  allLevels.forEach(f => {
+    const btn = document.createElement('button');
+    btn.className = 'lfbtn' + (logFilter===f?' active':'');
+    const cnt = f==='ALL' ? sysLogs.length : sysLogs.filter(l=>l.level===f).length;
+    btn.textContent = `${f} (${cnt})`;
+    btn.onclick = () => { logFilter=f; renderFilterBtns(); renderLogs(); };
+    bar.appendChild(btn);
+  });
+}
+
+function renderLogs() {
+  renderFilterBtns();
+  const rows = document.getElementById('log-rows');
+  rows.innerHTML = '';
+  const filtered = logFilter==='ALL' ? sysLogs : sysLogs.filter(l=>l.level===logFilter);
+  filtered.forEach(l => {
+    const row = document.createElement('div');
+    row.className = 'log-row ' + l.level;
+    row.innerHTML = `<span>${l.ts}</span><span>${l.level}</span><span>${l.module}</span><span>${l.message}</span>`;
+    rows.appendChild(row);
+  });
+  document.getElementById('log-table').scrollTop = document.getElementById('log-table').scrollHeight;
+}
+
+async function analyzeLog() {
+  const custom = document.getElementById('log-custom-ta').value.trim();
+  const logsText = custom || sysLogs.map(l=>`[${l.level}] [${l.module}] ${l.message}`).join('\n');
+  const btn = document.getElementById('log-analyze-btn');
+  const analysisEl = document.getElementById('log-analysis');
+  btn.disabled = true; btn.textContent = '⟳ ANALYSE EN COURS...';
+  analysisEl.textContent = ''; analysisEl.classList.add('visible');
+
+  // Checkpoint: appel API pour analyse
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: CLAUDE_MODEL,
+        max_tokens: 1000,
+        system: 'Tu es MILYES_IA v9, expert en cybersécurité et analyse de logs. Analyse les logs fournis: identifie anomalies, menaces, patterns suspects. Donne des recommandations concrètes et prioritaires. Sois technique, direct, en français.',
+        messages:[{role:'user', content:`Analyse ces logs système:\n\n${logsText}`}]
+      })
+    });
+    const data = await res.json();
+    analysisEl.textContent = (data.content||[]).map(c=>c.text||'').join('') || 'Erreur: réponse vide.';
+  } catch(e) {
+    analysisEl.textContent = '[IA22_LOGIC LOCAL] API inaccessible. Analyse manuelle: vérifiez les entrées ERROR/CRIT en priorité. ' + e.message;
+    analysisEl.style.color = '#ffb800';
+  }
+  btn.disabled=false; btn.textContent='▶ ANALYSER AVEC MILYES_IA';
+}
+
+// Init logs
+regenLogs();
+
+// ── BOOT FINAL ───────────────────────────────────────────────────
+console.log('%cNEO_DZ v9.2 — MILYES_IA | Mohammed Ilyes Zoubirou (NetSecurePro)', 'color:#00ff41;font-family:monospace;font-size:12px');
+</script>
+</body>
+</html>
