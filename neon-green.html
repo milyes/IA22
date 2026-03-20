@@ -1,0 +1,68 @@
+<script>
+// Variables de base
+let solde = 10000;
+let gains = 0;
+let pertes = 0;
+const miseParDefaut = 100; // tu pourras changer ça plus tard
+const tauxGain = 1.8;      // +80% si win (classique binary options)
+
+// Sélectionne les éléments (adapte si tes classes/IDs sont différents)
+const soldeDisplay = document.querySelector('p:contains("Solde")') || document.body; // fallback basique
+const gainsDisplay  = document.querySelector('p:contains("Gains")')  || document.body;
+const pertesDisplay = document.querySelector('p:contains("Pertes")') || document.body;
+const zoneTransactions = document.querySelector('p:contains("Dernières transactions")')?.nextElementSibling || document.createElement('div');
+
+// Fonction mise à jour affichage (bricolée pour page actuelle)
+function majAffichage() {
+  // On remplace le texte existant (pas élégant mais ça marche pour démarrer vite)
+  document.body.innerHTML = document.body.innerHTML
+    .replace(/Solde : \$[\d,.]+/, `Solde : $${solde.toFixed(2)}`)
+    .replace(/Gains : \d+/, `Gains : $${gains}`)
+    .replace(/Pertes : \d+/, `Pertes : $${pertes}`);
+}
+
+// Fonction log transaction
+function ajouterTransaction(type, resultat) {
+  const heure = new Date().toLocaleTimeString('fr-FR');
+  const ligne = document.createElement('p');
+  ligne.style.color = resultat.includes('WIN') ? '#00ff41' : '#ff2a6d';
+  ligne.textContent = `[${heure}] ${type} → ${resultat}`;
+  zoneTransactions.appendChild(ligne);
+  // Scroll auto vers le bas si beaucoup de lignes
+  zoneTransactions.scrollTop = zoneTransactions.scrollHeight;
+}
+
+// Logique d'un trade
+function lancerTrade(direction) { // 'CALL' ou 'PUT'
+  if (solde < miseParDefaut) {
+    alert("Solde trop bas ! Game over virtuel... Recharge ? 😅");
+    return;
+  }
+
+  solde -= miseParDefaut;
+
+  // Pour l'instant : 50/50 aléatoire (on ajoutera l'IA après)
+  const win = Math.random() < 0.5;
+
+  if (win) {
+    const profit = miseParDefaut * (tauxGain - 1);
+    solde += miseParDefaut + profit;
+    gains += profit;
+    ajouterTransaction(direction, `+$${profit.toFixed(2)} (WIN)`);
+  } else {
+    pertes += miseParDefaut;
+    ajouterTransaction(direction, `-$${miseParDefaut} (LOSE)`);
+  }
+
+  majAffichage();
+}
+
+// Rendre CALL et PUT cliquables (on cible le texte directement pour démarrer)
+document.addEventListener('click', (e) => {
+  const texte = e.target.textContent.toUpperCase();
+  if (texte.includes('CALL')) lancerTrade('CALL ↑');
+  if (texte.includes('PUT'))  lancerTrade('PUT ↓');
+});
+
+majAffichage(); // init
+</script>
