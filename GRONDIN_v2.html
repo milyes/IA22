@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRONDIN RESPONSE HANDLER v2.0</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050a0e;color:#c8dde8;font-family:'JetBrains Mono',monospace;font-size:13px;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);pointer-events:none;z-index:9999}
+
+/* NAV */
+nav{background:#071218;border-bottom:1px solid #1a3040;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.brand{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;letter-spacing:.14em;color:#00d4ff;text-transform:uppercase}
+.brand em{color:#c8dde8;font-style:normal}
+.nav-right{display:flex;align-items:center;gap:18px;font-size:10px;color:#4a6a7a}
+.dot{width:7px;height:7px;border-radius:50%;background:#00ff9d;box-shadow:0 0 7px #00ff9d;display:inline-block;margin-right:5px;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+#clk{color:#00d4ff;font-weight:600}
+
+/* GRID */
+.wrap{padding:18px 24px;display:grid;grid-template-columns:1fr 360px;grid-template-rows:auto auto;gap:14px}
+
+/* CARDS */
+.card{background:#0f1c24;border:1px solid #1a3040;border-radius:8px;padding:18px}
+.card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#00d4ff;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.card-title::before{content:'▶';font-size:7px;opacity:.7}
+
+/* STATS */
+.stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{background:#0f1c24;border:1px solid #1a3040;border-radius:8px;padding:14px 16px;border-top:2px solid}
+.stat.g{border-top-color:#00ff9d}.stat.a{border-top-color:#ffb800}.stat.b{border-top-color:#00d4ff}.stat.r{border-top-color:#ff3d5a}
+.stat-lbl{font-size:9px;letter-spacing:.1em;color:#4a6a7a;text-transform:uppercase;margin-bottom:5px}
+.stat-n{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1}
+.stat.g .stat-n{color:#00ff9d}.stat.a .stat-n{color:#ffb800}.stat.b .stat-n{color:#00d4ff}.stat.r .stat-n{color:#ff3d5a}
+.stat-s{font-size:9px;color:#4a6a7a;margin-top:3px}
+
+/* FORM */
+.form-card{grid-column:1;grid-row:2}
+lbl{display:block;font-size:9px;letter-spacing:.1em;color:#4a6a7a;text-transform:uppercase;margin:10px 0 4px}
+lbl:first-child{margin-top:0}
+input,textarea,select{width:100%;background:#0b1318;border:1px solid #1a3040;border-radius:5px;color:#c8dde8;font-family:'JetBrains Mono',monospace;font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s}
+input:focus,textarea:focus,select:focus{border-color:#00d4ff}
+textarea{resize:vertical;min-height:80px}
+select option{background:#0b1318}
+
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* AI TOGGLE */
+.ai-row{display:flex;align-items:center;gap:10px;margin:12px 0;font-size:11px;color:#4a6a7a}
+.sw{position:relative;width:36px;height:20px;flex-shrink:0}
+.sw input{opacity:0;width:0;height:0}
+.sw-track{position:absolute;inset:0;background:#1a3040;border-radius:20px;cursor:pointer;transition:.3s}
+.sw-track::before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#4a6a7a;border-radius:50%;transition:.3s}
+.sw input:checked~.sw-track{background:rgba(0,212,255,.2);border:1px solid #00d4ff}
+.sw input:checked~.sw-track::before{transform:translateX(16px);background:#00d4ff}
+
+/* CLAUDE KEY */
+#key-row{margin-bottom:12px;display:none}
+
+/* BUTTONS */
+.btn-run{width:100%;background:transparent;border:1px solid #00d4ff;color:#00d4ff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;padding:11px;border-radius:5px;cursor:pointer;text-transform:uppercase;transition:all .2s;margin-top:12px}
+.btn-run:hover{background:#00d4ff;color:#050a0e}
+.btn-run:disabled{opacity:.35;cursor:not-allowed}
+
+/* RESULT */
+.result{margin-top:12px;border-radius:6px;padding:13px;display:none;border:1px solid;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.result.G{border-color:#00ff9d;background:rgba(0,255,157,.05)}.result.G .rcat{color:#00ff9d}
+.result.A{border-color:#ffb800;background:rgba(255,184,0,.05)}.result.A .rcat{color:#ffb800}
+.result.B{border-color:#00d4ff;background:rgba(0,212,255,.05)}.result.B .rcat{color:#00d4ff}
+.result.R{border-color:#ff3d5a;background:rgba(255,61,90,.05)}.result.R .rcat{color:#ff3d5a}
+.rcat{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;margin-bottom:5px}
+.raction{font-size:11px;color:#4a6a7a;line-height:1.55}
+.rpill{display:inline-block;font-size:9px;letter-spacing:.1em;padding:2px 8px;border-radius:3px;text-transform:uppercase;margin-top:7px}
+.rpill.complete{background:rgba(0,255,157,.12);color:#00ff9d}
+.rpill.waiting{background:rgba(255,184,0,.12);color:#ffb800}
+
+/* DRAFT EMAIL */
+.draft{margin-top:10px;background:#0b1318;border:1px solid #1a3040;border-radius:5px;padding:11px;font-size:11px;line-height:1.6;color:#8aacba;display:none;white-space:pre-wrap;word-break:break-word}
+.copy-btn{margin-top:8px;background:transparent;border:1px solid #1a3040;color:#4a6a7a;font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 12px;border-radius:4px;cursor:pointer;transition:all .2s;display:none}
+.copy-btn:hover{border-color:#00d4ff;color:#00d4ff}
+
+/* LOG */
+.log-card{grid-column:2;grid-row:2;display:flex;flex-direction:column}
+.log-list{flex:1;overflow-y:auto;max-height:520px;display:flex;flex-direction:column;gap:7px}
+.log-list::-webkit-scrollbar{width:3px}
+.log-list::-webkit-scrollbar-thumb{background:#1a3040;border-radius:4px}
+.log-item{background:#0b1318;border:1px solid #1a3040;border-left:3px solid;border-radius:5px;padding:9px 11px}
+.log-item.lg{border-left-color:#00ff9d}.log-item.la{border-left-color:#ffb800}
+.log-item.lb{border-left-color:#00d4ff}.log-item.lr{border-left-color:#ff3d5a}
+.li-top{display:flex;justify-content:space-between;margin-bottom:3px}
+.li-cat{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.log-item.lg .li-cat{color:#00ff9d}.log-item.la .li-cat{color:#ffb800}
+.log-item.lb .li-cat{color:#00d4ff}.log-item.lr .li-cat{color:#ff3d5a}
+.li-time{font-size:9px;color:#4a6a7a}
+.li-from{font-size:10px;color:#4a6a7a;margin-bottom:2px}
+.li-subj{font-size:11px;color:#c8dde8}
+.li-pill{display:inline-block;margin-top:5px;font-size:8px;letter-spacing:.1em;padding:1px 6px;border-radius:3px;text-transform:uppercase}
+.li-pill.c{background:rgba(0,255,157,.1);color:#00ff9d}
+.li-pill.w{background:rgba(255,184,0,.1);color:#ffb800}
+.btn-clear{margin-top:10px;background:transparent;border:1px solid #1a3040;color:#4a6a7a;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;padding:7px;border-radius:4px;cursor:pointer;text-transform:uppercase;transition:all .2s}
+.btn-clear:hover{border-color:#ff3d5a;color:#ff3d5a}
+.empty-log{color:#4a6a7a;font-size:11px;text-align:center;padding:40px 0}
+
+/* BOTTOM ROW */
+.bottom{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* WORKFLOW VIZ */
+.wf-flow{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-bottom:12px}
+.wf-node{background:#0b1318;border:1px solid #1a3040;border-radius:4px;padding:6px 11px;font-size:10px;letter-spacing:.07em;color:#4a6a7a;transition:all .3s}
+.wf-node.active{color:#00d4ff;border-color:#00d4ff;box-shadow:0 0 10px rgba(0,212,255,.15)}
+.wf-node.done{color:#00ff9d;border-color:rgba(0,255,157,.3)}
+.wf-arr{color:#1a3040;font-size:11px}
+.wf-branches{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.wf-branch{background:#0b1318;border:1px solid #1a3040;border-radius:4px;padding:7px 10px;font-size:10px;display:flex;align-items:center;gap:7px;transition:all .3s}
+.wf-branch b{font-size:9px;letter-spacing:.06em;text-transform:uppercase}
+.bG b{color:#00ff9d}.bA b{color:#ffb800}.bB b{color:#00d4ff}.bR b{color:#ff3d5a}
+.wf-branch.lit.bG{border-color:#00ff9d;box-shadow:0 0 8px rgba(0,255,157,.12)}
+.wf-branch.lit.bA{border-color:#ffb800;box-shadow:0 0 8px rgba(255,184,0,.12)}
+.wf-branch.lit.bB{border-color:#00d4ff;box-shadow:0 0 8px rgba(0,212,255,.12)}
+.wf-branch.lit.bR{border-color:#ff3d5a;box-shadow:0 0 8px rgba(255,61,90,.12)}
+
+/* CONFIG */
+.cfg-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #0f1c24;font-size:11px}
+.cfg-row:last-child{border:none}
+.cfg-k{color:#4a6a7a}
+.cfg-v{font-weight:600;color:#00ff9d}
+.cfg-v.off{color:#4a6a7a}
+.cfg-v.warn{color:#ffb800}
+
+/* TELEGRAM */
+.tg-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:0}
+.btn-tg{background:transparent;border:1px solid #1a3040;color:#4a6a7a;font-family:'JetBrains Mono',monospace;font-size:10px;padding:9px 12px;border-radius:5px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-tg:hover{border-color:#00d4ff;color:#00d4ff}
+.tg-status{font-size:10px;color:#4a6a7a;margin-top:5px;min-height:16px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div>
+    <div class="brand">NETSECUREPRO <em>·</em> GRONDIN<em> RESPONSE HANDLER</em> <em style="color:#00d4ff">v2.0</em></div>
+    <div style="font-size:9px;color:#4a6a7a;margin-top:2px;letter-spacing:.08em">IA MÉDICALE · WORKFLOW STRATÉGIQUE AUTOMATISÉ</div>
+  </div>
+  <div class="nav-right">
+    <span><span class="dot"></span>ACTIF</span>
+    <span id="clk">--:--:--</span>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat g"><div class="stat-lbl">Rencontres</div><div class="stat-n" id="s0">0</div><div class="stat-s">POSITIVE_MEETING</div></div>
+    <div class="stat a"><div class="stat-lbl">Informations</div><div class="stat-n" id="s1">0</div><div class="stat-s">INFO_REQUIREMENT</div></div>
+    <div class="stat b"><div class="stat-lbl">Preuves statut</div><div class="stat-n" id="s2">0</div><div class="stat-s">PROOF_OF_STATUS</div></div>
+    <div class="stat r"><div class="stat-lbl">Attente active</div><div class="stat-n" id="s3">0</div><div class="stat-s">ACTIF_QR_OTHER</div></div>
+  </div>
+
+  <!-- FORM -->
+  <div class="card form-card">
+    <div class="card-title">Nouveau traitement email</div>
+
+    <!-- AI TOGGLE -->
+    <div class="ai-row">
+      <label class="sw">
+        <input type="checkbox" id="ai-toggle" onchange="toggleAI()">
+        <span class="sw-track"></span>
+      </label>
+      <span id="ai-label">Classification par mots-clés (local)</span>
+    </div>
+    <div id="key-row">
+      <lbl>Clé API Anthropic (Claude)</lbl>
+      <input type="password" id="api-key" placeholder="sk-ant-...">
+    </div>
+
+    <lbl>Expéditeur</lbl>
+    <input type="email" id="f-from" placeholder="dr.exemple@hopital.qc.ca">
+
+    <lbl>Sujet</lbl>
+    <input type="text" id="f-subj" placeholder="Objet de l'email...">
+
+    <lbl>Corps du message</lbl>
+    <textarea id="f-body" placeholder="Contenu de l'email..."></textarea>
+
+    <div class="row2">
+      <div>
+        <lbl>Votre nom / signature</lbl>
+        <input type="text" id="f-sig" placeholder="Grondin IA Médicale" value="Grondin IA Médicale">
+      </div>
+      <div>
+        <lbl>Bot Telegram Token</lbl>
+        <input type="text" id="f-tg-token" placeholder="(optionnel)">
+      </div>
+    </div>
+
+    <div class="row2" style="margin-top:10px">
+      <div>
+        <lbl>Telegram Chat ID</lbl>
+        <input type="text" id="f-tg-chat" placeholder="(optionnel)">
+      </div>
+      <div>
+        <lbl>Pièces jointes (noms)</lbl>
+        <input type="text" id="f-attach" placeholder="ORCID.pdf, COOPKIT.pdf">
+      </div>
+    </div>
+
+    <button class="btn-run" id="btn-run" onclick="runWorkflow()">▶ EXÉCUTER LE WORKFLOW</button>
+
+    <!-- RESULT -->
+    <div class="result" id="result">
+      <div class="rcat" id="r-cat"></div>
+      <div class="raction" id="r-action"></div>
+      <span class="rpill" id="r-pill"></span>
+      <div class="draft" id="r-draft"></div>
+      <button class="copy-btn" id="copy-btn" onclick="copyDraft()">⎘ COPIER LA RÉPONSE</button>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div class="card log-card">
+    <div class="card-title">Journal de session</div>
+    <div class="log-list" id="log-list">
+      <div class="empty-log" id="log-empty">Aucun traitement pour l'instant</div>
+    </div>
+    <button class="btn-clear" onclick="clearLog()">✕ EFFACER LE JOURNAL</button>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="bottom">
+
+    <!-- WORKFLOW VIZ -->
+    <div class="card">
+      <div class="card-title">État du workflow</div>
+      <div class="wf-flow">
+        <div class="wf-node" id="wn0">START</div>
+        <div class="wf-arr">›</div>
+        <div class="wf-node" id="wn1">Init</div>
+        <div class="wf-arr">›</div>
+        <div class="wf-node" id="wn2">Lecture</div>
+        <div class="wf-arr">›</div>
+        <div class="wf-node" id="wn3">Classification</div>
+        <div class="wf-arr">›</div>
+        <div class="wf-node" id="wn4">Action</div>
+        <div class="wf-arr">›</div>
+        <div class="wf-node" id="wn5">Journalisation</div>
+        <div class="wf-arr">›</div>
+        <div class="wf-node" id="wn6">Clôture</div>
+        <div class="wf-arr">›</div>
+        <div class="wf-node" id="wn7">END</div>
+      </div>
+      <div class="wf-branches">
+        <div class="wf-branch bG" id="br0"><span>🟢</span><b>POSITIVE_MEETING_REQUEST</b></div>
+        <div class="wf-branch bA" id="br1"><span>🟡</span><b>INFORMATIONAL_REQUIREMENT</b></div>
+        <div class="wf-branch bB" id="br2"><span>🔵</span><b>PROOF_OF_STATUS</b></div>
+        <div class="wf-branch bR" id="br3"><span>🔴</span><b>ACTIF_QR_OTHER</b></div>
+      </div>
+    </div>
+
+    <!-- CONFIG + TELEGRAM -->
+    <div class="card">
+      <div class="card-title">Configuration système</div>
+      <div class="cfg-row"><span class="cfg-k">Moteur classification</span><span class="cfg-v" id="cfg-engine">Mots-clés</span></div>
+      <div class="cfg-row"><span class="cfg-k">API Claude</span><span class="cfg-v off" id="cfg-claude">Non configuré</span></div>
+      <div class="cfg-row"><span class="cfg-k">Telegram</span><span class="cfg-v off" id="cfg-tg">Non configuré</span></div>
+      <div class="cfg-row"><span class="cfg-k">Sessions traitées</span><span class="cfg-v" id="cfg-count">0</span></div>
+      <div class="cfg-row"><span class="cfg-k">Dernier statut</span><span class="cfg-v off" id="cfg-last">—</span></div>
+
+      <div style="margin-top:16px">
+        <div class="card-title" style="margin-bottom:10px">Test alerte Telegram</div>
+        <div class="tg-row">
+          <input type="text" id="tg-test-msg" placeholder="Message de test..." style="font-size:11px">
+          <button class="btn-tg" onclick="testTelegram()">ENVOYER</button>
+        </div>
+        <div class="tg-status" id="tg-status"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  ÉTAT GLOBAL
+// ═══════════════════════════════════════
+const STATE = { counts:{G:0,A:0,B:0,R:0}, sessions:0, log:[] };
+
+// Horloge
+setInterval(()=>{
+  document.getElementById('clk').textContent = new Date().toLocaleTimeString('fr-CA');
+},1000);
+
+// ═══════════════════════════════════════
+//  TOGGLE IA
+// ═══════════════════════════════════════
+function toggleAI(){
+  const on = document.getElementById('ai-toggle').checked;
+  document.getElementById('ai-label').textContent = on
+    ? 'Classification via Claude IA (API Anthropic)'
+    : 'Classification par mots-clés (local)';
+  document.getElementById('key-row').style.display = on ? 'block' : 'none';
+  document.getElementById('cfg-engine').textContent = on ? 'Claude IA' : 'Mots-clés';
+}
+
+// ═══════════════════════════════════════
+//  CLASSIFICATION LOCALE (mots-clés)
+// ═══════════════════════════════════════
+const RULES = {
+  G: ['rencontre','entretien','rendez-vous','réunion','meeting','discuter','parler','se voir','appel','appeler'],
+  A: ['information','dossier','détail','précision','document','renseignement','clarification','expliquer','savoir','comprendre'],
+  B: ['preuve','statut','accréditation','orcid','certification','coopkit','identité','attestation','diplôme','titre']
+};
+
+function classifyLocal(sujet, corps){
+  const txt = (sujet+' '+corps).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  for(const [cat, mots] of Object.entries(RULES)){
+    if(mots.some(m=>txt.includes(m))) return cat;
+  }
+  return 'R';
+}
+
+// ═══════════════════════════════════════
+//  CLASSIFICATION CLAUDE IA
+// ═══════════════════════════════════════
+async function classifyAI(sujet, corps, key){
+  const prompt = `Tu es un classificateur d'emails médicaux. Réponds UNIQUEMENT par une de ces 4 lettres :
+G = demande de rencontre / entretien
+A = demande d'information / dossier
+B = demande de preuve de statut / accréditation
+R = autre cas
+
+Email :
+Sujet: ${sujet}
+Corps: ${corps}
+
+Ta réponse (1 lettre seulement) :`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:10,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await res.json();
+    const letter = data?.content?.[0]?.text?.trim().toUpperCase();
+    return ['G','A','B','R'].includes(letter) ? letter : 'R';
+  } catch(e){
+    console.warn('Claude API error, fallback local:', e);
+    return classifyLocal(sujet, corps);
+  }
+}
+
+// ═══════════════════════════════════════
+//  TEMPLATES DE RÉPONSE
+// ═══════════════════════════════════════
+const CATS = {
+  G:{
+    label:'POSITIVE_MEETING_REQUEST',
+    color:'G', cls:'lg',
+    action:'Confirmation de disponibilité envoyée — rencontre à planifier.',
+    status:'COMPLETE', pill:'complete',
+    draft:(from,sig)=>`Bonjour,
+
+Merci pour votre message. Je serais disponible pour un entretien dans les prochains jours et vous recontacterai très prochainement afin de convenir d'un horaire qui vous convient.
+
+Au plaisir de vous rencontrer.
+
+Cordialement,
+${sig}`
+  },
+  A:{
+    label:'INFORMATIONAL_REQUIREMENT',
+    color:'A', cls:'la',
+    action:'Dossier exporté — informations transmises par email.',
+    status:'COMPLETE', pill:'complete',
+    draft:(from,sig)=>`Bonjour,
+
+Suite à votre demande, je vous transmets ci-joint les informations relatives à votre dossier. L'ensemble des documents disponibles vous ont été acheminés.
+
+N'hésitez pas à me contacter si vous avez besoin de précisions supplémentaires.
+
+Cordialement,
+${sig}`
+  },
+  B:{
+    label:'PROOF_OF_STATUS',
+    color:'B', cls:'lb',
+    action:'Réponse avec pièces jointes envoyée (ORCID + COOPKIT).',
+    status:'COMPLETE', pill:'complete',
+    draft:(from,sig,attach)=>`Bonjour,
+
+Veuillez trouver en pièces jointes les documents attestant de mon statut professionnel :
+${attach ? '• '+attach.split(',').map(s=>s.trim()).join('\n• ') : '• ORCID.pdf\n• COOPKIT.pdf'}
+
+Ces documents font foi de mon accréditation et de mes qualifications.
+
+Cordialement,
+${sig}`
+  },
+  R:{
+    label:'ACTIF_QR_OTHER',
+    color:'R', cls:'lr',
+    action:'Email mis en attente stratégique. Aucune réponse automatique — révision manuelle requise.',
+    status:'WAITING_FIN', pill:'waiting',
+    draft:(from,sig)=>`[Aucun envoi automatique]\n\nCet email a été catégorisé comme "Attente active".\nIl a été archivé pour révision manuelle.`
+  }
+};
+
+// ═══════════════════════════════════════
+//  ANIMATION WORKFLOW
+// ═══════════════════════════════════════
+function resetWF(){
+  for(let i=0;i<8;i++) document.getElementById('wn'+i).className='wf-node';
+  ['br0','br1','br2','br3'].forEach(id=>document.getElementById(id).classList.remove('lit'));
+}
+
+async function animateWF(catKey){
+  resetWF();
+  const brMap = {G:'br0',A:'br1',B:'br2',R:'br3'};
+  for(let i=0;i<8;i++){
+    await delay(180);
+    const el = document.getElementById('wn'+i);
+    el.classList.add(i<7?'active':'done');
+    if(i>0) document.getElementById('wn'+(i-1)).classList.replace('active','done');
+  }
+  document.getElementById(brMap[catKey]).classList.add('lit');
+}
+
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// ═══════════════════════════════════════
+//  TELEGRAM
+// ═══════════════════════════════════════
+async function sendTelegram(token, chatId, text){
+  if(!token||!chatId) return false;
+  try{
+    const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:chatId, text})
+    });
+    return r.ok;
+  } catch(e){ return false; }
+}
+
+async function testTelegram(){
+  const token = document.getElementById('f-tg-token').value.trim();
+  const chat  = document.getElementById('f-tg-chat').value.trim();
+  const msg   = document.getElementById('tg-test-msg').value.trim() || '✅ Test GRONDIN v2.0 — connexion OK';
+  const el    = document.getElementById('tg-status');
+  if(!token||!chat){ el.style.color='#ffb800'; el.textContent='⚠ Token ou Chat ID manquant'; return; }
+  el.style.color='#4a6a7a'; el.textContent='Envoi...';
+  const ok = await sendTelegram(token,chat,msg);
+  el.style.color = ok?'#00ff9d':'#ff3d5a';
+  el.textContent = ok?'✓ Message envoyé':'✗ Échec — vérifier token / chat ID';
+}
+
+// ═══════════════════════════════════════
+//  WORKFLOW PRINCIPAL
+// ═══════════════════════════════════════
+async function runWorkflow(){
+  const from   = document.getElementById('f-from').value.trim();
+  const subj   = document.getElementById('f-subj').value.trim();
+  const body   = document.getElementById('f-body').value.trim();
+  const sig    = document.getElementById('f-sig').value.trim() || 'Grondin IA Médicale';
+  const attach = document.getElementById('f-attach').value.trim();
+  const tgToken= document.getElementById('f-tg-token').value.trim();
+  const tgChat = document.getElementById('f-tg-chat').value.trim();
+  const useAI  = document.getElementById('ai-toggle').checked;
+  const apiKey = document.getElementById('api-key').value.trim();
+
+  if(!from||!subj||!body){ alert('Merci de remplir expéditeur, sujet et corps.'); return; }
+
+  const btn = document.getElementById('btn-run');
+  btn.disabled=true; btn.textContent='⟳ TRAITEMENT EN COURS...';
+
+  // ── 1. Classification ──
+  let catKey;
+  if(useAI && apiKey){
+    catKey = await classifyAI(subj, body, apiKey);
+  } else {
+    catKey = classifyLocal(subj, body);
+  }
+
+  const cat = CATS[catKey];
+
+  // ── 2. Animer le workflow ──
+  await animateWF(catKey);
+
+  // ── 3. Mettre à jour les stats ──
+  STATE.counts[catKey]++;
+  STATE.sessions++;
+  const statMap = {G:'s0',A:'s1',B:'s2',R:'s3'};
+  document.getElementById(statMap[catKey]).textContent = STATE.counts[catKey];
+  document.getElementById('cfg-count').textContent = STATE.sessions;
+  document.getElementById('cfg-last').textContent = cat.status;
+  document.getElementById('cfg-last').className = 'cfg-v' + (cat.status==='COMPLETE'?'':' warn');
+
+  // ── 4. Afficher résultat ──
+  const rEl = document.getElementById('result');
+  rEl.className = 'result '+catKey;
+  rEl.style.display = 'block';
+  document.getElementById('r-cat').textContent = cat.label;
+  document.getElementById('r-action').textContent = cat.action;
+  const pill = document.getElementById('r-pill');
+  pill.textContent = cat.status;
+  pill.className = 'rpill '+cat.pill;
+
+  const draftText = cat.draft(from, sig, attach);
+  const draftEl = document.getElementById('r-draft');
+  draftEl.textContent = draftText;
+  draftEl.style.display = 'block';
+  const copyBtn = document.getElementById('copy-btn');
+  copyBtn.style.display = 'inline-block';
+
+  // ── 5. Ajouter au log ──
+  const now = new Date().toLocaleTimeString('fr-CA');
+  const entry = { catKey, cat, from, subj, now };
+  STATE.log.unshift(entry);
+  renderLog();
+
+  // ── 6. Telegram ──
+  if(tgToken && tgChat){
+    const emoji = {G:'🟢',A:'🟡',B:'🔵',R:'🔴'}[catKey];
+    await sendTelegram(tgToken, tgChat,
+      `${emoji} GRONDIN v2.0\nSession #${STATE.sessions}\nDe : ${from}\nSujet : ${subj}\nCatégorie : ${cat.label}\nStatut : ${cat.status}`
+    );
+    document.getElementById('cfg-tg').textContent = 'Alerte envoyée';
+    document.getElementById('cfg-tg').className = 'cfg-v';
+  }
+
+  // ── Config display ──
+  if(useAI && apiKey){
+    document.getElementById('cfg-claude').textContent = 'Actif';
+    document.getElementById('cfg-claude').className = 'cfg-v';
+  }
+
+  btn.disabled=false; btn.textContent='▶ EXÉCUTER LE WORKFLOW';
+}
+
+// ═══════════════════════════════════════
+//  LOG
+// ═══════════════════════════════════════
+function renderLog(){
+  const list = document.getElementById('log-list');
+  document.getElementById('log-empty').style.display = STATE.log.length?'none':'block';
+  const existing = list.querySelectorAll('.log-item');
+  existing.forEach(e=>e.remove());
+
+  STATE.log.forEach(e=>{
+    const div = document.createElement('div');
+    div.className = 'log-item '+e.cat.cls;
+    div.innerHTML = `
+      <div class="li-top">
+        <span class="li-cat">${e.cat.label}</span>
+        <span class="li-time">${e.now}</span>
+      </div>
+      <div class="li-from">De : ${e.from}</div>
+      <div class="li-subj">${e.subj}</div>
+      <span class="li-pill ${e.cat.pill}">${e.cat.status}</span>`;
+    list.appendChild(div);
+  });
+}
+
+function clearLog(){
+  STATE.log=[];
+  STATE.counts={G:0,A:0,B:0,R:0};
+  STATE.sessions=0;
+  ['s0','s1','s2','s3'].forEach(id=>document.getElementById(id).textContent='0');
+  document.getElementById('cfg-count').textContent='0';
+  document.getElementById('cfg-last').textContent='—';
+  document.getElementById('cfg-last').className='cfg-v off';
+  document.getElementById('result').style.display='none';
+  document.getElementById('r-draft').style.display='none';
+  document.getElementById('copy-btn').style.display='none';
+  resetWF();
+  renderLog();
+}
+
+function copyDraft(){
+  const txt = document.getElementById('r-draft').textContent;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn = document.getElementById('copy-btn');
+    btn.textContent='✓ COPIÉ';
+    setTimeout(()=>btn.textContent='⎘ COPIER LA RÉPONSE',1800);
+  });
+}
+</script>
+</body>
+</html>
