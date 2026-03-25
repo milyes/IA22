@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MILYES_IA v9 — NEO_DZ Terminal · NetSecurePro</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f0f4f8; --surface:#fff; --surface2:#e8eef5;
+    --border:#cbd5e1; --border-lt:#e2e8f0;
+    --text:#1e293b; --muted:#64748b; --muted2:#94a3b8;
+    --accent:#2563eb; --accent-lt:#dbeafe;
+    --sky:#0ea5e9; --sky-lt:#e0f2fe;
+    --green:#059669; --green-lt:#d1fae5;
+    --amber:#d97706; --amber-lt:#fef3c7;
+    --red:#dc2626; --red-lt:#fee2e2;
+    /* MILYES colors */
+    --mil:#7c3aed; --mil-lt:#ede9fe; --mil-dk:#6d28d9;
+    --mil2:#c084fc;
+    /* Terminal */
+    --term-bg:#0a0e14; --term-text:#b8d4e8; --term-green:#34d399; --term-cyan:#22d3ee; --term-muted:#475569;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;line-height:1.6}
+
+  /* NAV */
+  nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;padding:0 3rem;height:60px;display:flex;align-items:center;justify-content:space-between}
+  .nav-logo{display:flex;align-items:center;gap:.75rem}
+  .nav-logo-mark{width:32px;height:32px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:600;color:#fff;letter-spacing:.05em}
+  .nav-brand{font-family:'IBM Plex Mono',monospace;font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text)}
+  .nav-brand span{color:var(--accent)}
+  .nav-links{display:flex;gap:0;list-style:none}
+  .nav-links a{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:.4rem .9rem;border-radius:4px;transition:all .15s}
+  .nav-links a:hover{color:var(--mil);background:var(--mil-lt)}
+  .nav-back{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--muted);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--border);border-radius:4px;transition:all .15s}
+  .nav-back:hover{border-color:var(--mil);color:var(--mil)}
+
+  @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  /* HERO */
+  .hero{background:var(--surface);border-bottom:1px solid var(--border);padding:5rem 3rem 4.5rem;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-100px;right:-60px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.07) 0%,transparent 70%);pointer-events:none}
+  .hero-inner{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:4rem;align-items:center;position:relative;z-index:1}
+
+  .hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;color:var(--mil);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem;opacity:0;animation:up .5s .1s forwards;display:flex;align-items:center;gap:.6rem}
+  .hero-eyebrow::before{content:'';width:1.5rem;height:1px;background:var(--mil)}
+
+  h1{font-family:'Instrument Serif',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:400;line-height:1.05;letter-spacing:-.03em;margin-bottom:1.25rem;opacity:0;animation:up .5s .25s forwards}
+  h1 em{font-style:italic;color:var(--mil)}
+  h1 .sub{display:block;font-size:.45em;font-family:'IBM Plex Mono',monospace;font-style:normal;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.5rem}
+
+  .hero-desc{font-size:.95rem;color:var(--muted);max-width:480px;margin-bottom:2rem;opacity:0;animation:up .5s .4s forwards}
+
+  .hero-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2.5rem;opacity:0;animation:up .5s .5s forwards}
+  .htag{font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .75rem;border-radius:999px}
+  .htag.sov{background:var(--mil-lt);color:var(--mil)}
+  .htag.cyber{background:var(--sky-lt);color:#0369a1}
+  .htag.api{background:var(--green-lt);color:var(--green)}
+  .htag.fb{background:var(--amber-lt);color:var(--amber)}
+  .htag.mono{background:var(--surface2);color:var(--muted)}
+
+  .hero-btns{display:flex;gap:.75rem;opacity:0;animation:up .5s .6s forwards}
+  .btn-mil{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.65rem 1.5rem;background:var(--mil);color:#fff;text-decoration:none;border-radius:5px;border:2px solid var(--mil);transition:all .2s}
+  .btn-mil:hover{background:var(--mil-dk);border-color:var(--mil-dk);transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.25)}
+  .btn-out{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.65rem 1.5rem;background:transparent;color:var(--mil);text-decoration:none;border-radius:5px;border:2px solid var(--border);transition:all .2s}
+  .btn-out:hover{border-color:var(--mil);background:var(--mil-lt)}
+
+  /* TERMINAL PREVIEW */
+  .term-preview{
+    background:var(--term-bg);border-radius:10px;
+    border:1px solid #1e293b;
+    width:340px;flex-shrink:0;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,.2);
+    opacity:0;animation:up .5s .35s forwards;
+  }
+  .term-bar{background:#111827;padding:.65rem 1rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid #1e293b}
+  .term-dots{display:flex;gap:.4rem}
+  .td{width:.55rem;height:.55rem;border-radius:50%}
+  .td.r{background:#ef4444}.td.y{background:#f59e0b}.td.g{background:#10b981}
+  .term-title{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:#475569;letter-spacing:.1em;margin:0 auto}
+  .term-body{padding:1.25rem;font-family:'IBM Plex Mono',monospace;font-size:.72rem;line-height:1.85}
+  .tl{display:block}
+  .tl .p{color:var(--term-green)}
+  .tl .c{color:var(--term-cyan)}
+  .tl .t{color:var(--term-text)}
+  .tl .m{color:var(--term-muted)}
+  .tl .ok{color:var(--term-green)}
+  .cursor{display:inline-block;width:.5rem;height:.85rem;background:var(--term-cyan);vertical-align:middle;animation:blink 1s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+  /* MAIN */
+  main{max-width:1060px;margin:0 auto;padding:3rem 3rem 5rem}
+  section{margin-bottom:4rem;opacity:0;animation:up .4s forwards}
+  section:nth-child(1){animation-delay:.05s}section:nth-child(2){animation-delay:.15s}section:nth-child(3){animation-delay:.25s}section:nth-child(4){animation-delay:.35s}section:nth-child(5){animation-delay:.45s}section:nth-child(6){animation-delay:.55s}
+
+  .sec-label{font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;color:var(--mil);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.6rem;display:flex;align-items:center;gap:.75rem}
+  .sec-label::after{content:'';flex:1;height:1px;background:var(--border-lt)}
+  h2{font-family:'Instrument Serif',serif;font-size:1.9rem;font-weight:400;letter-spacing:-.01em;margin-bottom:.75rem}
+  h2 em{font-style:italic;color:var(--mil)}
+  h3{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--mil);margin:1.75rem 0 .75rem}
+  p{color:var(--muted);font-size:.92rem;margin-bottom:.9rem}
+
+  /* SPEC TABLE */
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0;font-size:.87rem}
+  th{background:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.75rem 1.25rem;border-bottom:1px solid var(--border)}
+  td{padding:.85rem 1.25rem;border-bottom:1px solid var(--border-lt);vertical-align:top;color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  td:first-child{font-family:'IBM Plex Mono',monospace;font-size:.75rem;font-weight:500;color:var(--mil)}
+  td strong{color:var(--text);font-weight:600}
+  code{font-family:'IBM Plex Mono',monospace;font-size:.75rem;background:var(--mil-lt);color:var(--mil);padding:.1rem .35rem;border-radius:3px}
+
+  /* CMD TABLE */
+  .cmd-table{width:100%;border-collapse:collapse;font-size:.85rem}
+  .cmd-table thead th{font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.65rem 1rem;border-bottom:2px solid var(--border);background:var(--bg)}
+  .cmd-table td{padding:.75rem 1rem;border-bottom:1px solid var(--border-lt);vertical-align:top}
+  .cmd-table tr:last-child td{border-bottom:none}
+  .cmd-table tr:hover td{background:var(--mil-lt)}
+  .cmd{font-family:'IBM Plex Mono',monospace;font-size:.78rem;font-weight:600;color:var(--mil)}
+  .cmd-type{font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:.15rem .5rem;border-radius:3px}
+  .cmd-type.local{background:var(--green-lt);color:var(--green)}
+  .cmd-type.live{background:var(--mil-lt);color:var(--mil)}
+  .cmd-type.sov{background:var(--sky-lt);color:#0369a1}
+  .cmd-desc{font-size:.82rem;color:var(--muted)}
+
+  /* ARCH TABLE */
+  .arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+  .arch-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;border-left:3px solid var(--mil);transition:box-shadow .15s}
+  .arch-card:hover{box-shadow:0 4px 16px rgba(124,58,237,.08)}
+  .arch-title{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;color:var(--mil);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
+  .arch-desc{font-size:.82rem;color:var(--muted);line-height:1.55}
+
+  /* INFO BOX */
+  .info-box{border-left:3px solid var(--mil);background:var(--mil-lt);padding:1rem 1.25rem;margin:1.25rem 0;border-radius:0 6px 6px 0;font-size:.88rem;color:#4c1d95;display:flex;gap:.75rem;align-items:flex-start}
+  .info-icon{font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;padding:.15rem .45rem;border:1px solid currentColor;border-radius:3px;flex-shrink:0;margin-top:.1rem;opacity:.8}
+  .info-box p{margin:0;color:inherit;font-size:.88rem}
+
+  /* FLUX TABLE */
+  .flux-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}
+  .flux-table th{background:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.65rem 1rem;border-bottom:1px solid var(--border)}
+  .flux-table td{padding:.75rem 1rem;border-bottom:1px solid var(--border-lt);font-size:.83rem;color:var(--muted)}
+  .flux-table tr:last-child td{border-bottom:none}
+  .flux-table td:first-child{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;color:var(--mil);width:3rem}
+  .flux-table td:nth-child(2){font-weight:600;color:var(--text);font-size:.83rem}
+
+  /* FOOTER */
+  footer{background:var(--text);color:#94a3b8;padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.08em}
+  footer strong{color:#a78bfa}
+  footer a{color:#60a5fa;text-decoration:none}
+
+  @media(max-width:768px){
+    nav,main,footer{padding-left:1.5rem;padding-right:1.5rem}
+    .hero{padding:4rem 1.5rem 3rem}
+    .hero-inner{grid-template-columns:1fr;gap:2.5rem}
+    .term-preview{width:100%}
+    .arch-grid{grid-template-columns:1fr}
+    h1{font-size:2.3rem}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">NSP</div>
+    <div class="nav-brand">Net<span>Secure</span>Pro</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html">Portail</a></li>
+    <li><a href="GRONDIN_v2_guide.html">GRONDIN</a></li>
+    <li><a href="publications.html">Publications</a></li>
+    <li><a href="changelog.html">Changelog</a></li>
+  </ul>
+  <a class="nav-back" href="index.html">← Portail</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">NetSecurePro · Fiche Produit Officielle · REF : NSP-MLIA-V9-2025</div>
+      <h1>MILYES_IA <em>Terminal</em>
+        <span class="sub">v9.0 — NEO_DZ · Assistant IA Souverain Exclusif</span>
+      </h1>
+      <p class="hero-desc">Assistant IA souverain de nouvelle génération conçu par Mohammed Ilyes Zoutirou dans le cadre des activités de NetSecurePro. Interface console type terminal (NEO_DZ) avec intelligence Claude Sonnet 4 et fallback IA22_LOGIC garantissant la continuité opérationnelle en toutes circonstances.</p>
+      <div class="hero-tags">
+        <span class="htag sov">⬡ Souverain</span>
+        <span class="htag cyber">Cybersécurité</span>
+        <span class="htag api">API Live</span>
+        <span class="htag fb">IA22 Fallback</span>
+        <span class="htag mono">IBM Plex Mono</span>
+        <span class="htag mono">Stealth Grey</span>
+      </div>
+      <div class="hero-btns">
+        <a href="#commandes" class="btn-mil">Référence commandes</a>
+        <a href="#architecture" class="btn-out">Architecture</a>
+      </div>
+    </div>
+
+    <div class="term-preview">
+      <div class="term-bar">
+        <div class="term-dots"><div class="td r"></div><div class="td y"></div><div class="td g"></div></div>
+        <div class="term-title">MILYES_IA · NEO_DZ TERMINAL</div>
+      </div>
+      <div class="term-body">
+        <span class="tl"><span class="m">// MILYES_IA v9.0 — NEO_DZ</span></span>
+        <span class="tl"><span class="m">// Anthropic Live · IA22 Fallback</span></span>
+        <span class="tl">&nbsp;</span>
+        <span class="tl"><span class="p">milyes&gt;</span> <span class="c">status</span></span>
+        <span class="tl"><span class="ok">✓</span> <span class="t">Moteur IA    : claude-sonnet-4</span></span>
+        <span class="tl"><span class="ok">✓</span> <span class="t">Fallback     : IA22_LOGIC v2.1</span></span>
+        <span class="tl"><span class="ok">✓</span> <span class="t">Mode         : LIVE</span></span>
+        <span class="tl"><span class="ok">✓</span> <span class="t">Souveraineté : ACTIF</span></span>
+        <span class="tl">&nbsp;</span>
+        <span class="tl"><span class="p">milyes&gt;</span> <span class="c">scan</span></span>
+        <span class="tl"><span class="t">Scan fichier/répertoire...</span></span>
+        <span class="tl"><span class="ok">✓</span> <span class="t">0 menace détectée</span></span>
+        <span class="tl">&nbsp;</span>
+        <span class="tl"><span class="p">milyes&gt;</span> <span class="cursor"></span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- PRESENTATION -->
+  <section id="presentation">
+    <div class="sec-label">01 — Présentation</div>
+    <h2>Présentation <em>du système</em></h2>
+    <p>MILYES_IA v9 est un assistant IA souverain de nouvelle génération, conçu et développé par Mohammed Ilyes Zoutirou dans le cadre des activités de NetSecurePro. Il combine une interface console professionnelle de type terminal (NEO_DZ) avec l'intelligence de l'API Anthropic Claude Sonnet 4 et un système de bascule local baptisé IA22_LOGIC, garantissant continuité et souveraineté opérationnelle en toutes circonstances.</p>
+    <p>Thème Stealth Grey, typographie IBM Plex Mono, métriques temps réel, streaming token par token et commandes natives en font un outil de référence pour les professionnels de la cybersécurité et des systèmes d'information.</p>
+    <div class="info-box">
+      <div class="info-icon">INFO</div>
+      <p>MILYES_IA est un outil souverain : le fallback IA22_LOGIC permet une opération complète hors-ligne, sans dépendance serveur externe.</p>
+    </div>
+  </section>
+
+  <!-- SPECS -->
+  <section id="specs">
+    <div class="sec-label">02 — Spécifications techniques</div>
+    <h2>Spécifications <em>techniques</em></h2>
+    <table>
+      <thead><tr><th>Paramètre</th><th>Valeur</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Modèle IA</td><td><code>claude-sonnet-4-20250514</code></td><td>API Anthropic v1</td></tr>
+        <tr><td>Max tokens/req</td><td><strong>1 000</strong></td><td>Configurable</td></tr>
+        <tr><td>Fallback</td><td><code>IA22_LOGIC v2.1</code></td><td>Hors-ligne, local</td></tr>
+        <tr><td>Interface</td><td><strong>NEO_DZ Terminal</strong></td><td>HTML5 / CSS3 / JS</td></tr>
+        <tr><td>Thème actif</td><td><strong>Stealth Grey</strong></td><td>IBM Plex Mono</td></tr>
+        <tr><td>Langue défaut</td><td><strong>Français</strong></td><td>Multilingue possible</td></tr>
+        <tr><td>Déploiement</td><td><strong>Standalone HTML</strong></td><td>Aucune dépendance serveur</td></tr>
+        <tr><td>Compatibilité</td><td><strong>Chrome 90+, Firefox 88+, Edge 90+</strong></td><td>Safari 15+</td></tr>
+        <tr><td>Métriques</td><td><strong>CPU Neural, Neural Load</strong></td><td>Packet/s · dd/mm/req</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- COMMANDS -->
+  <section id="commandes">
+    <div class="sec-label">03 — Référence des commandes</div>
+    <h2>Référence <em>des commandes</em></h2>
+    <p>Toutes les commandes natives disponibles dans l'interface NEO_DZ Terminal de MILYES_IA v9 :</p>
+    <table class="cmd-table">
+      <thead>
+        <tr><th>Commande</th><th>Type</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cmd">scan</td>
+          <td><span class="cmd-type local">IA + LOCAL</span></td>
+          <td class="cmd-desc">Scan fichier/répertoire — analyse et rapport de menaces potentielles.</td>
+        </tr>
+        <tr>
+          <td class="cmd">status</td>
+          <td><span class="cmd-type local">LOCAL</span></td>
+          <td class="cmd-desc">Rapport système complet : moteur actif, fallback, métriques, mode souverain.</td>
+        </tr>
+        <tr>
+          <td class="cmd">inject IA22</td>
+          <td><span class="cmd-type sov">SOUVERAIN</span></td>
+          <td class="cmd-desc">Bascule le contenu du terminal vers le moteur local IA22_LOGIC v2.1.</td>
+        </tr>
+        <tr>
+          <td class="cmd">ask [message]</td>
+          <td><span class="cmd-type live">IA LIVE</span></td>
+          <td class="cmd-desc">Interroge MILYES_IA librement via l'API Anthropic (streaming token par token).</td>
+        </tr>
+        <tr>
+          <td class="cmd">help</td>
+          <td><span class="cmd-type local">LOCAL</span></td>
+          <td class="cmd-desc">Liste des commandes disponibles avec description courte.</td>
+        </tr>
+        <tr>
+          <td class="cmd">clear</td>
+          <td><span class="cmd-type local">LOCAL</span></td>
+          <td class="cmd-desc">Efface le contenu du terminal et réinitialise l'affichage NEO_DZ.</td>
+        </tr>
+        <tr>
+          <td class="cmd">[texte libre]</td>
+          <td><span class="cmd-type live">IA LIVE</span></td>
+          <td class="cmd-desc">Toute saisie inconnue → envoyée comme prompt à MILYES_IA (Anthropic Live).</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture">
+    <div class="sec-label">04 — Architecture système</div>
+    <h2>Architecture <em>&amp; flux opérationnel</em></h2>
+    <div class="arch-grid">
+      <div class="arch-card">
+        <div class="arch-title">Interface NEO_DZ</div>
+        <div class="arch-desc">Console HTML5 standalone. Scanline overlay. Métriques temps réel sur barre de statut inférieure.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-title">Parseur de commandes</div>
+        <div class="arch-desc">Router natif JS · Détection automatique des requêtes IA vs commandes locales. Routing instantané.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-title">API Anthropic Cloud</div>
+        <div class="arch-desc">Modèle <code>claude-sonnet-4-20250514</code> · Streaming ligne par ligne · Compteur token temps réel.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-title">IA22_LOGIC Fallback</div>
+        <div class="arch-desc">Module local v2.1 · Activation manuelle ou automatique · Opération garantie hors-ligne · Souveraineté maximale.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-title">Métriques Temps Réel</div>
+        <div class="arch-desc">Mise à jour toutes les 1 500 ms · Barre de statut inférieure · CPU Neural, Neural Load, Packet/s.</div>
+      </div>
+      <div class="arch-card">
+        <div class="arch-title">CPU Neural · Neural Load</div>
+        <div class="arch-desc">Paquets/s, dd/mm/req · Indicateurs visuels de charge et de performance du moteur IA actif.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLUX -->
+  <section id="flux">
+    <div class="sec-label">05 — Flux d'une requête</div>
+    <h2>Flux <em>d'une requête Live</em></h2>
+    <table class="flux-table">
+      <thead><tr><th>Étape</th><th>Action</th><th>Détail</th></tr></thead>
+      <tbody>
+        <tr><td>01</td><td>Saisie commande</td><td>L'opérateur saisit une commande ou un prompt libre dans le terminal NEO_DZ.</td></tr>
+        <tr><td>02</td><td>Routing parseur</td><td>Le moteur détecte commande native (local) ou prompt libre (→ API Anthropic).</td></tr>
+        <tr><td>03</td><td>Appel API</td><td><code>POST /v1/messages</code> avec system prompt souverain · Streaming activé.</td></tr>
+        <tr><td>04</td><td>Réception JSON</td><td>La réponse est parsée : <code>data.content[].text</code> affiché token par token dans le terminal.</td></tr>
+        <tr><td>05</td><td>Fallback (si nécessaire)</td><td>Si l'API est indisponible, bascule automatique vers IA22_LOGIC v2.1 local.</td></tr>
+        <tr><td>06</td><td>Mise à jour métriques</td><td>CPU Neural, Neural Load, Packet/s mis à jour en temps réel dans la barre de statut.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<footer>
+  <div>© 2025 NETSECUREPRO · <a href="index.html">Portail</a> · Mohammed Ilyes Zoutirou</div>
+  <div>MILYES_IA <strong>v9.0 NEO_DZ</strong> · Standalone HTML · REF : NSP-MLIA-V9-2025</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRONDIN v2.0 — Guide d'utilisation</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #f0f4f8;
+    --surface:   #ffffff;
+    --surface2:  #e8eef5;
+    --border:    #cbd5e1;
+    --border-lt: #e2e8f0;
+    --text:      #1e293b;
+    --muted:     #64748b;
+    --muted2:    #94a3b8;
+    --accent:    #2563eb;
+    --accent-lt: #dbeafe;
+    --sky:       #0ea5e9;
+    --sky-lt:    #e0f2fe;
+    --green:     #059669;
+    --green-lt:  #d1fae5;
+    --amber:     #d97706;
+    --amber-lt:  #fef3c7;
+    --red:       #dc2626;
+    --red-lt:    #fee2e2;
+    --slate:     #475569;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  /* NAV */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    padding: 0 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+  }
+
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .logo strong { color: var(--accent); }
+
+  .nav-links {
+    display: flex; gap: 0;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.4rem 0.9rem;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .nav-links a:hover { color: var(--accent); background: var(--accent-lt); }
+
+  .status-pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    background: var(--green-lt);
+    color: var(--green);
+    border-radius: 999px;
+    letter-spacing: 0.1em;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 5rem 3rem 4.5rem;
+  }
+
+  .hero-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    opacity: 0;
+    animation: up 0.5s 0.1s forwards;
+  }
+
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.8rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    animation: up 0.5s 0.25s forwards;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: up 0.5s 0.4s forwards;
+  }
+
+  .hero-toc {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: up 0.5s 0.55s forwards;
+  }
+
+  .hero-toc a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    color: var(--slate);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    padding: 0.35rem 0.9rem;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .hero-toc a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-lt);
+  }
+
+  .hero-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    opacity: 0;
+    animation: up 0.5s 0.35s forwards;
+  }
+
+  .stat-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .stat-n {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2rem;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-l {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+    display: block;
+  }
+
+  @keyframes up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MAIN */
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 3rem 3rem 6rem;
+  }
+
+  section {
+    margin-bottom: 4rem;
+    opacity: 0;
+    animation: up 0.4s forwards;
+  }
+  section:nth-child(1){ animation-delay:.1s }
+  section:nth-child(2){ animation-delay:.2s }
+  section:nth-child(3){ animation-delay:.3s }
+  section:nth-child(4){ animation-delay:.4s }
+  section:nth-child(5){ animation-delay:.5s }
+  section:nth-child(6){ animation-delay:.6s }
+  section:nth-child(7){ animation-delay:.7s }
+
+  .sec-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .sec-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-lt);
+  }
+
+  h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.9rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 1.75rem 0 0.75rem;
+  }
+
+  p { color: var(--muted); margin-bottom: 0.9rem; font-size: 0.93rem; }
+
+  /* INFO BOX */
+  .info-box {
+    border-left: 3px solid var(--sky);
+    background: var(--sky-lt);
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.88rem;
+    color: #0369a1;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  .info-box.warn {
+    border-color: var(--amber);
+    background: var(--amber-lt);
+    color: #92400e;
+  }
+  .info-icon {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    opacity: 0.8;
+  }
+  .info-box p { margin: 0; color: inherit; font-size: 0.88rem; }
+
+  /* CATEGORY CARDS */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .cat-card:hover {
+    box-shadow: 0 4px 20px rgba(37,99,235,0.08);
+    transform: translateY(-2px);
+  }
+  .cat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .cat-card.green::before  { background: var(--green); }
+  .cat-card.amber::before  { background: var(--amber); }
+  .cat-card.sky::before    { background: var(--sky); }
+  .cat-card.red::before    { background: var(--red); }
+
+  .cat-emoji { font-size: 1.4rem; margin-bottom: 0.6rem; display: block; }
+
+  .cat-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .cat-card.green .cat-name { color: var(--green); }
+  .cat-card.amber .cat-name { color: var(--amber); }
+  .cat-card.sky   .cat-name { color: var(--sky); }
+  .cat-card.red   .cat-name { color: var(--red); }
+
+  .cat-desc { font-size: 0.83rem; color: var(--muted); margin: 0; }
+
+  /* PIPELINE */
+  .pipeline {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    margin: 1rem 0;
+  }
+
+  .pipe-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .pipe-node {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.63rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--slate);
+    transition: all 0.15s;
+  }
+  .pipe-node:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+  .pipe-arrow { color: var(--muted2); font-size: 0.8rem; padding: 0 0.1rem; }
+
+  /* STEPS */
+  .step-list { margin: 1rem 0; }
+
+  .step-item {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    align-items: start;
+  }
+
+  .step-dot {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--accent-lt);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .step-body h4 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.93rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+  .step-body p { margin: 0; font-size: 0.85rem; }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1rem 0;
+    font-size: 0.87rem;
+  }
+  th {
+    background: var(--bg);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border-lt);
+    vertical-align: top;
+    color: var(--muted);
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  td strong { color: var(--text); font-weight: 600; }
+  td code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    background: var(--accent-lt);
+    color: var(--accent);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--text);
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.9;
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+  .code-block .ck  { color: #93c5fd; }
+  .code-block .cv  { color: #6ee7b7; }
+  .code-block .cm  { color: #64748b; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    padding: 1.75rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted2);
+    letter-spacing: 0.08em;
+  }
+  footer strong { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    header, main, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .hero { padding: 4rem 1.5rem 3rem; }
+    .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .cat-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NETSECUREPRO · <strong>GRONDIN</strong> v2.0</div>
+  <ul class="nav-links">
+    <li><a href="#apercu">Aperçu</a></li>
+    <li><a href="#categories">Catégories</a></li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#configuration">Config</a></li>
+    <li><a href="#utilisation">Utilisation</a></li>
+    <li><a href="#publications">Publications</a></li>
+  </ul>
+  <div class="status-pill">● Stable v2.0</div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-label">Documentation officielle · NetSecurePro</div>
+      <h1>Guide d'utilisation<br><em>GRONDIN v2.0</em></h1>
+      <p class="hero-desc">IA Médicale · Workflow stratégique automatisé · Traitement d'emails par classification intelligente en 4 catégories.</p>
+      <nav class="hero-toc">
+        <a href="#apercu">Aperçu</a>
+        <a href="#categories">Catégories</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#configuration">Configuration</a>
+        <a href="#utilisation">Utilisation</a>
+        <a href="#telegram">Telegram</a>
+        <a href="#publications">Publications</a>
+      </nav>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card">
+        <span class="stat-n">4</span>
+        <span class="stat-l">Catégories</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-n">8</span>
+        <span class="stat-l">Étapes pipeline</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-n">v2</span>
+        <span class="stat-l">Version</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <section id="apercu">
+    <div class="sec-label">01 — Aperçu</div>
+    <h2>Qu'est-ce que GRONDIN v2 ?</h2>
+    <p>GRONDIN Response Handler v2.0 est un outil web de traitement automatisé d'emails destiné aux professionnels de la santé. Il analyse le contenu d'un email entrant, le classe dans une catégorie, génère une réponse adaptée et peut envoyer une alerte via Telegram.</p>
+    <p>Deux moteurs de classification sont disponibles : <strong>mots-clés locaux</strong> (aucune connexion externe requise) ou <strong>API Claude</strong> (Anthropic) pour une classification plus intelligente et contextuelle.</p>
+    <div class="info-box">
+      <div class="info-icon">INFO</div>
+      <p>L'outil fonctionne entièrement dans votre navigateur. Aucune donnée n'est transmise à l'extérieur, sauf si vous activez l'API Claude ou les alertes Telegram.</p>
+    </div>
+  </section>
+
+  <section id="categories">
+    <div class="sec-label">02 — Catégories</div>
+    <h2>Les 4 types de classification</h2>
+    <p>Chaque email traité est assigné automatiquement à l'une des catégories suivantes :</p>
+    <div class="cat-grid">
+      <div class="cat-card green">
+        <span class="cat-emoji">🟢</span>
+        <div class="cat-name">Positive Meeting</div>
+        <p class="cat-desc">Demande de rencontre ou confirmation de rendez-vous. L'email exprime une volonté de se rencontrer ou un suivi de réunion.</p>
+      </div>
+      <div class="cat-card amber">
+        <span class="cat-emoji">🟡</span>
+        <div class="cat-name">Info Requirement</div>
+        <p class="cat-desc">Demande d'information générale. L'expéditeur cherche des renseignements, documents ou clarifications.</p>
+      </div>
+      <div class="cat-card sky">
+        <span class="cat-emoji">🔵</span>
+        <div class="cat-name">Proof of Status</div>
+        <p class="cat-desc">Demande de preuve de statut ou document officiel : attestation, certificat médical, confirmation administrative.</p>
+      </div>
+      <div class="cat-card red">
+        <span class="cat-emoji">🔴</span>
+        <div class="cat-name">Actif QR Other</div>
+        <p class="cat-desc">Catégorie fourre-tout pour les emails hors des trois premières catégories. Nécessite une attention manuelle.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="workflow">
+    <div class="sec-label">03 — Workflow</div>
+    <h2>Pipeline de traitement en 8 étapes</h2>
+    <p>Chaque email passe par les étapes suivantes, visibles en temps réel dans l'interface :</p>
+    <div class="pipeline">
+      <div class="pipe-row">
+        <div class="pipe-node">Start</div>
+        <span class="pipe-arrow">›</span>
+        <div class="pipe-node">Init</div>
+        <span class="pipe-arrow">›</span>
+        <div class="pipe-node">Lecture</div>
+        <span class="pipe-arrow">›</span>
+        <div class="pipe-node">Classification</div>
+        <span class="pipe-arrow">›</span>
+        <div class="pipe-node">Action</div>
+        <span class="pipe-arrow">›</span>
+        <div class="pipe-node">Journalisation</div>
+        <span class="pipe-arrow">›</span>
+        <div class="pipe-node">Clôture</div>
+        <span class="pipe-arrow">›</span>
+        <div class="pipe-node">End</div>
+      </div>
+    </div>
+
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-dot">01</div>
+        <div class="step-body">
+          <h4>Init — Initialisation</h4>
+          <p>Chargement de la configuration (moteur, clés API, signature). Vérification des paramètres obligatoires avant traitement.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">02</div>
+        <div class="step-body">
+          <h4>Lecture — Parsing de l'email</h4>
+          <p>Extraction de l'expéditeur, du sujet, du corps et des noms de pièces jointes fournis dans le formulaire.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">03</div>
+        <div class="step-body">
+          <h4>Classification — Analyse du contenu</h4>
+          <p>Moteur mots-clés : correspondance locale par dictionnaire. Moteur Claude : appel API Anthropic pour classification contextuelle.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">04</div>
+        <div class="step-body">
+          <h4>Action — Génération de réponse</h4>
+          <p>Création d'un brouillon de réponse adapté à la catégorie détectée, signé avec votre nom/signature configuré.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">05</div>
+        <div class="step-body">
+          <h4>Journalisation — Enregistrement</h4>
+          <p>Ajout de l'entrée dans le journal de session avec horodatage, catégorie, durée de traitement et résumé.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">06</div>
+        <div class="step-body">
+          <h4>Clôture — Alertes Telegram (optionnel)</h4>
+          <p>Si Telegram est configuré, une alerte est envoyée avec la catégorie et un résumé du traitement effectué.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="configuration">
+    <div class="sec-label">04 — Configuration</div>
+    <h2>Paramètres à configurer</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Champ</th>
+          <th>Requis</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Moteur</td>
+          <td>✓ Oui</td>
+          <td>Choisissez <strong>Mots-clés</strong> (local, sans clé) ou <strong>API Claude</strong> (nécessite une clé Anthropic).</td>
+        </tr>
+        <tr>
+          <td>Clé API Claude</td>
+          <td>— Non</td>
+          <td>Clé Anthropic au format <code>sk-ant-...</code>. Requise uniquement si le moteur Claude est sélectionné.</td>
+        </tr>
+        <tr>
+          <td>Nom / Signature</td>
+          <td>✓ Oui</td>
+          <td>Nom ou titre dans les réponses générées. Ex : <strong>Dr. Grondin, MD</strong></td>
+        </tr>
+        <tr>
+          <td>Bot Telegram Token</td>
+          <td>— Non</td>
+          <td>Token du bot Telegram obtenu via @BotFather. Format : <code>123456:ABC-DEF...</code></td>
+        </tr>
+        <tr>
+          <td>Telegram Chat ID</td>
+          <td>— Non</td>
+          <td>Identifiant numérique du chat destinataire des alertes automatiques.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="info-box warn">
+      <div class="info-icon">AVIS</div>
+      <p>Votre clé API Anthropic reste dans votre navigateur et n'est jamais transmise à un tiers autre qu'Anthropic lors des appels API.</p>
+    </div>
+  </section>
+
+  <section id="utilisation">
+    <div class="sec-label">05 — Utilisation</div>
+    <h2>Traiter un email pas à pas</h2>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-dot">1</div>
+        <div class="step-body">
+          <h4>Remplir les champs de l'email</h4>
+          <p>Entrez l'expéditeur, le sujet, le corps du message et optionnellement les noms de pièces jointes (séparés par des virgules).</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">2</div>
+        <div class="step-body">
+          <h4>Vérifier la configuration</h4>
+          <p>Assurez-vous que votre nom/signature est renseigné et que le moteur de classification souhaité est sélectionné.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">3</div>
+        <div class="step-body">
+          <h4>Cliquer sur ▶ Exécuter le Workflow</h4>
+          <p>Le pipeline démarre. L'état avance en temps réel dans la barre de workflow de l'interface.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">4</div>
+        <div class="step-body">
+          <h4>Copier la réponse générée</h4>
+          <p>La réponse s'affiche dans la zone de résultat. Utilisez <strong>⎘ Copier la réponse</strong> pour la transférer dans votre client email.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">5</div>
+        <div class="step-body">
+          <h4>Consulter le journal de session</h4>
+          <p>Chaque traitement est consigné avec l'heure, la catégorie et un résumé. Utilisez <strong>✕ Effacer le journal</strong> pour réinitialiser.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Exemple — Proof of Status</h3>
+    <div class="code-block">
+      <span class="cm">// Email déclenchant PROOF_OF_STATUS</span><br>
+      <span class="ck">Expéditeur :</span> <span class="cv">assurance@mutuelle-sante.ca</span><br>
+      <span class="ck">Sujet :</span>      <span class="cv">Demande d'attestation médicale – dossier #2024-8821</span><br>
+      <span class="ck">Corps :</span>      <span class="cv">Nous avons besoin d'une preuve de statut médical</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">ainsi qu'une attestation signée par votre médecin.</span>
+    </div>
+  </section>
+
+  <section id="telegram">
+    <div class="sec-label">06 — Telegram</div>
+    <h2>Configurer les alertes Telegram</h2>
+    <p>GRONDIN peut envoyer une notification automatique sur Telegram après chaque traitement. Voici comment configurer le bot :</p>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-dot">1</div>
+        <div class="step-body">
+          <h4>Créer un bot avec @BotFather</h4>
+          <p>Sur Telegram, cherchez <strong>@BotFather</strong>, tapez <code>/newbot</code> et suivez les instructions pour obtenir votre token.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">2</div>
+        <div class="step-body">
+          <h4>Obtenir votre Chat ID</h4>
+          <p>Envoyez un message à votre bot puis consultez <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code> pour trouver votre <code>chat.id</code>.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot">3</div>
+        <div class="step-body">
+          <h4>Entrer les informations dans GRONDIN</h4>
+          <p>Collez le token et le chat ID dans les champs correspondants. Cliquez sur <strong>Envoyer</strong> dans la section test pour vérifier la connexion.</p>
+        </div>
+      </div>
+    </div>
+    <div class="info-box">
+      <div class="info-icon">INFO</div>
+      <p>Le bouton <strong>Envoyer</strong> dans "Test alerte Telegram" envoie un message de test immédiatement, sans traiter d'email.</p>
+    </div>
+  </section>
+
+  <section id="publications">
+    <div class="sec-label">07 — Publications officielles</div>
+    <h2>Communiqués &amp; Rapports</h2>
+    <p>Toutes les publications officielles NetSecurePro liées à GRONDIN — mises à jour, avis de sécurité, protocoles et rapports d'analyse.</p>
+
+    <div style="position:relative; padding-left:2rem; margin-top:1.5rem;">
+      <div style="position:absolute;left:0.45rem;top:0.5rem;bottom:0.5rem;width:1px;background:var(--border-lt);"></div>
+
+      <!-- entry -->
+      <div style="background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1rem;position:relative;">
+        <div style="position:absolute;left:-1.7rem;top:1.3rem;width:0.65rem;height:0.65rem;border-radius:50%;background:var(--accent);border:2px solid var(--accent-lt);"></div>
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;font-weight:600;padding:0.15rem 0.5rem;border:1px solid var(--green);color:var(--green);border-radius:3px;">Release</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);">2025-03-15</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);margin-left:auto;">NSP-2025-REL-001</span>
+        </div>
+        <div style="font-weight:600;color:var(--accent);font-size:0.95rem;margin-bottom:0.35rem;">GRONDIN Response Handler v2.0 — Publication officielle</div>
+        <p style="font-size:0.83rem;margin:0;">Refonte majeure : moteur hybride (mots-clés + API Claude), intégration Telegram native, journal de session persistant et pipeline visuel en 8 étapes.</p>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1rem;position:relative;">
+        <div style="position:absolute;left:-1.7rem;top:1.3rem;width:0.55rem;height:0.55rem;border-radius:50%;background:var(--red);border:2px solid var(--border);"></div>
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;font-weight:600;padding:0.15rem 0.5rem;border:1px solid var(--red);color:var(--red);border-radius:3px;">Sécurité</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);">2025-03-10</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);margin-left:auto;">NSP-2025-SEC-003</span>
+        </div>
+        <div style="font-weight:600;color:var(--text);font-size:0.95rem;margin-bottom:0.35rem;">Avis : gestion des clés API dans les applications web</div>
+        <p style="font-size:0.83rem;margin:0;">Recommandations sur le stockage sécurisé des clés API Anthropic côté client et mesures préventives.</p>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1rem;position:relative;">
+        <div style="position:absolute;left:-1.7rem;top:1.3rem;width:0.55rem;height:0.55rem;border-radius:50%;background:var(--sky);border:2px solid var(--border);"></div>
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;font-weight:600;padding:0.15rem 0.5rem;border:1px solid var(--sky);color:var(--sky);border-radius:3px;">Protocole</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);">2025-02-28</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);margin-left:auto;">NSP-2025-PRO-007</span>
+        </div>
+        <div style="font-weight:600;color:var(--text);font-size:0.95rem;margin-bottom:0.35rem;">Protocole de classification — Catégories médicales v2.1</div>
+        <p style="font-size:0.83rem;margin:0;">Mise à jour des dictionnaires de mots-clés pour les 4 catégories de traitement GRONDIN.</p>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;position:relative;">
+        <div style="position:absolute;left:-1.7rem;top:1.3rem;width:0.55rem;height:0.55rem;border-radius:50%;background:var(--amber);border:2px solid var(--border);"></div>
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;font-weight:600;padding:0.15rem 0.5rem;border:1px solid var(--amber);color:var(--amber);border-radius:3px;">Avis</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);">2025-02-14</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);margin-left:auto;">NSP-2025-AVI-004</span>
+        </div>
+        <div style="font-weight:600;color:var(--text);font-size:0.95rem;margin-bottom:0.35rem;">Avis de conformité LPRPDE — Données de santé automatisées</div>
+        <p style="font-size:0.83rem;margin:0;">Obligations légales canadiennes sur l'utilisation d'outils IA dans les communications médicales.</p>
+      </div>
+
+    </div>
+
+    <a href="publications.html" style="display:inline-flex;align-items:center;gap:0.5rem;margin-top:1.5rem;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--accent);text-decoration:none;padding:0.5rem 1rem;border:1px solid var(--accent);border-radius:4px;background:var(--accent-lt);transition:all 0.15s;">Voir toutes les publications →</a>
+  </section>
+
+</main>
+
+<footer>
+  <div>© 2025 NETSECUREPRO · Tous droits réservés</div>
+  <div>GRONDIN RESPONSE HANDLER · <strong>v2.0</strong> · IA MÉDICALE</div>
+</footer>
+
+</body>
+</html>

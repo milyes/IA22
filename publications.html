@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publications Officielles — NetSecurePro</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f0f4f8;--surface:#fff;--border:#cbd5e1;--border-lt:#e2e8f0;
+    --text:#1e293b;--muted:#64748b;--muted2:#94a3b8;
+    --accent:#2563eb;--accent-lt:#dbeafe;
+    --sky:#0ea5e9;--sky-lt:#e0f2fe;
+    --green:#059669;--green-lt:#d1fae5;
+    --amber:#d97706;--amber-lt:#fef3c7;
+    --red:#dc2626;--red-lt:#fee2e2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;line-height:1.6}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;height:58px}
+  .logo{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .logo strong{color:var(--accent)}
+  .nav-links{display:flex;gap:0;list-style:none}
+  .nav-links a{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:.4rem .9rem;border-radius:4px;transition:all .15s}
+  .nav-links a:hover{color:var(--accent);background:var(--accent-lt)}
+  .nav-back{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--muted);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--border);border-radius:4px;transition:all .15s}
+  .nav-back:hover{border-color:var(--accent);color:var(--accent)}
+  .hero{background:var(--surface);border-bottom:1px solid var(--border);padding:5rem 3rem 4rem}
+  .hero-inner{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:4rem;align-items:end}
+  .hero-label{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem;opacity:0;animation:up .5s .1s forwards}
+  h1{font-family:'Instrument Serif',serif;font-size:clamp(2.5rem,5vw,3.8rem);font-weight:400;line-height:1.1;letter-spacing:-.02em;margin-bottom:1rem;opacity:0;animation:up .5s .25s forwards}
+  h1 em{font-style:italic;color:var(--accent)}
+  .hero-sub{font-size:.93rem;color:var(--muted);max-width:480px;opacity:0;animation:up .5s .4s forwards}
+  .stats-row{display:flex;flex-direction:column;gap:.75rem;opacity:0;animation:up .5s .35s forwards}
+  .stat-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem 1.5rem;text-align:center;min-width:100px}
+  .stat-n{font-family:'Instrument Serif',serif;font-size:2rem;font-style:italic;color:var(--accent);display:block;line-height:1}
+  .stat-l{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-top:.2rem;display:block}
+  @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  .announce{max-width:1060px;margin:2.5rem auto 0;padding:0 3rem;opacity:0;animation:up .5s .55s forwards}
+  .announce-inner{background:var(--accent-lt);border:1px solid #93c5fd;border-radius:8px;padding:1rem 1.5rem;display:flex;align-items:center;gap:1.25rem}
+  .dot{width:.55rem;height:.55rem;border-radius:50%;background:var(--accent);flex-shrink:0;animation:blink 1.5s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .announce-text{font-size:.88rem;color:#1e40af;flex:1}
+  .announce-text strong{font-weight:600}
+  .announce-date{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:#3b82f6;white-space:nowrap}
+  .filter-wrap{max-width:1060px;margin:0 auto;padding:1.75rem 3rem 1.25rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+  .filter-label{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-right:.25rem}
+  .fbtn{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;padding:.35rem .9rem;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
+  .fbtn:hover,.fbtn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-lt)}
+  .grid-wrap{max-width:1060px;margin:0 auto;padding:0 3rem 5rem}
+  .pub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .pub-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;display:flex;flex-direction:column;gap:.9rem;cursor:pointer;transition:box-shadow .2s,transform .2s,border-color .2s;position:relative;overflow:hidden;opacity:0;animation:up .4s forwards}
+  .pub-card:nth-child(1){animation-delay:.05s}.pub-card:nth-child(2){animation-delay:.1s}.pub-card:nth-child(3){animation-delay:.15s}.pub-card:nth-child(4){animation-delay:.2s}.pub-card:nth-child(5){animation-delay:.25s}.pub-card:nth-child(6){animation-delay:.3s}.pub-card:nth-child(7){animation-delay:.35s}.pub-card:nth-child(8){animation-delay:.4s}.pub-card:nth-child(9){animation-delay:.45s}
+  .pub-card:hover{box-shadow:0 8px 32px rgba(37,99,235,.1);transform:translateY(-3px);border-color:#93c5fd}
+  .pub-card.featured{grid-column:span 2;background:linear-gradient(135deg,#eff6ff 0%,#fff 60%);border-color:#93c5fd}
+  .pub-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0}
+  .t-release::before{background:var(--green)}.t-avis::before{background:var(--amber)}.t-protocole::before{background:var(--sky)}.t-securite::before{background:var(--red)}.t-rapport::before{background:var(--accent)}
+  .card-top{display:flex;align-items:center;gap:.6rem}
+  .tag{font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:.15rem .55rem;border-radius:3px}
+  .t-release .tag{background:var(--green-lt);color:var(--green)}.t-avis .tag{background:var(--amber-lt);color:var(--amber)}.t-protocole .tag{background:var(--sky-lt);color:#0369a1}.t-securite .tag{background:var(--red-lt);color:var(--red)}.t-rapport .tag{background:var(--accent-lt);color:var(--accent)}
+  .card-date{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--muted2);margin-left:auto}
+  .card-title{font-family:'IBM Plex Sans',sans-serif;font-size:.95rem;font-weight:600;color:var(--text);line-height:1.35;flex:1}
+  .pub-card.featured .card-title{font-family:'Instrument Serif',serif;font-size:1.25rem;font-weight:400}
+  .card-excerpt{font-size:.82rem;color:var(--muted);line-height:1.6}
+  .card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:.75rem;border-top:1px solid var(--border-lt);margin-top:auto}
+  .card-ref{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--muted2)}
+  .card-arrow{font-size:.85rem;color:var(--muted2);transition:transform .2s,color .2s}
+  .pub-card:hover .card-arrow{transform:translateX(4px);color:var(--accent)}
+  footer{background:var(--surface);border-top:1px solid var(--border);padding:1.75rem 3rem;display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--muted2);letter-spacing:.08em}
+  footer strong{color:var(--accent)}
+  @media(max-width:768px){nav,.hero{padding-left:1.5rem;padding-right:1.5rem}.hero-inner{grid-template-columns:1fr;gap:2rem}.pub-grid{grid-template-columns:1fr}.pub-card.featured{grid-column:span 1}.filter-wrap,.grid-wrap,.announce,footer{padding-left:1.5rem;padding-right:1.5rem}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">NETSECUREPRO · <strong>Publications</strong></div>
+  <ul class="nav-links">
+    <li><a href="index.html">Portail</a></li>
+    <li><a href="GRONDIN_v2_guide.html">Guide GRONDIN</a></li>
+    <li><a href="milyes-ia.html">MILYES_IA</a></li>
+    <li><a href="changelog.html">Changelog</a></li>
+  </ul>
+  <a class="nav-back" href="GRONDIN_v2_guide.html">← Guide</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-label">NetSecurePro · Publications officielles</div>
+      <h1>Communiqués<br>&amp; <em>Rapports</em></h1>
+      <p class="hero-sub">Mises à jour système, avis de sécurité, protocoles cliniques et rapports d'analyse — toutes les publications officielles NetSecurePro.</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><span class="stat-n">12</span><span class="stat-l">Publications</span></div>
+      <div class="stat-box"><span class="stat-n">3</span><span class="stat-l">Alertes actives</span></div>
+      <div class="stat-box"><span class="stat-n">2025</span><span class="stat-l">Année</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="announce">
+  <div class="announce-inner">
+    <div class="dot"></div>
+    <div class="announce-text"><strong>GRONDIN v2.0</strong> est maintenant disponible — classification IA hybride, intégration Telegram et workflow repensé.</div>
+    <div class="announce-date">2025-03-15</div>
+  </div>
+</div>
+
+<div class="filter-wrap">
+  <span class="filter-label">Filtrer :</span>
+  <button class="fbtn active" onclick="filter(this,'all')">Tout</button>
+  <button class="fbtn" onclick="filter(this,'t-release')">Release</button>
+  <button class="fbtn" onclick="filter(this,'t-avis')">Avis</button>
+  <button class="fbtn" onclick="filter(this,'t-protocole')">Protocole</button>
+  <button class="fbtn" onclick="filter(this,'t-securite')">Sécurité</button>
+  <button class="fbtn" onclick="filter(this,'t-rapport')">Rapport</button>
+</div>
+
+<div class="grid-wrap">
+  <div class="pub-grid">
+    <div class="pub-card t-release featured">
+      <div class="card-top"><span class="tag">Release</span><span class="card-date">2025-03-15</span></div>
+      <div class="card-title">GRONDIN Response Handler v2.0 — Publication officielle</div>
+      <div class="card-excerpt">Refonte complète du moteur de workflow stratégique. Moteur hybride (mots-clés + API Claude), intégration Telegram native, journal de session persistant et interface entièrement repensée pour les professionnels de la santé.</div>
+      <div class="card-footer"><span class="card-ref">NSP-2025-REL-001</span><span class="card-arrow">→</span></div>
+    </div>
+    <div class="pub-card t-securite">
+      <div class="card-top"><span class="tag">Sécurité</span><span class="card-date">2025-03-10</span></div>
+      <div class="card-title">Avis de sécurité : gestion des clés API dans les applications web</div>
+      <div class="card-excerpt">Recommandations sur le stockage sécurisé des clés API Anthropic côté client. Mesures préventives et bonnes pratiques.</div>
+      <div class="card-footer"><span class="card-ref">NSP-2025-SEC-003</span><span class="card-arrow">→</span></div>
+    </div>
+    <div class="pub-card t-protocole">
+      <div class="card-top"><span class="tag">Protocole</span><span class="card-date">2025-02-28</span></div>
+      <div class="card-title">Protocole de classification — Catégories médicales v2.1</div>
+      <div class="card-excerpt">Mise à jour des dictionnaires de mots-clés pour les 4 catégories de traitement GRONDIN.</div>
+      <div class="card-footer"><span class="card-ref">NSP-2025-PRO-007</span><span class="card-arrow">→</span></div>
+    </div>
+    <div class="pub-card t-rapport">
+      <div class="card-top"><span class="tag">Rapport</span><span class="card-date">2025-02-20</span></div>
+      <div class="card-title">Rapport d'analyse — Performance du moteur IA Q1 2025</div>
+      <div class="card-excerpt">Précision sur 2 400 emails traités : taux de classification correcte, faux positifs et recommandations d'optimisation.</div>
+      <div class="card-footer"><span class="card-ref">NSP-2025-RAP-002</span><span class="card-arrow">→</span></div>
+    </div>
+    <div class="pub-card t-avis">
+      <div class="card-top"><span class="tag">Avis</span><span class="card-date">2025-02-14</span></div>
+      <div class="card-title">Avis de conformité LPRPDE — Données de santé automatisées</div>
+      <div class="card-excerpt">Obligations légales canadiennes sur l'utilisation d'outils IA dans les communications médicales.</div>
+      <div class="card-footer"><span class="card-ref">NSP-2025-AVI-004</span><span class="card-arrow">→</span></div>
+    </div>
+    <div class="pub-card t-release">
+      <div class="card-top"><span class="tag">Release</span><span class="card-date">2025-01-30</span></div>
+      <div class="card-title">GRONDIN v1.4 — Correctifs et journalisation améliorée</div>
+      <div class="card-excerpt">Correctif du bug d'horodatage EST/EDT, amélioration du format du journal et stabilisation du pipeline.</div>
+      <div class="card-footer"><span class="card-ref">NSP-2025-REL-000</span><span class="card-arrow">→</span></div>
+    </div>
+    <div class="pub-card t-securite">
+      <div class="card-top"><span class="tag">Sécurité</span><span class="card-date">2025-01-18</span></div>
+      <div class="card-title">Vulnérabilité — Injection de prompt via corps d'email</div>
+      <div class="card-excerpt">Analyse et mitigation du risque d'injection de prompt lors du traitement d'emails malveillants via le moteur Claude.</div>
+      <div class="card-footer"><span class="card-ref">NSP-2025-SEC-001</span><span class="card-arrow">→</span></div>
+    </div>
+    <div class="pub-card t-protocole">
+      <div class="card-top"><span class="tag">Protocole</span><span class="card-date">2025-01-05</span></div>
+      <div class="card-title">Guide d'intégration Telegram pour cliniques — 2025</div>
+      <div class="card-excerpt">Configuration des alertes Telegram en environnement clinique multi-utilisateurs et gestion des canaux.</div>
+      <div class="card-footer"><span class="card-ref">NSP-2025-PRO-001</span><span class="card-arrow">→</span></div>
+    </div>
+    <div class="pub-card t-rapport">
+      <div class="card-top"><span class="tag">Rapport</span><span class="card-date">2024-12-31</span></div>
+      <div class="card-title">Bilan annuel 2024 — Automatisation des workflows médicaux</div>
+      <div class="card-excerpt">Synthèse des déploiements, statistiques d'utilisation, retours terrain et feuille de route 2025.</div>
+      <div class="card-footer"><span class="card-ref">NSP-2024-RAP-012</span><span class="card-arrow">→</span></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>© 2025 NETSECUREPRO · Tous droits réservés</div>
+  <div>GRONDIN RESPONSE HANDLER · <strong>v2.0</strong> · IA MÉDICALE</div>
+</footer>
+<script>
+  function filter(btn, type) {
+    document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.pub-card').forEach(c => {
+      c.style.display = (type === 'all' || c.classList.contains(type)) ? 'flex' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

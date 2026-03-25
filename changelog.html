@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRONDIN v2.0 — Notes de version & Changelog</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f0f4f8;--surface:#fff;--surface2:#e8eef5;
+    --border:#cbd5e1;--border-lt:#e2e8f0;
+    --text:#1e293b;--muted:#64748b;--muted2:#94a3b8;
+    --accent:#2563eb;--accent-lt:#dbeafe;
+    --sky:#0ea5e9;--sky-lt:#e0f2fe;
+    --green:#059669;--green-lt:#d1fae5;
+    --amber:#d97706;--amber-lt:#fef3c7;
+    --red:#dc2626;--red-lt:#fee2e2;
+    --code-bg:#1e293b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;line-height:1.6}
+
+  nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;height:58px}
+  .logo{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .logo strong{color:var(--accent)}
+  .nav-back{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--muted);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--border);border-radius:4px;transition:all .15s}
+  .nav-back:hover{border-color:var(--accent);color:var(--accent)}
+
+  .page-header{background:var(--surface);border-bottom:1px solid var(--border);padding:4rem 3rem 3.5rem}
+  .page-header-inner{max-width:840px;margin:0 auto}
+  .ph-label{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem;opacity:0;animation:up .5s .1s forwards}
+  .ph-title{font-family:'Instrument Serif',serif;font-size:clamp(2.2rem,4vw,3.2rem);font-weight:400;line-height:1.1;letter-spacing:-.02em;margin-bottom:1rem;opacity:0;animation:up .5s .25s forwards}
+  .ph-title em{font-style:italic;color:var(--accent)}
+  .ph-meta{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:up .5s .4s forwards}
+  .ph-badge{font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;padding:.3rem .75rem;border-radius:999px}
+  .ph-badge.stable{background:var(--green-lt);color:var(--green)}
+  .ph-badge.latest{background:var(--accent-lt);color:var(--accent)}
+  .ph-badge.med{background:var(--sky-lt);color:#0369a1}
+  @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  main{max-width:840px;margin:0 auto;padding:3rem 3rem 6rem}
+
+  .ver-block{margin-bottom:3rem;opacity:0;animation:up .4s forwards}
+  .ver-block:nth-child(1){animation-delay:.05s}.ver-block:nth-child(2){animation-delay:.15s}.ver-block:nth-child(3){animation-delay:.25s}.ver-block:nth-child(4){animation-delay:.35s}.ver-block:nth-child(5){animation-delay:.45s}
+
+  .ver-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;padding-bottom:.85rem;border-bottom:2px solid var(--border-lt)}
+  .ver-num{font-family:'Instrument Serif',serif;font-size:1.5rem;font-style:italic;color:var(--text)}
+  .ver-tag{font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:.2rem .6rem;border-radius:3px}
+  .ver-tag.major{background:var(--accent-lt);color:var(--accent)}
+  .ver-tag.minor{background:var(--sky-lt);color:#0369a1}
+  .ver-tag.patch{background:var(--surface2);color:var(--muted)}
+  .ver-tag.current{background:var(--green-lt);color:var(--green)}
+  .ver-date{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--muted2);margin-left:auto}
+
+  .change-group{margin-bottom:1.25rem}
+  .cg-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.65rem;display:flex;align-items:center;gap:.65rem}
+  .cg-label::after{content:'';flex:1;height:1px;background:var(--border-lt)}
+  .cg-label.added{color:var(--green)}.cg-label.changed{color:var(--sky)}.cg-label.fixed{color:var(--amber)}.cg-label.security{color:var(--red)}.cg-label.removed{color:var(--muted)}
+
+  .change-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+  .change-list li{background:var(--surface);border:1px solid var(--border-lt);border-radius:6px;padding:.65rem 1rem .65rem 2.5rem;position:relative;font-size:.85rem;color:var(--muted);line-height:1.5}
+  .change-list li::before{content:'';position:absolute;left:.9rem;top:.9rem;width:.5rem;height:.5rem;border-radius:50%}
+  .cg-label.added   + .change-list li::before{background:var(--green)}
+  .cg-label.changed + .change-list li::before{background:var(--sky)}
+  .cg-label.fixed   + .change-list li::before{background:var(--amber)}
+  .cg-label.security+ .change-list li::before{background:var(--red)}
+  .change-list li strong{color:var(--text);font-weight:600}
+  .change-list li code{font-family:'IBM Plex Mono',monospace;font-size:.75rem;background:var(--accent-lt);color:var(--accent);padding:.1rem .35rem;border-radius:3px}
+
+  .note-box{background:var(--amber-lt);border:1px solid #fcd34d;border-radius:6px;padding:1rem 1.25rem;margin-top:1rem;font-size:.85rem;color:#92400e;display:flex;gap:.75rem;align-items:flex-start}
+  .note-icon{font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;padding:.15rem .45rem;border:1px solid currentColor;border-radius:3px;flex-shrink:0;margin-top:.15rem}
+
+  .code-block{background:var(--code-bg);border-radius:8px;padding:1.25rem 1.5rem;font-family:'IBM Plex Mono',monospace;font-size:.78rem;line-height:2;margin:1rem 0;overflow-x:auto}
+  .code-block .prompt{color:#34d399}.code-block .cmd{color:#e2e8f0}.code-block .ok{color:#34d399}.code-block .warn{color:#fbbf24}.code-block .cm{color:#64748b}
+
+  footer{background:var(--surface);border-top:1px solid var(--border);padding:1.75rem 3rem;display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--muted2);letter-spacing:.08em}
+  footer strong{color:var(--accent)}
+  @media(max-width:640px){nav,main,footer,.page-header{padding-left:1.5rem;padding-right:1.5rem}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">NETSECUREPRO · <strong>Changelog</strong></div>
+  <a class="nav-back" href="index.html" style="margin-right:.5rem">← Portail</a><a class="nav-back" href="GRONDIN_v2_guide.html">Guide</a>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="ph-label">GRONDIN Response Handler · Notes de version</div>
+    <div class="ph-title">Changelog <em>&amp; Releases</em></div>
+    <div class="ph-meta">
+      <span class="ph-badge latest">v2.0.0 — Courante</span>
+      <span class="ph-badge stable">✓ Stable</span>
+      <span class="ph-badge med">IA Médicale</span>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <div class="ver-block">
+    <div class="ver-header">
+      <span class="ver-num">v2.0.0</span>
+      <span class="ver-tag major">Major</span>
+      <span class="ver-tag current">● Courante</span>
+      <span class="ver-date">2025-03-15</span>
+    </div>
+
+    <div class="change-group">
+      <div class="cg-label added">Ajouté</div>
+      <ul class="change-list">
+        <li><strong>Moteur de classification hybride</strong> — Choix entre mots-clés locaux et <code>API Claude</code> (claude-sonnet-4-20250514) pour une classification contextuelle avancée.</li>
+        <li><strong>Intégration Telegram native</strong> — Alertes automatiques après chaque traitement. Bouton de test intégré dans l'interface.</li>
+        <li><strong>Journal de session persistant</strong> — Enregistrement horodaté de chaque traitement avec catégorie, durée et identifiant de session.</li>
+        <li><strong>Pipeline de workflow visuel</strong> — Barre d'état temps réel sur 8 étapes : <code>START → INIT → LECTURE → CLASSIFICATION → ACTION → JOURNALISATION → CLÔTURE → END</code>.</li>
+        <li><strong>Compteurs par catégorie</strong> — Statistiques en temps réel des 4 types de traitement.</li>
+        <li><strong>Champ pièces jointes</strong> — Noms de pièces jointes intégrés dans le contexte de classification.</li>
+        <li><strong>Copie rapide</strong> — Bouton ⎘ pour copier instantanément la réponse générée dans le presse-papier.</li>
+        <li><strong>Panneau de statut système</strong> — État du moteur, de l'API Claude et de Telegram affiché en temps réel.</li>
+      </ul>
+    </div>
+
+    <div class="change-group">
+      <div class="cg-label changed">Modifié</div>
+      <ul class="change-list">
+        <li>Interface entièrement redessinée — esthétique bleu professionnel, typographie claire et animations fluides.</li>
+        <li>Génération de réponse améliorée — intégration de la <strong>signature personnalisée</strong> dans chaque brouillon généré.</li>
+        <li>Logique de classification renforcée — meilleure discrimination entre <code>INFO_REQUIREMENT</code> et <code>PROOF_OF_STATUS</code>.</li>
+        <li>Architecture du workflow redessinée — transitions d'état robustes avec gestion des erreurs à chaque étape.</li>
+      </ul>
+    </div>
+
+    <div class="note-box">
+      <div class="note-icon">AVIS</div>
+      <div>Version majeure : rupture de compatibilité avec les configurations v1.x. Les paramètres de session antérieurs ne sont pas migrés automatiquement.</div>
+    </div>
+  </div>
+
+  <div class="ver-block">
+    <div class="ver-header">
+      <span class="ver-num">v1.4.2</span>
+      <span class="ver-tag patch">Patch</span>
+      <span class="ver-date">2025-01-30</span>
+    </div>
+    <div class="change-group">
+      <div class="cg-label fixed">Corrigé</div>
+      <ul class="change-list">
+        <li>Correctif du bug d'<strong>horodatage EST/EDT</strong> — les entrées du journal affichaient l'heure UTC incorrectement.</li>
+        <li>Correction de la condition de course lors de <strong>traitements rapides successifs</strong> dans le journal.</li>
+        <li>L'état <code>CLÔTURE</code> ne se déclenchait pas systématiquement en cas d'erreur réseau Telegram — résolu.</li>
+      </ul>
+    </div>
+    <div class="change-group">
+      <div class="cg-label changed">Modifié</div>
+      <ul class="change-list">
+        <li>Format du journal enrichi : ajout du <strong>numéro de session</strong> et de la durée de traitement en millisecondes.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ver-block">
+    <div class="ver-header">
+      <span class="ver-num">v1.4.0</span>
+      <span class="ver-tag minor">Minor</span>
+      <span class="ver-date">2024-12-10</span>
+    </div>
+    <div class="change-group">
+      <div class="cg-label added">Ajouté</div>
+      <ul class="change-list">
+        <li>Champ <strong>Pièces jointes</strong> (noms) pour enrichir le contexte de classification.</li>
+        <li>Compteur de sessions traitées dans le panneau de configuration système.</li>
+        <li>Affichage du <strong>dernier statut</strong> de traitement dans le panneau système.</li>
+      </ul>
+    </div>
+    <div class="change-group">
+      <div class="cg-label fixed">Corrigé</div>
+      <ul class="change-list">
+        <li>La catégorie <code>ACTIF_QR_OTHER</code> n'était pas comptabilisée correctement dans les statistiques.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ver-block">
+    <div class="ver-header">
+      <span class="ver-num">v1.3.0</span>
+      <span class="ver-tag minor">Minor</span>
+      <span class="ver-date">2024-10-05</span>
+    </div>
+    <div class="change-group">
+      <div class="cg-label added">Ajouté</div>
+      <ul class="change-list">
+        <li>Première intégration <strong>Telegram</strong> (bêta) — envoi d'alertes texte simples.</li>
+        <li>Champ <strong>Nom / Signature</strong> pour personnaliser les réponses générées.</li>
+      </ul>
+    </div>
+    <div class="change-group">
+      <div class="cg-label security">Sécurité</div>
+      <ul class="change-list">
+        <li>Avertissement affiché dans l'interface concernant la <strong>saisie de clés API</strong> en environnements partagés.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ver-block">
+    <div class="ver-header">
+      <span class="ver-num">v1.0.0</span>
+      <span class="ver-tag major">Major</span>
+      <span class="ver-date">2024-07-01</span>
+    </div>
+    <div class="change-group">
+      <div class="cg-label added">Ajouté</div>
+      <ul class="change-list">
+        <li>Version initiale — moteur de classification par <strong>mots-clés locaux</strong>.</li>
+        <li>4 catégories : <code>POSITIVE_MEETING</code>, <code>INFO_REQUIREMENT</code>, <code>PROOF_OF_STATUS</code>, <code>ACTIF_QR_OTHER</code>.</li>
+        <li>Interface de saisie email (expéditeur, sujet, corps) et génération de réponse.</li>
+        <li>Journal de session basique et pipeline de workflow linéaire.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ver-block">
+    <div class="ver-header">
+      <span class="ver-num" style="font-size:1rem;font-family:'IBM Plex Mono',monospace;font-style:normal;">Déploiement rapide</span>
+    </div>
+    <div class="code-block">
+      <div><span class="prompt">$</span> <span class="cmd">curl -O https://netsecurepro.ca/GRONDIN_v2.html</span></div>
+      <div style="padding-left:1.1rem"><span class="ok">✓  Téléchargement — GRONDIN_v2.html (148 KB)</span></div>
+      <div style="margin-top:.5rem"><span class="prompt">$</span> <span class="cmd">open GRONDIN_v2.html</span></div>
+      <div style="padding-left:1.1rem"><span class="ok">✓  Interface ouverte dans le navigateur</span></div>
+      <div style="padding-left:1.1rem"><span class="warn">⚠  Configurer la clé API Claude et les paramètres Telegram avant utilisation</span></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div>© 2025 NETSECUREPRO · Tous droits réservés</div>
+  <div>GRONDIN RESPONSE HANDLER · <strong>v2.0.0</strong> · STABLE</div>
+</footer>
+</body>
+</html>

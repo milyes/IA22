@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Section Publications — À intégrer dans GRONDIN_v2_guide.html</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f0f4f8;--surface:#fff;--surface2:#e8eef5;
+    --border:#cbd5e1;--border-lt:#e2e8f0;
+    --text:#1e293b;--muted:#64748b;--muted2:#94a3b8;
+    --accent:#2563eb;--accent-lt:#dbeafe;
+    --sky:#0ea5e9;--sky-lt:#e0f2fe;
+    --green:#059669;--green-lt:#d1fae5;
+    --amber:#d97706;--amber-lt:#fef3c7;
+    --red:#dc2626;--red-lt:#fee2e2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;padding:3rem;line-height:1.6}
+
+  /* === INTEGRATION NOTE === */
+  .int-note{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:6px;padding:1.25rem 1.5rem;margin-bottom:2.5rem;max-width:840px}
+  .int-note-label{font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.6rem}
+  .int-note p{font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
+  .int-note code{font-family:'IBM Plex Mono',monospace;font-size:.78rem;background:var(--accent-lt);color:var(--accent);padding:.1rem .35rem;border-radius:3px}
+
+  /* === SECTION COMPOSANT === */
+  .pub-section{max-width:840px}
+
+  .sec-label{font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.6rem;display:flex;align-items:center;gap:.75rem}
+  .sec-label::after{content:'';flex:1;height:1px;background:var(--border-lt)}
+
+  h2{font-family:'Instrument Serif',serif;font-size:1.9rem;font-weight:400;letter-spacing:-.01em;margin-bottom:.6rem;color:var(--text)}
+  .sec-desc{font-size:.93rem;color:var(--muted);margin-bottom:2rem}
+
+  /* Timeline */
+  .timeline{position:relative;padding-left:2.25rem}
+  .timeline::before{content:'';position:absolute;left:.7rem;top:.6rem;bottom:.6rem;width:1px;background:var(--border)}
+
+  .t-entry{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:.85rem;position:relative;transition:box-shadow .2s,border-color .2s;cursor:pointer}
+  .t-entry:hover{border-color:#93c5fd;box-shadow:0 4px 16px rgba(37,99,235,.08)}
+
+  /* dot */
+  .t-entry::before{content:'';position:absolute;left:-1.83rem;top:1.3rem;width:.65rem;height:.65rem;border-radius:50%;border:2px solid var(--border);background:var(--bg)}
+  .t-entry.release::before{background:var(--green);border-color:var(--green-lt)}
+  .t-entry.securite::before{background:var(--red);border-color:var(--red-lt)}
+  .t-entry.protocole::before{background:var(--sky);border-color:var(--sky-lt)}
+  .t-entry.avis::before{background:var(--amber);border-color:var(--amber-lt)}
+  .t-entry.rapport::before{background:var(--accent);border-color:var(--accent-lt)}
+
+  /* featured */
+  .t-entry.featured{border-color:#93c5fd;background:linear-gradient(135deg,#eff6ff 0%,#fff 70%)}
+  .t-entry.featured::before{width:.8rem;height:.8rem;left:-1.9rem;top:1.25rem;box-shadow:0 0 0 3px #dbeafe}
+
+  .entry-top{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+  .etag{font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:.15rem .55rem;border-radius:3px}
+  .release .etag{background:var(--green-lt);color:var(--green)}
+  .securite .etag{background:var(--red-lt);color:var(--red)}
+  .protocole .etag{background:var(--sky-lt);color:#0369a1}
+  .avis .etag{background:var(--amber-lt);color:var(--amber)}
+  .rapport .etag{background:var(--accent-lt);color:var(--accent)}
+  .edate{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--muted2)}
+  .eref{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--muted2);margin-left:auto}
+
+  .etitle{font-weight:600;color:var(--text);font-size:.95rem;margin-bottom:.3rem;line-height:1.35}
+  .featured .etitle{font-family:'Instrument Serif',serif;font-size:1.1rem;font-weight:400;color:var(--accent)}
+  .edesc{font-size:.82rem;color:var(--muted);line-height:1.55}
+
+  .see-all{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.5rem;font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none;padding:.5rem 1rem;border:1px solid var(--accent);border-radius:4px;background:var(--accent-lt);transition:all .15s}
+  .see-all:hover{background:var(--accent);color:#fff}
+</style>
+</head>
+<body>
+
+<div class="int-note">
+  <div class="int-note-label">Instruction d'intégration</div>
+  <p>Copier le bloc <code>&lt;section id="publications"&gt;...&lt;/section&gt;</code> ci-dessous et l'insérer dans <code>GRONDIN_v2_guide.html</code>, avant la balise <code>&lt;/main&gt;</code>.</p>
+  <p>S'assurer que les variables CSS <code>--accent</code>, <code>--border</code>, etc. sont déjà définies dans le fichier cible (c'est le cas dans la version régénérée du guide).</p>
+</div>
+
+<!-- ============================================
+     SECTION À COPIER DANS LE GUIDE
+     ============================================ -->
+<section id="publications" class="pub-section">
+  <div class="sec-label">07 — Publications officielles</div>
+  <h2>Communiqués &amp; Rapports</h2>
+  <p class="sec-desc">Toutes les publications officielles NetSecurePro liées à GRONDIN — mises à jour, avis de sécurité, protocoles et rapports d'analyse.</p>
+
+  <div class="timeline">
+
+    <div class="t-entry release featured">
+      <div class="entry-top">
+        <span class="etag">Release</span>
+        <span class="edate">2025-03-15</span>
+        <span class="eref">NSP-2025-REL-001</span>
+      </div>
+      <div class="etitle">GRONDIN Response Handler v2.0 — Publication officielle</div>
+      <div class="edesc">Refonte majeure : moteur hybride (mots-clés + API Claude), intégration Telegram native, journal de session persistant et pipeline visuel en 8 étapes.</div>
+    </div>
+
+    <div class="t-entry securite">
+      <div class="entry-top">
+        <span class="etag">Sécurité</span>
+        <span class="edate">2025-03-10</span>
+        <span class="eref">NSP-2025-SEC-003</span>
+      </div>
+      <div class="etitle">Avis de sécurité : gestion des clés API dans les applications web</div>
+      <div class="edesc">Recommandations sur le stockage sécurisé des clés API Anthropic côté client et mesures préventives.</div>
+    </div>
+
+    <div class="t-entry protocole">
+      <div class="entry-top">
+        <span class="etag">Protocole</span>
+        <span class="edate">2025-02-28</span>
+        <span class="eref">NSP-2025-PRO-007</span>
+      </div>
+      <div class="etitle">Protocole de classification — Catégories médicales v2.1</div>
+      <div class="edesc">Mise à jour des dictionnaires de mots-clés pour les 4 catégories de traitement GRONDIN.</div>
+    </div>
+
+    <div class="t-entry avis">
+      <div class="entry-top">
+        <span class="etag">Avis</span>
+        <span class="edate">2025-02-14</span>
+        <span class="eref">NSP-2025-AVI-004</span>
+      </div>
+      <div class="etitle">Avis de conformité LPRPDE — Données de santé automatisées</div>
+      <div class="edesc">Obligations légales canadiennes sur l'utilisation d'outils IA dans les communications médicales.</div>
+    </div>
+
+    <div class="t-entry rapport">
+      <div class="entry-top">
+        <span class="etag">Rapport</span>
+        <span class="edate">2024-12-31</span>
+        <span class="eref">NSP-2024-RAP-012</span>
+      </div>
+      <div class="etitle">Bilan annuel 2024 — Automatisation des workflows médicaux</div>
+      <div class="edesc">Synthèse des déploiements, statistiques d'utilisation et feuille de route 2025.</div>
+    </div>
+
+  </div>
+
+  <a class="see-all" href="publications.html">Voir toutes les publications →</a>
+</section>
+
+</body>
+</html>
