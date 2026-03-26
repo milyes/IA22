@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Licence MIT - NetSecurePro IA (Algérie)</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; line-height: 1.6; }
+        h1, h2 { color: #003366; }
+        pre { background: #f4f4f4; padding: 15px; overflow: auto; border: 1px solid #ddd; }
+        .note { background: #fff9e6; padding: 15px; border-left: 5px solid #f4a261; }
+    </style>
+</head>
+<body>
+    <h1>Licence MIT – NetSecurePro IA</h1>
+    <p><strong>Copyright (c) 2024-2026 Mohammed Ilyes Zoubirou</strong><br>
+    Fondateur et développeur indépendant de NetSecurePro IA<br>
+    Portail officiel : <a href="https://netsecurepro.ca">https://netsecurepro.ca</a><br>
+    Bordj Bou Arreridj, Algérie</p>
+
+    <h2>Version Française (Référence pour l’Algérie)</h2>
+    <p>L'ensemble de ce logiciel, de ses composants, de sa documentation et des ressources associées au site netsecurepro.ca constitue une œuvre originale créée par Mohammed Ilyes Zoubirou, personne physique et auteur humain.</p>
+    <p>Cette œuvre est protégée par l'Ordonnance n° 03-05 du 19 juillet 2003 relative aux droits d'auteur et aux droits voisins (Algérie).</p>
+    <p>Aucune intelligence artificielle générative, y compris Claude.ai (Anthropic) ou tout autre outil tiers, n'est titulaire de droits sur ce projet.</p>
+
+    <h2>Texte de la Licence MIT</h2>
+    <pre>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction...
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND...
+    </pre>
+
+    <div class="note">
+        <strong>Notes spécifiques :</strong> Projet personnel indépendant. Utilisation en contextes sensibles (cybersécurité, santé) sous responsabilité exclusive de l’utilisateur. Contact : milyes@netsecurepro.ca
+    </div>
+</body>
+</html>
