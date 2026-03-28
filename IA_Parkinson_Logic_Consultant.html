@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA Parkinson Logic Consultant</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#04080f;color:#d0e8f0;font-family:'Inter',sans-serif;font-size:13px;min-height:100vh;overflow-x:hidden}
+
+/* ══════════════════════════════
+   LOCK SCREEN
+══════════════════════════════ */
+#lock{position:fixed;inset:0;background:#04080f;z-index:8000;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#lock.out{animation:lockOut .6s forwards}
+@keyframes lockOut{to{opacity:0;transform:scale(1.04);pointer-events:none;visibility:hidden}}
+
+.lock-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 40%,rgba(0,180,255,.07),transparent);pointer-events:none}
+.lock-ring{width:90px;height:90px;border-radius:50%;border:2px solid rgba(0,180,255,.2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;position:relative;animation:ringPulse 3s ease-in-out infinite}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,180,255,.15)}50%{box-shadow:0 0 0 16px rgba(0,180,255,.0)}}
+.lock-ring svg{width:36px;height:36px;stroke:#00b4ff;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+.lock-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;letter-spacing:.1em;color:#fff;text-align:center;margin-bottom:4px}
+.lock-title span{color:#00b4ff}
+.lock-desc{font-size:10px;color:#3a6070;letter-spacing:.1em;text-transform:uppercase;text-align:center;margin-bottom:36px}
+
+.lock-card{background:#081420;border:1px solid #0d2535;border-radius:12px;padding:28px 32px;width:320px;display:flex;flex-direction:column;gap:12px}
+.lock-card::before{content:'';display:block;height:2px;background:linear-gradient(90deg,#00b4ff,#00e5a0);border-radius:2px;margin-bottom:4px}
+.lock-label{font-size:9px;letter-spacing:.12em;color:#3a6070;text-transform:uppercase;margin-bottom:4px}
+.lock-input{width:100%;background:#040d14;border:1px solid #0d2535;border-radius:6px;color:#d0e8f0;font-family:'JetBrains Mono',monospace;font-size:14px;padding:11px 14px;outline:none;transition:border-color .2s;letter-spacing:.15em}
+.lock-input:focus{border-color:#00b4ff}
+.lock-btn{width:100%;background:linear-gradient(135deg,#006fa8,#005580);border:none;color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.12em;padding:12px;border-radius:6px;cursor:pointer;text-transform:uppercase;transition:all .2s;margin-top:4px}
+.lock-btn:hover{background:linear-gradient(135deg,#0090d0,#006fa8)}
+.lock-err{font-size:11px;color:#ff4466;text-align:center;min-height:16px;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.lock-hint{font-size:10px;color:#3a6070;text-align:center;margin-top:6px}
+.lock-hint b{color:#00b4ff}
+
+/* ══════════════════════════════
+   APP (hidden until login)
+══════════════════════════════ */
+#app{display:none;min-height:100vh;animation:appIn .5s ease}
+@keyframes appIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+nav{background:#060e18;border-bottom:1px solid #0d2535;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#006fa8,#00b4ff);display:flex;align-items:center;justify-content:center}
+.brand-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.brand-text{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;letter-spacing:.1em;color:#fff;text-transform:uppercase}
+.brand-text span{color:#00b4ff}
+.brand-sub{font-size:9px;color:#3a6070;letter-spacing:.08em;margin-top:1px}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-tag{font-size:9px;letter-spacing:.1em;padding:4px 10px;border-radius:20px;border:1px solid;text-transform:uppercase}
+.nav-tag.secure{border-color:rgba(0,229,160,.3);color:#00e5a0;background:rgba(0,229,160,.06)}
+.nav-tag.live{border-color:rgba(0,180,255,.3);color:#00b4ff;background:rgba(0,180,255,.06)}
+.dot{width:6px;height:6px;border-radius:50%;background:#00e5a0;box-shadow:0 0 6px #00e5a0;display:inline-block;margin-right:5px;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+#clk{font-family:'JetBrains Mono',monospace;font-size:11px;color:#00b4ff}
+.btn-lock{background:transparent;border:1px solid #0d2535;color:#3a6070;font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 12px;border-radius:5px;cursor:pointer;transition:all .2s;letter-spacing:.08em}
+.btn-lock:hover{border-color:#ff4466;color:#ff4466}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid #0d2535;padding:0 24px;background:#060e18}
+.tab{font-size:11px;letter-spacing:.08em;padding:12px 18px;cursor:pointer;color:#3a6070;border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase}
+.tab:hover{color:#d0e8f0}
+.tab.active{color:#00b4ff;border-bottom-color:#00b4ff}
+
+/* CONTENT */
+.content{padding:20px 24px;display:none}
+.content.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* CARDS */
+.card{background:#081420;border:1px solid #0d2535;border-radius:10px;padding:18px 20px;margin-bottom:14px}
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.card-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-icon.blue{background:rgba(0,180,255,.12)}
+.card-icon.green{background:rgba(0,229,160,.12)}
+.card-icon.amber{background:rgba(255,168,0,.12)}
+.card-icon.red{background:rgba(255,68,102,.12)}
+.card-icon svg{width:14px;height:14px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-icon.blue svg{stroke:#00b4ff}
+.card-icon.green svg{stroke:#00e5a0}
+.card-icon.amber svg{stroke:#ffa800}
+.card-icon.red svg{stroke:#ff4466}
+.card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#d0e8f0}
+
+/* GRID STATS */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.stat{background:#081420;border:1px solid #0d2535;border-radius:8px;padding:14px 16px;border-top:2px solid}
+.stat.b{border-top-color:#00b4ff}.stat.g{border-top-color:#00e5a0}.stat.a{border-top-color:#ffa800}.stat.r{border-top-color:#ff4466}
+.stat-lbl{font-size:9px;letter-spacing:.1em;color:#3a6070;text-transform:uppercase;margin-bottom:5px}
+.stat-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1}
+.stat.b .stat-n{color:#00b4ff}.stat.g .stat-n{color:#00e5a0}.stat.a .stat-n{color:#ffa800}.stat.r .stat-n{color:#ff4466}
+.stat-s{font-size:10px;color:#3a6070;margin-top:3px}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid.g3{grid-template-columns:1fr 1fr 1fr}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:9px;letter-spacing:.1em;color:#3a6070;text-transform:uppercase}
+.fld input,.fld select,.fld textarea{background:#040d14;border:1px solid #0d2535;border-radius:5px;color:#d0e8f0;font-family:'Inter',sans-serif;font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#00b4ff}
+.fld select option{background:#040d14}
+.fld textarea{resize:vertical;min-height:70px}
+
+/* RISK METER */
+.risk-wrap{margin-top:14px}
+.risk-bar-bg{height:10px;background:#0d2535;border-radius:5px;overflow:hidden;margin:8px 0 4px}
+.risk-bar{height:100%;border-radius:5px;transition:width .8s cubic-bezier(.4,0,.2,1),background .8s}
+.risk-label{display:flex;justify-content:space-between;font-size:10px}
+.risk-val{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:2px}
+
+/* SYMPTOMS CHECKLIST */
+.symptoms{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.sym-item{display:flex;align-items:center;gap:8px;background:#040d14;border:1px solid #0d2535;border-radius:5px;padding:8px 10px;cursor:pointer;transition:all .2s;user-select:none}
+.sym-item:hover{border-color:#006fa8}
+.sym-item.checked{border-color:#00b4ff;background:rgba(0,180,255,.06)}
+.sym-cb{width:14px;height:14px;border-radius:3px;border:1px solid #0d2535;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.sym-item.checked .sym-cb{background:#00b4ff;border-color:#00b4ff}
+.sym-cb::after{content:'✓';font-size:9px;color:#04080f;display:none}
+.sym-item.checked .sym-cb::after{display:block}
+.sym-text{font-size:11px;color:#8aacba}
+.sym-item.checked .sym-text{color:#d0e8f0}
+
+/* BUTTONS */
+.btn{background:transparent;border:1px solid #0d2535;color:#3a6070;font-family:'JetBrains Mono',monospace;font-size:11px;padding:9px 16px;border-radius:5px;cursor:pointer;transition:all .2s;letter-spacing:.08em;text-transform:uppercase}
+.btn:hover{border-color:#d0e8f0;color:#d0e8f0}
+.btn.primary{border-color:#00b4ff;color:#00b4ff}
+.btn.primary:hover{background:#00b4ff;color:#04080f}
+.btn.success{border-color:#00e5a0;color:#00e5a0}
+.btn.success:hover{background:#00e5a0;color:#04080f}
+.btn.danger{border-color:#ff4466;color:#ff4466}
+.btn.danger:hover{background:#ff4466;color:#fff}
+.btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+
+/* PATIENT TABLE */
+.ptable{width:100%;border-collapse:collapse;font-size:11px}
+.ptable th{font-size:9px;letter-spacing:.1em;color:#3a6070;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #0d2535}
+.ptable td{padding:10px 12px;border-bottom:1px solid #060e18;color:#8aacba;transition:background .15s}
+.ptable tr:hover td{background:#060e18}
+.ptable td:first-child{color:#d0e8f0;font-weight:500}
+.risk-pill{display:inline-block;font-size:9px;letter-spacing:.08em;padding:2px 8px;border-radius:3px;text-transform:uppercase;font-weight:600}
+.rp-low{background:rgba(0,229,160,.1);color:#00e5a0}
+.rp-mod{background:rgba(255,168,0,.1);color:#ffa800}
+.rp-high{background:rgba(255,68,102,.1);color:#ff4466}
+.rp-crit{background:rgba(255,68,102,.2);color:#ff4466;border:1px solid rgba(255,68,102,.3)}
+
+/* VOICE ANALYZER */
+.voice-visual{height:80px;background:#040d14;border:1px solid #0d2535;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:3px;padding:0 16px;margin:12px 0;overflow:hidden}
+.v-bar{width:4px;border-radius:2px;background:#00b4ff;opacity:.4;transition:height .1s}
+.voice-btn{display:flex;align-items:center;gap:8px}
+.rec-dot{width:10px;height:10px;border-radius:50%;background:#ff4466;box-shadow:0 0 8px #ff4466;animation:blink 1s infinite;display:none}
+
+/* REPORT */
+.report-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.rmeta{background:#040d14;border:1px solid #0d2535;border-radius:6px;padding:10px 12px}
+.rmeta-lbl{font-size:9px;color:#3a6070;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+.rmeta-val{font-size:12px;color:#d0e8f0;font-weight:500}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:14px;padding-bottom:14px;position:relative}
+.tl-item::before{content:'';position:absolute;left:11px;top:24px;bottom:0;width:1px;background:#0d2535}
+.tl-item:last-child::before{display:none}
+.tl-dot{width:24px;height:24px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700}
+.tl-dot.b{border-color:#00b4ff;color:#00b4ff;background:rgba(0,180,255,.08)}
+.tl-dot.g{border-color:#00e5a0;color:#00e5a0;background:rgba(0,229,160,.08)}
+.tl-dot.a{border-color:#ffa800;color:#ffa800;background:rgba(255,168,0,.08)}
+.tl-content{flex:1;padding-top:2px}
+.tl-title{font-size:12px;color:#d0e8f0;font-weight:500;margin-bottom:2px}
+.tl-sub{font-size:10px;color:#3a6070}
+
+/* ALERTS */
+.alert{border-radius:6px;padding:11px 14px;margin-bottom:8px;font-size:11px;border:1px solid;line-height:1.5}
+.alert.info{background:rgba(0,180,255,.06);border-color:rgba(0,180,255,.2);color:#7ad4f0}
+.alert.warn{background:rgba(255,168,0,.06);border-color:rgba(255,168,0,.2);color:#ffc84d}
+.alert.crit{background:rgba(255,68,102,.06);border-color:rgba(255,68,102,.2);color:#ff7a90}
+.alert.ok{background:rgba(0,229,160,.06);border-color:rgba(0,229,160,.2);color:#00e5a0}
+.alert strong{font-weight:600}
+
+/* SCORE CIRCLE */
+.score-circle{width:120px;height:120px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid;margin:0 auto 14px}
+.sc-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;line-height:1}
+.sc-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:40px 20px;color:#3a6070;font-size:11px}
+.empty-icon{font-size:32px;margin-bottom:10px;opacity:.3}
+
+/* SECTION DIVIDER */
+.sdiv{font-size:9px;letter-spacing:.12em;color:#3a6070;text-transform:uppercase;margin:16px 0 10px;display:flex;align-items:center;gap:10px}
+.sdiv::after{content:'';flex:1;height:1px;background:#0d2535}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#0d2535;border-radius:4px}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     LOCK SCREEN
+══════════════════════════════ -->
+<div id="lock">
+  <div class="lock-bg"></div>
+  <div class="lock-ring">
+    <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7v2H5V9a7 7 0 0 1 7-7z"/><rect x="3" y="11" width="18" height="12" rx="3"/><circle cx="12" cy="17" r="1.5" fill="#00b4ff" stroke="none"/></svg>
+  </div>
+  <div class="lock-title">IA <span>Parkinson</span> Logic</div>
+  <div class="lock-desc">Accès sécurisé · Plateforme clinique</div>
+  <div class="lock-card">
+    <div class="lock-label">Mot de passe</div>
+    <input class="lock-input" type="password" id="pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')unlock()">
+    <button class="lock-btn" onclick="unlock()">ACCÉDER À LA PLATEFORME</button>
+    <div class="lock-err" id="lock-err"></div>
+    <div class="lock-hint">Accès réservé aux chercheurs et cliniciens autorisés<br>Mot de passe par défaut : <b>PARKINSON2025</b></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     APPLICATION
+══════════════════════════════ -->
+<div id="app">
+
+  <!-- NAV -->
+  <nav>
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1l2.1-2.1M17 7l2.1-2.1"/></svg>
+      </div>
+      <div>
+        <div class="brand-text">IA <span>Parkinson</span> Logic <span style="color:#3a6070;font-size:10px">Consultant</span></div>
+        <div class="brand-sub">Plateforme multimodale de détection précoce</div>
+      </div>
+    </div>
+    <div class="nav-right">
+      <span class="nav-tag secure"><span class="dot"></span>SESSION ACTIVE</span>
+      <span class="nav-tag live">v2.0 PRO</span>
+      <span id="clk" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00b4ff"></span>
+      <button class="btn-lock" onclick="lockApp()">⎋ VERROUILLER</button>
+    </div>
+  </nav>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
+    <div class="tab" onclick="showTab('evaluation')">Évaluation</div>
+    <div class="tab" onclick="showTab('patients')">Patients</div>
+    <div class="tab" onclick="showTab('analyse')">Analyse vocale</div>
+    <div class="tab" onclick="showTab('rapports')">Rapports</div>
+    <div class="tab" onclick="showTab('aide')">Base de connaissances</div>
+  </div>
+
+  <!-- ══ TAB: DASHBOARD ══ -->
+  <div class="content active" id="tab-dashboard">
+
+    <div class="grid4">
+      <div class="stat b"><div class="stat-lbl">Patients évalués</div><div class="stat-n" id="d-total">0</div><div class="stat-s">Total sessions</div></div>
+      <div class="stat r"><div class="stat-lbl">Risque élevé</div><div class="stat-n" id="d-high">0</div><div class="stat-s">Référence urgente</div></div>
+      <div class="stat a"><div class="stat-lbl">Risque modéré</div><div class="stat-n" id="d-mod">0</div><div class="stat-s">Suivi requis</div></div>
+      <div class="stat g"><div class="stat-lbl">Risque faible</div><div class="stat-n" id="d-low">0</div><div class="stat-s">Surveillance standard</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon blue"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div class="card-title">Alertes cliniques</div>
+        </div>
+        <div id="dash-alerts">
+          <div class="alert info"><strong>Système prêt</strong> — Aucune évaluation en cours. Démarrez une nouvelle évaluation dans l'onglet "Évaluation".</div>
+          <div class="alert ok"><strong>IA Parkinson Logic</strong> — Modèle multimodal v2.0 chargé et opérationnel.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon green"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div class="card-title">Activité récente</div>
+        </div>
+        <div class="timeline" id="dash-timeline">
+          <div class="tl-item">
+            <div class="tl-dot b">IA</div>
+            <div class="tl-content">
+              <div class="tl-title">Système initialisé</div>
+              <div class="tl-sub">IA Parkinson Logic v2.0 — Prêt</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot g">✓</div>
+            <div class="tl-content">
+              <div class="tl-title">Session sécurisée ouverte</div>
+              <div class="tl-sub" id="tl-login-time">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ TAB: ÉVALUATION ══ -->
+  <div class="content" id="tab-evaluation">
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:14px">
+
+      <div>
+        <div class="card">
+          <div class="card-top">
+            <div class="card-icon blue"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="card-title">Informations du patient</div>
+          </div>
+          <div class="form-grid">
+            <div class="fld"><label>Nom complet</label><input type="text" id="e-name" placeholder="Nom, Prénom"></div>
+            <div class="fld"><label>Âge</label><input type="number" id="e-age" placeholder="Ex: 68" min="18" max="120"></div>
+            <div class="fld"><label>Sexe</label><select id="e-sex"><option value="">— Sélectionner —</option><option>Homme</option><option>Femme</option><option>Autre</option></select></div>
+            <div class="fld"><label>ID Dossier</label><input type="text" id="e-id" placeholder="Auto-généré" readonly style="color:#3a6070"></div>
+            <div class="fld"><label>Médecin référent</label><input type="text" id="e-med" placeholder="Dr. ..."></div>
+            <div class="fld"><label>Date d'évaluation</label><input type="date" id="e-date"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-icon amber"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <div class="card-title">Symptômes observés</div>
+          </div>
+          <div class="symptoms" id="symptoms-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-icon red"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="card-title">Facteurs de risque additionnels</div>
+          </div>
+          <div class="form-grid">
+            <div class="fld"><label>Antécédents familiaux</label><select id="e-family"><option value="0">Non</option><option value="1">Oui — 1er degré</option><option value="2">Oui — 2e degré</option></select></div>
+            <div class="fld"><label>Exposition pesticides</label><select id="e-pest"><option value="0">Non</option><option value="1">Exposition légère</option><option value="2">Exposition prolongée</option></select></div>
+            <div class="fld"><label>Traumatismes crâniens</label><select id="e-trauma"><option value="0">Non</option><option value="1">Léger</option><option value="2">Sévère</option></select></div>
+            <div class="fld"><label>Troubles du sommeil REM</label><select id="e-rem"><option value="0">Non</option><option value="1">Suspectés</option><option value="2">Confirmés</option></select></div>
+            <div class="fld full"><label>Notes cliniques</label><textarea id="e-notes" placeholder="Observations, contexte clinique..."></textarea></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn primary" onclick="evaluer()">▶ ANALYSER LE RISQUE</button>
+            <button class="btn" onclick="resetEval()">↺ RÉINITIALISER</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RÉSULTAT -->
+      <div>
+        <div class="card" style="position:sticky;top:60px">
+          <div class="card-top">
+            <div class="card-icon blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div class="card-title">Résultat IA</div>
+          </div>
+
+          <div id="result-empty" class="empty">
+            <div class="empty-icon">🧠</div>
+            Remplissez le formulaire et lancez l'analyse pour obtenir le score de risque.
+          </div>
+
+          <div id="result-box" style="display:none">
+            <div class="score-circle" id="score-circle">
+              <div class="sc-num" id="score-num">0</div>
+              <div class="sc-lbl">Score</div>
+            </div>
+
+            <div class="risk-wrap">
+              <div class="risk-label">
+                <span style="font-size:10px;color:#3a6070">Niveau de risque</span>
+                <span id="risk-pct" style="font-family:'Syne',sans-serif;font-weight:800;font-size:13px"></span>
+              </div>
+              <div class="risk-bar-bg"><div class="risk-bar" id="risk-bar" style="width:0%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:#3a6070">
+                <span>Faible</span><span>Modéré</span><span>Élevé</span><span>Critique</span>
+              </div>
+            </div>
+
+            <div class="sdiv">Recommandation clinique</div>
+            <div class="alert" id="result-alert" style="margin-bottom:10px"></div>
+
+            <div class="sdiv">Signaux détectés</div>
+            <div id="result-signals" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px"></div>
+
+            <div class="btn-row" style="margin-top:0">
+              <button class="btn success" style="flex:1;font-size:10px" onclick="sauvegarderPatient()">+ SAUVEGARDER</button>
+              <button class="btn" style="font-size:10px" onclick="genererRapport()">⎙ RAPPORT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: PATIENTS ══ -->
+  <div class="content" id="tab-patients">
+    <div class="card">
+      <div class="card-top">
+        <div class="card-icon blue"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="card-title">Dossiers patients</div>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <input type="text" id="search-p" placeholder="Rechercher..." oninput="filterPatients()" style="background:#040d14;border:1px solid #0d2535;border-radius:5px;color:#d0e8f0;font-size:11px;padding:6px 10px;outline:none;width:180px">
+          <button class="btn danger" onclick="clearPatients()">✕ Effacer tout</button>
+        </div>
+      </div>
+      <div id="patients-empty" class="empty"><div class="empty-icon">📋</div>Aucun dossier patient. Évaluez un patient et sauvegardez le résultat.</div>
+      <table class="ptable" id="patients-table" style="display:none">
+        <thead><tr>
+          <th>Patient</th><th>Âge</th><th>Date</th><th>Score</th><th>Risque</th><th>Médecin</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="patients-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ TAB: ANALYSE VOCALE ══ -->
+  <div class="content" id="tab-analyse">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon red"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg></div>
+          <div class="card-title">Analyse vocale & motrice</div>
+        </div>
+
+        <div class="alert info">Enregistrez la voix du patient (phrase standardisée : <strong>"Le soleil brille aujourd'hui"</strong>) ou entrez les données manuellement.</div>
+
+        <div class="sdiv">Visualisation vocale</div>
+        <div class="voice-visual" id="voice-visual">
+          <span style="color:#3a6070;font-size:11px;font-family:'JetBrains Mono',monospace" id="vv-label">Prêt à enregistrer</span>
+        </div>
+
+        <div class="btn-row voice-btn">
+          <div class="rec-dot" id="rec-dot"></div>
+          <button class="btn danger" id="btn-rec" onclick="toggleRecord()">⏺ ENREGISTRER</button>
+          <button class="btn primary" onclick="analyzeVoice()">⚙ ANALYSER</button>
+        </div>
+
+        <div class="sdiv">Paramètres vocaux manuels</div>
+        <div class="form-grid g3">
+          <div class="fld"><label>Jitter (%)</label><input type="number" id="v-jitter" placeholder="0.00" step="0.01" min="0"></div>
+          <div class="fld"><label>Shimmer (%)</label><input type="number" id="v-shimmer" placeholder="0.00" step="0.01" min="0"></div>
+          <div class="fld"><label>HNR (dB)</label><input type="number" id="v-hnr" placeholder="20.0" step="0.1"></div>
+          <div class="fld"><label>Fréq. fondamentale (Hz)</label><input type="number" id="v-freq" placeholder="120" step="1"></div>
+          <div class="fld"><label>Variations MDVP</label><input type="number" id="v-mdvp" placeholder="0.00" step="0.01" min="0"></div>
+          <div class="fld"><label>DFA</label><input type="number" id="v-dfa" placeholder="0.70" step="0.01"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn primary" onclick="analyzeVoiceManual()">▶ CALCULER SCORE VOCAL</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon amber"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="card-title">Résultats analyse vocale</div>
+        </div>
+        <div id="voice-result-empty" class="empty"><div class="empty-icon">🎙</div>Lancez une analyse pour voir les résultats.</div>
+        <div id="voice-result" style="display:none">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+            <div class="rmeta"><div class="rmeta-lbl">Jitter</div><div class="rmeta-val" id="vr-jitter">—</div></div>
+            <div class="rmeta"><div class="rmeta-lbl">Shimmer</div><div class="rmeta-val" id="vr-shimmer">—</div></div>
+            <div class="rmeta"><div class="rmeta-lbl">HNR</div><div class="rmeta-val" id="vr-hnr">—</div></div>
+          </div>
+          <div class="sdiv">Interprétation</div>
+          <div id="vr-interp"></div>
+          <div class="sdiv">Score vocal estimé</div>
+          <div class="risk-bar-bg" style="margin:8px 0 4px"><div class="risk-bar" id="vr-bar" style="width:0%"></div></div>
+          <div style="text-align:center;margin-top:8px"><span id="vr-score" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#00b4ff"></span></div>
+        </div>
+
+        <div class="sdiv" style="margin-top:20px">Test de tremblements (simulé)</div>
+        <div class="form-grid">
+          <div class="fld"><label>Amplitude (mm)</label><input type="number" id="t-amp" placeholder="0.5" step="0.1" min="0"></div>
+          <div class="fld"><label>Fréquence (Hz)</label><input type="number" id="t-freq" placeholder="4.5" step="0.1"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="analyzeTremor()">ANALYSER TREMBLEMENTS</button>
+        </div>
+        <div id="tremor-result" style="margin-top:10px;display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: RAPPORTS ══ -->
+  <div class="content" id="tab-rapports">
+    <div class="card">
+      <div class="card-top">
+        <div class="card-icon green"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+        <div class="card-title">Génération de rapport clinique</div>
+      </div>
+
+      <div id="rapport-empty" class="empty"><div class="empty-icon">📄</div>Évaluez un patient et cliquez "Rapport" pour générer un compte-rendu clinique.</div>
+      <div id="rapport-content" style="display:none">
+        <div class="report-meta" id="rpt-meta"></div>
+        <div class="sdiv">Compte-rendu clinique</div>
+        <div style="background:#040d14;border:1px solid #0d2535;border-radius:8px;padding:18px;font-size:12px;line-height:1.8;color:#8aacba;white-space:pre-wrap;font-family:'JetBrains Mono',monospace" id="rpt-text"></div>
+        <div class="btn-row">
+          <button class="btn primary" onclick="copyReport()">⎘ COPIER LE RAPPORT</button>
+          <button class="btn" onclick="printReport()">⎙ IMPRIMER</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: BASE DE CONNAISSANCES ══ -->
+  <div class="content" id="tab-aide">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div class="card-title">Critères diagnostiques</div>
+        </div>
+        <div class="alert info"><strong>Critères MDS (Movement Disorder Society)</strong> — Bradykinésie obligatoire + au moins 1 signe cardinal.</div>
+        <div class="sdiv">Signes cardinaux</div>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot b">1</div><div class="tl-content"><div class="tl-title">Tremblements de repos</div><div class="tl-sub">4–6 Hz, diminue avec le mouvement volontaire</div></div></div>
+          <div class="tl-item"><div class="tl-dot b">2</div><div class="tl-content"><div class="tl-title">Rigidité</div><div class="tl-sub">Résistance aux mouvements passifs (signe de la roue dentée)</div></div></div>
+          <div class="tl-item"><div class="tl-dot b">3</div><div class="tl-content"><div class="tl-title">Bradykinésie</div><div class="tl-sub">Lenteur progressive des mouvements répétitifs</div></div></div>
+          <div class="tl-item"><div class="tl-dot a">4</div><div class="tl-content"><div class="tl-title">Instabilité posturale</div><div class="tl-sub">Stades avancés — test de rétropulsion</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top">
+          <div class="card-icon amber"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="card-title">Interprétation des scores</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="alert ok"><strong>0–30 % — Risque faible</strong><br>Surveillance annuelle recommandée. Réévaluer si nouveaux symptômes.</div>
+          <div class="alert info"><strong>31–55 % — Risque modéré</strong><br>Suivi neurologique dans les 3 mois. Examens complémentaires (DAT-scan).</div>
+          <div class="alert warn"><strong>56–75 % — Risque élevé</strong><br>Référence neurologique urgente sous 4 semaines. Début traitement à considérer.</div>
+          <div class="alert crit"><strong>76–100 % — Risque critique</strong><br>Référence neurologique immédiate. Diagnostic différentiel prioritaire.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════
+const PASSWORD = 'PARKINSON2025';
+let patients = [];
+let lastEval = null;
+let recording = false;
+let recInterval = null;
+
+// ══════════════════════════════════════
+//  LOCK / UNLOCK
+// ══════════════════════════════════════
+function unlock(){
+  const val = document.getElementById('pw').value;
+  const err = document.getElementById('lock-err');
+  if(val === PASSWORD){
+    document.getElementById('lock').classList.add('out');
+    document.getElementById('app').style.display='block';
+    document.getElementById('tl-login-time').textContent = new Date().toLocaleString('fr-CA');
+    err.textContent='';
+    genDossierID();
+    document.getElementById('e-date').value = new Date().toISOString().split('T')[0];
+  } else {
+    err.textContent='⚠ Mot de passe incorrect';
+    document.getElementById('pw').value='';
+    setTimeout(()=>err.textContent='',3000);
+  }
+}
+
+function lockApp(){
+  document.getElementById('app').style.display='none';
+  const lock = document.getElementById('lock');
+  lock.classList.remove('out');
+  document.getElementById('pw').value='';
+}
+
+document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') unlock(); });
+
+// Horloge
+setInterval(()=>{
+  const el = document.getElementById('clk');
+  if(el) el.textContent = new Date().toLocaleTimeString('fr-CA');
+},1000);
+
+// ══════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════
+function showTab(id){
+  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ══════════════════════════════════════
+//  SYMPTÔMES
+// ══════════════════════════════════════
+const SYMPTOMS = [
+  {id:'s1', label:'Tremblements au repos', weight:15},
+  {id:'s2', label:'Rigidité musculaire', weight:14},
+  {id:'s3', label:'Bradykinésie', weight:16},
+  {id:'s4', label:'Instabilité posturale', weight:12},
+  {id:'s5', label:'Micrographie', weight:8},
+  {id:'s6', label:'Hypophonie (voix faible)', weight:9},
+  {id:'s7', label:'Masque facial (hypomimie)', weight:8},
+  {id:'s8', label:'Démarche festinante', weight:10},
+  {id:'s9', label:'Perte olfaction (hyposmie)', weight:7},
+  {id:'s10',label:'Troubles sommeil REM', weight:6},
+];
+
+(function buildSymptoms(){
+  const cont = document.getElementById('symptoms-list');
+  SYMPTOMS.forEach(s=>{
+    const div = document.createElement('div');
+    div.className='sym-item'; div.id='sym-'+s.id;
+    div.onclick=()=>div.classList.toggle('checked');
+    div.innerHTML=`<div class="sym-cb"></div><span class="sym-text">${s.label}</span>`;
+    cont.appendChild(div);
+  });
+})();
+
+// ══════════════════════════════════════
+//  GÉNÉRATION ID DOSSIER
+// ══════════════════════════════════════
+function genDossierID(){
+  const id = 'PL-'+Date.now().toString(36).toUpperCase().slice(-6);
+  document.getElementById('e-id').value = id;
+  return id;
+}
+
+// ══════════════════════════════════════
+//  ÉVALUATION / SCORING
+// ══════════════════════════════════════
+function evaluer(){
+  const name = document.getElementById('e-name').value.trim();
+  const age  = parseInt(document.getElementById('e-age').value)||0;
+  if(!name||!age){ alert('Nom et âge requis.'); return; }
+
+  // Score symptômes
+  let symScore = 0;
+  const signals = [];
+  SYMPTOMS.forEach(s=>{
+    if(document.getElementById('sym-'+s.id)?.classList.contains('checked')){
+      symScore += s.weight;
+      signals.push(s.label);
+    }
+  });
+
+  // Facteurs de risque
+  let riskBonus = 0;
+  riskBonus += parseInt(document.getElementById('e-family').value)||0;
+  riskBonus += parseInt(document.getElementById('e-pest').value)||0;
+  riskBonus += parseInt(document.getElementById('e-trauma').value)||0;
+  riskBonus += parseInt(document.getElementById('e-rem').value)||0;
+
+  // Bonus âge
+  if(age>=70) riskBonus += 3;
+  else if(age>=60) riskBonus += 2;
+  else if(age>=50) riskBonus += 1;
+
+  // Score total (max théorique ~125)
+  const rawScore = symScore + (riskBonus * 4);
+  const pct = Math.min(100, Math.round((rawScore / 110) * 100));
+
+  // Catégorie
+  let cat, color, alertClass, rec;
+  if(pct <= 30){
+    cat='Faible'; color='#00e5a0'; alertClass='ok';
+    rec='Surveillance annuelle recommandée. Réévaluer si apparition de nouveaux symptômes. Aucune intervention thérapeutique requise à ce stade.';
+  } else if(pct <= 55){
+    cat='Modéré'; color='#00b4ff'; alertClass='info';
+    rec='Suivi neurologique dans les 3 mois. Envisager un DAT-scan et un bilan neuropsychologique complet.';
+  } else if(pct <= 75){
+    cat='Élevé'; color='#ffa800'; alertClass='warn';
+    rec='Référence neurologique urgente sous 4 semaines. Évaluation complète UPDRS recommandée. Discussion thérapeutique dopaminergique à initier.';
+  } else {
+    cat='Critique'; color='#ff4466'; alertClass='crit';
+    rec='Référence neurologique immédiate requise. Diagnostic différentiel prioritaire. Initiation du traitement à considérer en concertation multidisciplinaire.';
+  }
+
+  // Affichage
+  document.getElementById('result-empty').style.display='none';
+  document.getElementById('result-box').style.display='block';
+
+  // Score circle
+  const circle = document.getElementById('score-circle');
+  circle.style.borderColor = color;
+  document.getElementById('score-num').style.color = color;
+  animateCount('score-num', 0, pct, 800);
+
+  // Barre
+  document.getElementById('risk-bar').style.width = pct+'%';
+  document.getElementById('risk-bar').style.background = color;
+  document.getElementById('risk-pct').textContent = cat+' ('+pct+'%)';
+  document.getElementById('risk-pct').style.color = color;
+
+  // Alerte
+  const alertEl = document.getElementById('result-alert');
+  alertEl.className = 'alert '+alertClass;
+  alertEl.innerHTML = '<strong>'+cat+' — '+pct+'%</strong><br>'+rec;
+
+  // Signaux
+  const sigEl = document.getElementById('result-signals');
+  sigEl.innerHTML = signals.length ? signals.map(s=>`<span style="background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.2);border-radius:3px;padding:2px 7px;font-size:10px;color:#7ad4f0">${s}</span>`).join('') : '<span style="color:#3a6070;font-size:11px">Aucun symptôme coché</span>';
+
+  // Sauvegarder état pour rapport
+  lastEval = {
+    id: document.getElementById('e-id').value,
+    name, age,
+    sex: document.getElementById('e-sex').value,
+    med: document.getElementById('e-med').value,
+    date: document.getElementById('e-date').value,
+    notes: document.getElementById('e-notes').value,
+    score: pct, cat, color, alertClass, rec, signals
+  };
+
+  // Timeline dashboard
+  addTimeline('b','📊',`Évaluation — ${name}`,'Score: '+pct+'% ('+cat+')');
+  updateDashAlerts(pct, cat, name, alertClass);
+}
+
+function resetEval(){
+  document.querySelectorAll('.sym-item').forEach(s=>s.classList.remove('checked'));
+  ['e-name','e-age','e-med','e-notes'].forEach(id=>document.getElementById(id).value='');
+  ['e-sex','e-family','e-pest','e-trauma','e-rem'].forEach(id=>document.getElementById(id).selectedIndex=0);
+  document.getElementById('result-empty').style.display='block';
+  document.getElementById('result-box').style.display='none';
+  genDossierID();
+  lastEval=null;
+}
+
+// ══════════════════════════════════════
+//  PATIENTS
+// ══════════════════════════════════════
+function sauvegarderPatient(){
+  if(!lastEval){ alert('Lancez d\'abord une évaluation.'); return; }
+  patients.unshift({...lastEval, saved: new Date().toLocaleDateString('fr-CA')});
+  updateStats();
+  renderPatients();
+  addTimeline('g','✓','Patient sauvegardé',lastEval.name+' — '+lastEval.cat);
+  alert('Dossier sauvegardé dans la liste patients.');
+}
+
+function renderPatients(filter=''){
+  const body = document.getElementById('patients-body');
+  const empty = document.getElementById('patients-empty');
+  const table = document.getElementById('patients-table');
+  const list = filter ? patients.filter(p=>p.name.toLowerCase().includes(filter.toLowerCase())) : patients;
+  if(!list.length){ empty.style.display='block'; table.style.display='none'; return; }
+  empty.style.display='none'; table.style.display='table';
+  const pillClass = s=>s<=30?'rp-low':s<=55?'rp-mod':s<=75?'rp-high':'rp-crit';
+  const pillLabel = s=>s<=30?'Faible':s<=55?'Modéré':s<=75?'Élevé':'Critique';
+  body.innerHTML = list.map((p,i)=>`
+    <tr>
+      <td>${p.name}</td>
+      <td>${p.age} ans</td>
+      <td>${p.date}</td>
+      <td style="font-family:'Syne',sans-serif;font-weight:800;color:${p.color}">${p.score}%</td>
+      <td><span class="risk-pill ${pillClass(p.score)}">${pillLabel(p.score)}</span></td>
+      <td>${p.med||'—'}</td>
+      <td><button class="btn" style="font-size:9px;padding:4px 8px" onclick="viewPatient(${i})">Voir</button></td>
+    </tr>`).join('');
+}
+
+function filterPatients(){ renderPatients(document.getElementById('search-p').value); }
+function clearPatients(){ if(confirm('Effacer tous les dossiers ?')){ patients=[]; updateStats(); renderPatients(); }}
+function viewPatient(i){
+  const p=patients[i];
+  alert(`DOSSIER PATIENT\n\nNom : ${p.name}\nÂge : ${p.age} ans\nDate : ${p.date}\nScore : ${p.score}% (${p.cat})\nMédecin : ${p.med||'—'}\n\nSignaux :\n${p.signals.join('\n') || 'Aucun'}\n\nRecommandation :\n${p.rec}`);
+}
+
+function updateStats(){
+  document.getElementById('d-total').textContent = patients.length;
+  document.getElementById('d-high').textContent  = patients.filter(p=>p.score>75).length;
+  document.getElementById('d-mod').textContent   = patients.filter(p=>p.score>30&&p.score<=75).length;
+  document.getElementById('d-low').textContent   = patients.filter(p=>p.score<=30).length;
+}
+
+// ══════════════════════════════════════
+//  ANALYSE VOCALE
+// ══════════════════════════════════════
+function toggleRecord(){
+  const btn = document.getElementById('btn-rec');
+  const dot = document.getElementById('rec-dot');
+  const lbl = document.getElementById('vv-label');
+  if(!recording){
+    recording=true;
+    btn.textContent='⏹ ARRÊTER';
+    btn.style.borderColor='#00e5a0'; btn.style.color='#00e5a0';
+    dot.style.display='inline-block';
+    lbl.style.display='none';
+    buildVoiceBars();
+    recInterval = setInterval(animateBars, 120);
+  } else {
+    recording=false;
+    btn.textContent='⏺ ENREGISTRER';
+    btn.style.borderColor=''; btn.style.color='';
+    dot.style.display='none';
+    clearInterval(recInterval);
+    lbl.style.display='block';
+    lbl.textContent='Enregistrement terminé ✓';
+  }
+}
+
+function buildVoiceBars(){
+  const vv = document.getElementById('voice-visual');
+  vv.innerHTML='';
+  for(let i=0;i<40;i++){
+    const b=document.createElement('div'); b.className='v-bar';
+    b.style.height='10px'; b.style.opacity='.5'; vv.appendChild(b);
+  }
+}
+
+function animateBars(){
+  document.querySelectorAll('.v-bar').forEach(b=>{
+    const h = 10 + Math.random()*55;
+    b.style.height = h+'px';
+    b.style.opacity = 0.3 + (h/65)*0.7;
+  });
+}
+
+function analyzeVoice(){
+  if(!recording && document.getElementById('voice-visual').children.length > 1){
+    // Valeurs simulées
+    document.getElementById('v-jitter').value  = (Math.random()*0.8+0.1).toFixed(2);
+    document.getElementById('v-shimmer').value = (Math.random()*4+1).toFixed(2);
+    document.getElementById('v-hnr').value     = (Math.random()*8+12).toFixed(1);
+    analyzeVoiceManual();
+  } else {
+    alert('Enregistrez d\'abord un échantillon vocal.');
+  }
+}
+
+function analyzeVoiceManual(){
+  const jitter  = parseFloat(document.getElementById('v-jitter').value)||0;
+  const shimmer = parseFloat(document.getElementById('v-shimmer').value)||0;
+  const hnr     = parseFloat(document.getElementById('v-hnr').value)||20;
+
+  document.getElementById('vr-jitter').textContent  = jitter.toFixed(2)+'%';
+  document.getElementById('vr-shimmer').textContent = shimmer.toFixed(2)+'%';
+  document.getElementById('vr-hnr').textContent     = hnr.toFixed(1)+' dB';
+
+  // Score vocal
+  let vscore = 0;
+  if(jitter > 1.0) vscore += 30;
+  else if(jitter > 0.5) vscore += 15;
+  if(shimmer > 6) vscore += 30;
+  else if(shimmer > 3) vscore += 15;
+  if(hnr < 15) vscore += 25;
+  else if(hnr < 20) vscore += 10;
+  vscore = Math.min(100, vscore);
+
+  const interp = document.getElementById('vr-interp');
+  let msg='', cls='info';
+  if(vscore < 25){ msg='Paramètres vocaux dans les normes attendues.'; cls='ok'; }
+  else if(vscore < 55){ msg='Légères anomalies vocales détectées. Surveillance recommandée.'; cls='info'; }
+  else if(vscore < 75){ msg='Anomalies vocales significatives. Corrélation clinique indiquée.'; cls='warn'; }
+  else { msg='Anomalies vocales sévères. Hautement corrélé avec dysphonie parkinsonienne.'; cls='crit'; }
+  interp.innerHTML = `<div class="alert ${cls}">${msg}</div>`;
+
+  document.getElementById('vr-score').textContent = vscore+'%';
+  document.getElementById('vr-score').style.color = vscore<25?'#00e5a0':vscore<55?'#00b4ff':vscore<75?'#ffa800':'#ff4466';
+  document.getElementById('vr-bar').style.width = vscore+'%';
+  document.getElementById('vr-bar').style.background = vscore<25?'#00e5a0':vscore<55?'#00b4ff':vscore<75?'#ffa800':'#ff4466';
+
+  document.getElementById('voice-result-empty').style.display='none';
+  document.getElementById('voice-result').style.display='block';
+}
+
+function analyzeTremor(){
+  const amp  = parseFloat(document.getElementById('t-amp').value)||0;
+  const freq = parseFloat(document.getElementById('t-freq').value)||0;
+  const el   = document.getElementById('tremor-result');
+  el.style.display='block';
+  let msg='', cls='ok';
+  const isPark = (freq>=3&&freq<=6) && amp>0.5;
+  if(!amp&&!freq){ el.innerHTML=''; return; }
+  if(isPark){ msg=`<strong>Profil parkinsonien probable</strong> — Fréquence ${freq}Hz (3–6Hz typique), amplitude ${amp}mm. Corrélation avec tremblements de repos.`; cls='warn'; }
+  else if(freq>6){ msg=`Tremblements à haute fréquence (${freq}Hz) — Profil plutôt essentiel ou cérébelleux. Différentiel requis.`; cls='info'; }
+  else { msg=`Paramètres dans les limites normales. Surveillance standard recommandée.`; cls='ok'; }
+  el.innerHTML=`<div class="alert ${cls}">${msg}</div>`;
+}
+
+// ══════════════════════════════════════
+//  RAPPORTS
+// ══════════════════════════════════════
+function genererRapport(){
+  if(!lastEval){ return; }
+  showTab('rapports');
+  document.querySelectorAll('.tab').forEach((t,i)=>{ if(i===4) t.classList.add('active'); else t.classList.remove('active'); });
+
+  document.getElementById('rapport-empty').style.display='none';
+  document.getElementById('rapport-content').style.display='block';
+
+  document.getElementById('rpt-meta').innerHTML=`
+    <div class="rmeta"><div class="rmeta-lbl">Patient</div><div class="rmeta-val">${lastEval.name}</div></div>
+    <div class="rmeta"><div class="rmeta-lbl">Dossier</div><div class="rmeta-val">${lastEval.id}</div></div>
+    <div class="rmeta"><div class="rmeta-lbl">Score IA</div><div class="rmeta-val" style="color:${lastEval.color}">${lastEval.score}% — ${lastEval.cat}</div></div>
+  `;
+
+  const now = new Date().toLocaleDateString('fr-CA',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('rpt-text').textContent =
+`COMPTE-RENDU CLINIQUE — IA PARKINSON LOGIC v2.0
+══════════════════════════════════════════════════════
+
+Date d'évaluation : ${lastEval.date || now}
+Médecin référent  : ${lastEval.med || 'Non spécifié'}
+ID Dossier        : ${lastEval.id}
+
+PATIENT
+────────────────────────────────────────────
+Nom         : ${lastEval.name}
+Âge         : ${lastEval.age} ans
+Sexe        : ${lastEval.sex || 'Non spécifié'}
+
+RÉSULTAT ANALYSE IA
+────────────────────────────────────────────
+Score de risque : ${lastEval.score} / 100
+Catégorie       : ${lastEval.cat}
+Niveau          : ${lastEval.score<=30?'FAIBLE':lastEval.score<=55?'MODÉRÉ':lastEval.score<=75?'ÉLEVÉ':'CRITIQUE'}
+
+SYMPTÔMES ET SIGNES OBSERVÉS
+────────────────────────────────────────────
+${lastEval.signals.length ? lastEval.signals.map(s=>'• '+s).join('\n') : '• Aucun symptôme coché'}
+
+RECOMMANDATION CLINIQUE
+────────────────────────────────────────────
+${lastEval.rec}
+
+NOTES CLINIQUES
+────────────────────────────────────────────
+${lastEval.notes || 'Aucune note'}
+
+══════════════════════════════════════════════════════
+AVERTISSEMENT : Ce rapport est généré par un outil
+d'aide à la décision (IA Parkinson Logic v2.0).
+Il ne remplace pas le jugement clinique du médecin.
+Tout diagnostic doit être confirmé par un neurologue.
+══════════════════════════════════════════════════════`;
+}
+
+function copyReport(){
+  navigator.clipboard.writeText(document.getElementById('rpt-text').textContent)
+    .then(()=>alert('Rapport copié dans le presse-papiers.'));
+}
+
+function printReport(){ window.print(); }
+
+// ══════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════
+function animateCount(id, from, to, dur){
+  const el = document.getElementById(id);
+  const start = performance.now();
+  const tick = now=>{
+    const p = Math.min((now-start)/dur,1);
+    el.textContent = Math.round(from+(to-from)*p);
+    if(p<1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function addTimeline(dotCls, icon, title, sub){
+  const tl = document.getElementById('dash-timeline');
+  const div = document.createElement('div');
+  div.className='tl-item';
+  div.innerHTML=`<div class="tl-dot ${dotCls}">${icon}</div><div class="tl-content"><div class="tl-title">${title}</div><div class="tl-sub">${sub}</div></div>`;
+  tl.prepend(div);
+}
+
+function updateDashAlerts(pct, cat, name, alertClass){
+  const el = document.getElementById('dash-alerts');
+  const alert = document.createElement('div');
+  alert.className='alert '+alertClass;
+  alert.innerHTML=`<strong>${name}</strong> — Score ${pct}% · Risque ${cat}`;
+  el.prepend(alert);
+}
+</script>
+</body>
+</html>
