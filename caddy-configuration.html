@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caddy 2 — Reverse Proxy & TLS | Stack Souverain</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --text: #212529;
+            --accent: #0d6efd;
+            --card: #ffffff;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #121212;
+                --text: #e0e0e0;
+                --accent: #4da3ff;
+                --card: #1e1e1e;
+            }
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.7;
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--bg);
+            color: var(--text);
+        }
+        h1 { 
+            color: var(--accent); 
+            text-align: center; 
+            margin-bottom: 10px;
+        }
+        h2 { 
+            color: var(--accent); 
+            border-bottom: 3px solid var(--accent); 
+            padding-bottom: 10px;
+        }
+        h3 { color: #495057; }
+        pre {
+            background: #212529;
+            color: #f8f9fa;
+            padding: 18px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+        th, td {
+            border: 1px solid #495057;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        th {
+            background: var(--accent);
+            color: white;
+        }
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .note {
+            background: #e7f3ff;
+            border-left: 6px solid #0d6efd;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .legend {
+            font-size: 0.9em;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 50px;
+        }
+        ul { padding-left: 25px; }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 Caddy 2 — Reverse Proxy & TLS Automatique</h1>
+    <p style="text-align:center; font-size:1.15em; margin-bottom:30px;">
+        Stack Souverain • Debian 12 • Docker Compose • Kanidm SSO<br>
+        <strong>Version Caddy : 2.9.x (2026)</strong>
+    </p>
+
+    <div class="card">
+        <h2>1. Rôle de Caddy dans ton architecture</h2>
+        <p>Caddy est le point d’entrée unique de ton stack souverain :</p>
+        <ul>
+            <li>Terminaison TLS automatique (ACME / Let’s Encrypt)</li>
+            <li>Reverse proxy vers tous les services (Kanidm, Nextcloud, Stalwart, Matrix, Vaultwarden, Jitsi…)</li>
+            <li>Routage par domaine / sous-domaine</li>
+            <li>Rate limiting et protection basique contre les abus</li>
+            <li>Transmission correcte des en-têtes pour Kanidm (SSO)</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>2. Caddyfile complet recommandé</h2>
+        <pre><code># ========================
+# Caddyfile - Stack Souverain
+# ========================
+
+{
+    email tonemail@tundomaine.fr
+    acme_ca https://acme-v02.api.letsencrypt.org/directory
+
+    # Rate limiting global
+    rate_limit {
+        zone global {
+            match path *
+            events 40
+            period 1m
+        }
+    }
+
+    # Headers de sécurité globaux
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+}
+
+# ========================
+# Services du stack
+# ========================
+
+idm.tundomaine.fr {
+    reverse_proxy kanidm:8443 {
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+        header_up Host {http.request.host}
+    }
+}
+
+cloud.tundomaine.fr {
+    reverse_proxy nextcloud:8080
+}
+
+mail.tundomaine.fr {
+    reverse_proxy stalwart:8080
+}
+
+chat.tundomaine.fr {
+    reverse_proxy matrix:8008
+}
+
+pw.tundomaine.fr {
+    reverse_proxy vaultwarden:8080
+}
+
+meet.tundomaine.fr {
+    reverse_proxy jitsi:8080
+}
+
+# Redirection HTTP → HTTPS
+:80 {
+    redir https://{host}{uri} permanent
+}</code></pre>
+    </div>
+
+    <div class="card">
+        <h2>3. Tableau des services</h2>
+        <table>
+            <tr>
+                <th>Domaine</th>
+                <th>Service</th>
+                <th>Port interne</th>
+                <th>Remarques importantes</th>
+            </tr>
+            <tr>
+                <td>idm.tundomaine.fr</td>
+                <td>Kanidm SSO</td>
+                <td>8443</td>
+                <td>Headers X-Forwarded obligatoires pour OIDC/WebAuthn</td>
+            </tr>
+            <tr>
+                <td>cloud.tundomaine.fr</td>
+                <td>Nextcloud</td>
+                <td>8080</td>
+                <td>Intégration user_oidc avec Kanidm</td>
+            </tr>
+            <tr>
+                <td>mail.tundomaine.fr</td>
+                <td>Stalwart</td>
+                <td>8080</td>
+                <td>SMTP/IMAP/JMAP + OIDC</td>
+            </tr>
+            <tr>
+                <td>chat.tundomaine.fr</td>
+                <td>Matrix (Dendrite)</td>
+                <td>8008</td>
+                <td>Element + OIDC</td>
+            </tr>
+            <tr>
+                <td>pw.tundomaine.fr</td>
+                <td>Vaultwarden</td>
+                <td>8080</td>
+                <td>Bitwarden compatible</td>
+            </tr>
+            <tr>
+                <td>meet.tundomaine.fr</td>
+                <td>Jitsi Meet</td>
+                <td>8080</td>
+                <td>WebRTC + coturn</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>4. Commandes utiles (Docker)</h2>
+        <pre><code># Recharger la configuration sans downtime
+docker exec caddy caddy reload
+
+# Valider le Caddyfile
+docker exec caddy caddy validate
+
+# Voir les logs en temps réel
+docker logs -f caddy
+
+# Lister les certificats actifs
+docker exec caddy caddy list-certificates
+
+# Tester une URL spécifique
+curl -I https://idm.tundomaine.fr</code></pre>
+    </div>
+
+    <div class="warning">
+        <strong>Conseils de sécurité :</strong>
+        <ul>
+            <li>Change régulièrement l’email ACME</li>
+            <li>Utilise le staging ACME pendant les tests</li>
+            <li>Active le rate limiting adapté à ton usage</li>
+            <li>Surveille les logs Caddy avec Grafana</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>5. Dépannage courant</h2>
+        <ul>
+            <li><strong>Erreur 502 Bad Gateway :</strong> Vérifier que le service cible tourne et que le port est correct</li>
+            <li><strong>Kanidm ne reconnaît pas les headers :</strong> Vérifier les <code>header_up</code> dans le bloc idm.tundomaine.fr</li>
+            <li><strong>Certificat non renouvelé :</strong> Vérifier les logs et l’email ACME</li>
+            <li><strong>Rate limit trop strict :</strong> Augmenter le nombre d’événements dans le bloc global</li>
+        </ul>
+    </div>
+
+    <p class="legend">
+        Page HTML autonome • Stack Souverain sur Hetzner (Debian 12) • Mars 2026<br>
+        Tu peux sauvegarder cette page et la consulter hors ligne.
+    </p>
+
+</body>
+</html>

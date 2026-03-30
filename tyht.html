@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanidm - Configuration SSO Souverain</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #212529;
+        }
+        h1, h2, h3 { color: #0d6efd; }
+        pre {
+            background: #212529;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.95em;
+        }
+        code { font-family: monospace; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        th { background: #0d6efd; color: white; }
+        .note {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .legend {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔐 Kanidm — Configuration SSO dans le stack souverain</h1>
+    <p><strong>Version Kanidm :</strong> 1.9.x (mars 2026) | OS : Debian 12 + Docker Compose + Caddy 2</p>
+
+    <h2>1. docker-compose.yml</h2>
+    <pre><code>services:
+  kanidm:
+    image: kanidm/server:latest
+    container_name: kanidm
+    restart: unless-stopped
+    volumes:
+      - kanidm_data:/data
+    networks:
+      - sovereign_net
+    healthcheck:
+      test: ["CMD", "kanidmd", "healthcheck", "--config", "/data/server.toml"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  kanidm_data:
+    driver: local</code></pre>
+
+    <h2>2. server.toml (fichier de configuration principal)</h2>
+    <pre><code>version = "2"
+
+bindaddress = "[::]:8443"
+
+domain = "idm.tundomaine.fr"
+origin = "https://idm.tundomaine.fr"
+
+trust_x_forward_for = true
+
+db_path = "/data/kanidm.db"
+
+log_level = "info"
+[online_backup]
+path = "/data/backups/"
+schedule = "0 3 * * *"</code></pre>
+
+    <div class="note">
+        <strong>Important :</strong> Le <code>origin</code> doit correspondre exactement à l’URL publique vue par le navigateur via Caddy.
+    </div>
+
+    <h2>3. Configuration Caddy</h2>
+    <pre><code>idm.tundomaine.fr {
+    reverse_proxy kanidm:8443 {
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+        header_up Host {http.request.host}
+    }
+}</code></pre>
+
+    <h2>4. Initialisation (première fois)</h2>
+    <pre><code>docker compose up -d kanidm
+
+# Récupérer les comptes admin
+docker exec -it kanidm kanidmd recover-account admin
+docker exec -it kanidm kanidmd recover-account idm_admin</code></pre>
+
+    <h2>5. Création des clients OIDC (exemples)</h2>
+    <table>
+        <tr>
+            <th>Service</th>
+            <th>Commande principale</th>
+        </tr>
+        <tr>
+            <td>Nextcloud</td>
+            <td><code>kanidm system oauth2 create nextcloud "Nextcloud" https://cloud.tundomaine.fr</code></td>
+        </tr>
+        <tr>
+            <td>Matrix (Dendrite)</td>
+            <td><code>kanidm system oauth2 create matrix "Matrix" https://chat.tundomaine.fr</code></td>
+        </tr>
+        <tr>
+            <td>Stalwart</td>
+            <td>OIDC natif (UserInfo ou Token Introspection) ou LDAP en fallback</td>
+        </tr>
+        <tr>
+            <td>Vaultwarden</td>
+            <td><code>kanidm system oauth2 create vaultwarden "Vaultwarden" https://pw.tundomaine.fr</code></td>
+        </tr>
+        <tr>
+            <td>Jitsi Meet</td>
+            <td><code>kanidm system oauth2 create jitsi "Jitsi" https://meet.tundomaine.fr</code></td>
+        </tr>
+    </table>
+
+    <h2>6. Bonnes pratiques</h2>
+    <ul>
+        <li>Force WebAuthn + MFA pour tous les utilisateurs</li>
+        <li>Crée un groupe par service (<code>nextcloud_users</code>, <code>matrix_users</code>, etc.)</li>
+        <li>Intègre les backups Kanidm dans Restic</li>
+        <li>Monitor via Prometheus (métriques natives)</li>
+        <li>Avant mise à jour : backup + <code>docker compose pull</code></li>
+    </ul>
+
+    <p class="legend">
+        Cette page est autonome. Tu peux l’enregistrer et la consulter hors ligne.<br>
+        Date de génération : mars 2026
+    </p>
+
+</body>
+</html>

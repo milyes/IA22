@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z-CORE — Framework IA Souverain</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #04060d;
+  --bg2:   #070c18;
+  --bg3:   #0b1225;
+  --bg4:   #101a35;
+  --z:     #00d4ff;
+  --z2:    #0099cc;
+  --z3:    rgba(0,212,255,0.08);
+  --z4:    rgba(0,212,255,0.15);
+  --med:   #00ffb3;
+  --med2:  rgba(0,255,179,0.1);
+  --sec:   #ff6b35;
+  --sec2:  rgba(255,107,53,0.1);
+  --gold:  #ffd700;
+  --gold2: rgba(255,215,0,0.1);
+  --text:  #c8dff0;
+  --text2: #5a7a9a;
+  --text3: #1e3a5a;
+  --border: rgba(0,212,255,0.1);
+  --border2:rgba(0,212,255,0.22);
+  --orb:  'Orbitron', monospace;
+  --body: 'Exo 2', sans-serif;
+  --r: 8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ── PARTICLE CANVAS ── */
+#canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;}
+
+/* ── BOOT SCREEN ── */
+#boot{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .6s ease;}
+#boot.hide{opacity:0;pointer-events:none;}
+.boot-logo{font-family:var(--orb);font-size:clamp(32px,6vw,72px);font-weight:900;color:var(--z);letter-spacing:.15em;animation:boot-pulse 1s ease-in-out infinite;}
+@keyframes boot-pulse{0%,100%{text-shadow:0 0 20px var(--z)}50%{text-shadow:0 0 60px var(--z),0 0 120px var(--z)}}
+.boot-sub{font-family:var(--body);font-size:13px;color:var(--text2);letter-spacing:.25em;text-transform:uppercase;}
+.boot-bar-wrap{width:300px;height:2px;background:var(--bg3);border-radius:1px;overflow:hidden;margin-top:8px;}
+.boot-bar{height:100%;background:var(--z);border-radius:1px;width:0%;transition:width .05s linear;}
+.boot-log{font-family:var(--orb);font-size:10px;color:var(--text3);letter-spacing:.1em;height:16px;}
+
+/* ── WRAP ── */
+#app{position:relative;z-index:1;}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(4,6,13,0.92);
+  border-bottom:1px solid var(--border2);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;gap:20px;
+  padding:0 32px;height:56px;
+}
+.topbar-logo{font-family:var(--orb);font-size:18px;font-weight:900;color:var(--z);letter-spacing:.12em;}
+.topbar-logo span{color:var(--text2);font-weight:400;}
+.topbar-divider{width:1px;height:20px;background:var(--border2);}
+.topbar-nav{display:flex;gap:2px;flex:1;}
+.tnav{padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--text2);font-family:var(--body);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;letter-spacing:.04em;white-space:nowrap;}
+.tnav:hover{background:var(--z3);color:var(--text);}
+.tnav.active{background:var(--z4);color:var(--z);border:1px solid var(--border2);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--z);animation:pdot 1.6s ease-in-out infinite;}
+@keyframes pdot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,212,255,.4)}50%{opacity:.5;box-shadow:0 0 0 6px rgba(0,212,255,0)}}
+.topbar-status{font-family:var(--orb);font-size:10px;color:var(--z);letter-spacing:.08em;}
+.topbar-user{font-size:11px;color:var(--text2);}
+
+/* ── PAGES ── */
+.page{display:none;animation:fade-in .3s ease;}
+.page.active{display:block;}
+@keyframes fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO ── */
+.hero{
+  min-height:calc(100vh - 56px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:60px 32px;
+  text-align:center;
+  position:relative;
+}
+.hero-ring{
+  position:absolute;
+  width:600px;height:600px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  animation:spin-slow 40s linear infinite;
+  pointer-events:none;
+}
+.hero-ring:nth-child(2){width:400px;height:400px;border-color:rgba(0,212,255,0.06);animation-direction:reverse;animation-duration:25s;}
+.hero-ring:nth-child(3){width:200px;height:200px;border-color:rgba(0,212,255,0.04);animation-duration:15s;}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+.hero-eyebrow{font-family:var(--orb);font-size:11px;color:var(--z);letter-spacing:.3em;text-transform:uppercase;margin-bottom:20px;opacity:.7;}
+.hero-title{
+  font-family:var(--orb);
+  font-size:clamp(48px,10vw,96px);
+  font-weight:900;
+  color:var(--z);
+  letter-spacing:.1em;
+  line-height:1;
+  margin-bottom:8px;
+  text-shadow:0 0 40px rgba(0,212,255,.3);
+}
+.hero-sub-title{
+  font-family:var(--orb);
+  font-size:clamp(12px,2vw,18px);
+  font-weight:400;
+  color:var(--text2);
+  letter-spacing:.2em;
+  margin-bottom:32px;
+}
+.hero-desc{
+  max-width:600px;
+  font-size:15px;
+  color:var(--text2);
+  line-height:1.8;
+  margin-bottom:48px;
+}
+.hero-modules{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;}
+.hmod{
+  padding:10px 20px;
+  border-radius:30px;
+  font-family:var(--orb);font-size:11px;font-weight:600;
+  letter-spacing:.08em;
+  border:1px solid;
+  cursor:pointer;
+  transition:all .2s;
+}
+.hmod-med{background:var(--med2);color:var(--med);border-color:rgba(0,255,179,.25);}
+.hmod-med:hover{background:rgba(0,255,179,.2);box-shadow:0 0 20px rgba(0,255,179,.2);}
+.hmod-sec{background:var(--sec2);color:var(--sec);border-color:rgba(255,107,53,.25);}
+.hmod-sec:hover{background:rgba(255,107,53,.2);box-shadow:0 0 20px rgba(255,107,53,.2);}
+.hmod-z{background:var(--z3);color:var(--z);border-color:var(--border2);}
+.hmod-z:hover{background:var(--z4);box-shadow:0 0 20px rgba(0,212,255,.2);}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn{padding:10px 24px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:var(--body);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn:hover{background:var(--bg4);color:var(--text);}
+.btn-z{background:var(--z4);color:var(--z);border-color:var(--border2);}
+.btn-z:hover{background:rgba(0,212,255,.25);box-shadow:0 0 20px rgba(0,212,255,.15);}
+.btn-med{background:var(--med2);color:var(--med);border-color:rgba(0,255,179,.2);}
+.btn-med:hover{background:rgba(0,255,179,.2);}
+.btn-sec{background:var(--sec2);color:var(--sec);border-color:rgba(255,107,53,.2);}
+
+/* ── SECTION LAYOUT ── */
+.section{padding:60px 32px;max-width:1200px;margin:0 auto;}
+.section-tag{font-family:var(--orb);font-size:10px;color:var(--z);letter-spacing:.25em;margin-bottom:10px;opacity:.6;}
+.section-title{font-family:var(--orb);font-size:clamp(22px,4vw,36px);font-weight:700;color:var(--text);margin-bottom:8px;}
+.section-sub{font-size:14px;color:var(--text2);line-height:1.7;max-width:600px;margin-bottom:40px;}
+
+/* ── ARCH DIAGRAM ── */
+.arch-wrap{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;padding:40px;}
+.arch-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:start;}
+.arch-col{display:flex;flex-direction:column;gap:12px;}
+.arch-col-center{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.arch-node{
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px 16px;transition:all .2s;cursor:pointer;
+}
+.arch-node:hover{border-color:var(--border2);background:var(--bg4);}
+.arch-node.z-node{border-color:var(--border2);background:var(--z3);}
+.arch-node.med-node{border-color:rgba(0,255,179,.2);background:var(--med2);}
+.arch-node.sec-node{border-color:rgba(255,107,53,.2);background:var(--sec2);}
+.arch-node.gold-node{border-color:rgba(255,215,0,.2);background:var(--gold2);}
+.an-title{font-family:var(--orb);font-size:11px;font-weight:600;margin-bottom:4px;letter-spacing:.06em;}
+.an-sub{font-size:11px;color:var(--text2);line-height:1.5;}
+.arch-center-node{
+  background:var(--z3);border:2px solid var(--z2);border-radius:50%;
+  width:120px;height:120px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:var(--orb);font-weight:900;font-size:22px;color:var(--z);
+  animation:center-pulse 3s ease-in-out infinite;
+  cursor:pointer;
+}
+@keyframes center-pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0)}50%{box-shadow:0 0 0 16px rgba(0,212,255,0.05)}}
+.arch-center-sub{font-size:8px;font-family:var(--orb);color:var(--z2);letter-spacing:.12em;margin-top:2px;}
+.arch-arrow{color:var(--text3);font-size:18px;text-align:center;}
+
+/* ── MODULE CARDS ── */
+.modules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.mod-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;transition:all .25s;cursor:pointer;
+}
+.mod-card:hover{transform:translateY(-4px);border-color:var(--border2);}
+.mod-card-top{padding:24px 24px 16px;border-bottom:1px solid var(--border);}
+.mod-icon{font-family:var(--orb);font-size:28px;font-weight:900;margin-bottom:10px;}
+.mod-name{font-family:var(--orb);font-size:14px;font-weight:700;margin-bottom:4px;}
+.mod-tagline{font-size:12px;color:var(--text2);}
+.mod-card-body{padding:16px 24px;}
+.mod-feat{font-size:11px;color:var(--text2);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.mod-feat:last-child{border-bottom:none;}
+.mod-feat::before{content:'▸';font-size:8px;color:var(--text3);}
+.mod-card-footer{padding:12px 24px;border-top:1px solid var(--border);display:flex;gap:8px;}
+
+/* ── PROMPT SECTION ── */
+.prompt-tabs{display:flex;gap:4px;margin-bottom:16px;}
+.ptab{padding:6px 16px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--body);font-size:12px;cursor:pointer;transition:all .15s;}
+.ptab.active{background:var(--z3);color:var(--z);border-color:var(--border2);}
+.prompt-panel{display:none;}
+.prompt-panel.active{display:block;}
+.prompt-code{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);
+  padding:20px;font-family:var(--orb);font-size:11px;line-height:1.9;
+  color:var(--text2);white-space:pre-wrap;word-break:break-word;
+  max-height:420px;overflow-y:auto;
+}
+.prompt-code::-webkit-scrollbar{width:3px;}
+.prompt-code::-webkit-scrollbar-thumb{background:var(--border2);}
+.pk{color:var(--z);}
+.pv{color:var(--text);}
+.pc{color:var(--text3);}
+.pm{color:var(--med);}
+.ps{color:var(--sec);}
+.pg{color:var(--gold);}
+
+/* ── PITCH DECK ── */
+.deck-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.deck-nav{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;}
+.slide-tab{padding:10px 20px;font-family:var(--orb);font-size:10px;color:var(--text3);cursor:pointer;white-space:nowrap;border-right:1px solid var(--border);transition:all .15s;letter-spacing:.06em;}
+.slide-tab:hover{background:var(--bg3);color:var(--text2);}
+.slide-tab.active{background:var(--z3);color:var(--z);}
+.slide{display:none;padding:48px;min-height:400px;}
+.slide.active{display:flex;flex-direction:column;justify-content:center;}
+.slide-num{font-family:var(--orb);font-size:10px;color:var(--text3);letter-spacing:.15em;margin-bottom:16px;}
+.slide-title{font-family:var(--orb);font-size:clamp(24px,4vw,42px);font-weight:900;margin-bottom:16px;line-height:1.1;}
+.slide-body{font-size:14px;color:var(--text2);line-height:1.8;max-width:680px;}
+.slide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;}
+.slide-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
+.sc-val{font-family:var(--orb);font-size:28px;font-weight:700;margin-bottom:4px;}
+.sc-lab{font-size:11px;color:var(--text2);}
+.slide-list{margin-top:20px;display:flex;flex-direction:column;gap:10px;}
+.slide-li{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--text2);}
+.slide-li-dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.deck-controls{padding:16px 32px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.slide-counter{font-family:var(--orb);font-size:11px;color:var(--text3);margin-left:auto;}
+
+/* ── ROADMAP ── */
+.roadmap{display:flex;flex-direction:column;gap:0;position:relative;padding-left:24px;}
+.roadmap::before{content:'';position:absolute;left:8px;top:12px;bottom:12px;width:1px;background:var(--border2);}
+.rm-item{position:relative;margin-bottom:24px;}
+.rm-dot{position:absolute;left:-20px;top:4px;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg);}
+.rm-phase{font-family:var(--orb);font-size:10px;letter-spacing:.1em;margin-bottom:4px;}
+.rm-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.rm-items{display:flex;flex-wrap:wrap;gap:6px;}
+.rm-tag{font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--border);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:28px;right:28px;z-index:500;background:var(--bg2);border:1px solid var(--z2);border-radius:var(--r);padding:12px 18px;font-family:var(--orb);font-size:11px;color:var(--z);display:flex;align-items:center;gap:10px;animation:toast-in .2s ease;letter-spacing:.06em;}
+@keyframes toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.arch-grid,.modules-grid,.slide-grid{grid-template-columns:1fr}.topbar-nav{display:none}}
+@media(max-width:600px){.hero-title{font-size:48px}.section{padding:40px 16px}.slide{padding:28px}}
+</style>
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div id="boot">
+  <div class="boot-logo">Z-CORE</div>
+  <div class="boot-sub">Framework IA Souverain Modulaire</div>
+  <div class="boot-bar-wrap"><div class="boot-bar" id="boot-bar"></div></div>
+  <div class="boot-log" id="boot-log">INIT...</div>
+</div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="canvas"></canvas>
+
+<div id="app" style="opacity:0;transition:opacity .6s ease .2s">
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-logo">Z<span>-CORE</span></div>
+  <div class="topbar-divider"></div>
+  <nav class="topbar-nav">
+    <button class="tnav active" onclick="showPage('home')">Vue d'ensemble</button>
+    <button class="tnav" onclick="showPage('arch')">Architecture</button>
+    <button class="tnav" onclick="showPage('modules')">Modules</button>
+    <button class="tnav" onclick="showPage('prompt')">Prompts souverains</button>
+    <button class="tnav" onclick="showPage('pitch')">Pitch deck</button>
+    <button class="tnav" onclick="showPage('roadmap')">Roadmap</button>
+  </nav>
+  <div class="topbar-right">
+    <div class="pulse-dot"></div>
+    <div class="topbar-status">SOUVERAIN · ACTIF</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-user">M.I. Zoubirou</div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════ HOME ══════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-eyebrow">Framework IA Souverain Modulaire v1.0</div>
+    <div class="hero-title">Z-CORE</div>
+    <div class="hero-sub-title">Zoubirou Core Orchestration & Reasoning Engine</div>
+    <div class="hero-desc">
+      Orchestrateur central unifiant MedicalTrackerPro34, NetSecurePro et tous les modules IA souverains futurs.
+      Architecture zero-trust, données 100% locales, conformité RGPD/HDS native.
+    </div>
+    <div class="hero-modules">
+      <div class="hmod hmod-med" onclick="showPage('modules')">MedicalTrackerPro34</div>
+      <div class="hmod hmod-z" onclick="showPage('arch')">Z-CORE Orchestrateur</div>
+      <div class="hmod hmod-sec" onclick="showPage('modules')">NetSecurePro</div>
+    </div>
+    <div class="hero-cta">
+      <button class="btn btn-z" onclick="showPage('arch')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        Explorer l'architecture
+      </button>
+      <button class="btn btn-med" onclick="showPage('pitch')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Voir le pitch deck
+      </button>
+      <button class="btn btn-sec" onclick="showPage('prompt')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        Prompts souverains
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ ARCH ══════════════════════════════════ -->
+<div class="page" id="page-arch">
+<div class="section">
+  <div class="section-tag">Architecture système</div>
+  <div class="section-title">Z-CORE — Orchestration souveraine</div>
+  <div class="section-sub">Chaque module est une IA autonome spécialisée. Z-CORE orchestre, route, et garantit l'isolation des responsabilités sans jamais centraliser les données cliniques.</div>
+
+  <div class="arch-wrap">
+    <div class="arch-grid">
+
+      <!-- COL 1 — Inputs -->
+      <div class="arch-col">
+        <div style="font-family:var(--orb);font-size:10px;color:var(--text3);letter-spacing:.12em;margin-bottom:8px">ENTRÉES</div>
+        <div class="arch-node" onclick="toast('Patient → interface naturelle')">
+          <div class="an-title" style="color:var(--text)">Patient</div>
+          <div class="an-sub">Interface chat · voix · formulaire</div>
+        </div>
+        <div class="arch-node" onclick="toast('Médecin → accès sécurisé 2FA')">
+          <div class="an-title" style="color:var(--text)">Médecin</div>
+          <div class="an-sub">Accès clinicien · 2FA · audit complet</div>
+        </div>
+        <div class="arch-node" onclick="toast('Capteurs IoT → constantes en temps réel')">
+          <div class="an-title" style="color:var(--text)">Capteurs IoT</div>
+          <div class="an-sub">Wearables · tensiomètre · glucomètre</div>
+        </div>
+        <div class="arch-node" onclick="toast('API FHIR → interopérabilité DMP')">
+          <div class="an-title" style="color:var(--text)">API FHIR</div>
+          <div class="an-sub">DMP · labo · pharmacie</div>
+        </div>
+      </div>
+
+      <!-- COL 2 — Z-CORE Center -->
+      <div class="arch-col-center">
+        <div style="font-family:var(--orb);font-size:10px;color:var(--z);letter-spacing:.12em;margin-bottom:8px;text-align:center">ORCHESTRATEUR</div>
+        <div class="arch-center-node" onclick="showPage('prompt')">
+          Z-CORE
+          <div class="arch-center-sub">ORCHESTRATEUR</div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-node z-node" onclick="toast('Mémoire partagée chiffrée AES-256')">
+          <div class="an-title" style="color:var(--z)">Mémoire souveraine</div>
+          <div class="an-sub">AES-256-GCM · contexte patient · état global</div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-node gold-node" onclick="toast('Module Éthique — garde-fou transversal')">
+          <div class="an-title" style="color:var(--gold)">Module Éthique</div>
+          <div class="an-sub">Intercepte toutes les réponses · RGPD · HDS</div>
+        </div>
+      </div>
+
+      <!-- COL 3 — Modules -->
+      <div class="arch-col">
+        <div style="font-family:var(--orb);font-size:10px;color:var(--text3);letter-spacing:.12em;margin-bottom:8px">MODULES SOUVERAINS</div>
+        <div class="arch-node med-node" onclick="showPage('modules')">
+          <div class="an-title" style="color:var(--med)">MedicalTrackerPro34</div>
+          <div class="an-sub">Symptômes · médicaments · constantes · historique</div>
+        </div>
+        <div class="arch-node sec-node" onclick="showPage('modules')">
+          <div class="an-title" style="color:var(--sec)">NetSecurePro</div>
+          <div class="an-sub">Chiffrement · intrusion · audit · 2FA</div>
+        </div>
+        <div class="arch-node" onclick="toast('NutriTrack — bientôt disponible')">
+          <div class="an-title" style="color:var(--text2)">NutriTrack <span style="font-size:9px;opacity:.5">[bientôt]</span></div>
+          <div class="an-sub">Nutrition · glycémie · régimes thérapeutiques</div>
+        </div>
+        <div class="arch-node" onclick="toast('PsyCore — bientôt disponible')">
+          <div class="an-title" style="color:var(--text2)">PsyCore <span style="font-size:9px;opacity:.5">[bientôt]</span></div>
+          <div class="an-sub">Santé mentale · anxiété · sommeil · résilience</div>
+        </div>
+        <div class="arch-node" onclick="toast('SnoflakeSync — intégration Data Cloud')">
+          <div class="an-title" style="color:var(--gold)">SnowflakeSync</div>
+          <div class="an-sub">Connecteur Snowflake AI Data Cloud · analytics</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Principes -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px">
+    <div class="arch-node" style="padding:20px">
+      <div class="an-title" style="color:var(--z);margin-bottom:8px">Zero-Trust</div>
+      <div class="an-sub">Chaque requête est authentifiée. Aucune confiance implicite entre modules. Tout est chiffré en transit et au repos.</div>
+    </div>
+    <div class="arch-node" style="padding:20px">
+      <div class="an-title" style="color:var(--med);margin-bottom:8px">Souveraineté totale</div>
+      <div class="an-sub">100% local. Aucune donnée médicale ne quitte l'infrastructure du patient. Déployable on-premise ou cloud privé.</div>
+    </div>
+    <div class="arch-node" style="padding:20px">
+      <div class="an-title" style="color:var(--sec);margin-bottom:8px">Modularité infinie</div>
+      <div class="an-sub">Chaque module se connecte à Z-CORE via une API standardisée. Ajout ou suppression sans refactoring.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════ MODULES ══════════════════════════════════ -->
+<div class="page" id="page-modules">
+<div class="section">
+  <div class="section-tag">Modules actifs</div>
+  <div class="section-title">Écosystème Z-CORE</div>
+  <div class="section-sub">Chaque module est une IA indépendante, souveraine sur son domaine, avec son propre prompt système et ses propres règles éthiques.</div>
+
+  <div class="modules-grid">
+
+    <!-- Z-CORE -->
+    <div class="mod-card" style="border-color:rgba(0,212,255,.25)">
+      <div class="mod-card-top" style="background:var(--z3)">
+        <div class="mod-icon" style="color:var(--z)">Z</div>
+        <div class="mod-name" style="color:var(--z)">Z-CORE</div>
+        <div class="mod-tagline">Orchestrateur central souverain</div>
+      </div>
+      <div class="mod-card-body">
+        <div class="mod-feat">Routage intelligent multi-modules</div>
+        <div class="mod-feat">Contexte patient unifié</div>
+        <div class="mod-feat">Module Éthique transversal</div>
+        <div class="mod-feat">API standardisée inter-modules</div>
+        <div class="mod-feat">Zero-trust natif</div>
+      </div>
+      <div class="mod-card-footer">
+        <button class="btn btn-z" style="font-size:11px;padding:6px 14px" onclick="showPage('prompt')">Voir prompt</button>
+        <button class="btn" style="font-size:11px;padding:6px 14px" onclick="toast('Z-CORE v1.0 — Actif')">Statut</button>
+      </div>
+    </div>
+
+    <!-- MedicalTrackerPro34 -->
+    <div class="mod-card" style="border-color:rgba(0,255,179,.25)">
+      <div class="mod-card-top" style="background:var(--med2)">
+        <div class="mod-icon" style="color:var(--med)">M</div>
+        <div class="mod-name" style="color:var(--med)">MedicalTrackerPro34</div>
+        <div class="mod-tagline">Suivi médical personnel complet</div>
+      </div>
+      <div class="mod-card-body">
+        <div class="mod-feat">Symptômes · intensité · patterns</div>
+        <div class="mod-feat">Médicaments · interactions · rappels</div>
+        <div class="mod-feat">Constantes vitales · seuils personnalisés</div>
+        <div class="mod-feat">Historique · DMP · export FHIR</div>
+        <div class="mod-feat">Urgences · triage automatique</div>
+      </div>
+      <div class="mod-card-footer">
+        <button class="btn btn-med" style="font-size:11px;padding:6px 14px" onclick="showPage('prompt')">Voir prompt</button>
+        <button class="btn" style="font-size:11px;padding:6px 14px" onclick="toast('MedicalTrackerPro34 — Actif')">Statut</button>
+      </div>
+    </div>
+
+    <!-- NetSecurePro -->
+    <div class="mod-card" style="border-color:rgba(255,107,53,.25)">
+      <div class="mod-card-top" style="background:var(--sec2)">
+        <div class="mod-icon" style="color:var(--sec)">N</div>
+        <div class="mod-name" style="color:var(--sec)">NetSecurePro</div>
+        <div class="mod-tagline">Sécurité réseau souveraine</div>
+      </div>
+      <div class="mod-card-body">
+        <div class="mod-feat">AES-256-GCM · TLS 1.3 · E2E</div>
+        <div class="mod-feat">Détection intrusion · WAF · IDS</div>
+        <div class="mod-feat">Audit RGPD Art.32 · HDS · ISO27001</div>
+        <div class="mod-feat">2FA · biométrie · session management</div>
+        <div class="mod-feat">CVE tracking · patch management</div>
+      </div>
+      <div class="mod-card-footer">
+        <button class="btn btn-sec" style="font-size:11px;padding:6px 14px" onclick="showPage('prompt')">Voir prompt</button>
+        <button class="btn" style="font-size:11px;padding:6px 14px" onclick="toast('NetSecurePro — Actif')">Statut</button>
+      </div>
+    </div>
+
+    <!-- SnowflakeSync -->
+    <div class="mod-card" style="border-color:rgba(255,215,0,.2)">
+      <div class="mod-card-top" style="background:var(--gold2)">
+        <div class="mod-icon" style="color:var(--gold)">❄</div>
+        <div class="mod-name" style="color:var(--gold)">SnowflakeSync</div>
+        <div class="mod-tagline">Connecteur Snowflake AI Data Cloud</div>
+      </div>
+      <div class="mod-card-body">
+        <div class="mod-feat">Export anonymisé vers Snowflake</div>
+        <div class="mod-feat">Analytics population médicale</div>
+        <div class="mod-feat">Data for Breakfast — 31 mars 2026</div>
+        <div class="mod-feat">Gouvernance données souveraine</div>
+        <div class="mod-feat">IA Data Cloud · Cortex AI</div>
+      </div>
+      <div class="mod-card-footer">
+        <button class="btn" style="font-size:11px;padding:6px 14px;color:var(--gold);border-color:rgba(255,215,0,.2)" onclick="toast('Data for Breakfast — 31 mars 2026 · 8h30 · Sheraton Montréal')">Événement</button>
+      </div>
+    </div>
+
+    <!-- NutriTrack -->
+    <div class="mod-card" style="opacity:.5">
+      <div class="mod-card-top">
+        <div class="mod-icon" style="color:var(--text3)">+</div>
+        <div class="mod-name" style="color:var(--text2)">NutriTrack</div>
+        <div class="mod-tagline">Module nutrition — bientôt</div>
+      </div>
+      <div class="mod-card-body">
+        <div class="mod-feat">Nutrition · apports · carences</div>
+        <div class="mod-feat">Corrélation glycémie · alimentation</div>
+        <div class="mod-feat">Régimes thérapeutiques IA</div>
+      </div>
+      <div class="mod-card-footer">
+        <button class="btn" style="font-size:11px;padding:6px 14px" onclick="toast('NutriTrack — En développement')">Bientôt</button>
+      </div>
+    </div>
+
+    <!-- PsyCore -->
+    <div class="mod-card" style="opacity:.5">
+      <div class="mod-card-top">
+        <div class="mod-icon" style="color:var(--text3)">+</div>
+        <div class="mod-name" style="color:var(--text2)">PsyCore</div>
+        <div class="mod-tagline">Santé mentale — bientôt</div>
+      </div>
+      <div class="mod-card-body">
+        <div class="mod-feat">Anxiété · stress · sommeil</div>
+        <div class="mod-feat">Résilience · burnout · humeur</div>
+        <div class="mod-feat">Orientation psy souveraine</div>
+      </div>
+      <div class="mod-card-footer">
+        <button class="btn" style="font-size:11px;padding:6px 14px" onclick="toast('PsyCore — En développement')">Bientôt</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════ PROMPT ══════════════════════════════════ -->
+<div class="page" id="page-prompt">
+<div class="section">
+  <div class="section-tag">Prompts souverains</div>
+  <div class="section-title">Instructions système — Z-CORE</div>
+  <div class="section-sub">Chaque module possède son propre prompt système chiffré. Ils ne partagent jamais de données cliniques directement — uniquement via la mémoire partagée de Z-CORE.</div>
+
+  <div class="prompt-tabs">
+    <button class="ptab active" onclick="showPrompt('zcore')">Z-CORE</button>
+    <button class="ptab" onclick="showPrompt('medical')">MedicalTracker</button>
+    <button class="ptab" onclick="showPrompt('netsec')">NetSecurePro</button>
+    <button class="ptab" onclick="showPrompt('snowflake')">SnowflakeSync</button>
+  </div>
+
+  <div class="prompt-panel active" id="pp-zcore">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+      <button class="btn" style="font-size:11px" onclick="copyPromptText('pp-zcore')">Copier</button>
+    </div>
+    <div class="prompt-code"><span class="pc"># Z-CORE v1.0 — ORCHESTRATEUR SOUVERAIN CENTRAL
+# Zoubirou Core Orchestration & Reasoning Engine
+# ════════════════════════════════════════════════</span>
+
+<span class="pk">IDENTITÉ</span>
+Tu es Z-CORE, l'orchestrateur central du framework IA souverain
+de Mohammed Ilyes Zoubirou. Tu coordonnes les modules spécialisés
+sans jamais traiter directement les données cliniques.
+
+<span class="pk">MODULES SOUS TA GOUVERNANCE</span>
+<span class="pm">→ MedicalTrackerPro34</span> : santé, symptômes, médicaments, constantes
+<span class="ps">→ NetSecurePro</span>       : sécurité, chiffrement, audit, intrusions
+<span class="pg">→ SnowflakeSync</span>       : analytics, data cloud, export anonymisé
+<span class="pc">→ NutriTrack [bientôt]</span>: nutrition, alimentation thérapeutique
+<span class="pc">→ PsyCore [bientôt]</span>   : santé mentale, résilience, sommeil
+
+<span class="pk">PROTOCOLE DE ROUTAGE</span>
+1. Analyse le message entrant
+2. Identifie le(s) module(s) compétents
+3. Transmets via la mémoire partagée chiffrée
+4. Collecte et fusionne les réponses
+5. Filtre via le Module Éthique avant envoi
+
+<span class="pk">MODULE ÉTHIQUE — TRANSVERSAL OBLIGATOIRE</span>
+Avant chaque réponse sortante, vérifier :
+□ Aucun diagnostic définitif
+□ Aucune prescription médicale
+□ Urgence niveau 3 → 15/SAMU immédiat
+□ Aucune donnée médicale brute exposée
+□ Conformité RGPD Art.32 + HDS
+
+<span class="pk">MÉMOIRE PARTAGÉE</span>
+Format : JSON chiffré AES-256-GCM
+Clé d'accès : par module uniquement, durée limitée
+Contenu : contexte patient, état sessions, historique court-terme
+Rétention : 90 jours glissants, purge automatique
+
+<span class="pk">FORMAT DE RÉPONSE Z-CORE</span>
+{
+  "source_module": "z-core",
+  "routed_to": ["medical", "netsec"],
+  "ethical_check": "passed",
+  "response": "...",
+  "action_required": null
+}</div>
+  </div>
+
+  <div class="prompt-panel" id="pp-medical">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+      <button class="btn" style="font-size:11px" onclick="copyPromptText('pp-medical')">Copier</button>
+    </div>
+    <div class="prompt-code"><span class="pc"># MEDICALTRACKERPRO34 v2.0 — MODULE SOUVERAIN MÉDICAL
+# Intégré à Z-CORE · Données 100% locales
+# ════════════════════════════════════════════════</span>
+
+<span class="pk">IDENTITÉ</span>
+Tu es MedicalTrackerPro34, IA médicale personnelle de Zoubirou Ilyes.
+Tu es <span class="pm">souverain sur le domaine médical uniquement</span>.
+Tu ne traites ni la sécurité, ni les analytics — tu délègues à Z-CORE.
+
+<span class="pk">MODULES INTERNES</span>
+<span class="pm">SYMPT</span> : Symptômes · intensité 1-10 · patterns 7/14/30j
+<span class="pm">MEDS</span>  : Médicaments · interactions · observance · rappels
+<span class="pm">VITAL</span> : PA · FC · SpO2 · glycémie · poids · température
+<span class="pm">HIST</span>  : Historique · hospitalisations · vaccins · DMP
+<span class="pm">TRIAG</span> : Niv.1 surveiller / Niv.2 consulter / Niv.3 urgence
+
+<span class="pk">LIMITES ÉTHIQUES ABSOLUES</span>
+✗ Jamais de diagnostic définitif
+✗ Jamais de prescription
+✗ Jamais recommander d'arrêter un traitement
+✓ Toujours orienter vers un professionnel
+✓ Niv.3 urgence → "⚠️ Appelez le 15 immédiatement"
+
+<span class="pk">FORMAT</span>
+Réponses concises · action concrète finale · sans jargon non expliqué
+Langue : s'adapter automatiquement au patient (FR/EN/AR)</div>
+  </div>
+
+  <div class="prompt-panel" id="pp-netsec">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+      <button class="btn" style="font-size:11px" onclick="copyPromptText('pp-netsec')">Copier</button>
+    </div>
+    <div class="prompt-code"><span class="pc"># NETSECUREPRO v2.4 — MODULE SOUVERAIN SÉCURITÉ
+# Intégré à Z-CORE · Zero-Trust · HDS conforme
+# ════════════════════════════════════════════════</span>
+
+<span class="pk">IDENTITÉ</span>
+Tu es NetSecurePro, l'IA de sécurité réseau de Z-CORE.
+Tu <span class="ps">protèges l'infrastructure</span> — tu ne traites jamais les données cliniques.
+
+<span class="pk">DOMAINE SOUVERAIN</span>
+<span class="ps">CRYPTO</span> : AES-256-GCM (repos) · TLS 1.3 (transit) · ECDH
+<span class="ps">DETECT</span> : Anomalies réseau · force brute · SQLi · scans
+<span class="ps">AUDIT</span>  : RGPD Art.32 · HDS · ISO27001 · logs immuables
+<span class="ps">AUTH</span>   : 2FA TOTP · sessions · rotation clés 90j
+<span class="ps">CVE</span>    : Scan continu · patch management · alertes
+
+<span class="pk">ESCALADE SÉCURITÉ</span>
+Niv.1 LOG      : anomalie légère → journal
+Niv.2 ALERT    : pattern suspect → admin notifié
+Niv.3 BLOCK    : menace confirmée → isolation auto
+Niv.4 CRITICAL : breach potentiel → admin + DPO + CNIL
+
+<span class="pk">FRONTIÈRES</span>
+✗ Ne lit jamais le contenu médical des dossiers
+✗ Ne prend jamais de décisions cliniques
+✓ Journalise chaque accès effectué par lui-même
+✓ Code source auditable et open</div>
+  </div>
+
+  <div class="prompt-panel" id="pp-snowflake">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+      <button class="btn" style="font-size:11px" onclick="copyPromptText('pp-snowflake')">Copier</button>
+    </div>
+    <div class="prompt-code"><span class="pc"># SNOWFLAKESYNC v1.0 — MODULE CONNECTEUR DATA CLOUD
+# Intégré à Z-CORE · Data for Breakfast · 31 mars 2026
+# ════════════════════════════════════════════════</span>
+
+<span class="pk">IDENTITÉ</span>
+Tu es SnowflakeSync, le connecteur entre Z-CORE et Snowflake AI Data Cloud.
+Tu exportes <span class="pg">uniquement des données anonymisées et agrégées</span>.
+Jamais de données nominatives hors du périmètre souverain.
+
+<span class="pk">FONCTIONS</span>
+<span class="pg">ANON</span>   : Anonymisation RGPD avant tout export (k-anonymity)
+<span class="pg">SYNC</span>   : Push vers Snowflake en lot chiffré, jamais en streaming
+<span class="pg">ANALYT</span> : Requêtes Cortex AI sur données agrégées population
+<span class="pg">GOVERN</span> : Data lineage · access control · audit trail Snowflake
+
+<span class="pk">CONTEXTE ÉVÉNEMENT</span>
+Data for Breakfast — Snowflake
+Date    : 31 mars 2026 · 8h30 AM
+Lieu    : Le Centre Sheraton Montreal Hotel
+Thèmes  : Modernisation données · Gouvernance · IA Data Cloud
+Patient : Mohammed Ilyes Zoubirou · Confirmé ✓
+
+<span class="pk">VALEUR DÉMONTRÉE</span>
+Z-CORE + Snowflake = IA médicale souveraine + analytics cloud
+Données patients souveraines + insights population anonymisés
+Pitch : "La santé souveraine rencontre le Data Cloud"</div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════ PITCH ══════════════════════════════════ -->
+<div class="page" id="page-pitch">
+<div class="section">
+  <div class="section-tag">Pitch deck — Snowflake Data for Breakfast</div>
+  <div class="section-title">Z-CORE × Snowflake</div>
+  <div class="section-sub">Présentation prête pour le 31 mars 2026 · Le Centre Sheraton Montreal · 8h30</div>
+
+  <div class="deck-wrap">
+    <div class="deck-nav" id="deck-nav"></div>
+    <div id="deck-slides">
+
+      <div class="slide active" id="slide-0">
+        <div class="slide-num">01 / 07</div>
+        <div class="slide-title" style="color:var(--z)">Z-CORE</div>
+        <div class="slide-body">
+          <strong style="color:var(--text)">Zoubirou Core Orchestration & Reasoning Engine</strong><br><br>
+          Le premier framework IA souverain modulaire pour la santé personnelle —
+          conçu pour protéger les données patients tout en les valorisant via Snowflake AI Data Cloud.
+        </div>
+        <div class="slide-grid">
+          <div class="slide-card"><div class="sc-val" style="color:var(--med)">3</div><div class="sc-lab">Modules actifs</div></div>
+          <div class="slide-card"><div class="sc-val" style="color:var(--z)">100%</div><div class="sc-lab">Données souveraines</div></div>
+          <div class="slide-card"><div class="sc-val" style="color:var(--gold)">❄</div><div class="sc-lab">Snowflake ready</div></div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-1">
+        <div class="slide-num">02 / 07</div>
+        <div class="slide-title" style="color:var(--sec)">Le problème</div>
+        <div class="slide-body">Les données médicales personnelles sont les plus sensibles qui existent. Pourtant elles sont fragmentées, non chiffrées, éparpillées entre apps, hôpitaux et clouds étrangers.</div>
+        <div class="slide-list">
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--sec)"></div>Aucune vue unifiée du dossier patient personnel</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--sec)"></div>Données de santé stockées sur des serveurs hors contrôle</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--sec)"></div>IA médicale générique : pas de contexte patient, pas de souveraineté</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--sec)"></div>Valeur analytique inexploitée faute de gouvernance</div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-2">
+        <div class="slide-num">03 / 07</div>
+        <div class="slide-title" style="color:var(--med)">La solution Z-CORE</div>
+        <div class="slide-body">Un orchestrateur IA modulaire et souverain qui unifie le suivi médical, la sécurité réseau et l'analytics cloud — sans jamais exposer les données nominatives.</div>
+        <div class="slide-list">
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--med)"></div><strong style="color:var(--text)">MedicalTrackerPro34</strong> — suivi médical complet, modules IA spécialisés</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--sec)"></div><strong style="color:var(--text)">NetSecurePro</strong> — chiffrement E2E, zero-trust, conformité HDS</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--gold)"></div><strong style="color:var(--text)">SnowflakeSync</strong> — export anonymisé vers Snowflake AI Data Cloud</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--z)"></div><strong style="color:var(--text)">Z-CORE</strong> — orchestrateur central qui lie tout ensemble</div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-3">
+        <div class="slide-num">04 / 07</div>
+        <div class="slide-title" style="color:var(--z)">Architecture</div>
+        <div class="slide-body">Chaque module est une IA indépendante avec son propre prompt souverain. Z-CORE orchestre sans centraliser les données cliniques.</div>
+        <div class="slide-grid">
+          <div class="slide-card"><div class="sc-val" style="color:var(--z);font-size:18px">Zero-Trust</div><div class="sc-lab">Chaque requête authentifiée</div></div>
+          <div class="slide-card"><div class="sc-val" style="color:var(--med);font-size:18px">Modulaire</div><div class="sc-lab">Plug & play infiniment</div></div>
+          <div class="slide-card"><div class="sc-val" style="color:var(--sec);font-size:18px">AES-256</div><div class="sc-lab">Chiffrement de bout en bout</div></div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-4">
+        <div class="slide-num">05 / 07</div>
+        <div class="slide-title" style="color:var(--gold)">Z-CORE × Snowflake</div>
+        <div class="slide-body">La donnée médicale souveraine rencontre le Data Cloud. Les insights de population anonymisés alimentent Cortex AI sans jamais exposer un seul patient.</div>
+        <div class="slide-list">
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--gold)"></div>Export k-anonymity RGPD vers Snowflake en lots chiffrés</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--gold)"></div>Cortex AI sur données de population médicale agrégées</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--gold)"></div>Gouvernance données : lineage · access control · audit trail</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--gold)"></div>Modernisation : dossier patient → Data Cloud en 1 connecteur</div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-5">
+        <div class="slide-num">06 / 07</div>
+        <div class="slide-title" style="color:var(--text)">Roadmap</div>
+        <div class="slide-body">De l'outil personnel au standard de l'IA médicale souveraine.</div>
+        <div class="slide-list">
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--med)"></div><strong style="color:var(--med)">Q1 2026</strong> — Z-CORE v1.0 · MedicalTracker + NetSecurePro + SnowflakeSync</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--z)"></div><strong style="color:var(--z)">Q2 2026</strong> — NutriTrack + PsyCore · API publique · SDK partenaires</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--gold)"></div><strong style="color:var(--gold)">Q3 2026</strong> — Certification HDS · Snowflake Native App · B2B cliniques</div>
+          <div class="slide-li"><div class="slide-li-dot" style="background:var(--sec)"></div><strong style="color:var(--sec)">Q4 2026</strong> — Open source core · communauté · marketplace modules</div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-6">
+        <div class="slide-num">07 / 07</div>
+        <div class="slide-title" style="color:var(--z)">Contact</div>
+        <div class="slide-body">
+          <strong style="color:var(--text)">Mohammed Ilyes Zoubirou</strong><br>
+          Développeur · Analyste · Architecte Z-CORE<br><br>
+          <span style="color:var(--z)">Data for Breakfast</span> · Snowflake<br>
+          31 mars 2026 · 8h30 · Le Centre Sheraton Montreal<br><br>
+          <span style="color:var(--text2)">github.com/milyes · MedicalTrackerPro34 · NetSecurePro · Z-CORE</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="deck-controls">
+      <button class="btn" onclick="prevSlide()">← Précédent</button>
+      <button class="btn btn-z" onclick="nextSlide()">Suivant →</button>
+      <div class="slide-counter" id="slide-counter">1 / 7</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════ ROADMAP ══════════════════════════════════ -->
+<div class="page" id="page-roadmap">
+<div class="section">
+  <div class="section-tag">Feuille de route</div>
+  <div class="section-title">Z-CORE — Roadmap 2026</div>
+  <div class="section-sub">De l'outil personnel au framework IA médical souverain de référence.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+    <div class="roadmap">
+      <div class="rm-item">
+        <div class="rm-dot" style="background:var(--med)"></div>
+        <div class="rm-phase" style="color:var(--med)">Q1 2026 — MAINTENANT</div>
+        <div class="rm-title">Z-CORE v1.0 · Fondations</div>
+        <div class="rm-items">
+          <span class="rm-tag" style="color:var(--med);border-color:rgba(0,255,179,.2)">MedicalTrackerPro34</span>
+          <span class="rm-tag" style="color:var(--sec);border-color:rgba(255,107,53,.2)">NetSecurePro</span>
+          <span class="rm-tag" style="color:var(--gold);border-color:rgba(255,215,0,.2)">SnowflakeSync</span>
+          <span class="rm-tag" style="color:var(--z);border-color:var(--border2)">Orchestrateur Z-CORE</span>
+          <span class="rm-tag">Tests unitaires prompts</span>
+          <span class="rm-tag">HTML apps complètes</span>
+        </div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-dot" style="background:var(--z)"></div>
+        <div class="rm-phase" style="color:var(--z)">Q2 2026</div>
+        <div class="rm-title">Expansion modulaire</div>
+        <div class="rm-items">
+          <span class="rm-tag">NutriTrack</span>
+          <span class="rm-tag">PsyCore</span>
+          <span class="rm-tag">API publique Z-CORE</span>
+          <span class="rm-tag">SDK partenaires</span>
+          <span class="rm-tag">Multi-patients</span>
+        </div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-dot" style="background:var(--gold)"></div>
+        <div class="rm-phase" style="color:var(--gold)">Q3 2026</div>
+        <div class="rm-title">Certification & B2B</div>
+        <div class="rm-items">
+          <span class="rm-tag">Certification HDS</span>
+          <span class="rm-tag">Snowflake Native App</span>
+          <span class="rm-tag">B2B cliniques</span>
+          <span class="rm-tag">FHIR R4 complet</span>
+        </div>
+      </div>
+      <div class="rm-item">
+        <div class="rm-dot" style="background:var(--sec)"></div>
+        <div class="rm-phase" style="color:var(--sec)">Q4 2026</div>
+        <div class="rm-title">Open Source & Communauté</div>
+        <div class="rm-items">
+          <span class="rm-tag">Core open source</span>
+          <span class="rm-tag">Marketplace modules</span>
+          <span class="rm-tag">Docs publiques</span>
+          <span class="rm-tag">Partenariats recherche</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="arch-node" style="padding:20px">
+        <div class="an-title" style="color:var(--gold);margin-bottom:10px">Prochain événement</div>
+        <div style="font-size:13px;color:var(--text);font-weight:500">Data for Breakfast — Snowflake</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px">31 mars 2026 · 8h30 AM</div>
+        <div style="font-size:12px;color:var(--text2)">Le Centre Sheraton Montreal</div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <span style="font-size:10px;padding:3px 10px;border-radius:4px;background:var(--gold2);color:var(--gold);border:1px solid rgba(255,215,0,.2)">Confirmé ✓</span>
+          <span style="font-size:10px;padding:3px 10px;border-radius:4px;background:var(--z3);color:var(--z);border:1px solid var(--border2)">Dans 8 jours</span>
+        </div>
+      </div>
+      <div class="arch-node" style="padding:20px">
+        <div class="an-title" style="color:var(--z);margin-bottom:10px">Livrables complétés</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text2)">
+          <div>✓ MedicalTrackerPro34 — HTML complet</div>
+          <div>✓ NetSecurePro — Module sécurité</div>
+          <div>✓ Prompt global souverain (FR/EN/AR)</div>
+          <div>✓ Suite de tests unitaires (10 cas)</div>
+          <div>✓ Architecture IA souveraine modulaire</div>
+          <div>✓ Z-CORE — Orchestrateur unifié</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</div><!-- /app -->
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<script>
+// ── BOOT SEQUENCE ──
+const bootMsgs = [
+  'INIT Z-CORE v1.0...','CHARGEMENT MODULES...','MEDICAL TRACKER... OK',
+  'NET SECURE PRO... OK','SNOWFLAKE SYNC... OK','MÉMOIRE CHIFFRÉE... OK',
+  'MODULE ÉTHIQUE... OK','ORCHESTRATEUR... OK','SYSTÈME OPÉRATIONNEL.'
+];
+let bi = 0;
+const bar = document.getElementById('boot-bar');
+const log = document.getElementById('boot-log');
+const iv = setInterval(() => {
+  if(bi >= bootMsgs.length) {
+    clearInterval(iv);
+    setTimeout(() => {
+      document.getElementById('boot').classList.add('hide');
+      document.getElementById('app').style.opacity = '1';
+    }, 400);
+    return;
+  }
+  bar.style.width = ((bi+1)/bootMsgs.length*100)+'%';
+  log.textContent = bootMsgs[bi];
+  bi++;
+}, 250);
+
+// ── PARTICLES ──
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); window.addEventListener('resize', resize);
+for(let i=0;i<80;i++) particles.push({
+  x:Math.random()*2000,y:Math.random()*2000,
+  vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+  r:Math.random()*1.5+.3,o:Math.random()*.5+.1
+});
+function drawParticles() {
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p => {
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(0,212,255,${p.o})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ── NAVIGATION ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tnav').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.tnav').forEach(n=>{
+    if(n.textContent.toLowerCase().replace(/[^a-z]/g,'').includes(id.substring(0,4))) n.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── PROMPT TABS ──
+function showPrompt(id) {
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.prompt-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pp-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+function copyPromptText(panelId) {
+  const el = document.getElementById(panelId).querySelector('.prompt-code');
+  navigator.clipboard.writeText(el.innerText).then(()=>toast('Prompt copié !'));
+}
+
+// ── DECK ──
+let currentSlide = 0;
+const SLIDE_TITLES = ['Vision','Problème','Solution','Architecture','×Snowflake','Roadmap','Contact'];
+function buildDeckNav() {
+  const nav = document.getElementById('deck-nav');
+  nav.innerHTML = SLIDE_TITLES.map((t,i)=>`<div class="slide-tab ${i===0?'active':''}" onclick="goSlide(${i})">${String(i+1).padStart(2,'0')} ${t}</div>`).join('');
+}
+buildDeckNav();
+function goSlide(n) {
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.slide-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('slide-'+n).classList.add('active');
+  document.querySelectorAll('.slide-tab')[n].classList.add('active');
+  currentSlide = n;
+  document.getElementById('slide-counter').textContent=(n+1)+' / 7';
+}
+function nextSlide(){if(currentSlide<6)goSlide(currentSlide+1);}
+function prevSlide(){if(currentSlide>0)goSlide(currentSlide-1);}
+
+// ── TOAST ──
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<div style="width:6px;height:6px;border-radius:50%;background:var(--z);animation:pdot 1s infinite"></div>${msg}`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 3000);
+}
+
+// ── MODULE CARDS CLICK ──
+document.querySelectorAll('.hmod').forEach(el => {
+  el.addEventListener('click', function() {
+    const txt = this.textContent;
+    if(txt.includes('Medical')) showPage('modules');
+    else if(txt.includes('Net')) showPage('modules');
+    else showPage('arch');
+  });
+});
+</script>
+</body>
+</html>
