@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zero Trust Architecture (ZTA) — Never Trust, Always Verify</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:       #050c18;
+  --bg2:      #071220;
+  --bg3:      #0a1a2e;
+  --panel:    #071828;
+  --border:   rgba(0,180,255,0.18);
+  --border2:  rgba(0,180,255,0.35);
+  --cyan:     #00c8ff;
+  --cyan-dim: rgba(0,200,255,0.12);
+  --cyan-glo: rgba(0,200,255,0.28);
+  --blue:     #0066cc;
+  --blue2:    #0088ff;
+  --teal:     #00e5b0;
+  --teal-dim: rgba(0,229,176,0.10);
+  --amber:    #ffb300;
+  --red:      #ff3b3b;
+  --text:     #c8e8ff;
+  --text2:    #7ab0d0;
+  --text3:    #3a6080;
+  --head:     #00c8ff;
+  --font:     'Rajdhani', sans-serif;
+  --mono:     'Share Tech Mono', monospace;
+}
+
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  min-height:100vh;
+  font-size:15px;
+}
+
+/* dot-grid background */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle,rgba(0,180,255,0.07) 1px,transparent 1px);
+  background-size:28px 28px;
+  pointer-events:none;z-index:0;
+}
+
+/* ── HEADER ── */
+header{
+  text-align:center;
+  padding:36px 20px 28px;
+  border-bottom:1px solid var(--border);
+  position:relative;z-index:1;
+  background:linear-gradient(180deg,rgba(0,100,200,0.08) 0%,transparent 100%);
+}
+header h1{
+  font-size:clamp(22px,4vw,38px);
+  font-weight:700;
+  letter-spacing:0.14em;
+  color:#fff;
+  text-transform:uppercase;
+}
+header .sub{
+  font-size:clamp(13px,2vw,18px);
+  color:var(--cyan);
+  font-weight:600;
+  letter-spacing:0.22em;
+  margin-top:4px;
+}
+.header-line{
+  display:block;
+  height:2px;
+  width:220px;
+  margin:14px auto 0;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+}
+
+/* ── MAIN GRID ── */
+main{
+  position:relative;z-index:1;
+  padding:28px 16px 40px;
+  max-width:1280px;
+  margin:0 auto;
+}
+
+/* 5-column layout */
+.zta-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin-bottom:24px;
+}
+
+/* ── PILLAR ── */
+.pillar{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-top:3px solid var(--cyan);
+  border-radius:4px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;
+}
+.pillar:hover{
+  border-color:var(--cyan);
+  box-shadow:0 0 24px var(--cyan-glo);
+}
+
+.pillar-head{
+  background:rgba(0,180,255,0.10);
+  border-bottom:1px solid var(--border);
+  padding:12px 10px;
+  text-align:center;
+}
+.pillar-num{
+  font-size:11px;
+  color:var(--cyan);
+  letter-spacing:0.12em;
+  font-weight:600;
+  display:block;
+  margin-bottom:2px;
+}
+.pillar-title{
+  font-size:clamp(12px,1.4vw,15px);
+  font-weight:700;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  line-height:1.25;
+}
+.pillar-sub{
+  font-size:11px;
+  color:var(--cyan);
+  letter-spacing:0.06em;
+  margin-top:3px;
+}
+.pillar-body{
+  padding:10px 8px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.pillar-footer{
+  background:rgba(0,100,180,0.15);
+  border-top:1px solid var(--border);
+  padding:8px 10px;
+  font-size:11px;
+  color:var(--text2);
+  text-align:center;
+  line-height:1.35;
+}
+
+/* ── COMPONENT BOXES ── */
+.comp{
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:8px 8px 6px;
+  cursor:pointer;
+  transition:all .15s;
+  background:rgba(0,50,100,0.25);
+  position:relative;
+}
+.comp:hover{
+  border-color:var(--cyan);
+  background:var(--cyan-dim);
+  transform:translateY(-1px);
+}
+.comp-title{
+  font-size:clamp(11px,1.1vw,13px);
+  font-weight:600;
+  color:#e8f8ff;
+  line-height:1.2;
+}
+.comp-sub{
+  font-size:10px;
+  color:var(--text2);
+  margin-top:2px;
+  line-height:1.25;
+}
+.comp-icon{
+  font-size:18px;
+  margin-bottom:4px;
+  display:block;
+}
+
+/* Variants */
+.comp-cyan   {border-left:2px solid var(--cyan);}
+.comp-teal   {border-left:2px solid var(--teal);}
+.comp-amber  {border-left:2px solid var(--amber);}
+.comp-red    {border-left:2px solid var(--red);}
+
+/* PDP/PEP badges */
+.badge-row{
+  display:flex;
+  gap:6px;
+  justify-content:center;
+  margin:6px 0;
+}
+.badge{
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:600;
+  padding:4px 10px;
+  border-radius:3px;
+  letter-spacing:0.06em;
+  border:1px solid;
+}
+.badge-pdp{border-color:var(--cyan);color:var(--cyan);background:rgba(0,200,255,0.08);}
+.badge-pep{border-color:var(--teal);color:var(--teal);background:rgba(0,229,176,0.08);}
+
+/* Reverification label */
+.rever{
+  writing-mode:vertical-lr;
+  text-orientation:mixed;
+  font-size:9px;
+  letter-spacing:0.14em;
+  color:var(--cyan);
+  text-transform:uppercase;
+  background:rgba(0,200,255,0.06);
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:6px 3px;
+  align-self:center;
+  flex-shrink:0;
+}
+
+/* VPC badge */
+.vpc-badge{
+  font-size:10px;
+  color:var(--cyan);
+  border:1px dashed var(--border2);
+  border-radius:3px;
+  text-align:center;
+  padding:3px 6px;
+  letter-spacing:0.08em;
+  margin-bottom:4px;
+}
+
+/* two-col inside pillar */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+
+/* ── DIVIDER ── */
+.pillar-divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--border2),transparent);
+  margin:4px 0;
+}
+
+/* ── BOTTOM BAR ── */
+.bottom-bar{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:12px;
+  align-items:center;
+  background:rgba(0,100,180,0.12);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:14px 20px;
+}
+.bottom-doc{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.doc-icon{
+  font-size:28px;
+  opacity:.8;
+}
+.doc-label{
+  font-size:11px;
+  color:var(--text2);
+}
+.arrow-label{
+  font-size:10px;
+  color:var(--cyan);
+  letter-spacing:0.08em;
+  text-align:center;
+}
+.arrow-line{
+  display:block;
+  height:1.5px;
+  background:linear-gradient(90deg,var(--cyan),rgba(0,200,255,0));
+  margin-top:4px;
+}
+.arrow-line.rev{background:linear-gradient(90deg,rgba(0,200,255,0),var(--cyan));}
+.central-policy{
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:4px;
+  padding:12px 18px;
+  text-align:center;
+  cursor:pointer;
+  transition:box-shadow .2s;
+}
+.central-policy:hover{box-shadow:0 0 18px var(--cyan-glo);}
+.central-policy .icon{font-size:24px;margin-bottom:4px;display:block;}
+.central-policy h4{font-size:13px;font-weight:700;color:#fff;letter-spacing:0.06em;}
+.central-policy p{font-size:10px;color:var(--cyan);}
+
+/* ── INFO PANEL ── */
+.info-panel{
+  position:fixed;
+  bottom:20px;right:20px;
+  width:300px;
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-top:2px solid var(--cyan);
+  border-radius:6px;
+  padding:16px 18px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.7);
+  transform:translateY(120%);
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+  z-index:500;
+}
+.info-panel.show{transform:none;}
+.info-panel h3{
+  font-size:14px;font-weight:700;color:#fff;
+  letter-spacing:0.06em;margin-bottom:6px;
+}
+.info-panel p{font-size:12px;color:var(--text2);line-height:1.6;}
+.info-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.info-tag{
+  font-family:var(--mono);font-size:10px;
+  padding:2px 7px;
+  border:1px solid var(--border2);
+  border-radius:2px;color:var(--text3);
+}
+.close-btn{
+  position:absolute;top:10px;right:12px;
+  background:none;border:none;
+  color:var(--text3);font-size:18px;cursor:pointer;
+  line-height:1;
+}
+.close-btn:hover{color:#fff;}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;
+  padding:16px;
+  border-top:1px solid var(--border);
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--text3);
+  position:relative;z-index:1;
+}
+
+/* Users column (left of grid) */
+.users-col{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  justify-content:center;
+  padding:10px 4px;
+}
+.user-item{
+  text-align:center;
+  cursor:pointer;
+  transition:opacity .15s;
+}
+.user-item:hover{opacity:.8;}
+.user-icon{font-size:28px;display:block;margin-bottom:4px;}
+.user-label{font-size:11px;color:var(--text2);}
+.user-sub{font-size:10px;color:var(--text3);}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.pillar{animation:fadeIn .4s ease both;}
+.pillar:nth-child(1){animation-delay:.05s}
+.pillar:nth-child(2){animation-delay:.10s}
+.pillar:nth-child(3){animation-delay:.15s}
+.pillar:nth-child(4){animation-delay:.20s}
+.pillar:nth-child(5){animation-delay:.25s}
+
+@media(max-width:900px){
+  .zta-grid{grid-template-columns:1fr 1fr;row-gap:14px;}
+  .bottom-bar{grid-template-columns:1fr;text-align:center;}
+  .bottom-doc{justify-content:center;}
+  .info-panel{width:calc(100vw - 24px);right:12px;}
+}
+@media(max-width:500px){
+  .zta-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Zero Trust Architecture (ZTA)</h1>
+  <div class="sub">Never Trust, Always Verify</div>
+  <span class="header-line"></span>
+</header>
+
+<main>
+
+<!-- 5-COLUMN GRID + left users column -->
+<div style="display:grid;grid-template-columns:90px 1fr;gap:10px;margin-bottom:24px;">
+
+  <!-- LEFT: Users -->
+  <div class="users-col">
+    <div class="user-item" onclick="info('users')">
+      <span class="user-icon">👥</span>
+      <div class="user-label">Utilisateurs</div>
+      <div class="user-sub">(Users)</div>
+    </div>
+    <div class="user-item" onclick="info('devices-ext')">
+      <span class="user-icon">💻</span>
+      <div class="user-label">Appareils</div>
+      <div class="user-sub">(Devices)</div>
+    </div>
+    <div class="user-item" onclick="info('admins')">
+      <span class="user-icon">🛡️</span>
+      <div class="user-label">Administrateurs</div>
+      <div class="user-sub">(Admins)</div>
+    </div>
+  </div>
+
+  <!-- RIGHT: 5 pillars -->
+  <div class="zta-grid">
+
+    <!-- ── PILLAR 1: IDENTITY TRUST ── -->
+    <div class="pillar">
+      <div class="pillar-head">
+        <span class="pillar-num">1. IDENTITY TRUST</span>
+        <div class="pillar-title">Kanidm</div>
+      </div>
+      <div class="pillar-body">
+        <div class="two-col">
+          <div class="comp comp-cyan" onclick="info('user-ids')">
+            <span class="comp-icon">🪪</span>
+            <div class="comp-title">User Identities</div>
+          </div>
+          <div class="comp comp-cyan" onclick="info('svc-accounts')">
+            <span class="comp-icon">⚙️</span>
+            <div class="comp-title">Service Accounts</div>
+          </div>
+        </div>
+        <div class="comp comp-cyan" onclick="info('kanidm-sso')" style="text-align:center;padding:10px;">
+          <span class="comp-icon" style="font-size:24px">🔑</span>
+          <div class="comp-title">Kanidm SSO</div>
+          <div class="comp-sub">OIDC / LDAP</div>
+        </div>
+        <div class="pillar-divider"></div>
+        <div class="two-col">
+          <div class="comp comp-cyan" onclick="info('user-ids')">
+            <div class="comp-title" style="font-size:10px">User Identities</div>
+          </div>
+          <div class="comp comp-cyan" onclick="info('svc-accounts')">
+            <div class="comp-title" style="font-size:10px">Service Accounts</div>
+          </div>
+        </div>
+      </div>
+      <div class="pillar-footer">Authentication &amp; MFA</div>
+    </div>
+
+    <!-- ── PILLAR 2: DEVICE TRUST ── -->
+    <div class="pillar">
+      <div class="pillar-head">
+        <span class="pillar-num">2. DEVICE TRUST</span>
+        <div class="pillar-title">Vérification Appareils</div>
+      </div>
+      <div class="pillar-body">
+        <div class="comp comp-teal" onclick="info('device-health')">
+          <span class="comp-icon">🖥️</span>
+          <div class="comp-title">Device Health &amp; Security Posture</div>
+        </div>
+        <div class="badge-row">
+          <span class="badge badge-pdp">PDP</span>
+        </div>
+        <div class="comp comp-teal" onclick="info('device-reg1')">
+          <span class="comp-icon">🗄️</span>
+          <div class="comp-title">Registre d'Appareils</div>
+          <div class="comp-sub">(Device Registry)</div>
+        </div>
+        <div class="comp comp-teal" onclick="info('device-reg2')">
+          <span class="comp-icon">⚙️</span>
+          <div class="comp-title">Registre d'Appareils</div>
+          <div class="comp-sub">(Device Registry)</div>
+        </div>
+      </div>
+      <div class="pillar-footer">Vérification de la Sécurité de l'Appareil</div>
+    </div>
+
+    <!-- ── PILLAR 3: WORKLOAD ── -->
+    <div class="pillar">
+      <div class="pillar-head">
+        <span class="pillar-num">3. WORKLOAD PROTECTION</span>
+      </div>
+      <div class="pillar-body">
+        <div class="vpc-badge">VPC Private Network</div>
+        <div class="badge-row">
+          <span class="badge badge-pep">PEP</span>
+        </div>
+        <div class="two-col">
+          <div class="comp comp-cyan" onclick="info('caddy2')">
+            <span class="comp-icon">🔒</span>
+            <div class="comp-title">Caddy 2</div>
+            <div class="comp-sub">Reverse Proxy, ACME</div>
+          </div>
+          <div class="comp comp-cyan" onclick="info('matrix-syn')">
+            <span class="comp-icon">💬</span>
+            <div class="comp-title">Matrix Synapse</div>
+            <div class="comp-sub">E2EE IM</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="comp comp-teal" onclick="info('app-white')">
+            <span class="comp-icon">✅</span>
+            <div class="comp-title">Application Whitelisting</div>
+          </div>
+          <div class="comp comp-amber" onclick="info('ids')">
+            <span class="comp-icon">🔎</span>
+            <div class="comp-title">Intrusion Detection (IDS)</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="comp comp-teal" onclick="info('container')">
+            <span class="comp-icon">📦</span>
+            <div class="comp-title">Container Hardening</div>
+          </div>
+          <div class="comp comp-cyan" onclick="info('pg-enc')">
+            <span class="comp-icon">🗃️</span>
+            <div class="comp-title">PostgreSQL</div>
+            <div class="comp-sub">Encrypted DB</div>
+          </div>
+        </div>
+        <div class="comp comp-teal" onclick="info('app-white')">
+          <div class="comp-title" style="font-size:11px">🔐 Application Whitelisting</div>
+        </div>
+        <div class="comp comp-teal" onclick="info('container')">
+          <div class="comp-title" style="font-size:11px">📦 Container Hardening</div>
+        </div>
+      </div>
+      <div class="pillar-footer">Surveillance et Sécurité des Workloads</div>
+    </div>
+
+    <!-- ── PILLAR 4: DATA PROTECTION ── -->
+    <div class="pillar">
+      <div class="pillar-head">
+        <span class="pillar-num">4. DATA PROTECTION</span>
+      </div>
+      <div class="pillar-body">
+        <div class="two-col">
+          <div class="comp comp-cyan" onclick="info('data-rest')">
+            <span class="comp-icon">🔐</span>
+            <div class="comp-title">Data at Rest</div>
+            <div class="comp-sub">PostgreSQL Encrypted</div>
+          </div>
+          <div class="comp comp-teal" onclick="info('data-transit')">
+            <span class="comp-icon">🔒</span>
+            <div class="comp-title">Data in Transit</div>
+            <div class="comp-sub">E3EE Flows</div>
+          </div>
+        </div>
+        <div class="badge-row">
+          <span class="badge badge-pdp">PDP</span>
+          <span class="badge badge-pep">PEP</span>
+        </div>
+        <div class="comp comp-amber" onclick="info('e2ee-full')" style="text-align:center">
+          <div class="comp-title">End-to-End Encryption (E2EE)</div>
+        </div>
+        <div class="two-col">
+          <div class="comp comp-teal" onclick="info('matrix-e2ee')">
+            <span class="comp-icon">💬</span>
+            <div class="comp-title">Matrix (Synapse)</div>
+          </div>
+          <div class="comp comp-cyan" onclick="info('stalwart-mail')">
+            <span class="comp-icon">✉️</span>
+            <div class="comp-title">Stalwart Mail</div>
+            <div class="comp-sub">E2EE Email</div>
+          </div>
+        </div>
+        <div class="comp comp-amber" style="text-align:center;font-size:10px;padding:5px;" onclick="info('e2ee-full')">
+          ↔ End-to-End Encryption (E2EE)
+        </div>
+      </div>
+      <div class="pillar-footer">Chiffrement et Sécurité des Données</div>
+    </div>
+
+    <!-- ── PILLAR 5: MICRO-SEGMENTATION ── -->
+    <div class="pillar">
+      <div class="pillar-head">
+        <span class="pillar-num">5. NETWORK</span>
+        <div class="pillar-title">Micro-Segmentation</div>
+      </div>
+      <div class="pillar-body">
+        <div class="comp comp-teal" onclick="info('frontend')">
+          <span class="comp-icon">🌐</span>
+          <div class="comp-title">Front-end</div>
+          <div class="comp-sub">(Caddy)</div>
+        </div>
+        <div class="comp comp-red" onclick="info('firewall')">
+          <span class="comp-icon">🧱</span>
+          <div class="comp-title">Firewall</div>
+          <div class="comp-sub">UFW / nftables</div>
+        </div>
+        <div class="two-col">
+          <div class="comp comp-cyan" onclick="info('middleware')">
+            <span class="comp-icon">⚡</span>
+            <div class="comp-title">Middleware</div>
+            <div class="comp-sub">Matrix, Stalwart</div>
+          </div>
+          <div class="comp comp-amber" onclick="info('zt-pdp')">
+            <span class="comp-icon">⚖️</span>
+            <div class="comp-title">Zero Trust Policy</div>
+            <div class="comp-sub">Decision Point (PDP)</div>
+          </div>
+        </div>
+        <div class="comp comp-red" onclick="info('firewall')">
+          <span class="comp-icon">🧱</span>
+          <div class="comp-title">Firewall</div>
+          <div class="comp-sub">règles micro-segments</div>
+        </div>
+        <div class="comp comp-cyan" onclick="info('pg-seg')">
+          <span class="comp-icon">🗃️</span>
+          <div class="comp-title">PostgreSQL</div>
+          <div class="comp-sub">Encrypted DB</div>
+        </div>
+      </div>
+      <div class="pillar-footer">Politiques de Micro-segmentation Réseau</div>
+    </div>
+
+  </div><!-- /zta-grid -->
+</div><!-- /outer grid -->
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="bottom-doc" onclick="info('secure-updates')">
+    <span class="doc-icon">📄</span>
+    <div>
+      <div class="arrow-label">Secure access for updates</div>
+      <span class="arrow-line"></span>
+    </div>
+    <span style="font-size:22px">✅</span>
+  </div>
+
+  <div class="central-policy" onclick="info('central-policy')">
+    <span class="icon">🔐</span>
+    <h4>Politique de Sécurité Centralisée</h4>
+    <p>(Central Security Policy)</p>
+  </div>
+
+  <div class="bottom-doc" style="justify-content:flex-end" onclick="info('siem')">
+    <div style="text-align:right">
+      <div class="arrow-label">Secure access for the updates</div>
+      <span class="arrow-line rev"></span>
+    </div>
+    <span class="doc-icon">📊</span>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#fff">SIEM /</div>
+      <div style="font-size:11px;color:var(--text2)">Surveillance Logs</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  Z-CORE · Zero Trust Architecture · NetSecurePro IA · Mohammed Ilyes Zoubirou
+  &nbsp;|&nbsp; Cliquer sur un composant pour les détails
+</footer>
+
+<!-- INFO PANEL -->
+<div class="info-panel" id="panel">
+  <button class="close-btn" onclick="closePanel()">×</button>
+  <h3 id="p-title"></h3>
+  <p id="p-desc"></p>
+  <div class="info-tags" id="p-tags"></div>
+</div>
+
+<script>
+const D = {
+  users:          {title:"Utilisateurs (Users)",           desc:"Toutes les identités humaines accédant au système. Authentification obligatoire via Kanidm SSO avec MFA TOTP ou WebAuthn. Aucun accès implicite, chaque session est vérifiée.",             tags:["OIDC","MFA","WebAuthn","TOTP","Zero Trust"]},
+  'devices-ext':  {title:"Appareils (Devices)",            desc:"Terminaux mobiles, laptops, desktops. Chaque appareil doit être enregistré dans le Device Registry et satisfaire la Device Health & Security Posture avant tout accès.",                   tags:["Device Registry","Health Check","Posture","MFA"]},
+  admins:         {title:"Administrateurs (Admins)",       desc:"Accès privilégiés via tunnel WireGuard uniquement. Authentification par clé SSH + MFA obligatoire. Principe du moindre privilège appliqué. Toutes les actions sont auditées.",              tags:["WireGuard","SSH keys","MFA","audit","least privilege"]},
+  'user-ids':     {title:"User Identities — Kanidm",      desc:"Comptes utilisateurs gérés dans Kanidm. Attributs standards (email, groupes, rôles). Synchronisation SCIM possible. Rotation automatique des tokens d'accès.",                            tags:["Kanidm","SCIM","groupes","rôles","rotation tokens"]},
+  'svc-accounts': {title:"Service Accounts",               desc:"Comptes machine pour l'inter-communication des services (Nextcloud → PostgreSQL, Matrix → Redis, etc.). Credentials rotatifs, portée minimale, jamais de mot de passe humain.",           tags:["machine accounts","rotation","portée minimale","Kanidm"]},
+  'kanidm-sso':   {title:"Kanidm SSO — OIDC/LDAP",        desc:"Fournisseur d'identité central en Rust. OIDC pour Nextcloud, Matrix, Vaultwarden, Jitsi. LDAP en fallback pour Stalwart. WebAuthn natif. MFA obligatoire. Backups Restic intégrés.",       tags:["OIDC","OAuth2","LDAP","WebAuthn","MFA","Rust","Kanidm"]},
+  'device-health':{title:"Device Health & Security Posture",desc:"Vérification que chaque appareil respecte la politique de sécurité : OS à jour, antivirus actif, chiffrement disque, certificat d'appareil valide. Refus si posture insuffisante.",    tags:["posture","OS update","disk encryption","certificat","MDM"]},
+  'device-reg1':  {title:"Registre d'Appareils (Device Registry)",desc:"Base centralisée listant tous les appareils autorisés. Chaque device a un certificat unique. Révocation immédiate possible. Intégration avec Kanidm pour liaison identité-appareil.", tags:["Device Registry","certificat","révocation","Kanidm","MDM"]},
+  'device-reg2':  {title:"Device Registry — Couche service",desc:"Couche d'enregistrement des appareils au niveau des services applicatifs. Permet la politique de confiance conditionnelle : un même utilisateur peut avoir des droits différents selon l'appareil utilisé.", tags:["conditional access","trust level","per-device","policy"]},
+  caddy2:         {title:"Caddy 2 — Reverse Proxy ACME",  desc:"Point d'entrée TLS unique. Certificats automatiques via Let's Encrypt (ACME). HTTP/3, rate-limiting, headers de sécurité (HSTS, CSP). Routing par sous-domaine vers chaque service interne.", tags:["TLS","ACME","HTTP/3","HSTS","CSP","rate-limit","Caddyfile"]},
+  'matrix-syn':   {title:"Matrix Synapse — E2EE IM",      desc:"Serveur de messagerie instantanée avec chiffrement bout-en-bout natif (MegOlm/Olm). Dendrite (Go) ou Synapse (Python). Element Web comme client. Fédération optionnelle.",                  tags:["Matrix","E2EE","MegOlm","Dendrite","Element","federation"]},
+  'app-white':    {title:"Application Whitelisting",       desc:"Seules les applications approuvées et signées peuvent s'exécuter dans les conteneurs. Politique enforced via seccomp, AppArmor, et listes blanches Docker. Bloque les binaires inconnus.",  tags:["seccomp","AppArmor","Docker","whitelist","hardening"]},
+  ids:            {title:"Intrusion Detection System (IDS)",desc:"Surveillance en temps réel des comportements anormaux : tentatives de brute-force, scans de ports, anomalies de trafic. CrowdSec + Fail2ban. Alertes Grafana/Prometheus.",               tags:["CrowdSec","Fail2ban","IDS","anomalie","alerte","Prometheus"]},
+  container:      {title:"Container Hardening",            desc:"Conteneurs Docker rootless, read-only filesystem, capabilities minimales, seccomp profiles. Images from scratch ou distroless. Scans réguliers avec Trivy. Volumes séparés et chiffrés LUKS.", tags:["rootless","seccomp","distroless","Trivy","LUKS","read-only"]},
+  'pg-enc':       {title:"PostgreSQL — Encrypted DB",     desc:"Bases de données chiffrées au repos via volumes Docker LUKS. Connexions TLS mutual auth entre services. Utilisateurs PostgreSQL par service avec permissions minimales.",                      tags:["LUKS","TLS","mTLS","RBAC","chiffrement","PostgreSQL 16"]},
+  'data-rest':    {title:"Data at Rest — PostgreSQL Encrypted",desc:"Chiffrement complet des données stockées. Volumes Docker chiffrés LUKS (AES-256). Clés de chiffrement gérées séparément. Backups chiffrés Restic vers NAS distant.",               tags:["LUKS","AES-256","Restic","backup chiffré","PostgreSQL"]},
+  'data-transit': {title:"Data in Transit — E2EE Flows",  desc:"Tout trafic entre services est chiffré en TLS 1.3 minimum. Mutual TLS (mTLS) pour la communication inter-services dans le VPC privé. WireGuard pour l'administration.",                  tags:["TLS 1.3","mTLS","WireGuard","VPC","chiffrement transit"]},
+  'e2ee-full':    {title:"End-to-End Encryption (E2EE)",  desc:"Chiffrement de bout en bout : les données ne sont déchiffrées que côté client. Matrix utilise MegOlm/Olm, Stalwart supporte S/MIME et PGP. Aucun serveur ne peut lire le contenu.",       tags:["E2EE","MegOlm","Olm","S/MIME","PGP","zero-knowledge"]},
+  'matrix-e2ee':  {title:"Matrix Synapse — E2EE",         desc:"Messages chiffrés de bout en bout avec le protocole Matrix (MegOlm pour les rooms de groupe, Olm pour les messages 1-to-1). Clés stockées localement ou dans Kanidm key backup.",          tags:["MegOlm","Olm","room","1-to-1","key backup"]},
+  'stalwart-mail':{title:"Stalwart Mail — E2EE Email",    desc:"Serveur email souverain en Rust. Support S/MIME et PGP pour le chiffrement des emails. SMTP, IMAP, JMAP. DKIM, SPF, DMARC pour la délivrabilité. Chiffrement at-rest des mailboxes.",     tags:["Stalwart","S/MIME","PGP","DKIM","SPF","JMAP","Rust"]},
+  frontend:       {title:"Front-end — Caddy",             desc:"Couche de présentation du réseau micro-segmenté. Caddy sert uniquement les domaines publics autorisés. Chaque sous-domaine correspond à un segment réseau isolé avec ses propres règles.",   tags:["Caddy","micro-segment","TLS","sous-domaine","isolation"]},
+  firewall:       {title:"Firewall — UFW / nftables",     desc:"Règles strictes : seuls les ports 80, 443 et le port WireGuard sont exposés. Tout le reste est bloqué en entrée. Règles inter-conteneurs pour isolation des segments réseau.",              tags:["UFW","nftables","deny-by-default","micro-segmentation","Docker network"]},
+  middleware:     {title:"Middleware — Matrix, Stalwart",  desc:"Couche applicative intermédiaire hébergeant les services de communication (Matrix Dendrite, Stalwart Mail). Chaque service est dans son propre segment réseau Docker avec firewall interne.", tags:["Matrix","Stalwart","Docker network","segment","isolation"]},
+  'zt-pdp':       {title:"Zero Trust Policy Decision Point (PDP)",desc:"Moteur de décision central évaluant chaque demande d'accès : identité vérifiée + appareil sain + contexte + politique → autoriser ou refuser. Implémenté dans Kanidm.",         tags:["PDP","PEP","policy engine","autorisation","contexte","Kanidm"]},
+  'pg-seg':       {title:"PostgreSQL — Segment Données",  desc:"Base de données dans le segment réseau le plus protégé. Accessible uniquement depuis les middlewares autorisés. Pas d'accès direct depuis Internet. TLS + authentification certificat.",    tags:["isolation","TLS","certificat","segment","PostgreSQL 16"]},
+  'central-policy':{title:"Politique de Sécurité Centralisée",desc:"Document maître définissant toutes les règles ZTA : qui accède à quoi, dans quelles conditions, avec quel niveau d'assurance. Gérée via Ansible (IaC) pour reproductibilité totale.", tags:["CSP","Ansible","IaC","règles","reproductibilité","audit"]},
+  'secure-updates':{title:"Secure Access for Updates",    desc:"Flux sécurisé pour les mises à jour système. Seul Ansible via tunnel WireGuard peut pousser des changements. Validation de signature des paquets. Changelog audité automatiquement.",      tags:["Ansible","WireGuard","signature","apt","unattended-upgrades"]},
+  siem:           {title:"SIEM / Surveillance Logs",      desc:"Agrégation centralisée de tous les logs : Caddy, Kanidm, PostgreSQL, Matrix, CrowdSec, Fail2ban. Prometheus + Grafana pour métriques. Alerting sur anomalies. Rétention 30 jours max.",    tags:["SIEM","Prometheus","Grafana","Loki","alerting","logs","30j"]}
+};
+
+function info(k){
+  const d=D[k];if(!d)return;
+  document.getElementById('p-title').textContent=d.title;
+  document.getElementById('p-desc').textContent=d.desc;
+  document.getElementById('p-tags').innerHTML=d.tags.map(t=>`<span class="info-tag">${t}</span>`).join('');
+  document.getElementById('panel').classList.add('show');
+}
+function closePanel(){document.getElementById('panel').classList.remove('show');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
+</script>
+</body>
+</html>

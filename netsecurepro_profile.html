@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohammed Ilyes Zoubirou — NetSecurePro IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #030810;
+    --bg2: #060f1e;
+    --accent: #00c8ff;
+    --accent2: #00ff9d;
+    --warn: #ff6b35;
+    --text: #e8f4f8;
+    --muted: #4a7a8a;
+    --border: rgba(0,200,255,0.15);
+    --card: rgba(6,20,40,0.8);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orbs */
+  body::after {
+    content: '';
+    position: fixed;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,200,255,0.06) 0%, transparent 70%);
+    top: -200px; right: -200px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 40px;
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .badge-sovereign {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,200,255,0.08);
+    border: 1px solid rgba(0,200,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .badge-sovereign::before {
+    content: '●';
+    color: var(--accent2);
+    animation: pulse 2s infinite;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .title-role {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .contact-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,255,157,0.06);
+    border: 1px solid rgba(0,255,157,0.2);
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .contact-pill:hover {
+    background: rgba(0,255,157,0.12);
+  }
+
+  .orcid-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 140px;
+  }
+
+  .orcid-id {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .orcid-label {
+    font-size: 10px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  /* Section titles */
+  .section {
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.2s; }
+  .section:nth-child(4) { animation-delay: 0.3s; }
+  .section:nth-child(5) { animation-delay: 0.4s; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Project card — AIMEDIXAL */
+  .project-main {
+    background: var(--card);
+    border: 1px solid rgba(0,200,255,0.2);
+    border-left: 3px solid var(--accent);
+    padding: 28px 32px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-main::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle at top right, rgba(0,200,255,0.05), transparent 70%);
+    pointer-events: none;
+  }
+
+  .project-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .project-version {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .project-desc {
+    font-size: 15px;
+    color: #a0c4d0;
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  .symptom-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tag-blue {
+    background: rgba(0,200,255,0.08);
+    border: 1px solid rgba(0,200,255,0.25);
+    color: var(--accent);
+  }
+
+  .tag-green {
+    background: rgba(0,255,157,0.06);
+    border: 1px solid rgba(0,255,157,0.2);
+    color: var(--accent2);
+  }
+
+  .tag-warn {
+    background: rgba(255,107,53,0.08);
+    border: 1px solid rgba(255,107,53,0.25);
+    color: var(--warn);
+  }
+
+  /* Stack grid */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  .stack-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 16px 18px;
+    border-radius: 4px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .stack-card:hover {
+    border-color: rgba(0,200,255,0.4);
+    transform: translateY(-2px);
+  }
+
+  .stack-card-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+
+  .stack-card-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* Partnership */
+  .partnership-box {
+    background: var(--card);
+    border: 1px solid rgba(0,255,157,0.2);
+    border-left: 3px solid var(--accent2);
+    padding: 28px 32px;
+    border-radius: 4px;
+  }
+
+  .partnership-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent2);
+    margin-bottom: 16px;
+  }
+
+  .conditions-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .conditions-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: #a0c4d0;
+    line-height: 1.5;
+  }
+
+  .conditions-list li::before {
+    content: '→';
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .revenue-split {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .split-block {
+    flex: 1;
+    padding: 16px;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .split-block.main {
+    background: rgba(0,255,157,0.08);
+    border: 1px solid rgba(0,255,157,0.25);
+  }
+
+  .split-block.partner {
+    background: rgba(0,200,255,0.05);
+    border: 1px solid rgba(0,200,255,0.15);
+  }
+
+  .split-pct {
+    font-family: 'Space Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .split-block.main .split-pct { color: var(--accent2); }
+  .split-block.partner .split-pct { color: var(--accent); }
+
+  .split-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+
+  .footer-brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-brand span {
+    color: var(--accent);
+  }
+
+  .sovereignty-seal {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(0,200,255,0.4);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @media (max-width: 600px) {
+    .header { grid-template-columns: 1fr; }
+    .revenue-split { flex-direction: column; }
+    .orcid-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="badge-sovereign">NetSecurePro IA · Z-CORE OS · Souverain</div>
+      <h1>Mohammed Ilyes<br><span>Zoubirou</span></h1>
+      <div class="title-role">Fondateur · Développeur IA · Chercheur Médical</div>
+      <a class="contact-pill" href="mailto:milyes@netsecurepro.ca">
+        ✉ milyes@netsecurepro.ca
+      </a>
+    </div>
+    <div class="orcid-badge">
+      <div class="orcid-label">ORCID</div>
+      <div class="orcid-id">0009-0007<br>-7571-3178</div>
+      <div style="font-size:10px;color:var(--accent2);margin-top:6px;">Vérifié</div>
+    </div>
+  </div>
+
+  <!-- AIMEDIXAL -->
+  <div class="section">
+    <div class="section-label">Projet Principal</div>
+    <div class="project-main">
+      <div class="project-name">AIMEDIXAL</div>
+      <div class="project-version">Clinical v2.4.0 · NetSecurePro IA · 2026</div>
+      <div class="project-desc">
+        Outil patient-led de détection et suivi des symptômes moteurs de la maladie de Parkinson via IA mobile. Traitement souverain, données anonymisées, conformité PHIPA/PIPEDA.
+      </div>
+      <div class="symptom-tags">
+        <span class="tag tag-blue">Tremblement</span>
+        <span class="tag tag-blue">Bradykinésie</span>
+        <span class="tag tag-blue">Marche</span>
+        <span class="tag tag-blue">Rigidité</span>
+        <span class="tag tag-green">IA Mobile</span>
+        <span class="tag tag-green">Patient-Led</span>
+        <span class="tag tag-warn">PHIPA · PIPEDA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stack Z-CORE -->
+  <div class="section">
+    <div class="section-label">Infrastructure Z-CORE Sovereign Stack</div>
+    <div class="stack-grid">
+      <div class="stack-card">
+        <div class="stack-card-name">Caddy 2</div>
+        <div class="stack-card-desc">Reverse proxy · TLS auto · Rate-limit</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-card-name">Kanidm</div>
+        <div class="stack-card-desc">SSO central · OIDC · OAuth2 · MFA</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-card-name">Matrix / Nextcloud</div>
+        <div class="stack-card-desc">Comms E2EE · Drive · Cal · Collabo</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-card-name">Vaultwarden</div>
+        <div class="stack-card-desc">Secrets · MDP souverains</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-card-name">Zero Trust</div>
+        <div class="stack-card-desc">Fail2ban · CrowdSec · WireGuard · UFW</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-card-name">PostgreSQL 16</div>
+        <div class="stack-card-desc">Base principale · Données souveraines</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-card-name">Hetzner CPX31</div>
+        <div class="stack-card-desc">8 Go RAM · Nœud actif principal</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-card-name">Claude API</div>
+        <div class="stack-card-desc">Zone externe · Appels anonymisés uniquement</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Partnership -->
+  <div class="section">
+    <div class="section-label">Conditions de Partenariat — NetSecurePro IA</div>
+    <div class="partnership-box">
+      <div class="partnership-title">Proposition de collaboration AIMEDIXAL</div>
+      <ul class="conditions-list">
+        <li>Propriété intellectuelle intégrale conservée par NetSecurePro IA / Mohammed Ilyes Zoubirou</li>
+        <li>Données patients souveraines — aucun transfert vers infrastructure partenaire sans accord écrit</li>
+        <li>Conformité PHIPA/PIPEDA obligatoire pour tout accès aux modules cliniques</li>
+        <li>Droit de veto sur toute modification de l'algorithme de détection AIMEDIXAL</li>
+        <li>Bonus de performance indexé sur les jalons cliniques validés (v2.4.0 → v3.0)</li>
+        <li>Résiliation possible avec préavis 90 jours — données restituées intégralement</li>
+      </ul>
+      <div class="revenue-split">
+        <div class="split-block main">
+          <div class="split-pct">76%</div>
+          <div class="split-label">NetSecurePro IA</div>
+        </div>
+        <div class="split-block partner">
+          <div class="split-pct">24%</div>
+          <div class="split-label">Partenaire</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-brand">
+      <span>NetSecurePro IA</span> · netsecurepro.ca · milyes@netsecurepro.ca
+    </div>
+    <div class="sovereignty-seal">Z-CORE OS IA · Sovereign · IA22 Certified</div>
+  </div>
+
+</div>
+</body>
+</html>

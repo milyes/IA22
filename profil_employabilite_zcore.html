@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil Employabilité — Mohammed Ilyes · Montréal 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #f7f8fc;
+  --bg2:      #ffffff;
+  --bg3:      #eef0f8;
+  --border:   #e2e5ef;
+  --border2:  #cdd2e8;
+
+  --purple:   #6c63d5;
+  --purple-l: #eeedfd;
+  --purple-b: #d0cdf5;
+
+  --teal:     #2a9d7c;
+  --teal-l:   #e5f5ef;
+  --teal-b:   #9ed9c7;
+
+  --amber:    #c07c1a;
+  --amber-l:  #fdf3e3;
+  --amber-b:  #f5c97a;
+
+  --coral:    #b85c4a;
+  --coral-l:  #fcecea;
+  --coral-b:  #f0b0a5;
+
+  --blue:     #2563a8;
+  --blue-l:   #e8f0fb;
+  --blue-b:   #93b8e8;
+
+  --green:    #2d7a4f;
+  --green-l:  #e8f5ee;
+  --green-b:  #8fcaaa;
+
+  --gray:     #6b7280;
+  --text:     #1a1f35;
+  --text2:    #4a5270;
+  --text3:    #8890aa;
+
+  --font:     'DM Sans', sans-serif;
+  --mono:     'DM Mono', monospace;
+  --r:        10px;
+  --r-lg:     16px;
+  --shadow:   0 2px 12px rgba(100,100,160,0.10);
+  --shadow-lg:0 8px 32px rgba(100,100,160,0.16);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  padding: 40px 20px 60px;
+}
+
+/* ── CARD WRAPPER ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 32px 28px 36px;
+  max-width: 760px;
+  margin: 0 auto;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+/* ── HEADER ── */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--purple-l);
+  border: 2px solid var(--purple-b);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 16px; color: var(--purple);
+  flex-shrink: 0;
+}
+.card-header-text h2 {
+  font-size: 17px; font-weight: 600; color: var(--text);
+  margin-bottom: 2px;
+}
+.card-header-text p {
+  font-size: 13px; color: var(--text3);
+}
+.badge-elite {
+  margin-left: auto;
+  background: var(--purple-l);
+  border: 1px solid var(--purple-b);
+  color: var(--purple);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── DIAGRAM NODES ── */
+.node {
+  border-radius: var(--r);
+  border: 1px solid;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  text-align: center;
+  user-select: none;
+}
+.node:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.node-title { font-size: 14px; font-weight: 600; }
+.node-sub   { font-size: 11px; margin-top: 2px; opacity: 0.7; }
+
+/* Color variants */
+.n-purple { background: var(--purple-l); border-color: var(--purple-b); color: var(--purple); }
+.n-teal   { background: var(--teal-l);   border-color: var(--teal-b);   color: var(--teal);   }
+.n-amber  { background: var(--amber-l);  border-color: var(--amber-b);  color: var(--amber);  }
+.n-coral  { background: var(--coral-l);  border-color: var(--coral-b);  color: var(--coral);  }
+.n-blue   { background: var(--blue-l);   border-color: var(--blue-b);   color: var(--blue);   }
+.n-green  { background: var(--green-l);  border-color: var(--green-b);  color: var(--green);  }
+
+/* ── SCORE BOX ── */
+.score-box {
+  background: var(--teal-l);
+  border: 1.5px solid var(--teal-b);
+  border-radius: var(--r);
+  padding: 14px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  max-width: 280px;
+  margin: 0 auto;
+}
+.score-box:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.score-box h3 { font-size: 15px; font-weight: 600; color: var(--teal); }
+.score-badge {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--teal);
+  margin: 4px 0;
+}
+.score-box span { font-size: 11px; color: var(--teal); opacity: 0.75; }
+
+/* ── CONNECTOR ── */
+.conn {
+  display: flex;
+  justify-content: center;
+  height: 22px;
+}
+.conn-line {
+  width: 1.5px;
+  background: var(--border2);
+  position: relative;
+}
+.conn-line::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--border2);
+}
+
+/* ── 3-COLUMN SKILLS ── */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 12px 0;
+}
+.skill-col {
+  border: 1px dashed var(--border2);
+  border-radius: var(--r);
+  padding: 14px 12px;
+  background: var(--bg3);
+}
+.skill-col-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.skill-col .node {
+  display: block;
+  width: 100%;
+  margin-bottom: 7px;
+  padding: 8px 10px;
+}
+.skill-col .node:last-child { margin-bottom: 0; }
+
+/* ── FAN ARROWS (SVG) ── */
+.fan-wrap {
+  width: 100%;
+  overflow: visible;
+  display: block;
+  margin: 4px 0;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text3);
+  margin: 14px 0 10px;
+}
+
+/* ── EMPLOYERS ROW ── */
+.employers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.employers-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ── INFO PANEL ── */
+.info-panel {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 300px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(120%);
+  transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+  z-index: 200;
+}
+.info-panel.show { transform: none; }
+.info-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.info-desc  { font-size: 12px; color: var(--text2); line-height: 1.65; }
+.info-tags  { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.info-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text3);
+}
+.info-close {
+  position: absolute; top: 12px; right: 14px;
+  background: none; border: none;
+  font-size: 18px; color: var(--text3); cursor: pointer;
+}
+.info-close:hover { color: var(--text); }
+
+/* ── FOOTER ── */
+.card-footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text3);
+}
+.card-footer a {
+  color: var(--purple);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.card { animation: fadeUp 0.4s ease; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .skills-grid { grid-template-columns: 1fr; }
+  .employers-grid { grid-template-columns: repeat(2, 1fr); }
+  body { padding: 16px 12px 40px; }
+  .card { padding: 20px 14px 24px; }
+  .info-panel { width: calc(100vw - 24px); right: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CARD -->
+<div class="card">
+
+  <!-- Header -->
+  <div class="card-header">
+    <div class="avatar">MI</div>
+    <div class="card-header-text">
+      <h2>Mohammed Ilyes Zoubirou</h2>
+      <p>Fondateur NetSecurePro · Expert IA &amp; Cybersécurité · Montréal 🇨🇦</p>
+    </div>
+    <div class="badge-elite">⭐ Élite</div>
+  </div>
+
+  <!-- Root node -->
+  <div style="display:flex;justify-content:center;margin-bottom:0">
+    <div class="node n-purple" style="min-width:240px" onclick="info('profile')">
+      <div class="node-title">Mohammed Ilyes</div>
+      <div class="node-sub">Profil développeur · Montréal 2026</div>
+    </div>
+  </div>
+
+  <!-- Arrow down -->
+  <div class="conn"><div class="conn-line"></div></div>
+
+  <!-- Score box -->
+  <div class="score-box" onclick="info('score')">
+    <h3>Score employabilité</h3>
+    <div class="score-badge">98 / 100</div>
+    <span>Élite tier — Top 2% Québec</span>
+  </div>
+
+  <!-- Fan SVG: score → 3 columns -->
+  <svg class="fan-wrap" viewBox="0 0 700 48" height="48" preserveAspectRatio="none">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="#cdd2e8" stroke-width="1.5" stroke-linecap="round"/>
+      </marker>
+    </defs>
+    <line x1="350" y1="0" x2="116" y2="46" stroke="#cdd2e8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="350" y1="0" x2="350" y2="46" stroke="#cdd2e8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="350" y1="0" x2="584" y2="46" stroke="#cdd2e8" stroke-width="1.5" marker-end="url(#arr)"/>
+  </svg>
+
+  <!-- 3 columns -->
+  <div class="skills-grid">
+    <!-- Infrastructure -->
+    <div class="skill-col">
+      <div class="skill-col-title">Infrastructure</div>
+      <div class="node n-teal" onclick="info('docker')">
+        <div class="node-title">Docker + K8s</div>
+      </div>
+      <div class="node n-teal" onclick="info('postgres')">
+        <div class="node-title">PostgreSQL 16</div>
+      </div>
+      <div class="node n-teal" onclick="info('redis')">
+        <div class="node-title">Redis 7</div>
+      </div>
+      <div class="node n-teal" onclick="info('azure')">
+        <div class="node-title">Azure CLI</div>
+      </div>
+      <div class="node n-teal" onclick="info('selfhost')">
+        <div class="node-title">Self-hosting</div>
+      </div>
+    </div>
+
+    <!-- Sécurité et IA -->
+    <div class="skill-col">
+      <div class="skill-col-title">Sécurité et IA</div>
+      <div class="node n-amber" onclick="info('claude')">
+        <div class="node-title">Claude API / LLM</div>
+      </div>
+      <div class="node n-amber" onclick="info('kanidm')">
+        <div class="node-title">Kanidm SSO</div>
+      </div>
+      <div class="node n-amber" onclick="info('e2ee')">
+        <div class="node-title">E2EE + Vaultwarden</div>
+      </div>
+      <div class="node n-amber" onclick="info('prompt')">
+        <div class="node-title">Prompt engineering</div>
+      </div>
+      <div class="node n-amber" onclick="info('zerotrust')">
+        <div class="node-title">Zero Trust</div>
+      </div>
+    </div>
+
+    <!-- Stack complète -->
+    <div class="skill-col">
+      <div class="skill-col-title">Stack complète</div>
+      <div class="node n-coral" onclick="info('nextcloud')">
+        <div class="node-title">Nextcloud 30</div>
+      </div>
+      <div class="node n-coral" onclick="info('matrix')">
+        <div class="node-title">Matrix E2EE</div>
+      </div>
+      <div class="node n-coral" onclick="info('stalwart')">
+        <div class="node-title">Stalwart Mail</div>
+      </div>
+      <div class="node n-coral" onclick="info('architect')">
+        <div class="node-title">Stack architect</div>
+      </div>
+      <div class="node n-coral" onclick="info('bilingue')">
+        <div class="node-title">Bilingue FR / EN</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fan SVG: 3 cols → employers -->
+  <svg class="fan-wrap" viewBox="0 0 700 48" height="48" preserveAspectRatio="none">
+    <line x1="116" y1="0" x2="350" y2="46" stroke="#cdd2e8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="350" y1="0" x2="350" y2="46" stroke="#cdd2e8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="584" y1="0" x2="350" y2="46" stroke="#cdd2e8" stroke-width="1.5" marker-end="url(#arr)"/>
+  </svg>
+
+  <!-- Employers label -->
+  <div class="section-label">Entreprises qui vous recruteraient</div>
+
+  <!-- 4 employers -->
+  <div class="employers-grid">
+    <div class="node n-blue" onclick="info('anthropic')">
+      <div class="node-title">Anthropic</div>
+      <div class="node-sub">IA · Claude</div>
+    </div>
+    <div class="node n-blue" onclick="info('microsoft')">
+      <div class="node-title">Microsoft</div>
+      <div class="node-sub">Azure · DevOps</div>
+    </div>
+    <div class="node n-blue" onclick="info('startups')">
+      <div class="node-title">Startups IA</div>
+      <div class="node-sub">Montréal · Canada</div>
+    </div>
+    <div class="node n-blue" onclick="info('cyber')">
+      <div class="node-title">Cybersécurité</div>
+      <div class="node-sub">Privacy · Zero Trust</div>
+    </div>
+  </div>
+
+  <!-- 2 more employers -->
+  <div class="employers-grid2" style="margin-top:10px">
+    <div class="node n-green" onclick="info('opensource')">
+      <div class="node-title">Open source companies</div>
+      <div class="node-sub">Nextcloud · Matrix · Collabora</div>
+    </div>
+    <div class="node n-green" onclick="info('startup-own')">
+      <div class="node-title">Votre propre startup</div>
+      <div class="node-sub">Z-CORE as a Service</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="card-footer">
+    <span>NetSecurePro IA · milyes@netsecurepro.ca</span>
+    <span>Cliquez sur un bloc pour explorer ↗</span>
+  </div>
+
+</div>
+
+<!-- INFO PANEL -->
+<div class="info-panel" id="panel">
+  <button class="info-close" onclick="closePanel()">×</button>
+  <div class="info-title" id="p-title"></div>
+  <div class="info-desc"  id="p-desc"></div>
+  <div class="info-tags"  id="p-tags"></div>
+</div>
+
+<script>
+const DATA = {
+  profile: {
+    title: "Mohammed Ilyes Zoubirou",
+    desc: "Développeur full-stack souverain, fondateur de NetSecurePro IA. Expertise rare combinant infrastructure cloud-native, sécurité Zero Trust et IA générative. Basé à Saint-Léonard, Montréal.",
+    tags: ["Fondateur", "NetSecurePro IA", "Montréal 2026", "DR"]
+  },
+  score: {
+    title: "Score Employabilité 98/100 — Élite",
+    desc: "Score calculé sur 100 critères : compétences techniques, stack complète, sécurité, IA, bilinguisme. Top 2% des développeurs au Québec. Profil hybride infrastructure + sécurité + IA extrêmement rare.",
+    tags: ["Top 2%", "Québec", "Élite tier", "Hybride"]
+  },
+  docker: {
+    title: "Docker + Kubernetes",
+    desc: "Orchestration de conteneurs en production. Docker Compose pour la stack Z-CORE, expérience Kubernetes multi-nœuds avec Hetzner. CI/CD automatisé via GitHub Actions.",
+    tags: ["Docker", "Kubernetes", "K8s", "Docker Compose", "CI/CD"]
+  },
+  postgres: {
+    title: "PostgreSQL 16",
+    desc: "Base de données relationnelle principale. Maîtrise des requêtes complexes, indexation avancée, réplication, et volumes Docker chiffrés LUKS. Administration quotidienne en production.",
+    tags: ["ACID", "LUKS", "réplication", "indexation", "production"]
+  },
+  redis: {
+    title: "Redis 7",
+    desc: "Cache distribué pour sessions, pub/sub temps réel et métadonnées. Utilisé en production dans la stack Z-CORE pour Nextcloud et Matrix Dendrite.",
+    tags: ["cache", "pub/sub", "sessions", "in-memory", "AOF"]
+  },
+  azure: {
+    title: "Azure CLI",
+    desc: "Gestion d'infrastructure cloud Microsoft via CLI. Scripting Bash/PowerShell pour automatisation. Intégration Azure dans les pipelines CI/CD. Azure Blob, DNS zones.",
+    tags: ["Azure CLI", "Bash", "scripting", "Blob", "DNS", "IaC"]
+  },
+  selfhost: {
+    title: "Self-hosting souverain",
+    desc: "Architecture Z-CORE entièrement auto-hébergée sur Debian 12. Stack complète Nextcloud + Matrix + Stalwart + Kanidm + Vaultwarden sur Hetzner CPX31. Données 100% locales.",
+    tags: ["Debian 12", "Hetzner", "Z-CORE", "souverain", "RGPD"]
+  },
+  claude: {
+    title: "Claude API / LLM",
+    desc: "Intégration de l'API Anthropic Claude pour agents IA, analyse documentaire et automatisation intelligente. Expertise prompt engineering avancé pour cas d'usage métiers.",
+    tags: ["Claude API", "Anthropic", "agents IA", "LLM", "RAG"]
+  },
+  kanidm: {
+    title: "Kanidm SSO",
+    desc: "Fournisseur d'identité open-source en Rust. Déploiement et administration de Kanidm comme SSO central de la stack Z-CORE. OIDC, OAuth2, WebAuthn, MFA, LDAP.",
+    tags: ["OIDC", "OAuth2", "WebAuthn", "MFA", "Rust", "SSO"]
+  },
+  e2ee: {
+    title: "E2EE + Vaultwarden",
+    desc: "Chiffrement bout-en-bout sur Matrix et Stalwart Mail. Vaultwarden auto-hébergé comme gestionnaire de mots de passe d'équipe compatible Bitwarden. Secrets AES-256.",
+    tags: ["E2EE", "AES-256", "Bitwarden", "secrets", "chiffrement"]
+  },
+  prompt: {
+    title: "Prompt Engineering",
+    desc: "Optimisation des instructions pour LLMs. Conception de systèmes d'agents IA, chaînes de traitement RAG, et assistants métiers. Expérience avec Claude, Gemini, Llama.",
+    tags: ["RAG", "agents", "Claude", "Gemini", "Llama", "instructions"]
+  },
+  zerotrust: {
+    title: "Zero Trust Architecture",
+    desc: "Implémentation complète Zero Trust : Kanidm SSO central, WireGuard VPN, Fail2ban, CrowdSec, UFW, OS hardening Ansible. Principe du moindre privilège appliqué partout.",
+    tags: ["Zero Trust", "ZTA", "WireGuard", "CrowdSec", "hardening"]
+  },
+  nextcloud: {
+    title: "Nextcloud 30",
+    desc: "Suite bureautique souveraine en production. Fichiers, calendrier, contacts, notes, tâches. Collabora CODE pour l'édition de documents Office en temps réel.",
+    tags: ["CalDAV", "CardDAV", "Collabora", "Drive", "souverain"]
+  },
+  matrix: {
+    title: "Matrix E2EE",
+    desc: "Serveur Matrix Dendrite auto-hébergé avec chiffrement bout-en-bout natif. Element Web comme client. Rooms privées, fédération optionnelle avec l'écosystème global.",
+    tags: ["Dendrite", "Element", "E2EE", "rooms", "fédération"]
+  },
+  stalwart: {
+    title: "Stalwart Mail",
+    desc: "Serveur de messagerie complet en Rust. SMTP, IMAP, JMAP. DKIM, SPF, DMARC configurés. Haute délivrabilité. Intégration SSO Kanidm pour authentification unifiée.",
+    tags: ["SMTP", "IMAP", "JMAP", "DKIM", "SPF", "Rust"]
+  },
+  architect: {
+    title: "Stack Architect",
+    desc: "Capacité à concevoir et déployer des architectures complexes de A à Z. Design de systèmes distribués, choix technologiques, documentation et opérations en production.",
+    tags: ["architecture", "distributed", "design", "ops", "documentation"]
+  },
+  bilingue: {
+    title: "Bilinguisme FR / EN",
+    desc: "Maîtrise complète du français et de l'anglais à l'écrit et à l'oral. Accès à 100% des opportunités du marché montréalais. Rédaction technique dans les deux langues.",
+    tags: ["français", "anglais", "Montréal", "marché bilingue"]
+  },
+  anthropic: {
+    title: "Anthropic — IA · Claude",
+    desc: "Candidat idéal pour les équipes produit, infrastructure et solutions d'Anthropic Montréal. Expérience directe avec l'API Claude et architecture souveraine. Salaire estimé 110–145k CAD/an.",
+    tags: ["Claude API", "AI Infra", "Solutions Architect", "110-145k CAD"]
+  },
+  microsoft: {
+    title: "Microsoft — Azure · DevOps",
+    desc: "Profil solide pour les équipes Microsoft Montréal sur projets cloud souverains. Stack Azure + K8s + sécurité Zero Trust. Salaire estimé 105–135k CAD/an.",
+    tags: ["Azure", "DevOps", "Cloud", "K8s", "105-135k CAD"]
+  },
+  startups: {
+    title: "Startups IA — Montréal · Canada",
+    desc: "Écosystème Mila, Scale AI, startups IA. Profil Lead Full-Stack AI ou CTO technique. Combinaison unique IA + infrastructure + sécurité. Salaire estimé 95–130k + équité.",
+    tags: ["Mila", "Scale AI", "Lead AI", "CTO", "équité"]
+  },
+  cyber: {
+    title: "Cybersécurité — Privacy · Zero Trust",
+    desc: "Marché en forte croissance (+34% 2025). Expertise Zero Trust, E2EE, Kanidm SSO en production. Security Architect ou Identity Engineer. Salaire estimé 100–140k CAD/an.",
+    tags: ["Zero Trust", "E2EE", "Privacy", "Security Architect", "100-140k CAD"]
+  },
+  opensource: {
+    title: "Open Source Companies",
+    desc: "Nextcloud, Matrix, Collabora et partenaires écosystème. Expertise directe en déploiement et administration de leur stack en production. Télétravail international possible.",
+    tags: ["Nextcloud", "Matrix", "Collabora", "OSS", "remote"]
+  },
+  'startup-own': {
+    title: "Votre propre startup — Z-CORE as a Service",
+    desc: "Modèle SaaS ou MSP viable. Z-CORE comme plateforme souveraine clé-en-main pour PME, hôpitaux, universités. Financement CDPQ, Investissement Québec, Scale AI. Marché: souveraineté numérique.",
+    tags: ["SaaS", "MSP", "CDPQ", "Inv. Québec", "Scale AI", "souveraineté"]
+  }
+};
+
+function info(key) {
+  const d = DATA[key];
+  if (!d) return;
+  document.getElementById('p-title').textContent = d.title;
+  document.getElementById('p-desc').textContent = d.desc;
+  document.getElementById('p-tags').innerHTML = d.tags.map(t => `<span class="info-tag">${t}</span>`).join('');
+  document.getElementById('panel').classList.add('show');
+}
+function closePanel() {
+  document.getElementById('panel').classList.remove('show');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+</script>
+</body>
+</html>
