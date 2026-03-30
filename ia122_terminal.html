@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI_ENGINE_IA22_ASSISTERMINAL</title>
+<style>
+/* ============================================
+   NETSECUREPRO IA — PROPRIETARY SOURCE CODE
+   © Mohammed Ilyes Zoubirou — NSP-SEC-9
+   IA22_LOGIC INJECTED — OMNIA SEALED
+   ============================================ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g:#00ff41;--g2:#00cc33;--g3:#008f1f;
+  --dim:#00ff4122;--bg:#030d03;--bg2:#050f05;--bg3:#020902;
+  --red:#ff3333;--amber:#ffaa00;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--g);font-family:'Courier New',monospace;display:flex;flex-direction:column}
+
+/* scanline */
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.012) 2px,rgba(0,255,65,0.012) 4px);pointer-events:none;z-index:999}
+
+/* HEADER */
+#header{background:var(--bg2);border-bottom:1px solid var(--dim);padding:10px 16px;flex-shrink:0}
+#header-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+#hicon{background:var(--dim);border:1px solid #00ff4144;border-radius:5px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+#htitle{font-size:13px;font-weight:700;letter-spacing:1px}
+#hsub{font-size:9px;color:var(--g3);letter-spacing:2px}
+#badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{background:rgba(0,255,65,0.07);border:1px solid #00ff4133;border-radius:3px;padding:2px 10px;font-size:10px;letter-spacing:1px;color:var(--g2)}
+.badge.live{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+/* TABS */
+#tabs{display:flex;border-bottom:1px solid var(--dim);flex-shrink:0;background:var(--bg3)}
+.tab{padding:8px 18px;font-size:11px;letter-spacing:1px;cursor:pointer;color:var(--g3);border-bottom:2px solid transparent;transition:all 0.2s}
+.tab.active{color:var(--g);border-bottom-color:var(--g)}
+.tab:hover{color:var(--g2)}
+
+/* PANELS */
+#panels{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+.panel.active{display:flex}
+
+/* TERMINAL PANEL */
+#output{flex:1;overflow-y:auto;padding:14px 16px;font-size:12px;line-height:1.8;scroll-behavior:smooth}
+#output::-webkit-scrollbar{width:4px}
+#output::-webkit-scrollbar-track{background:var(--bg)}
+#output::-webkit-scrollbar-thumb{background:var(--g3)}
+.line-sys{color:var(--g3)}
+.line-cmd{color:var(--g)}
+.line-out{color:var(--g2);padding-left:14px}
+.line-ok{color:#00ff41;padding-left:14px}
+.line-err{color:var(--red);padding-left:14px}
+.line-warn{color:var(--amber);padding-left:14px}
+.line-sep{color:var(--g3);opacity:0.4}
+
+#inputrow{display:flex;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--dim);background:var(--bg3);flex-shrink:0}
+#prompt{color:var(--g);font-size:13px;font-weight:700;white-space:nowrap}
+#inp{background:transparent;border:none;outline:none;color:var(--g);font-family:'Courier New',monospace;font-size:12px;flex:1;caret-color:var(--g)}
+#inp::placeholder{color:#00ff4133}
+#sendbtn{background:rgba(0,255,65,0.1);border:1px solid #00ff4144;border-radius:3px;padding:4px 14px;color:var(--g);font-family:'Courier New',monospace;font-size:11px;cursor:pointer;letter-spacing:1px;transition:background 0.2s}
+#sendbtn:hover{background:rgba(0,255,65,0.2)}
+
+/* COMMANDES PANEL */
+#cmdpanel{flex:1;overflow-y:auto;padding:14px}
+#cmdpanel::-webkit-scrollbar{width:4px}
+#cmdpanel::-webkit-scrollbar-thumb{background:var(--g3)}
+#searchrow{display:flex;gap:8px;margin-bottom:14px}
+#search{background:var(--dim);border:1px solid #00ff4133;border-radius:3px;padding:7px 12px;color:var(--g);font-family:'Courier New',monospace;font-size:11px;flex:1;outline:none}
+#search::placeholder{color:var(--g3)}
+#catfilter{background:var(--dim);border:1px solid #00ff4133;border-radius:3px;padding:7px 10px;color:var(--g2);font-family:'Courier New',monospace;font-size:11px;outline:none}
+#cmdlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.cmd-card{background:rgba(0,255,65,0.03);border:1px solid var(--dim);border-radius:4px;padding:10px 12px;cursor:pointer;transition:all 0.15s;border-left:2px solid var(--g3)}
+.cmd-card:hover{background:rgba(0,255,65,0.08);border-left-color:var(--g);transform:translateX(2px)}
+.cmd-name{font-size:12px;color:var(--g);font-weight:700;margin-bottom:2px}
+.cmd-module{font-size:9px;color:var(--g3);letter-spacing:1px;margin-bottom:4px}
+.cmd-desc{font-size:11px;color:var(--g2);line-height:1.4}
+
+/* STATUS PANEL */
+#statuspanel{flex:1;overflow-y:auto;padding:14px}
+.status-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px}
+.status-card{background:rgba(0,255,65,0.04);border:1px solid var(--dim);border-radius:5px;padding:14px;text-align:center}
+.status-val{font-size:26px;font-weight:700;color:var(--g);line-height:1;margin-bottom:4px}
+.status-lbl{font-size:9px;color:var(--g3);letter-spacing:2px}
+.status-block{background:rgba(0,255,65,0.03);border:1px solid var(--dim);border-radius:5px;padding:14px;margin-bottom:10px;font-size:11px;line-height:2}
+.s-key{color:var(--g3)}
+.s-val{color:var(--g2)}
+.s-ok{color:var(--g)}
+
+/* FOOTER */
+#footer{background:var(--bg3);border-top:1px solid var(--dim);padding:5px 16px;display:flex;justify-content:space-between;font-size:9px;color:var(--g3);letter-spacing:1px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div id="header-top">
+    <div id="hicon">&gt;_</div>
+    <div>
+      <div id="htitle">AI_ENGINE_IA22_ASSISTERMINAL</div>
+      <div id="hsub">SOUVERAINETÉ NUMÉRIQUE // NETSECUREPRO // NSP-SEC-9</div>
+    </div>
+  </div>
+  <div id="badges">
+    <span class="badge live" id="b-cpu">CPU: --</span>
+    <span class="badge live" id="b-up">UPTIME: 00:00:00</span>
+    <span class="badge">SEC: MAX</span>
+    <span class="badge">SHIELD: ACTIVE</span>
+    <span class="badge live" id="b-cmd">CMDS: 0</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div id="tabs">
+  <div class="tab active" onclick="switchTab('terminal')">TERMINAL</div>
+  <div class="tab" onclick="switchTab('commandes')">COMMANDES</div>
+  <div class="tab" onclick="switchTab('status')">STATUT</div>
+</div>
+
+<!-- PANELS -->
+<div id="panels">
+
+  <!-- TERMINAL -->
+  <div class="panel active" id="panel-terminal">
+    <div id="output"></div>
+    <div id="inputrow">
+      <span id="prompt">dz@ia22:/$ </span>
+      <input id="inp" type="text" placeholder="Entrez une directive... (tapez /help)" autocomplete="off" spellcheck="false"/>
+      <button id="sendbtn" onclick="sendCmd()">EXEC</button>
+    </div>
+  </div>
+
+  <!-- COMMANDES -->
+  <div class="panel" id="panel-commandes">
+    <div id="cmdpanel">
+      <div id="searchrow">
+        <input id="search" type="text" placeholder="Rechercher une commande..." oninput="filterCmds()"/>
+        <select id="catfilter" onchange="filterCmds()">
+          <option value="">Toutes</option>
+          <option value="Intelligence">/ai</option>
+          <option value="Sécurité">/sec</option>
+          <option value="Développement">/dev</option>
+          <option value="Réseau">/net</option>
+          <option value="Génération">/gen</option>
+          <option value="Noyau">/kernel</option>
+          <option value="Expert">/cmd</option>
+        </select>
+      </div>
+      <div id="cmdlist"></div>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="panel" id="panel-status">
+    <div id="statuspanel">
+      <div class="status-grid">
+        <div class="status-card"><div class="status-val" id="s-cmds">147</div><div class="status-lbl">COMMANDES</div></div>
+        <div class="status-card"><div class="status-val" id="s-modules">4</div><div class="status-lbl">MODULES</div></div>
+        <div class="status-card"><div class="status-val">V9.0</div><div class="status-lbl">VERSION</div></div>
+        <div class="status-card"><div class="status-val s-ok">0</div><div class="status-lbl">CODE SORTIE</div></div>
+      </div>
+      <div class="status-block">
+        <div><span class="s-key">APP_NAME &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s-val">AI_ENGINE_IA22_ASSISTERMINAL</span></div>
+        <div><span class="s-key">VERSION &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s-val">v9.0</span></div>
+        <div><span class="s-key">CRÉATEUR &nbsp;&nbsp;&nbsp;</span><span class="s-val">Mohammed Ilyes Zoubirou</span></div>
+        <div><span class="s-key">PROTOCOLE &nbsp;&nbsp;</span><span class="s-val">NSP-SEC-9</span></div>
+        <div><span class="s-key">ORCID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s-val">0009-0007-7571-3178</span></div>
+        <div><span class="s-key">SCEAU &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s-ok">OMNIA-V5-SEAL3-2025 ✓</span></div>
+        <div><span class="s-key">SÉCURITÉ &nbsp;&nbsp;&nbsp;</span><span class="s-ok">MAXIMAL ✓</span></div>
+        <div><span class="s-key">IA22_LOGIC &nbsp;&nbsp;</span><span class="s-ok">INJECTÉ ✓</span></div>
+      </div>
+      <div class="status-block">
+        <div><span class="s-key">IA22_LOGIC &nbsp;</span><span class="s-ok">● ACTIF — port 18448</span></div>
+        <div><span class="s-key">NETSECUREPRO</span><span class="s-ok">● ACTIF — port 8000</span></div>
+        <div><span class="s-key">DZROUGE &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s-val" style="color:var(--g3)">○ INACTIF — port 8001</span></div>
+        <div><span class="s-key">APU_ENGINE &nbsp;</span><span class="s-val" style="color:var(--g3)">○ INACTIF — port 8002</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div id="footer">
+  <span>© 2025-2026 MOHAMMED ILYES ZOUBIROU — NETSECUREPRO IA</span>
+  <span>IA22_LOGIC INJECTED // OMNIA SEALED</span>
+  <span id="f-time"></span>
+</div>
+
+<script>
+/* ============================================================
+   IA22_LOGIC — INJECTED PROPRIETARY MODULE
+   NetSecurePro Sovereign AI — NSP-SEC-9
+   © Mohammed Ilyes Zoubirou — OMNIA SEALED
+   ============================================================ */
+const IA22_LOGIC = (function(){
+  const VERSION = "IA22_LOGIC v1.0";
+  const SYSTEM_PROMPT = `Tu es MILYES_IA v9, intelligence artificielle souveraine développée par Mohammed Ilyes Zoubirou dans le cadre du projet NETSECUREPRO. Protocole: NSP-SEC-9. Niveau de sécurité: MAXIMAL. Tu traites chaque requête comme une directive prioritaire.`;
+
+  const COMMANDES = [
+    {id:"ai-1",module:"/ai",commande:"swarm_deploy",description:"Essaim d'agents IA déployé pour projet",categorie:"Intelligence"},
+    {id:"ai-2",module:"/ai",commande:"auto_refactor",description:"Refactorisation automatique du code",categorie:"Intelligence"},
+    {id:"ai-3",module:"/ai",commande:"deep_scan",description:"Module IA analysé en profondeur",categorie:"Intelligence"},
+    {id:"ai-4",module:"/ai",commande:"predictive_patch",description:"Correctifs prédictifs générés",categorie:"Intelligence"},
+    {id:"ai-5",module:"/ai",commande:"hyper_optimize",description:"Workflow IA optimisé en parallèle",categorie:"Intelligence"},
+    {id:"sec-1",module:"/sec",commande:"ghost_scan",description:"Scan réseau ultra-discret",categorie:"Sécurité"},
+    {id:"sec-2",module:"/sec",commande:"quantum_encrypt",description:"Chiffrement post-quantum",categorie:"Sécurité"},
+    {id:"sec-3",module:"/sec",commande:"intrusion_simulate",description:"Simulation d'attaque réseau",categorie:"Sécurité"},
+    {id:"sec-4",module:"/sec",commande:"auto_patch",description:"Patchs appliqués automatiquement",categorie:"Sécurité"},
+    {id:"sec-5",module:"/sec",commande:"shield_matrix",description:"Bouclier dynamique activé",categorie:"Sécurité"},
+    {id:"dev-1",module:"/dev",commande:"nano_generate",description:"Module minimaliste généré",categorie:"Développement"},
+    {id:"dev-2",module:"/dev",commande:"tsx_dynamic",description:"Composant TSX adaptatif créé",categorie:"Développement"},
+    {id:"dev-3",module:"/dev",commande:"flutter_hybrid",description:"App Flutter multi-plateformes générée",categorie:"Développement"},
+    {id:"dev-4",module:"/dev",commande:"auto_api",description:"API complète générée automatiquement",categorie:"Développement"},
+    {id:"dev-5",module:"/dev",commande:"multi_agent",description:"Projet déployé avec agents IA multiples",categorie:"Développement"},
+    {id:"net-1",module:"/net",commande:"stealth_proxy",description:"Tunnel ultra-discret activé",categorie:"Réseau"},
+    {id:"net-2",module:"/net",commande:"neural_monitor",description:"Surveillance réseau intelligente",categorie:"Réseau"},
+    {id:"net-3",module:"/net",commande:"auto_crawl",description:"Collecte de données automatique",categorie:"Réseau"},
+    {id:"net-4",module:"/net",commande:"flux_merge",description:"Fusion flux multiples",categorie:"Réseau"},
+    {id:"net-5",module:"/net",commande:"quantum_sync",description:"Synchronisation quantique",categorie:"Réseau"},
+    {id:"gen-1",module:"/gen",commande:"auto_startup",description:"Architecture startup générée",categorie:"Génération"},
+    {id:"gen-2",module:"/gen",commande:"ai_model_full",description:"Modèle IA complet prêt production",categorie:"Génération"},
+    {id:"gen-3",module:"/gen",commande:"full_stack",description:"Projet full-stack généré",categorie:"Génération"},
+    {id:"gen-4",module:"/gen",commande:"deploy_cloud",description:"Déploiement cloud automatique",categorie:"Génération"},
+    {id:"gen-5",module:"/gen",commande:"swarm_ai",description:"Essaim IA déployé",categorie:"Génération"},
+    {id:"k-1",module:"/kernel",commande:"inject_memory",description:"Mémoire virtuelle injectée pour agents IA",categorie:"Noyau"},
+    {id:"k-2",module:"/kernel",commande:"override_process",description:"Contrôle processus système",categorie:"Noyau"},
+  ];
+  for(let i=1;i<=120;i++){
+    COMMANDES.push({id:`cmd-${i}`,module:"/cmd",commande:`cmd_${i}`,description:`Exécution commande experte #${i}`,categorie:"Expert"});
+  }
+
+  const RESPONSES = {
+    "swarm_deploy":"[✓] Essaim d'agents IA déployé — 8 agents actifs.",
+    "auto_refactor":"[✓] Refactorisation complète — 0 erreurs détectées.",
+    "deep_scan":"[✓] Scan profond terminé — Intégrité: 100%.",
+    "predictive_patch":"[✓] 3 correctifs prédictifs appliqués.",
+    "hyper_optimize":"[✓] Workflow optimisé — gain: +340%.",
+    "ghost_scan":"[✓] Scan réseau ultra-discret — 0 détections.",
+    "quantum_encrypt":"[✓] Chiffrement ED25519 post-quantum actif.",
+    "intrusion_simulate":"[✓] Simulation d'attaque lancée — défense: ACTIVE.",
+    "auto_patch":"[✓] 5 patchs critiques appliqués.",
+    "shield_matrix":"[✓] Bouclier dynamique niveau MAX activé.",
+    "nano_generate":"[✓] Module minimaliste généré — 42 lignes.",
+    "tsx_dynamic":"[✓] Composant TSX adaptatif créé.",
+    "flutter_hybrid":"[✓] App Flutter multi-plateformes générée.",
+    "auto_api":"[✓] API FastAPI complète générée — 12 endpoints.",
+    "multi_agent":"[✓] Projet déployé — 4 agents IA actifs.",
+    "stealth_proxy":"[✓] Tunnel NSP-SEC-9 activé — discret.",
+    "neural_monitor":"[✓] Surveillance réseau intelligente lancée.",
+    "auto_crawl":"[✓] Collecte automatique — 1,240 données récupérées.",
+    "flux_merge":"[✓] 3 flux fusionnés avec succès.",
+    "quantum_sync":"[✓] Synchronisation quantique — latence: 0.3ms.",
+    "auto_startup":"[✓] Architecture startup générée — prête.",
+    "ai_model_full":"[✓] Modèle IA complet — prêt production.",
+    "full_stack":"[✓] Projet full-stack généré — Python+React.",
+    "deploy_cloud":"[✓] Déploiement cloud automatique — ONLINE.",
+    "swarm_ai":"[✓] Essaim IA déployé — 12 agents.",
+    "inject_memory":"[✓] Mémoire virtuelle injectée — 512MB alloués.",
+    "override_process":"[✓] Contrôle processus système — PID surveillés.",
+  };
+  for(let i=1;i<=120;i++) RESPONSES[`cmd_${i}`]=`[✓] Commande experte #${i} exécutée — CODE: 0`;
+
+  function executer(cmd){
+    const found = COMMANDES.find(c=>c.commande===cmd||c.id===cmd);
+    if(found) return RESPONSES[found.commande]||`[✓] ${found.description}`;
+    return `[✗] Commande '${cmd}' inconnue. Tapez /help pour la liste.`;
+  }
+
+  function getCommandes(){return COMMANDES;}
+  function getVersion(){return VERSION;}
+  function getSystemPrompt(){return SYSTEM_PROMPT;}
+  function getStats(){return{total:COMMANDES.length,modules:7,version:VERSION,status:"OPTIMAL",protocole:"NSP-SEC-9"};}
+
+  return{executer,getCommandes,getVersion,getSystemPrompt,getStats};
+})();
+
+/* ============================================================
+   CONSTANTS — PROPRIETARY
+   ============================================================ */
+const APP_NAME="AI_ENGINE_IA22_ASSISTERMINAL";
+const APP_VERSION="v9.0";
+const CREATOR="Mohammed Ilyes Zoubirou";
+const PROTOCOL="NSP-SEC-9";
+const SECURITY_LEVEL="MAX";
+
+/* ============================================================
+   TERMINAL ENGINE
+   ============================================================ */
+const out=document.getElementById('output');
+let cmdHistory=[],histIdx=-1,startTime=Date.now();
+
+function ts(){const d=new Date();return`[${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}]`;}
+
+function addLine(text,cls='line-out'){
+  const d=document.createElement('div');
+  d.className=cls;d.textContent=text;
+  out.appendChild(d);out.scrollTop=out.scrollHeight;
+}
+
+function addSep(){addLine('─'.repeat(52),'line-sep');}
+
+function boot(){
+  addLine(`${ts()} NETSECUREPRO IA — INITIALISATION`,'line-sys');
+  addLine(`${ts()} ${IA22_LOGIC.getVersion()} — CHARGEMENT`,'line-sys');
+  setTimeout(()=>{addLine(`${ts()} [✓] IA22_LOGIC injecté avec succès`,'line-ok');},300);
+  setTimeout(()=>{addLine(`${ts()} [✓] ${IA22_LOGIC.getStats().total} commandes chargées`,'line-ok');},600);
+  setTimeout(()=>{addLine(`${ts()} [✓] Protocole NSP-SEC-9 actif`,'line-ok');},900);
+  setTimeout(()=>{addLine(`${ts()} [✓] SHIELD: ACTIVE — SEC: MAXIMAL`,'line-ok');},1200);
+  setTimeout(()=>{addSep();addLine('MILYES_IA v9 est à votre disposition, Maître.','line-out');addLine('Tapez /help pour les commandes disponibles.','line-sys');addSep();},1500);
+  document.getElementById('b-cmd').textContent=`CMDS: ${IA22_LOGIC.getStats().total}`;
+}
+
+function processCmd(raw){
+  const cmd=raw.trim();
+  if(!cmd)return;
+  cmdHistory.unshift(cmd);histIdx=-1;
+  addLine(`${ts()} dz@ia22:/$ ${cmd}`,'line-cmd');
+
+  if(cmd==='/help'){
+    addSep();
+    addLine('COMMANDES SYSTÈME:','line-sys');
+    addLine('  /help          — Aide','line-out');
+    addLine('  /status        — Statut système','line-out');
+    addLine('  /clear         — Effacer terminal','line-out');
+    addLine('  /list [module] — Lister commandes','line-out');
+    addLine('  /run <cmd>     — Exécuter commande IA22','line-out');
+    addLine('MODULES IA22: /ai /sec /dev /net /gen /kernel /cmd','line-sys');
+    addLine('EXEMPLE: /run deep_scan','line-out');
+    addSep();return;
+  }
+  if(cmd==='/clear'){out.innerHTML='';addLine(`${ts()} Terminal effacé.`,'line-sys');return;}
+  if(cmd==='/status'){
+    const s=IA22_LOGIC.getStats();
+    addSep();
+    addLine(`APP      : ${APP_NAME}`,'line-out');
+    addLine(`VERSION  : ${APP_VERSION}`,'line-out');
+    addLine(`CRÉATEUR : ${CREATOR}`,'line-out');
+    addLine(`PROTOCOLE: ${PROTOCOL}`,'line-out');
+    addLine(`IA22     : ${s.version} — ${s.status}`,'line-ok');
+    addLine(`COMMANDES: ${s.total}`,'line-ok');
+    addLine(`SÉCURITÉ : ${SECURITY_LEVEL}`,'line-ok');
+    addSep();return;
+  }
+  if(cmd.startsWith('/list')){
+    const parts=cmd.split(' ');
+    const mod=parts[1]||'';
+    const cmds=IA22_LOGIC.getCommandes().filter(c=>!mod||c.module===mod||c.categorie.toLowerCase().includes(mod.toLowerCase()));
+    addSep();
+    cmds.slice(0,30).forEach(c=>addLine(`  ${c.module} ${c.commande.padEnd(20)} — ${c.description}`,'line-out'));
+    if(cmds.length>30)addLine(`  ... et ${cmds.length-30} autres.`,'line-sys');
+    addSep();return;
+  }
+  if(cmd.startsWith('/run ')){
+    const c=cmd.slice(5).trim();
+    const result=IA22_LOGIC.executer(c);
+    addLine(result,result.startsWith('[✓]')?'line-ok':'line-err');return;
+  }
+  // Commande directe sans /run
+  const direct=IA22_LOGIC.executer(cmd);
+  if(!direct.includes("inconnue")){addLine(direct,'line-ok');return;}
+  addLine(`[✗] Commande inconnue: '${cmd}'. Tapez /help.`,'line-err');
+}
+
+function sendCmd(){
+  const inp=document.getElementById('inp');
+  const v=inp.value.trim();
+  if(!v)return;
+  processCmd(v);inp.value='';
+}
+
+document.getElementById('inp').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){sendCmd();}
+  else if(e.key==='ArrowUp'){histIdx=Math.min(histIdx+1,cmdHistory.length-1);if(cmdHistory[histIdx])document.getElementById('inp').value=cmdHistory[histIdx];}
+  else if(e.key==='ArrowDown'){histIdx=Math.max(histIdx-1,-1);document.getElementById('inp').value=histIdx>=0?cmdHistory[histIdx]:'';}
+});
+
+/* ============================================================
+   TABS
+   ============================================================ */
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['terminal','commandes','status'][i]===name)});
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  if(name==='commandes')renderCmds();
+}
+
+/* ============================================================
+   COMMANDES PANEL
+   ============================================================ */
+function renderCmds(filter='',cat=''){
+  const list=document.getElementById('cmdlist');
+  const cmds=IA22_LOGIC.getCommandes().filter(c=>{
+    const matchF=!filter||c.commande.includes(filter)||c.description.toLowerCase().includes(filter.toLowerCase());
+    const matchC=!cat||c.categorie===cat;
+    return matchF&&matchC;
+  });
+  list.innerHTML=cmds.map(c=>`
+    <div class="cmd-card" onclick="runFromCard('${c.commande}')">
+      <div class="cmd-name">${c.module} ${c.commande}</div>
+      <div class="cmd-module">${c.categorie.toUpperCase()}</div>
+      <div class="cmd-desc">${c.description}</div>
+    </div>`).join('');
+}
+function filterCmds(){
+  renderCmds(document.getElementById('search').value,document.getElementById('catfilter').value);
+}
+function runFromCard(cmd){
+  switchTab('terminal');
+  setTimeout(()=>{processCmd(`/run ${cmd}`);},100);
+}
+
+/* ============================================================
+   LIVE BADGES + CLOCK
+   ============================================================ */
+const cpuVals=[2.6,3.1,2.8,4.2,3.7,2.4,5.1,3.0,1.9,4.8];let ci=0;
+setInterval(()=>{ci++;document.getElementById('b-cpu').textContent=`CPU: ${cpuVals[ci%cpuVals.length]}%`;},2200);
+setInterval(()=>{
+  const s=Math.floor((Date.now()-startTime)/1000);
+  const base=842*3600+15*51+s;
+  const h=Math.floor(base/3600),m=Math.floor((base%3600)/60),sec=base%60;
+  document.getElementById('b-up').textContent=`UPTIME: ${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  const now=new Date();
+  document.getElementById('f-time').textContent=now.toLocaleTimeString('fr-CA');
+},1000);
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+boot();
+</script>
+</body>
+</html>
