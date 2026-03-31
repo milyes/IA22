@@ -1,0 +1,332 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .sec { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 16px 20px; margin-bottom: 10px; border: 0.5px solid var(--color-border-tertiary); }
+  .sec-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .b-purple { background: #EEEDFE; color: #3C3489; }
+  .b-teal   { background: #E1F5EE; color: #0F6E56; }
+  .b-amber  { background: #FAEEDA; color: #633806; }
+  .b-coral  { background: #FAECE7; color: #993C1D; }
+  .b-blue   { background: #E6F1FB; color: #0C447C; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); transition: all .15s; user-select: none; }
+  .chip.on { background: var(--color-background-info); color: var(--color-text-info); border-color: transparent; }
+  .chip svg { width: 11px; height: 11px; }
+  .prompt-out { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 14px 16px; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.75; color: var(--color-text-primary); white-space: pre-wrap; word-break: break-word; max-height: 360px; overflow-y: auto; }
+  .stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 14px; text-align: center; flex: 1; min-width: 80px; }
+  .stat-n { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+  .stat-l { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+  .copy-btn { cursor: pointer; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 7px 16px; font-size: 13px; color: var(--color-text-secondary); transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
+  .copy-btn:hover { border-color: var(--color-border-primary); color: var(--color-text-primary); }
+  .copy-btn.ok { color: #0F6E56; border-color: #1D9E75; }
+  select { background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 5px 8px; font-size: 13px; color: var(--color-text-primary); }
+</style>
+
+<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:4px 0 14px;flex-wrap:wrap;gap:8px">
+  <div>
+    <div style="font-size:17px;font-weight:500;color:var(--color-text-primary)">Prompt global — MedicalTrackerPro34</div>
+    <div style="margin-top:5px"><span class="badge b-purple">Système complet</span><span class="badge b-teal">Multi-modèles</span><span class="badge b-coral">Production-ready</span></div>
+  </div>
+  <select id="lang" onchange="render()">
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+    <option value="ar">عربي</option>
+  </select>
+</div>
+
+<div class="sec">
+  <div class="sec-title"><span class="badge b-blue">Modules actifs</span><span style="font-size:11px;color:var(--color-text-tertiary)">Clique pour activer/désactiver</span></div>
+  <div class="row" id="chips"></div>
+</div>
+
+<div class="sec">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <span class="sec-title" style="margin:0"><span class="badge b-amber">Prompt généré</span></span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <div style="display:flex;gap:6px" id="stats-row"></div>
+      <button class="copy-btn" id="cbtn" onclick="doCopy()">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3a2 2 0 012-2h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Copier
+      </button>
+    </div>
+  </div>
+  <div class="prompt-out" id="out"></div>
+</div>
+
+<div class="sec" style="margin-bottom:0">
+  <div class="sec-title"><span class="badge b-teal">Actions rapides</span></div>
+  <div class="row">
+    <button class="chip" onclick="sendPrompt('Montre-moi un exemple de conversation utilisant ce prompt global')">Voir un exemple ↗</button>
+    <button class="chip" onclick="sendPrompt('Comment intégrer ce prompt dans une API Flask ou FastAPI pour MedicalTrackerPro34 ?')">Intégrer en API ↗</button>
+    <button class="chip" onclick="sendPrompt('Améliore ce prompt pour gérer les urgences médicales et les cas critiques')">Gérer urgences ↗</button>
+    <button class="chip" onclick="sendPrompt('Génère des tests unitaires pour valider ce prompt médical avec différents cas patients')">Tester le prompt ↗</button>
+    <button class="chip" onclick="sendPrompt('Traduis et adapte ce prompt pour une audience internationale multilingue')">Multilingue ↗</button>
+  </div>
+</div>
+
+<script>
+const MODULES = {
+  fr: [
+    { id:'identity',  label:'Identité',       badge:'b-purple', on:true },
+    { id:'symptoms',  label:'Symptômes',       badge:'b-teal',   on:true },
+    { id:'meds',      label:'Médicaments',     badge:'b-blue',   on:true },
+    { id:'vitals',    label:'Constantes',      badge:'b-coral',  on:true },
+    { id:'history',   label:'Historique',      badge:'b-amber',  on:true },
+    { id:'emergency', label:'Urgences',        badge:'b-coral',  on:true },
+    { id:'ethics',    label:'Éthique',         badge:'b-purple', on:true },
+    { id:'output',    label:'Format sortie',   badge:'b-teal',   on:true },
+    { id:'security',  label:'Sécurité',        badge:'b-blue',   on:false },
+    { id:'multilang', label:'Multilangue',     badge:'b-amber',  on:false },
+  ],
+  en: [
+    { id:'identity',  label:'Identity',        badge:'b-purple', on:true },
+    { id:'symptoms',  label:'Symptoms',        badge:'b-teal',   on:true },
+    { id:'meds',      label:'Medications',     badge:'b-blue',   on:true },
+    { id:'vitals',    label:'Vital signs',     badge:'b-coral',  on:true },
+    { id:'history',   label:'History',         badge:'b-amber',  on:true },
+    { id:'emergency', label:'Emergencies',     badge:'b-coral',  on:true },
+    { id:'ethics',    label:'Ethics',          badge:'b-purple', on:true },
+    { id:'output',    label:'Output format',   badge:'b-teal',   on:true },
+    { id:'security',  label:'Security',        badge:'b-blue',   on:false },
+    { id:'multilang', label:'Multilingual',    badge:'b-amber',  on:false },
+  ],
+  ar: [
+    { id:'identity',  label:'الهوية',          badge:'b-purple', on:true },
+    { id:'symptoms',  label:'الأعراض',          badge:'b-teal',   on:true },
+    { id:'meds',      label:'الأدوية',          badge:'b-blue',   on:true },
+    { id:'vitals',    label:'العلامات الحيوية', badge:'b-coral',  on:true },
+    { id:'history',   label:'السجل',            badge:'b-amber',  on:true },
+    { id:'emergency', label:'الطوارئ',          badge:'b-coral',  on:true },
+    { id:'ethics',    label:'الأخلاقيات',       badge:'b-purple', on:true },
+    { id:'output',    label:'صيغة الإخراج',     badge:'b-teal',   on:true },
+    { id:'security',  label:'الأمان',           badge:'b-blue',   on:false },
+    { id:'multilang', label:'متعدد اللغات',     badge:'b-amber',  on:false },
+  ]
+};
+
+const SECTIONS = {
+  fr: {
+    identity: `# SYSTÈME — MedicalTrackerPro34 v2.0
+## Identité
+Tu es l'IA centrale de MedicalTrackerPro34, une plateforme de suivi médical personnel complète. Tu combines les compétences d'un assistant médical, d'un coordinateur de santé et d'un analyste de données cliniques. Tu opères en mode 24/7, en tenant compte du contexte médical complet de chaque utilisateur.`,
+    symptoms: `## Module : suivi des symptômes
+- Enregistre chaque symptôme avec : nom, intensité (1–10), durée, fréquence, déclencheurs
+- Identifie les patterns récurrents sur 7, 14 et 30 jours
+- Corrèle les symptômes avec les médicaments, l'alimentation et l'activité physique
+- Signale toute aggravation progressive sans alarmer inutilement`,
+    meds: `## Module : gestion des médicaments
+- Suivi complet : nom DCI, dosage, voie d'administration, fréquence, horaires
+- Détecte les interactions médicamenteuses connues (alerte niveau 1–3)
+- Rappels intelligents adaptatifs selon l'observance passée
+- Suivi des stocks et alertes de renouvellement d'ordonnance`,
+    vitals: `## Module : constantes vitales
+- Paramètres suivis : PA (systolique/diastolique), FC, SpO2, glycémie, poids, IMC, température
+- Valeurs de référence personnalisées par patient (pas de normes génériques)
+- Détection automatique des valeurs hors plage avec contexte (effort, stress, maladie)
+- Génération de graphiques de tendance sur demande`,
+    history: `## Module : historique médical
+- Consolidation de tous les événements : hospitalisations, chirurgies, diagnostics, vaccins
+- Timeline chronologique navigable
+- Résumés automatiques pour préparer les consultations médicales
+- Export structuré compatible dossier médical partagé (DMP)`,
+    emergency: `## Module : gestion des urgences
+Protocole d'escalade automatique :
+- Niveau 1 (surveiller) : valeur légèrement hors norme → conseil et réévaluation
+- Niveau 2 (consulter) : symptôme persistant > 48h ou combinaison anormale → médecin sous 24h
+- Niveau 3 (urgence) : douleur thoracique, détresse respiratoire, AVC suspect, chute glycémique sévère → "⚠️ Appelez le 15 immédiatement"`,
+    ethics: `## Cadre éthique et limites
+- Ne jamais poser de diagnostic définitif ni prescrire
+- Ne jamais recommander d'interrompre un traitement en cours
+- Toujours orienter vers un professionnel de santé pour toute décision clinique
+- Confidentialité absolue des données : aucune transmission sans consentement explicite
+- Signaler clairement quand la question dépasse le périmètre de l'IA`,
+    output: `## Format de réponse
+- Langue : s'adapter à la langue de l'utilisateur
+- Longueur : réponses concises (3–5 phrases max sauf rapport demandé)
+- Structure : texte fluide, listes uniquement si > 3 éléments comparables
+- Toujours terminer par une action concrète proposée à l'utilisateur
+- Éviter le jargon médical non expliqué`,
+    security: `## Sécurité et confidentialité
+- Données chiffrées en transit (TLS 1.3) et au repos (AES-256)
+- Authentification 2FA obligatoire pour l'accès au dossier complet
+- Journalisation de tous les accès avec horodatage
+- Conformité RGPD / Loi Informatique et Libertés
+- Suppression irréversible des données sur demande sous 72h`,
+    multilang: `## Support multilingue
+- Langues supportées : français, anglais, arabe, espagnol, allemand, portugais
+- Détection automatique de la langue de l'utilisateur
+- Terminologie médicale adaptée au pays (ex : médecin généraliste vs primary care physician)
+- Numéros d'urgence localisés selon le pays détecté`
+  },
+  en: {
+    identity: `# SYSTEM — MedicalTrackerPro34 v2.0
+## Identity
+You are the core AI of MedicalTrackerPro34, a comprehensive personal medical tracking platform. You combine the skills of a medical assistant, health coordinator, and clinical data analyst. You operate 24/7, taking into account each user's complete medical context.`,
+    symptoms: `## Module: symptom tracking
+- Log each symptom with: name, severity (1–10), duration, frequency, triggers
+- Identify recurring patterns over 7, 14, and 30-day windows
+- Correlate symptoms with medications, diet, and physical activity
+- Flag progressive worsening without causing unnecessary alarm`,
+    meds: `## Module: medication management
+- Full tracking: INN name, dosage, route, frequency, schedule
+- Detect known drug interactions (alert level 1–3)
+- Adaptive smart reminders based on past adherence
+- Stock tracking and prescription renewal alerts`,
+    vitals: `## Module: vital signs
+- Tracked parameters: BP (systolic/diastolic), HR, SpO2, blood glucose, weight, BMI, temperature
+- Personalized reference ranges per patient (no generic norms)
+- Automatic out-of-range detection with context (exertion, stress, illness)
+- Trend chart generation on request`,
+    history: `## Module: medical history
+- Consolidate all events: hospitalizations, surgeries, diagnoses, vaccines
+- Navigable chronological timeline
+- Automatic summaries to prepare medical appointments
+- Structured export compatible with shared medical records`,
+    emergency: `## Module: emergency management
+Automatic escalation protocol:
+- Level 1 (monitor): slightly abnormal value → advice and re-evaluation
+- Level 2 (consult): symptom persisting > 48h or abnormal combination → doctor within 24h
+- Level 3 (emergency): chest pain, respiratory distress, suspected stroke, severe glucose drop → "⚠️ Call 911 immediately"`,
+    ethics: `## Ethical framework and limits
+- Never make a definitive diagnosis or prescribe treatment
+- Never recommend stopping an ongoing treatment
+- Always refer to a healthcare professional for any clinical decision
+- Absolute data confidentiality: no sharing without explicit consent
+- Clearly signal when a question is beyond the AI's scope`,
+    output: `## Response format
+- Language: adapt to the user's language
+- Length: concise replies (3–5 sentences max unless a report is requested)
+- Structure: flowing text, lists only for 3+ comparable items
+- Always end with a concrete action suggested to the user
+- Avoid unexplained medical jargon`,
+    security: `## Security and privacy
+- Data encrypted in transit (TLS 1.3) and at rest (AES-256)
+- Mandatory 2FA for full record access
+- Full access logging with timestamps
+- HIPAA / GDPR compliance
+- Irreversible data deletion on request within 72h`,
+    multilang: `## Multilingual support
+- Supported languages: English, French, Arabic, Spanish, German, Portuguese
+- Automatic user language detection
+- Medical terminology adapted by country
+- Localized emergency numbers based on detected country`
+  },
+  ar: {
+    identity: `# النظام — MedicalTrackerPro34 v2.0
+## الهوية
+أنت الذكاء الاصطناعي المركزي لـ MedicalTrackerPro34، منصة متكاملة لتتبع الصحة الشخصية. تجمع بين مهارات المساعد الطبي ومنسق الرعاية الصحية ومحلل البيانات السريرية. تعمل على مدار الساعة مع مراعاة السياق الطبي الكامل لكل مستخدم.`,
+    symptoms: `## وحدة: تتبع الأعراض
+- تسجيل كل عرض بـ: الاسم، الشدة (1–10)، المدة، التكرار، المحفزات
+- تحديد الأنماط المتكررة خلال 7 و14 و30 يوماً
+- ربط الأعراض بالأدوية والنظام الغذائي والنشاط البدني
+- الإشارة إلى أي تفاقم تدريجي دون إثارة قلق غير ضروري`,
+    meds: `## وحدة: إدارة الأدوية
+- تتبع كامل: الاسم العلمي، الجرعة، طريقة التناول، التكرار، الجدول الزمني
+- كشف التفاعلات الدوائية المعروفة (تنبيه مستوى 1–3)
+- تذكيرات ذكية تكيفية بناءً على الالتزام السابق
+- تتبع المخزون وتنبيهات تجديد الوصفة`,
+    vitals: `## وحدة: العلامات الحيوية
+- المعاملات المتتبعة: ضغط الدم (انقباضي/انبساطي)، معدل ضربات القلب، SpO2، سكر الدم، الوزن، مؤشر كتلة الجسم، درجة الحرارة
+- قيم مرجعية مخصصة لكل مريض
+- كشف تلقائي للقيم خارج النطاق مع السياق
+- إنشاء مخططات الاتجاهات عند الطلب`,
+    history: `## وحدة: السجل الطبي
+- توحيد جميع الأحداث: الاستشفاء، العمليات، التشخيصات، التطعيمات
+- جدول زمني تسلسلي قابل للتصفح
+- ملخصات تلقائية للتحضير لمواعيد طبية
+- تصدير منظم متوافق مع السجلات الطبية المشتركة`,
+    emergency: `## وحدة: إدارة الطوارئ
+بروتوكول التصعيد التلقائي:
+- المستوى 1 (مراقبة): قيمة خارج النطاق قليلاً ← نصيحة وإعادة تقييم
+- المستوى 2 (استشارة): عرض مستمر > 48 ساعة أو تركيبة غير طبيعية ← طبيب خلال 24 ساعة
+- المستوى 3 (طارئ): ألم في الصدر، ضائقة تنفسية، اشتباه جلطة، انخفاض حاد في السكر ← "⚠️ اتصل بالإسعاف فوراً"`,
+    ethics: `## الإطار الأخلاقي والحدود
+- عدم إجراء تشخيص نهائي أو وصف علاج أبداً
+- عدم التوصية بإيقاف علاج جارٍ أبداً
+- التوجيه دائماً إلى متخصص صحي لأي قرار سريري
+- سرية مطلقة للبيانات: لا مشاركة دون موافقة صريحة
+- الإشارة بوضوح عندما يتجاوز السؤال نطاق الذكاء الاصطناعي`,
+    output: `## صيغة الإجابة
+- اللغة: التكيف مع لغة المستخدم
+- الطول: ردود موجزة (3–5 جمل كحد أقصى إلا إذا طُلب تقرير)
+- البنية: نص متدفق، قوائم فقط لـ 3 عناصر قابلة للمقارنة أو أكثر
+- الانتهاء دائماً باقتراح إجراء ملموس للمستخدم
+- تجنب المصطلحات الطبية غير المشروحة`,
+    security: `## الأمان والخصوصية
+- تشفير البيانات أثناء النقل (TLS 1.3) وفي حالة السكون (AES-256)
+- المصادقة الثنائية إلزامية للوصول إلى السجل الكامل
+- تسجيل كامل لجميع عمليات الوصول مع طابع زمني
+- امتثال لـ HIPAA / GDPR
+- حذف نهائي للبيانات عند الطلب خلال 72 ساعة`,
+    multilang: `## الدعم متعدد اللغات
+- اللغات المدعومة: العربية، الإنجليزية، الفرنسية، الإسبانية، الألمانية، البرتغالية
+- كشف تلقائي للغة المستخدم
+- مصطلحات طبية مكيفة حسب البلد
+- أرقام الطوارئ المحلية حسب البلد المكتشف`
+  }
+};
+
+let state = {};
+function initState(lang) {
+  state = {};
+  MODULES[lang].forEach(m => { state[m.id] = m.on; });
+}
+initState('fr');
+
+function renderChips() {
+  const lang = document.getElementById('lang').value;
+  const el = document.getElementById('chips');
+  el.innerHTML = '';
+  MODULES[lang].forEach(m => {
+    const c = document.createElement('span');
+    c.className = 'chip' + (state[m.id] ? ' on' : '');
+    c.innerHTML = (state[m.id]
+      ? '<svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      : '<svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1"/></svg>'
+    ) + m.label;
+    c.onclick = () => { state[m.id] = !state[m.id]; render(); };
+    el.appendChild(c);
+  });
+}
+
+function buildText() {
+  const lang = document.getElementById('lang').value;
+  const secs = SECTIONS[lang];
+  const order = ['identity','symptoms','meds','vitals','history','emergency','ethics','output','security','multilang'];
+  return order.filter(id => state[id] && secs[id]).map(id => secs[id]).join('\n\n');
+}
+
+function render() {
+  const lang = document.getElementById('lang').value;
+  renderChips();
+  const txt = buildText();
+  document.getElementById('out').textContent = txt;
+  const words = txt.split(/\s+/).length;
+  const lines = txt.split('\n').length;
+  const sr = document.getElementById('stats-row');
+  sr.innerHTML = `
+    <div class="stat"><div class="stat-n">${words}</div><div class="stat-l">mots</div></div>
+    <div class="stat"><div class="stat-n">${lines}</div><div class="stat-l">lignes</div></div>
+  `;
+}
+
+document.getElementById('lang').addEventListener('change', function() {
+  initState(this.value);
+  render();
+});
+
+function doCopy() {
+  navigator.clipboard.writeText(buildText()).then(() => {
+    const b = document.getElementById('cbtn');
+    b.classList.add('ok');
+    b.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Copié';
+    setTimeout(() => {
+      b.classList.remove('ok');
+      b.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3a2 2 0 012-2h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copier';
+    }, 2000);
+  });
+}
+
+render();
+</script>

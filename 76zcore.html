@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z-CORE — Zero Trust Sovereign Stack</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e14;
+    --bg2: #0f1520;
+    --border: rgba(0,212,160,0.15);
+    --teal: #00d4a0;
+    --teal-glow: rgba(0,212,160,0.3);
+    --blue: #2d8fff;
+    --purple: #9b7bff;
+    --coral: #ff6b6b;
+    --text: #e2e8f4;
+    --text2: #8899bb;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  header {
+    text-align: center;
+    padding: 40px 20px 30px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+  }
+  .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo::before {
+    content: 'ZC';
+    display: inline-block;
+    width: 42px; height: 42px;
+    border: 2px solid var(--teal);
+    border-radius: 8px;
+    line-height: 38px;
+    text-align: center;
+  }
+  h1 { margin: 12px 0 6px; font-size: 32px; }
+  .tagline { color: var(--teal); font-size: 15px; letter-spacing: 1px; }
+
+  main { max-width: 1280px; margin: 0 auto; padding: 40px 20px; position: relative; z-index: 1; }
+
+  .zta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-bottom: 60px;
+  }
+  .pillar {
+    background: rgba(15,21,32,0.95);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--teal);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s;
+  }
+  .pillar:hover {
+    border-color: var(--teal);
+    box-shadow: 0 0 30px var(--teal-glow);
+    transform: translateY(-4px);
+  }
+  .pillar h3 {
+    color: var(--teal);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .comp {
+    background: rgba(0,212,160,0.08);
+    border: 1px solid var(--teal);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .comp:hover {
+    background: rgba(0,212,160,0.18);
+    border-color: #00ffcc;
+  }
+  .comp-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .comp-sub { font-size: 12px; color: var(--text2); }
+
+  .medical-node {
+    background: linear-gradient(135deg, #4a1f8c, #2a0f5c);
+    border: 2px solid #c084fc;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 30px 0;
+    cursor: pointer;
+  }
+
+  footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--text2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Z-CORE</div>
+  <h1>Zero Trust Sovereign Stack</h1>
+  <div class="tagline">Never Trust, Always Verify • Données 100% locales • Montréal 2026</div>
+</header>
+
+<main>
+
+  <div class="zta-grid">
+
+    <!-- Pillar 1 -->
+    <div class="pillar">
+      <h3>1. Identity Trust</h3>
+      <div class="comp" onclick="alert('Kanidm SSO : OIDC, OAuth2, WebAuthn, MFA, LDAP')">
+        <div class="comp-title">Kanidm SSO</div>
+        <div class="comp-sub">Authentification centrale • Passkeys • MFA</div>
+      </div>
+    </div>
+
+    <!-- Pillar 2 -->
+    <div class="pillar">
+      <h3>2. Device & Network Trust</h3>
+      <div class="comp" onclick="alert('Caddy 2 Reverse Proxy + ACME TLS')">
+        <div class="comp-title">Caddy 2</div>
+        <div class="comp-sub">Point d’entrée sécurisé • TLS auto • Rate limiting</div>
+      </div>
+      <div class="comp" onclick="alert('WireGuard VPN + UFW + Fail2ban + CrowdSec')">
+        <div class="comp-title">Zero Trust Network</div>
+        <div class="comp-sub">Micro-segmentation • VPN admin • Threat intel</div>
+      </div>
+    </div>
+
+    <!-- Pillar 3 -->
+    <div class="pillar">
+      <h3>3. Workload Protection</h3>
+      <div class="comp" onclick="alert('Matrix Dendrite + Stalwart Mail + Nextcloud 30 + Vaultwarden')">
+        <div class="comp-title">Services E2EE</div>
+        <div class="comp-sub">Chat • Mail • Drive • Password manager</div>
+      </div>
+    </div>
+
+    <!-- Pillar 4 -->
+    <div class="pillar">
+      <h3>4. Data Protection</h3>
+      <div class="comp" onclick="alert('PostgreSQL 16 + Redis 7 • Volumes LUKS • Backups Restic')">
+        <div class="comp-title">PostgreSQL + Redis</div>
+        <div class="comp-sub">Chiffrement at-rest & in-transit • E2EE</div>
+      </div>
+    </div>
+
+    <!-- Pillar 5 -->
+    <div class="pillar">
+      <h3>5. Micro-Segmentation & Hardening</h3>
+      <div class="comp" onclick="alert('Debian 12 • Docker Compose • Ansible • OS Hardening')">
+        <div class="comp-title">Infrastructure Souveraine</div>
+        <div class="comp-sub">Hetzner CPX31 + Standby • Ansible idempotent</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Module Médical Souverain -->
+  <div class="medical-node" onclick="alert('MedicalTrackerPro34 : Suivi médical personnel 100% local et souverain. Données chiffrées par utilisateur. Intégré à Nextcloud et Matrix.')">
+    <strong>MedicalTrackerPro34</strong><br>
+    <span style="font-size:14px;opacity:0.9;">Module médical souverain • Données 100% locales • Confidentialité maximale</span>
+  </div>
+
+  <!-- Profil court -->
+  <div style="text-align:center; margin-top:50px; padding:30px; background:rgba(15,21,32,0.6); border-radius:12px; border:1px solid var(--border);">
+    <h2 style="color:var(--teal); margin-bottom:12px;">Mohammed Ilyes Zoubirou</h2>
+    <p style="max-width:620px; margin:0 auto; color:var(--text2); line-height:1.6;">
+      Fondateur de <strong>NetSecurePro IA</strong><br>
+      Architecte de <strong>Z-CORE</strong> — Zero Trust Sovereign Stack<br>
+      Expert en infrastructure souveraine, cybersécurité Zero Trust et IA locale.
+    </p>
+    <p style="margin-top:20px; font-size:13px; color:var(--text2);">
+      Ouvert à des collaborations, stagiaires (Université Laval) et partenaires sur des projets de souveraineté numérique.
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  Z-CORE • NetSecurePro IA • Mohammed Ilyes Zoubirou • Montréal 🇨🇦<br>
+  Self-hosted • E2EE • Données 100% souveraines • 2026
+</footer>
+
+</body>
+</html>
