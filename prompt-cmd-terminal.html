@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt CMD — Cyber-Core</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #0f0f1a;
+    --bg3: #141428;
+    --panel: #12121f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --green: #00ff9d;
+    --green-dim: rgba(0,255,157,0.15);
+    --green-glow: rgba(0,255,157,0.4);
+    --blue: #4d9fff;
+    --blue-dim: rgba(77,159,255,0.12);
+    --amber: #ffb830;
+    --amber-dim: rgba(255,184,48,0.12);
+    --red: #ff4d6a;
+    --red-dim: rgba(255,77,106,0.12);
+    --purple: #b06bff;
+    --purple-dim: rgba(176,107,255,0.12);
+    --text: #e8e8f0;
+    --text-muted: rgba(232,232,240,0.45);
+    --text-dim: rgba(232,232,240,0.25);
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Syne', sans-serif;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,157,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,157,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 60% 40%, rgba(0,255,157,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(77,159,255,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #app {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(0,255,157,0.05),
+      0 40px 80px rgba(0,0,0,0.8),
+      0 0 80px rgba(0,255,157,0.03);
+    animation: appIn .4s cubic-bezier(.2,0,.1,1) both;
+  }
+
+  @keyframes appIn {
+    from { opacity: 0; transform: translateY(16px) scale(.99); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ── TITLEBAR ── */
+  #titlebar {
+    background: var(--bg2);
+    padding: 13px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    user-select: none;
+  }
+
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .d-r { background: #ff5f57; }
+  .d-a { background: #ffbd2e; }
+  .d-g { background: #28c840; }
+
+  #tb-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    color: var(--text-muted);
+    margin: 0 auto;
+    text-transform: uppercase;
+  }
+
+  #tb-version {
+    font-size: 10px;
+    color: var(--green);
+    opacity: .6;
+    letter-spacing: .05em;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    background: var(--bg2);
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #header h1 {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -.01em;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  #header h1 span { color: var(--green); }
+
+  #header p {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: .04em;
+  }
+
+  /* ── CHIPS ── */
+  #chips {
+    background: var(--bg2);
+    padding: 10px 18px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chip {
+    font-size: 10.5px;
+    font-family: var(--mono);
+    padding: 4px 11px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    cursor: pointer;
+    color: var(--text-muted);
+    background: transparent;
+    transition: all .15s;
+    letter-spacing: .03em;
+  }
+
+  .chip:hover {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-dim);
+    box-shadow: 0 0 10px rgba(0,255,157,0.15);
+  }
+
+  /* ── OUTPUT ── */
+  #output {
+    height: 380px;
+    overflow-y: auto;
+    padding: 18px 22px;
+    font-size: 12.5px;
+    line-height: 1.75;
+    background: var(--bg);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) transparent;
+  }
+
+  #output::-webkit-scrollbar { width: 4px; }
+  #output::-webkit-scrollbar-track { background: transparent; }
+  #output::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+  .line-cmd {
+    color: var(--green);
+    margin-bottom: 3px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .line-cmd::before {
+    content: '❯';
+    opacity: .7;
+    font-size: 10px;
+  }
+
+  .line-out {
+    color: var(--text-muted);
+    margin-bottom: 2px;
+    padding-left: 16px;
+    border-left: 1px solid var(--border2);
+  }
+
+  .line-ok {
+    color: var(--green);
+    padding-left: 16px;
+    border-left: 1px solid rgba(0,255,157,0.3);
+    margin-bottom: 2px;
+  }
+
+  .line-ok::before { content: '✓ '; opacity: .6; }
+
+  .line-err {
+    color: var(--red);
+    padding-left: 16px;
+    border-left: 1px solid rgba(255,77,106,0.4);
+    margin-bottom: 2px;
+    background: var(--red-dim);
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .line-err::before { content: '✗ '; }
+
+  .line-info {
+    color: var(--blue);
+    padding-left: 16px;
+    border-left: 1px solid rgba(77,159,255,0.3);
+    margin-bottom: 2px;
+    opacity: .85;
+  }
+
+  .line-amber {
+    color: var(--amber);
+    padding-left: 16px;
+    border-left: 1px solid rgba(255,184,48,0.3);
+    margin-bottom: 2px;
+  }
+
+  .line-purple {
+    color: var(--purple);
+    padding-left: 16px;
+    border-left: 1px solid rgba(176,107,255,0.3);
+    margin-bottom: 2px;
+  }
+
+  .line-gap { height: 10px; }
+
+  .line-section {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 4px 0 6px 16px;
+    margin-top: 4px;
+  }
+
+  /* ── STATUS BAR ── */
+  #statusbar {
+    background: var(--bg2);
+    padding: 6px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: .04em;
+  }
+
+  .stat-item { display: flex; align-items: center; gap: 5px; }
+  .stat-dot { width: 5px; height: 5px; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+  .sd-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .sd-blue  { background: var(--blue); }
+  .sd-amber { background: var(--amber); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .4; }
+  }
+
+  #stat-count { margin-left: auto; color: var(--green); opacity: .5; }
+
+  /* ── INPUT ROW ── */
+  #input-row {
+    background: var(--bg2);
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #prompt-sym {
+    color: var(--green);
+    font-size: 14px;
+    opacity: .9;
+    animation: blink 1.2s step-start infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: .9; }
+    50% { opacity: .25; }
+  }
+
+  #cmd-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    caret-color: var(--green);
+    letter-spacing: .02em;
+  }
+
+  #cmd-input::placeholder { color: var(--text-dim); }
+
+  #run-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all .15s;
+    letter-spacing: .06em;
+  }
+
+  #run-btn:hover {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-dim);
+    box-shadow: 0 0 14px rgba(0,255,157,0.2);
+  }
+
+  #run-btn:active { transform: scale(.97); }
+
+  /* ── HELP GRID ── */
+  #help-grid {
+    display: none;
+    padding: 18px 22px;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    animation: fadeIn .2s ease both;
+  }
+
+  #help-grid.active { display: grid; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hcard {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    background: var(--bg2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .hcard:hover {
+    border-color: var(--green);
+    background: var(--green-dim);
+    box-shadow: 0 0 16px rgba(0,255,157,0.1);
+  }
+
+  .hcard:hover .hc-name { color: var(--green); }
+
+  .hc-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+    font-family: var(--mono);
+    transition: color .15s;
+  }
+
+  .hc-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* Scanline overlay */
+  #scanline {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+</style>
+</head>
+<body>
+
+<div id="scanline"></div>
+
+<div id="app">
+
+  <div id="titlebar">
+    <div class="dot d-r"></div>
+    <div class="dot d-a"></div>
+    <div class="dot d-g"></div>
+    <span id="tb-title">prompt-cmd terminal</span>
+    <span id="tb-version">v2.0</span>
+  </div>
+
+  <div id="header">
+    <h1><span>//</span> PROMPT CMD <span>_</span></h1>
+    <p>cyber-core edition — moteur de commandes texte interactif</p>
+  </div>
+
+  <div id="chips">
+    <span class="chip" onclick="quickRun('/help')">/help</span>
+    <span class="chip" onclick="quickRun('/generate essay \"IA et conscience\" --length=medium')">/generate</span>
+    <span class="chip" onclick="quickRun('/translate EN --preserve=style')">/translate</span>
+    <span class="chip" onclick="quickRun('/compress --target=tweet')">/compress</span>
+    <span class="chip" onclick="quickRun('/brainstorm \"futur du travail\" --count=5')">/brainstorm</span>
+    <span class="chip" onclick="quickRun('/analyze --type=sentiment')">/analyze</span>
+    <span class="chip" onclick="quickRun('/invent --domain=concept --contrainte=bio+tech')">/invent</span>
+    <span class="chip" onclick="quickRun('/chain /generate >> /translate >> /compress')">/chain</span>
+    <span class="chip" onclick="quickRun('/future \"intelligence artificielle\" --horizon=20ans')">/future</span>
+    <span class="chip" onclick="quickRun('/persona \"Ada\" --traits=curieuse,analytique --voice=formel')">/persona</span>
+    <span class="chip" onclick="quickRun('/combine \"blockchain\" + \"biologie synthétique\"')">/combine</span>
+    <span class="chip" onclick="quickRun('/clear')">/clear</span>
+  </div>
+
+  <div id="output"></div>
+
+  <div id="statusbar">
+    <div class="stat-item">
+      <div class="stat-dot sd-green"></div>
+      <span>moteur: actif</span>
+    </div>
+    <div class="stat-item">
+      <div class="stat-dot sd-blue"></div>
+      <span>mode: cyber-core</span>
+    </div>
+    <div class="stat-item">
+      <div class="stat-dot sd-amber"></div>
+      <span id="stat-time">--:--:--</span>
+    </div>
+    <span id="stat-count">cmds: 0</span>
+  </div>
+
+  <div id="input-row">
+    <span id="prompt-sym">❯</span>
+    <input id="cmd-input" placeholder="entrer une commande..." autocomplete="off" spellcheck="false"/>
+    <button id="run-btn" onclick="execCmd()">RUN ↵</button>
+  </div>
+
+  <div id="help-grid"></div>
+
+</div>
+
+<script>
+const out = document.getElementById('output');
+const inp = document.getElementById('cmd-input');
+const statCount = document.getElementById('stat-count');
+const statTime = document.getElementById('stat-time');
+const helpGrid = document.getElementById('help-grid');
+
+let cmdCount = 0;
+let history = [];
+let histIdx = -1;
+
+// Clock
+setInterval(() => {
+  const now = new Date();
+  statTime.textContent = now.toTimeString().slice(0,8);
+}, 1000);
+statTime.textContent = new Date().toTimeString().slice(0,8);
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function getFlag(args, key){ const f=args.find(a=>a.startsWith(`--${key}=`)); return f?f.split('=')[1].replace(/['"]/g,''):null; }
+
+function addLine(cls, txt){ out.innerHTML += `<div class="${cls}">${esc(txt)}</div>`; }
+function cmd_l(t){ out.innerHTML += `<div class="line-cmd">${esc(t)}</div>`; }
+function o(t){ addLine('line-out', t); }
+function ok(t){ addLine('line-ok', t); }
+function err(t){ addLine('line-err', t); }
+function info(t){ addLine('line-info', t); }
+function amb(t){ addLine('line-amber', t); }
+function purp(t){ addLine('line-purple', t); }
+function sec(t){ out.innerHTML += `<div class="line-section">${esc(t)}</div>`; }
+function gap(){ out.innerHTML += `<div class="line-gap"></div>`; }
+
+const CMD_DB = {
+  '/help': {
+    desc: 'liste toutes les commandes disponibles',
+    exec(args) {
+      if(args.length && args[0]) {
+        const t = args[0].startsWith('/') ? args[0] : '/'+args[0];
+        if(CMD_DB[t]) {
+          sec('documentation');
+          o(`commande : ${t}`);
+          o(`syntaxe  : ${CMD_DB[t].syntax||t}`);
+          info(CMD_DB[t].desc||'commande disponible');
+          if(CMD_DB[t].flags) CMD_DB[t].flags.forEach(f=>o(`  ${f}`));
+        } else {
+          err(`commande inconnue: ${t}`);
+        }
+        return;
+      }
+      sec('génération');
+      o('/generate  /write  /draft  /expand  /compress');
+      sec('transformation');
+      o('/rewrite  /translate  /simplify  /formalize  /humanize');
+      sec('analyse');
+      o('/analyze  /critique  /fact-check  /summarize  /extract');
+      sec('création avancée');
+      o('/persona  /worldbuild  /dialogue  /plot  /invent');
+      sec('méta-prompts');
+      o('/chain  /iterate  /compare  /template  /instruct');
+      sec('idéation');
+      o('/brainstorm  /combine  /challenge  /future  /invent-word');
+      sec('format output');
+      o('/output  /structure  /code-embed  /toc  /footnote');
+      sec('système');
+      o('/clear  /history  /export  /version');
+      amb('tip: /help [cmd] pour détails — ex: /help generate');
+
+      // Populate help grid
+      const cards = [
+        ['/generate','génère du texte selon style et longueur'],
+        ['/translate','traduit vers une langue cible'],
+        ['/compress','réduit à une taille cible'],
+        ['/brainstorm','génère N idées créatives'],
+        ['/analyze','analyse sentiment, structure ou style'],
+        ['/invent','invente concept, tech ou fiction'],
+        ['/chain','pipeline de commandes en séquence'],
+        ['/persona','crée un personnage avec voix'],
+        ['/combine','fusionne deux concepts'],
+        ['/future','projette un domaine dans le futur'],
+        ['/rewrite','réécrit avec un ton donné'],
+        ['/summarize','résume en bullet/tldr/paragraph'],
+      ];
+      helpGrid.innerHTML = '';
+      cards.forEach(([name, desc]) => {
+        const d = document.createElement('div');
+        d.className = 'hcard';
+        d.innerHTML = `<div class="hc-name">${esc(name)}</div><div class="hc-desc">${esc(desc)}</div>`;
+        d.onclick = () => quickRun(name);
+        helpGrid.appendChild(d);
+      });
+      helpGrid.classList.add('active');
+    }
+  },
+
+  '/generate': {
+    desc: 'génère du texte structuré selon les paramètres',
+    syntax: '/generate [sujet] --style=[narratif|technique|poétique] --length=[short|medium|long]',
+    flags: ['--style  : narratif | technique | poétique','--length : short | medium | long'],
+    exec(args) {
+      const subj = args.filter(a=>!a.startsWith('--')).join(' ')||'sujet générique';
+      const len = getFlag(args,'length')||'medium';
+      const style = getFlag(args,'style')||'narratif';
+      const words = {short:150,medium:400,long:900};
+      sec('pipeline generate');
+      info('→ tokenize sujet');
+      info('→ construire plan narratif');
+      info('→ rédiger draft');
+      info('→ post-edit & refine');
+      o(`sujet    : "${subj}"`);
+      o(`style    : ${style}`);
+      o(`longueur : ${len} (~${words[len]||400} mots)`);
+      purp(`[output] "${subj.slice(0,50)}${subj.length>50?'...':''}" — texte ${style} ${len} généré`);
+      ok(`artifact produit — 1 document ${len}`);
+    }
+  },
+
+  '/translate': {
+    desc: 'traduit du contenu vers une langue cible',
+    syntax: '/translate [langue] --preserve=[style|structure|both]',
+    flags: ['--preserve : style | structure | both'],
+    exec(args) {
+      const lang = args.filter(a=>!a.startsWith('--'))[0]||'EN';
+      const pres = getFlag(args,'preserve')||'both';
+      const langs = {EN:'anglais',FR:'français',ES:'espagnol',DE:'allemand',ZH:'mandarin',JA:'japonais',AR:'arabe'};
+      sec('pipeline translate');
+      info('→ détection langue source');
+      info('→ alignement sémantique');
+      info(`→ traduction vers ${langs[lang.toUpperCase()]||lang}`);
+      info(`→ préservation: ${pres}`);
+      o(`cible    : ${lang.toUpperCase()} — ${langs[lang.toUpperCase()]||lang}`);
+      o(`mode     : preserve=${pres}`);
+      ok('traduction terminée');
+    }
+  },
+
+  '/compress': {
+    desc: 'réduit un texte à une taille cible',
+    syntax: '/compress [texte?] --target=[50%|30%|tweet]',
+    flags: ['--target : 50% | 30% | tweet (280 chars)'],
+    exec(args) {
+      const t = getFlag(args,'target')||'50%';
+      const map = {'tweet':'→ 280 caractères max','50%':'→ compression ×2','30%':'→ compression ×3'};
+      sec('pipeline compress');
+      info('→ parser structure');
+      info('→ scorer saillance sémantique');
+      info('→ élaguer redondances');
+      info(map[t]||`→ target: ${t}`);
+      o(`target   : ${t}`);
+      ok(`compression appliquée: ${t}`);
+    }
+  },
+
+  '/brainstorm': {
+    desc: 'génère N idées créatives sur un sujet',
+    syntax: '/brainstorm [sujet] --count=[N] --contrainte=[...]',
+    flags: ['--count      : nombre d\'idées (défaut: 5)','--contrainte : contrainte créative'],
+    exec(args) {
+      const subj = args.filter(a=>!a.startsWith('--')).join(' ')||'innovation';
+      const n = Math.min(parseInt(getFlag(args,'count'))||5, 8);
+      const con = getFlag(args,'contrainte')||'aucune';
+      const pool = [
+        'reconfiguration sémantique distribuée',
+        'hybride bio-numérique auto-évolutif',
+        'protocole émergent à consensus zéro',
+        'méta-outil cognitif adaptatif',
+        'boucle rétroactive symbiotique',
+        'infrastructure invisible hyper-locale',
+        'langage gestuel augmenté par IA',
+        'mémoire collective décentralisée',
+      ];
+      sec('idéation');
+      o(`sujet       : "${subj}"`);
+      o(`contrainte  : ${con}`);
+      info('→ activation mode divergent');
+      info('→ cross-domain fusion');
+      info('→ filtre novelty');
+      for(let i=0;i<n;i++) purp(`  ${i+1}. ${pool[i]}`);
+      ok(`${n} idées générées`);
+    }
+  },
+
+  '/analyze': {
+    desc: 'analyse un texte selon différentes dimensions',
+    syntax: '/analyze [texte?] --type=[sentiment|structure|cohérence|style]',
+    flags: ['--type : sentiment | structure | cohérence | style'],
+    exec(args) {
+      const type = getFlag(args,'type')||'sentiment';
+      sec(`analyse: ${type}`);
+      info('→ tokenize → feature extract → score');
+      const r = {
+        sentiment: ['positif  : 42%','neutre   : 35%','négatif  : 23%','polarité : +0.19','subjectivité : 0.61'],
+        structure: ['sections    : 3 détectées','hiérarchie  : h1 > h2 > p','longueur moy par section: 180 mots','densité liens: 0.04'],
+        cohérence: ['score global    : 0.87 / 1.0','transitions faibles : 2','anaphores résolues  : 14/16','score topical : 0.79'],
+        style:     ['registre         : soutenu','densité lexicale : 0.61','ratio hapax      : 0.38','phrases longues  : 34%'],
+      };
+      (r[type]||['analyse générique effectuée']).forEach(l=>o(`  ${l}`));
+      ok('rapport généré');
+    }
+  },
+
+  '/invent': {
+    desc: 'invente un concept, technologie ou fiction',
+    syntax: '/invent --domain=[tech|fiction|concept] --contrainte=[...]',
+    flags: ['--domain     : tech | fiction | concept','--contrainte : contrainte de design'],
+    exec(args) {
+      const dom = getFlag(args,'domain')||'concept';
+      const con = getFlag(args,'contrainte')||'aucune';
+      const inv = {
+        tech:    ['NeuroSync — interface pensée-code à latence <2ms','Protocole HIVE — consensus distribué biomimétique','QuantumCache — stockage à compression fractale adaptative'],
+        fiction: ['Éclats de mémoire — cité flottante alimentée par les rêves collectifs','Les Tisserands du Vide — civilisation construite dans l\'espace entre les étoiles'],
+        concept: ['Entropie créative — principe où le désordre génère de la valeur sémantique','Résonance cognitive — état de synchronisation inconsciente entre agents IA'],
+      };
+      sec('invention');
+      o(`domaine    : ${dom}`);
+      o(`contrainte : ${con}`);
+      info('→ cross-domain fusion');
+      info('→ filtre novelty & faisabilité');
+      info('→ naming & description');
+      const list = inv[dom]||['concept hybride généré'];
+      list.forEach(l=>purp(`  ▸ ${l}`));
+      ok('1 invention produite');
+    }
+  },
+
+  '/chain': {
+    desc: 'exécute un pipeline de commandes en séquence',
+    syntax: '/chain [cmd1] >> [cmd2] >> [cmd3]',
+    exec(args) {
+      const raw = args.join(' ');
+      const cmds = raw.split('>>').map(s=>s.trim()).filter(Boolean);
+      if(!cmds.length){ err('syntaxe: /chain cmd1 >> cmd2 >> cmd3'); return; }
+      sec(`pipeline: ${cmds.length} étapes`);
+      cmds.forEach((c,i)=>{
+        o(`  step ${i+1}: ${c}`);
+        info(`  → exécution ${c.trim().split(' ')[0]}`);
+        ok(`  step ${i+1} terminé`);
+      });
+      ok(`pipeline complet — ${cmds.length} étapes exécutées`);
+    }
+  },
+
+  '/future': {
+    desc: 'projette un domaine dans le futur',
+    syntax: '/future [domaine] --horizon=[5ans|20ans|2100]',
+    flags: ['--horizon : 5ans | 20ans | 2100'],
+    exec(args) {
+      const dom = args.filter(a=>!a.startsWith('--')).join(' ')||'technologie';
+      const h = getFlag(args,'horizon')||'20ans';
+      sec(`projection: ${h}`);
+      info('→ extrapolation tendances actuelles');
+      info('→ modélisation disruptions');
+      info('→ scénarios probables + improbables');
+      o(`domaine  : "${dom}"`);
+      o(`horizon  : ${h}`);
+      purp('scénario A (probable)   : continuité amplifiée des tendances actuelles');
+      purp('scénario B (disruptif)  : rupture technologique ou sociale majeure');
+      purp('scénario C (improbable) : émergence inattendue d\'un nouveau paradigme');
+      ok('3 scénarios générés');
+    }
+  },
+
+  '/persona': {
+    desc: 'crée un personnage avec une voix et des traits',
+    syntax: '/persona [nom] --traits=[...] --voice=[formel|casual|poétique]',
+    flags: ['--traits : liste séparée par virgules','--voice  : formel | casual | poétique'],
+    exec(args) {
+      const nom = args.filter(a=>!a.startsWith('--'))[0]||'Agent X';
+      const traits = getFlag(args,'traits')||'curieux, analytique';
+      const voice = getFlag(args,'voice')||'neutre';
+      sec('persona');
+      o(`nom      : ${nom}`);
+      o(`traits   : ${traits}`);
+      o(`voix     : ${voice}`);
+      info('→ modélisation psychologique');
+      info('→ calibration registre linguistique');
+      purp(`[${nom}] persona activé — prêt pour /dialogue`);
+      ok('persona créé');
+    }
+  },
+
+  '/combine': {
+    desc: 'fusionne deux concepts pour créer quelque chose de nouveau',
+    syntax: '/combine [concept_A] + [concept_B]',
+    exec(args) {
+      const raw = args.join(' ');
+      const parts = raw.split('+').map(s=>s.trim().replace(/['"]/g,''));
+      const A = parts[0]||'concept A';
+      const B = parts[1]||'concept B';
+      sec('fusion conceptuelle');
+      info('→ extraction attributs A');
+      info('→ extraction attributs B');
+      info('→ intersection sémantique');
+      info('→ synthèse hybride');
+      o(`A : "${A}"`);
+      o(`B : "${B}"`);
+      purp(`fusion → "${A}-${B}" : système hybride intégrant les dynamiques de ${A} appliquées à l\'architecture de ${B}`);
+      ok('concept fusionné généré');
+    }
+  },
+
+  '/rewrite': {
+    desc: 'réécrit un texte avec un ton donné',
+    syntax: '/rewrite [texte?] --tone=[formel|casual|agressif|neutre|poétique]',
+    flags: ['--tone : formel | casual | agressif | neutre | poétique'],
+    exec(args) {
+      const tone = getFlag(args,'tone')||'neutre';
+      sec('réécriture');
+      info('→ parse structure syntaxique');
+      info(`→ remap registre: ${tone}`);
+      info('→ reconstruction cohérente');
+      o(`ton cible : ${tone}`);
+      ok('réécriture terminée');
+    }
+  },
+
+  '/summarize': {
+    desc: 'résume un texte dans un format donné',
+    syntax: '/summarize [texte?] --format=[bullet|paragraph|tldr]',
+    flags: ['--format : bullet | paragraph | tldr'],
+    exec(args) {
+      const fmt = getFlag(args,'format')||'paragraph';
+      sec('résumé');
+      info('→ extraction points clés');
+      info('→ ranking importance');
+      info('→ synthèse');
+      o(`format : ${fmt}`);
+      ok('résumé prêt');
+    }
+  },
+
+  '/clear': {
+    desc: 'efface le terminal',
+    exec() {
+      out.innerHTML = '';
+      helpGrid.classList.remove('active');
+      info('terminal effacé');
+      gap();
+    }
+  },
+
+  '/history': {
+    desc: 'affiche l\'historique des commandes',
+    exec() {
+      if(!history.length){ amb('historique vide'); return; }
+      sec('historique');
+      history.slice(-10).forEach((c,i)=>o(`  ${i+1}. ${c}`));
+      ok(`${history.length} commande(s) au total`);
+    }
+  },
+
+  '/version': {
+    desc: 'affiche les informations de version',
+    exec() {
+      sec('version info');
+      o('prompt-cmd   : v2.0.0');
+      o('mode         : cyber-core');
+      o('moteur       : html/js vanilla');
+      o('commandes    : '+ Object.keys(CMD_DB).length);
+      purp('cyber-core terminal — autonome, aucune dépendance externe');
+      ok('système opérationnel');
+    }
+  },
+
+  '/export': {
+    desc: 'exporte l\'historique en texte',
+    exec() {
+      if(!history.length){ amb('rien à exporter'); return; }
+      const txt = history.join('\n');
+      const blob = new Blob([txt], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'prompt-cmd-history.txt'; a.click();
+      URL.revokeObjectURL(url);
+      ok('historique exporté: prompt-cmd-history.txt');
+    }
+  },
+};
+
+function parse(raw) {
+  const tokens = raw.trim().match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g)||[];
+  return { name: tokens[0]||'', args: tokens.slice(1) };
+}
+
+function execCmd(input) {
+  const raw = (typeof input==='string' ? input : inp.value).trim();
+  if(!raw) return;
+  inp.value = '';
+
+  history.push(raw);
+  histIdx = history.length;
+  cmdCount++;
+  statCount.textContent = `cmds: ${cmdCount}`;
+
+  cmd_l(raw);
+  helpGrid.classList.remove('active');
+
+  const { name, args } = parse(raw);
+
+  if(CMD_DB[name]) {
+    CMD_DB[name].exec(args);
+  } else {
+    err(`commande non reconnue: ${name}`);
+    info('→ /help pour la liste complète');
+  }
+
+  gap();
+  out.scrollTop = out.scrollHeight;
+}
+
+function quickRun(cmd) {
+  inp.value = cmd;
+  execCmd();
+}
+
+// Keyboard
+inp.addEventListener('keydown', e => {
+  if(e.key === 'Enter') { execCmd(); return; }
+  if(e.key === 'ArrowUp') {
+    e.preventDefault();
+    if(histIdx > 0) { histIdx--; inp.value = history[histIdx]||''; }
+  }
+  if(e.key === 'ArrowDown') {
+    e.preventDefault();
+    if(histIdx < history.length-1) { histIdx++; inp.value = history[histIdx]||''; }
+    else { histIdx = history.length; inp.value = ''; }
+  }
+  if(e.key === 'Tab') {
+    e.preventDefault();
+    const val = inp.value;
+    const matches = Object.keys(CMD_DB).filter(c=>c.startsWith(val));
+    if(matches.length === 1) inp.value = matches[0];
+    else if(matches.length > 1) { info(`suggestions: ${matches.join('  ')}`); gap(); out.scrollTop=out.scrollHeight; }
+  }
+});
+
+// Boot
+execCmd('/version');
+</script>
+</body>
+</html>
