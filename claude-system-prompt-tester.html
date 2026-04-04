@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude System Prompt Tester</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --accent: #00ff9d;
+      --text: #e0e0e0;
+    }
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #1a1a1a;
+      padding: 12px 20px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    button.preset {
+      padding: 6px 12px;
+      background: #222;
+      border: 1px solid #444;
+      color: var(--text);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button.preset.active {
+      background: var(--accent);
+      color: black;
+      border-color: var(--accent);
+    }
+    .controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    select, input[type="range"] {
+      background: #222;
+      color: var(--text);
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 6px;
+    }
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .message {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      line-height: 1.5;
+    }
+    .system { background: #1a3a2a; align-self: flex-start; }
+    .user { background: #2a2a3a; align-self: flex-end; }
+    .assistant { background: #1f2a3a; align-self: flex-start; }
+    .input-area {
+      padding: 15px 20px;
+      background: #1a1a1a;
+      border-top: 1px solid #333;
+    }
+    textarea {
+      width: 100%;
+      background: #222;
+      color: var(--text);
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px;
+      resize: none;
+      min-height: 80px;
+    }
+    .send-btn {
+      margin-top: 8px;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: black;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .stats {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 8px;
+    }
+    .loader {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #333;
+      border-top: 2px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h2>Claude System Prompt Tester</h2>
+    <small>Appel direct API Anthropic depuis le navigateur</small>
+  </div>
+
+  <div class="presets">
+    <button class="preset" data-prompt="Tu es un expert en développement logiciel, précis et technique.">Dev Expert</button>
+    <button class="preset" data-prompt="Tu es Cyber-Core : un expert en cybersécurité, ton style est direct, brutal et sans filtre.">Cyber-Core</button>
+    <button class="preset" data-prompt="Tu es un excellent tuteur pédagogue qui explique simplement et avec des exemples clairs.">Tuteur Pédagogue</button>
+    <button class="preset" data-prompt="Réponds UNIQUEMENT en JSON valide, sans aucun texte supplémentaire.">JSON Only</button>
+    <button class="preset" data-prompt="Tu es un critique acéré : tu donnes un feedback direct, honnête et sans complaisance.">Critique Acéré</button>
+    <button class="preset" data-prompt="Tu es une Persona Libre : adopte le rôle que je te donnerai ensuite.">Persona Libre</button>
+  </div>
+
+  <div class="controls">
+    <select id="model">
+      <option value="claude-sonnet-4">claude-sonnet-4</option>
+      <option value="claude-sonnet-4-6">claude-sonnet-4-6</option>
+      <option value="claude-haiku-4.5">claude-haiku-4.5</option>
+    </select>
+
+    <label>Temp: <input type="range" id="temp" min="0" max="1" step="0.1" value="0.7"> <span id="tempVal">0.7</span></label>
+    <label>Max tokens: <input type="range" id="maxTokens" min="500" max="8000" step="100" value="4000"> <span id="maxVal">4000</span></label>
+  </div>
+</header>
+
+<div class="chat-container">
+  <div id="messages" class="messages"></div>
+
+  <div class="input-area">
+    <textarea id="userInput" placeholder="Tape ton message ici... (Entrée = envoyer, Shift+Entrée = saut de ligne)"></textarea>
+    <button class="send-btn" id="sendBtn">Envoyer</button>
+    <div class="stats" id="stats"></div>
+  </div>
+</div>
+
+<script>
+// ==================== CONFIG ====================
+const API_URL = "https://api.anthropic.com/v1/messages";
+let apiKey = ""; // ← Mets ta clé ici ou ajoute un champ input
+
+// Historique complet (inclut le system prompt)
+let conversation = [];
+
+// ==================== DOM ====================
+const messagesDiv = document.getElementById('messages');
+const userInput = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const modelSelect = document.getElementById('model');
+const tempSlider = document.getElementById('temp');
+const tempVal = document.getElementById('tempVal');
+const maxSlider = document.getElementById('maxTokens');
+const maxVal = document.getElementById('maxVal');
+const statsDiv = document.getElementById('stats');
+
+// Mise à jour sliders en live
+tempSlider.addEventListener('input', () => tempVal.textContent = tempSlider.value);
+maxSlider.addEventListener('input', () => maxVal.textContent = maxSlider.value);
+
+// Presets
+document.querySelectorAll('.preset').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const systemPrompt = btn.getAttribute('data-prompt');
+    // On remplace ou ajoute le prompt système
+    conversation = conversation.filter(msg => msg.role !== "system");
+    conversation.unshift({ role: "system", content: systemPrompt });
+    
+    addMessage("system", `Prompt système activé : ${btn.textContent}`);
+    document.querySelectorAll('.preset').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Ajouter un message dans l'interface
+function addMessage(role, content) {
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  div.textContent = content;
+  messagesDiv.appendChild(div);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// ==================== API CALL ====================
+async function callClaude() {
+  if (!apiKey) {
+    alert("Veuillez entrer votre clé API Anthropic (x-api-key)");
+    return;
+  }
+
+  const userMessage = userInput.value.trim();
+  if (!userMessage) return;
+
+  addMessage("user", userMessage);
+  conversation.push({ role: "user", content: userMessage });
+  userInput.value = "";
+
+  const assistantDiv = document.createElement('div');
+  assistantDiv.className = "message assistant";
+  assistantDiv.innerHTML = '<span class="loader"></span>';
+  messagesDiv.appendChild(assistantDiv);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+  const startTime = Date.now();
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+        "anthropic-dangerous-direct-browser-access": "true"   // Important pour CORS depuis le navigateur
+      },
+      body: JSON.stringify({
+        model: modelSelect.value,
+        max_tokens: parseInt(maxSlider.value),
+        temperature: parseFloat(tempSlider.value),
+        messages: conversation,
+        stream: false   // On commence sans stream (plus simple). On peut l'activer plus tard.
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.error?.message || "Erreur API");
+
+    const reply = data.content[0].text;
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+
+    assistantDiv.innerHTML = reply.replace(/\n/g, '<br>');
+
+    conversation.push({ role: "assistant", content: reply });
+
+    // Stats
+    statsDiv.textContent = `Temps: ${duration}s | Input tokens ≈ ${data.usage?.input_tokens || '?'} | Output tokens ≈ ${data.usage?.output_tokens || '?'}`;
+
+  } catch (err) {
+    assistantDiv.innerHTML = `<strong>Erreur :</strong> ${err.message}`;
+    console.error(err);
+  }
+}
+
+// Envoi
+sendBtn.addEventListener('click', callClaude);
+userInput.addEventListener('keydown', e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    callClaude();
+  }
+});
+</script>
+
+</body>
+</html>
