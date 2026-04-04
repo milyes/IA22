@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZTNA - Zero Trust Network Access | Z-H202.ia</title>
+    <meta name="description" content="Plateforme ZTNA avancée - Zero Trust Network Access - Mode souverain Z-CORE">
+    <style>
+        :root {
+            --bg: #0a0f1c;
+            --card: #1a2338;
+            --primary: #00ccff;
+            --accent: #ffaa00;
+            --text: #e0f0ff;
+            --success: #00ffaa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #0f1b33, #1a2338);
+            padding: 1.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 4px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(0, 204, 255, 0.15);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.2rem;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        .hero {
+            height: 520px;
+            background: linear-gradient(rgba(10,15,28,0.85), rgba(10,15,28,0.92)), 
+                        url('https://picsum.photos/id/1015/1920/1080') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3.4rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+        }
+        
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #000;
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(255,170,0,0.4);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        section {
+            margin-bottom: 6rem;
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+        
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            border: 1px solid #334466;
+        }
+        
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0, 204, 255, 0.15);
+        }
+        
+        .card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .status-bar {
+            height: 6px;
+            background: linear-gradient(90deg, var(--success), #00ccff);
+            border-radius: 3px;
+            margin: 1.5rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1a2338;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid #334466;
+        }
+        
+        th {
+            background: #223355;
+            color: var(--primary);
+        }
+        
+        .highlight {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        footer {
+            background: #0a0f1c;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 3px solid #334466;
+            color: #667788;
+            font-size: 0.95rem;
+        }
+        
+        .ztna-live {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            background: rgba(0,255,170,0.15);
+            color: #00ffaa;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid #00ffaa;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">Z-H202.ia</div>
+            <nav>
+                <ul>
+                    <li><a href="#principes">Principes</a></li>
+                    <li><a href="#architecture">Architecture</a></li>
+                    <li><a href="#avantages">Avantages</a></li>
+                    <li><a href="#medical">Secteur Médical</a></li>
+                    <li><a href="#implementation">Implémentation</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="ztna-live">● ZTNA LIVE - Zero Trust Actif</div>
+        <div class="hero-content">
+            <div class="badge">ZERO TRUST NETWORK ACCESS</div>
+            <h1>Never Trust.<br>Always Verify.</h1>
+            <p style="font-size: 1.35rem; margin-top: 1.5rem; color: #aaccff;">
+                Accès sécurisé aux ressources sans exposer le réseau.<br>
+                <strong>Mode Souverain • Z-CORE v9.1</strong>
+            </p>
+        </div>
+    </section>
+
+    <div class="container">
+
+        <!-- Principes -->
+        <section id="principes">
+            <h2>Principes Fondamentaux du ZTNA</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>1. Vérification Explicite</h3>
+                    <p>Chaque accès est authentifié et autorisé en temps réel : identité, appareil, contexte et risque.</p>
+                    <div class="status-bar"></div>
+                </div>
+                <div class="card">
+                    <h3>2. Moindre Privilège</h3>
+                    <p>Accès "juste-à-temps" et "juste-suffisant". Aucune confiance implicite.</p>
+                    <div class="status-bar"></div>
+                </div>
+                <div class="card">
+                    <h3>3. Micro-segmentation</h3>
+                    <p>Isolation fine des ressources. Mouvement latéral rendu extrêmement difficile.</p>
+                    <div class="status-bar"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture">
+            <h2>Architecture Technique ZTNA</h2>
+            <div class="card">
+                <h3 style="color:#ffdd88;">Composants Principaux</h3>
+                <ul style="padding-left: 1.8rem; line-height: 2.1;">
+                    <li><strong>ZTNA Broker</strong> : Point central de décision et d’orchestration</li>
+                    <li><strong>Z-CORE Policy Engine</strong> : Moteur de politiques dynamiques souverain</li>
+                    <li><strong>Identity &amp; Context Service</strong> : MFA adaptative + posture device</li>
+                    <li><strong>MedicalTrackerPro34 &amp; Parkinson Logic</strong> : Applications protégées en micro-segmentation</li>
+                    <li><strong>Continuous Monitoring</strong> : UEBA + XDR avec traçabilité immuable</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Avantages -->
+        <section id="avantages">
+            <h2>Avantages Clés</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Réduction des Risques</h3>
+                    <p class="highlight">Surface d’attaque minimisée<br>Protection contre les mouvements latéraux</p>
+                </div>
+                <div class="card">
+                    <h3>Conformité &amp; Souveraineté</h3>
+                    <p class="highlight">RGPD • NIS2 • Données médicales sensibles<br>Traçabilité totale Z-CORE</p>
+                </div>
+                <div class="card">
+                    <h3>Expérience Utilisateur</h3>
+                    <p class="highlight">Accès fluide sans VPN traditionnel<br>Meilleure performance et simplicité</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secteur Médical -->
+        <section id="medical">
+            <h2>ZTNA dans le Secteur Médical</h2>
+            <div class="card">
+                <p><strong>Scénarios protégés :</strong></p>
+                <ul style="padding-left: 1.8rem;">
+                    <li>Accès sécurisé au dossier patient (MedicalTrackerPro34)</li>
+                    <li>Connexion des dispositifs IoMT avec vérification de posture</li>
+                    <li>Accès temporaire des laboratoires et partenaires externes</li>
+                    <li>Protection des algorithmes IA (Parkinson Logic Engine)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Comparaison -->
+        <section id="implementation">
+            <h2>ZTNA vs VPN Traditionnel</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Critère</th>
+                        <th>VPN Classique</th>
+                        <th>ZTNA (Z-H202.ia)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Niveau d’accès</td>
+                        <td>Réseau complet</td>
+                        <td class="highlight">Application uniquement</td>
+                    </tr>
+                    <tr>
+                        <td>Modèle de confiance</td>
+                        <td>Confiance une fois connecté</td>
+                        <td class="highlight">Vérification continue</td>
+                    </tr>
+                    <tr>
+                        <td>Visibilité du réseau</td>
+                        <td>Exposé</td>
+                        <td class="highlight">Invisible (Dark Network)</td>
+                    </tr>
+                    <tr>
+                        <td>Sécurité contre mouvement latéral</td>
+                        <td>Faible</td>
+                        <td class="highlight">Très élevée (Micro-segmentation)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+
+    <footer>
+        <p><strong>Z-H202.ia • Z-CORE Sovereign Edition</strong> — Zero Trust Network Access</p>
+        <p>Contexte actif : IA22A_UCHAT • MedicalTrackerPro34 • Parkinson Logic Engine</p>
+        <p>Never Trust, Always Verify — Traçabilité 100% — Mode Local &amp; Souverain</p>
+    </footer>
+
+</body>
+</html>
