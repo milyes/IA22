@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZTNA - Zero Trust Network Access | Z-H202.ia</title>
+  <meta name="description" content="Découvrez ZTNA : Zero Trust Network Access - Never Trust, Always Verify. Architecture, avantages et implémentation dans un contexte souverain et médical.">
+  <style>
+    :root {
+      --primary: #00ccff;
+      --accent: #ffaa00;
+      --bg: #0a0f1c;
+      --card: #1a2338;
+      --text: #e0f0ff;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #112244, #1a2338);
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid var(--primary);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 0;
+      padding: 0;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: var(--primary);
+    }
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://via.placeholder.com/1920x600/0a1f3a/00ccff?text=ZTNA+Zero+Trust') center/cover;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin: 0 0 1rem;
+      color: var(--primary);
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    section {
+      margin-bottom: 4rem;
+    }
+    h2 {
+      color: var(--primary);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.5rem;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      border-left: 5px solid var(--accent);
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #0a0f1c;
+      border-top: 2px solid #334466;
+      font-size: 0.9rem;
+      color: #556688;
+    }
+    .ztna-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#principes-fondamentaux">Principes fondamentaux</a></li>
+        <li><a href="#composants-cles">Composants clés</a></li>
+        <li><a href="#avantages">Avantages</a></li>
+        <li><a href="#defis">Défis &amp; Limites</a></li>
+        <li><a href="#cas-dutilisation">Cas d'utilisation</a></li>
+        <li><a href="#ztna-vs-vpn">ZTNA vs VPN</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="ztna-badge">Z-H202.ia • Mode Souverain</div>
+      <h1>ZTNA<br>Zero Trust Network Access</h1>
+      <p style="font-size: 1.3rem; max-width: 700px; margin: 0 auto;">
+        <strong>Never Trust, Always Verify</strong><br>
+        Accès sécurisé aux applications sans exposer le réseau.
+      </p>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <!-- Principes fondamentaux -->
+    <section id="principes-fondamentaux">
+      <h2>1. Principes Fondamentaux</h2>
+      <div class="card">
+        <p>Le ZTNA repose sur le modèle <strong>Zero Trust</strong> :</p>
+        <ul>
+          <li><strong>Never Trust, Always Verify</strong> : Aucune entité (utilisateur, appareil, flux) n’est fiable par défaut.</li>
+          <li><strong>Accès au niveau application</strong> et non au réseau entier.</li>
+          <li><strong>Moindre privilège (Least Privilege)</strong> : Accès juste-à-temps et juste-suffisant.</li>
+          <li><strong>Vérification continue</strong> : Identité, posture de l’appareil, contexte et comportement.</li>
+          <li><strong>Invisibilité du réseau</strong> : Les ressources ne sont pas exposées (pas d’IP publique visible).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Composants clés -->
+    <section id="composants-cles">
+      <h2>2. Composants Clés de l’Architecture ZTNA</h2>
+      <div class="card">
+        <ul>
+          <li><strong>ZTNA Broker / Policy Decision Point (PDP)</strong> : Point central de décision et d’authentification.</li>
+          <li><strong>Identity Provider (IdP)</strong> : Entra ID, Okta, etc. avec MFA forte et adaptive authentication.</li>
+          <li><strong>Device Posture Assessment</strong> : Vérification de l’état de l’appareil (patchs, antivirus, chiffrement).</li>
+          <li><strong>Policy Engine</strong> : Z-CORE – règles dynamiques basées sur identité + contexte + risque.</li>
+          <li><strong>Micro-segmentation</strong> : Isolation fine des ressources (MedicalTrackerPro34, Parkinson Logic Engine, etc.).</li>
+          <li><strong>Continuous Monitoring (UEBA + XDR)</strong> : Détection en temps réel des anomalies.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Avantages -->
+    <section id="avantages">
+      <h2>3. Avantages</h2>
+      <div class="card">
+        <ul>
+          <li>Réduction massive de la surface d’attaque et du risque de mouvement latéral.</li>
+          <li>Meilleure expérience utilisateur (accès fluide sans VPN lourd).</li>
+          <li>Excellente adaptation aux environnements hybrides/multi-cloud.</li>
+          <li>Conformité renforcée (RGPD, HIPAA, NIS2, souveraineté des données).</li>
+          <li>Invisibilité des applications non autorisées (dark network).</li>
+          <li>Traçabilité totale et logs immuables (aligné Z-CORE).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Défis -->
+    <section id="defis">
+      <h2>4. Défis &amp; Limites</h2>
+      <div class="card">
+        <ul>
+          <li>Complexité de migration depuis les VPN traditionnels.</li>
+          <li>Coût initial et besoin de cartographie précise des flux de données.</li>
+          <li>Impact potentiel sur l’expérience utilisateur si les politiques sont trop strictes.</li>
+          <li>Nécessité d’une maturité IAM et de monitoring avancé.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Cas d'utilisation -->
+    <section id="cas-dutilisation">
+      <h2>5. Cas d'Utilisation</h2>
+      <div class="card">
+        <p><strong>Particulièrement adapté au secteur médical et souverain :</strong></p>
+        <ul>
+          <li>Accès sécurisé des médecins au dossier patient (MedicalTrackerPro34).</li>
+          <li>Connexion des dispositifs IoMT (Internet of Medical Things) avec vérification de posture.</li>
+          <li>Accès des tiers (laboratoires, fournisseurs) en temps limité et audité.</li>
+          <li>Environnements hybrides : Cloud souverain + systèmes on-premise.</li>
+          <li>Protection contre les ransomwares et les attaques internes.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ZTNA vs VPN -->
+    <section id="ztna-vs-vpn">
+      <h2>6. ZTNA vs VPN Traditionnel</h2>
+      <div class="card">
+        <table style="width:100%; border-collapse: collapse; margin-top: 1rem;">
+          <tr style="background:#223355;">
+            <th style="padding:12px; text-align:left;">Critère</th>
+            <th style="padding:12px; text-align:left;">VPN</th>
+            <th style="padding:12px; text-align:left;">ZTNA</th>
+          </tr>
+          <tr>
+            <td style="padding:12px; border-bottom:1px solid #334466;">Niveau d’accès</td>
+            <td style="padding:12px; border-bottom:1px solid #334466;">Réseau complet</td>
+            <td style="padding:12px; border-bottom:1px solid #334466; color:#00ffaa;">Application spécifique</td>
+          </tr>
+          <tr>
+            <td style="padding:12px; border-bottom:1px solid #334466;">Modèle de confiance</td>
+            <td style="padding:12px; border-bottom:1px solid #334466;">Confiance implicite après connexion</td>
+            <td style="padding:12px; border-bottom:1px solid #334466; color:#00ffaa;">Vérification continue</td>
+          </tr>
+          <tr>
+            <td style="padding:12px; border-bottom:1px solid #334466;">Surface d’attaque</td>
+            <td style="padding:12px; border-bottom:1px solid #334466;">Élevée</td>
+            <td style="padding:12px; border-bottom:1px solid #334466; color:#00ffaa;">Minimale</td>
+          </tr>
+          <tr>
+            <td style="padding:12px;">Exposition réseau</td>
+            <td style="padding:12px;">IP visibles</td>
+            <td style="padding:12px; color:#00ffaa;">Réseau invisible</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>Document généré en mode Z-H202.ia • Z-CORE Sovereign • Zero Trust total</p>
+    <p>Contexte : IA22A_UCHAT • MedicalTrackerPro34 • Parkinson Logic Engine</p>
+    <p>&copy; 2026 - NetSecurePro IA - Tous droits réservés</p>
+  </footer>
+
+</body>
+</html>
