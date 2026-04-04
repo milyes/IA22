@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIMEDIAB - Détection du Diabète</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        input[type=range] { accent-color: #2563eb; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+<div class="max-w-4xl mx-auto py-10 px-4" x-data="diabetesPredictor()">
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-extrabold text-blue-700 mb-2">🧪 AIMEDIAB</h1>
+        <p class="text-gray-600">Détection du risque de diabète par Intelligence Artificielle</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="md:col-span-1 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2">📝 Informations</h2>
+            
+            <template x-for="(param, key) in inputs" :key="key">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" x-text="param.label"></label>
+                    <input type="range" :min="param.min" :max="param.max" :step="param.step" 
+                           x-model.number="param.value" 
+                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span x-text="param.min"></span>
+                        <span class="font-bold text-blue-600" x-text="param.value"></span>
+                        <span x-text="param.max"></span>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <div class="md:col-span-2 space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h2 class="text-lg font-bold mb-4">📋 Données du patient</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-700">
+                                <th class="p-2 border">Grossesses</th>
+                                <th class="p-2 border">Glucose</th>
+                                <th class="p-2 border">Pression</th>
+                                <th class="p-2 border">IMC</th>
+                                <th class="p-2 border">Âge</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-2 border" x-text="inputs.pregnancies.value"></td>
+                                <td class="p-2 border font-bold" x-text="inputs.glucose.value"></td>
+                                <td class="p-2 border" x-text="inputs.blood_pressure.value"></td>
+                                <td class="p-2 border text-blue-600 font-bold" x-text="inputs.bmi.value"></td>
+                                <td class="p-2 border" x-text="inputs.age.value"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center">
+                <h2 class="text-lg font-bold mb-4">🔍 Résultat de la prédiction</h2>
+                
+                <div x-show="probability >= 50" class="p-4 bg-red-100 text-red-700 rounded-lg mb-4">
+                    <span class="text-2xl font-bold">⚠️ Diabétique (Risque élevé)</span>
+                </div>
+                <div x-show="probability < 50" class="p-4 bg-green-100 text-green-700 rounded-lg mb-4">
+                    <span class="text-2xl font-bold">✅ Non diabétique</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500">Risque estimé</p>
+                        <p class="text-2xl font-black text-blue-600" x-text="probability + '%'"></p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500">Confiance</p>
+                        <p class="text-2xl font-black text-gray-700" x-text="Math.abs(50 - probability) * 2 + '%'"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                <div class="flex">
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700">
+                            ⚠️ <strong>Note :</strong> Cette application utilise une simulation de régression logistique basée sur le dataset Pima Indians. Consultez un médecin pour tout diagnostic officiel.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function diabetesPredictor() {
+    return {
+        inputs: {
+            pregnancies: { label: "Nombre de grossesses", min: 0, max: 17, step: 1, value: 1 },
+            glucose: { label: "Taux de glucose (mg/dL)", min: 0, max: 200, step: 1, value: 110 },
+            blood_pressure: { label: "Pression artérielle (mm Hg)", min: 0, max: 122, step: 1, value: 70 },
+            skin_thickness: { label: "Épaisseur du pli cutané (mm)", min: 0, max: 99, step: 1, value: 20 },
+            insulin: { label: "Insuline sérique (mu U/ml)", min: 0, max: 846, step: 1, value: 79 },
+            bmi: { label: "Indice de masse corporelle (IMC)", min: 0, max: 67, step: 0.1, value: 32 },
+            dpf: { label: "Fonction pedigree", min: 0, max: 2.5, step: 0.01, value: 0.47 },
+            age: { label: "Âge (années)", min: 21, max: 88, step: 1, value: 33 }
+        },
+        
+        get probability() {
+            // Algorithme de prédiction simplifié (Coefficients de régression logistique)
+            // Ces poids simulent le comportement du modèle Random Forest
+            let score = -5.0; // Intercept
+            score += this.inputs.pregnancies.value * 0.12;
+            score += this.inputs.glucose.value * 0.035;
+            score += this.inputs.blood_pressure.value * -0.013;
+            score += this.inputs.skin_thickness.value * 0.001;
+            score += this.inputs.insulin.value * -0.001;
+            score += this.inputs.bmi.value * 0.08;
+            score += this.inputs.dpf.value * 0.9;
+            score += this.inputs.age.value * 0.015;
+
+            // Fonction Sigmoïde pour obtenir une probabilité entre 0 et 1
+            let prob = 1 / (1 + Math.exp(-score));
+            return Math.round(prob * 100);
+        }
+    }
+}
+</script>
+</body>
+</html>
