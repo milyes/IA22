@@ -3,100 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Z-H202.ia | Command Center</title>
+    <title>Z-H202.ia | Autonomous Command Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #050a10; color: #e2e8f0; font-family: 'Inter', sans-serif; }
-        .glow-border { border: 1px solid rgba(0, 255, 242, 0.2); box-shadow: 0 0 15px rgba(0, 255, 242, 0.05); }
-        .layer-card { transition: all 0.3s ease; }
-        .layer-card:hover { transform: translateY(-5px); border-color: #00fff2; }
+        :root { --neon-cyan: #00fff2; --neon-purple: #bc13fe; }
+        body { font-family: 'Inter', sans-serif; background: #020617; color: #f8fafc; overflow-x: hidden; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-cyan { box-shadow: 0 0 20px rgba(0, 255, 242, 0.15); border: 1px solid rgba(0, 255, 242, 0.3); }
+        .layer-active { border-color: var(--neon-cyan); background: rgba(0, 255, 242, 0.05); transform: scale(1.02); }
+        .terminal-scroll::-webkit-scrollbar { width: 4px; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .status-dot { animation: pulse-dot 1.5s infinite; }
     </style>
 </head>
-<body class="p-8">
-    <header class="mb-12 flex justify-between items-center border-b border-gray-800 pb-6">
-        <div>
-            <h1 class="text-4xl font-bold text-cyan-400 tracking-tighter">Z-H202.ia</h1>
-            <p class="text-gray-400 uppercase text-xs tracking-widest mt-1">Architecture Système IA Avancée 2026</p>
-        </div>
-        <div class="flex gap-4">
-            <span class="flex items-center gap-2 px-3 py-1 bg-green-900/30 text-green-400 rounded-full text-sm border border-green-500/30">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> SYSTEM ONLINE
-            </span>
-            <span class="px-3 py-1 bg-purple-900/30 text-purple-400 rounded-full text-sm border border-purple-500/30">EU AI ACT COMPLIANT</span>
-        </div>
-    </header>
+<body class="min-h-screen flex flex-col">
 
-    <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <nav class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center font-black text-slate-900">Z</div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tighter text-white">Z-H202<span class="text-cyan-400">.ia</span></h1>
+                <p class="text-[10px] text-slate-500 uppercase tracking-[0.2em] font-bold">Advanced AI Architecture 2026</p>
+            </div>
+        </div>
+        <div class="hidden md:flex gap-6 items-center">
+            <div class="flex items-center gap-2 text-xs font-semibold text-slate-400">
+                <span class="w-2 h-2 bg-green-500 rounded-full status-dot"></span> API GATEWAY: ACTIVE
+            </div>
+            <div class="h-4 w-px bg-slate-700"></div>
+            <div class="text-xs font-bold text-cyan-400 px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded">EU AI ACT COMPLIANT</div>
+        </div>
+    </nav>
+
+    <main class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
         
-        <section class="lg:col-span-1 space-y-6">
-            <div class="glow-border p-6 rounded-xl bg-gray-900/50">
-                <h2 class="text-xl font-semibold mb-4 text-white">Console d'Inférence</h2>
-                <textarea id="prompt" class="w-full bg-black border border-gray-700 rounded-lg p-4 text-sm focus:border-cyan-500 outline-none h-32 mb-4" placeholder="Entrez votre requête technique..."></textarea>
-                <button onclick="simulateInference()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-lg transition-colors">
-                    EXECUTER PIPELINE
+        <div class="lg:col-span-4 space-y-4">
+            <h2 class="text-sm font-bold text-slate-500 uppercase px-2">Stack de Couches (Monitoring)</h2>
+            
+            <div id="L1" class="p-4 rounded-xl border border-slate-800 bg-slate-900/30 transition-all duration-300">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-[10px] font-bold text-red-500 uppercase">Layer 1</span>
+                    <span class="text-[10px] text-slate-500">GOUVERNANCE</span>
+                </div>
+                <div class="text-sm font-semibold">Observabilité & Sécurité</div>
+            </div>
+
+            <div id="L2" class="p-4 rounded-xl border border-slate-800 bg-slate-900/30 transition-all duration-300">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-[10px] font-bold text-green-500 uppercase">Layer 2</span>
+                    <span class="text-[10px] text-slate-500">SERVING</span>
+                </div>
+                <div class="text-sm font-semibold">Inférence & Hybrid Deployment</div>
+            </div>
+
+            <div id="L3" class="p-4 rounded-xl border border-slate-800 bg-slate-900/30 transition-all duration-300">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-[10px] font-bold text-blue-500 uppercase">Layer 3</span>
+                    <span class="text-[10px] text-slate-500">ORCHESTRATION</span>
+                </div>
+                <div class="text-sm font-semibold">Agentic Layer & Reasoning</div>
+            </div>
+
+            <div id="L4" class="p-4 rounded-xl border border-slate-800 bg-slate-900/30 transition-all duration-300">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-[10px] font-bold text-yellow-500 uppercase">Layer 4</span>
+                    <span class="text-[10px] text-slate-500">RETRIEVAL</span>
+                </div>
+                <div class="text-sm font-semibold">Advanced RAG & Hybrid Search</div>
+            </div>
+
+            <div id="L5" class="p-4 rounded-xl border border-slate-800 bg-slate-900/30 transition-all duration-300">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-[10px] font-bold text-purple-500 uppercase">Layer 5</span>
+                    <span class="text-[10px] text-slate-500">MODELS</span>
+                </div>
+                <div class="text-sm font-semibold">LLM / MoE / SLM</div>
+            </div>
+
+            <div id="L6" class="p-4 rounded-xl border border-slate-800 bg-slate-900/30 transition-all duration-300">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-[10px] font-bold text-cyan-500 uppercase">Layer 6</span>
+                    <span class="text-[10px] text-slate-500">DATA</span>
+                </div>
+                <div class="text-sm font-semibold">Vector DB & Embeddings</div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-8 flex flex-col gap-6">
+            
+            <div class="glow-cyan bg-slate-900/80 rounded-2xl p-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    <h3 class="font-bold text-lg">Requête d'Inférence</h3>
+                </div>
+                <textarea id="userInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-cyan-50 focus:ring-2 focus:ring-cyan-500/50 outline-none transition-all h-32 mono text-sm mb-4" placeholder="Ex: Analyser les vulnérabilités réseau sur l'IP 192.168.1.1 avec l'architecture Z-H202..."></textarea>
+                <button onclick="processRequest()" id="btnAction" class="group relative w-full overflow-hidden rounded-xl bg-cyan-600 py-4 font-bold text-white transition-all hover:bg-cyan-500 active:scale-[0.98]">
+                    <span class="relative z-10 flex items-center justify-center gap-2">
+                        LANCER LE PIPELINE <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </span>
                 </button>
             </div>
-            
-            <div class="glow-border p-6 rounded-xl bg-gray-900/50">
-                <h3 class="text-sm font-bold text-gray-500 mb-3 uppercase">Métriques de Gouvernance</h3>
-                <div class="space-y-4">
-                    <div><div class="flex justify-between text-xs mb-1"><span>Précision RAG</span><span>94%</span></div><div class="w-full bg-gray-800 h-1 rounded-full"><div class="bg-cyan-500 h-1 rounded-full" style="width: 94%"></div></div></div>
-                    <div><div class="flex justify-between text-xs mb-1"><span>Score Éthique</span><span>100%</span></div><div class="w-full bg-gray-800 h-1 rounded-full"><div class="bg-purple-500 h-1 rounded-full" style="width: 100%"></div></div></div>
-                </div>
-            </div>
-        </section>
 
-        <section class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="layer-card p-5 rounded-lg border border-red-900/50 bg-red-950/10">
-                <h4 class="text-red-400 font-bold text-xs uppercase">L1 | Gouvernance</h4>
-                <p class="text-sm mt-2 opacity-80">Monitoring, Sécurité & AI Act</p>
-            </div>
-            <div class="layer-card p-5 rounded-lg border border-green-900/50 bg-green-950/10">
-                <h4 class="text-green-400 font-bold text-xs uppercase">L2 | Serving</h4>
-                <p class="text-sm mt-2 opacity-80">API Gateway & Kubernetes</p>
-            </div>
-            <div class="layer-card p-5 rounded-lg border border-blue-900/50 bg-blue-950/10">
-                <h4 class="text-blue-400 font-bold text-xs uppercase">L3 | Orchestration</h4>
-                <p class="text-sm mt-2 opacity-80">Multi-Agents & Reasoning</p>
-            </div>
-            <div class="layer-card p-5 rounded-lg border border-yellow-900/50 bg-yellow-950/10">
-                <h4 class="text-yellow-400 font-bold text-xs uppercase">L4 | RAG Layer</h4>
-                <p class="text-sm mt-2 opacity-80">Semantic & Hybrid Search</p>
-            </div>
-            <div class="md:col-span-2 glow-border p-6 rounded-xl bg-black font-mono text-sm overflow-y-auto h-64 border-cyan-900">
-                <div id="console" class="text-green-500">
-                    > Initialisation du système Z-H202...<br>
-                    > Couches L1-L6 prêtes.<br>
-                    > En attente d'instruction...
+            <div class="flex-grow bg-black rounded-2xl border border-slate-800 flex flex-col overflow-hidden shadow-2xl">
+                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center gap-2">
+                    <div class="flex gap-1.5">
+                        <div class="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-500 ml-2 uppercase mono tracking-widest text-center flex-grow">Logs du Système Z-H202</span>
+                </div>
+                <div id="terminal" class="p-6 text-sm mono text-slate-300 overflow-y-auto h-[400px] terminal-scroll space-y-2">
+                    <div class="text-slate-500 italic">// En attente d'initialisation...</div>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
-    <script>
-        function simulateInference() {
-            const consoleBox = document.getElementById('console');
-            const prompt = document.getElementById('prompt').value;
-            if(!prompt) return alert("Veuillez entrer une requête.");
+    <footer class="p-6 text-center text-slate-600 text-[10px] uppercase tracking-widest font-bold">
+        &copy; 2026 NETSECUREPRO - PROPRIETARY TECHNOLOGY Z-H202.IA
+    </footer>
 
-            const steps = [
-                `> [L1] Validation de sécurité conforme...`,
-                `> [L6] Requête vectorielle envoyée à la DB...`,
-                `> [L4] Contexte récupéré (2 documents)...`,
-                `> [L3] Agentic Layer : Raisonnement en cours...`,
-                `> [L5] Inférence LLM complétée.`,
-                `> [RESULT] Réponse générée avec succès.`
+    <script>
+        const terminal = document.getElementById('terminal');
+        const layers = {
+            L1: document.getElementById('L1'),
+            L2: document.getElementById('L2'),
+            L3: document.getElementById('L3'),
+            L4: document.getElementById('L4'),
+            L5: document.getElementById('L5'),
+            L6: document.getElementById('L6')
+        };
+
+        function addLog(msg, type = 'info') {
+            const colors = {
+                info: 'text-slate-400',
+                success: 'text-green-400',
+                warning: 'text-yellow-400',
+                critical: 'text-red-400',
+                accent: 'text-cyan-400'
+            };
+            const time = new Date().toLocaleTimeString('fr-FR', { hour12: false });
+            terminal.innerHTML += `<div><span class="text-slate-600">[${time}]</span> <span class="${colors[type]}">${msg}</span></div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function highlightLayer(id) {
+            Object.values(layers).forEach(l => l.classList.remove('layer-active', 'glow-cyan'));
+            if(layers[id]) layers[id].classList.add('layer-active', 'glow-cyan');
+        }
+
+        async function processRequest() {
+            const input = document.getElementById('userInput').value;
+            const btn = document.getElementById('btnAction');
+            if(!input) return;
+
+            // Reset & Start
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            terminal.innerHTML = "";
+            addLog("Initialisation du pipeline Z-H202.ia...", "accent");
+
+            const workflow = [
+                { l: 'L1', m: "> [GOUVERNANCE] Validation de l'empreinte de sécurité...", t: 1000, type: 'info' },
+                { l: 'L1', m: "> [GOUVERNANCE] Conformité AI Act vérifiée. Score: 1.0", t: 800, type: 'success' },
+                { l: 'L6', m: "> [DATA] Ingestion de la requête en Vector Space...", t: 1200, type: 'info' },
+                { l: 'L4', m: "> [RETRIEVAL] Recherche Hybride lancée (VDB + Semantic)...", t: 1500, type: 'info' },
+                { l: 'L4', m: "> [RETRIEVAL] 3 fragments de contexte extraits.", t: 800, type: 'success' },
+                { l: 'L3', m: "> [ORCHESTRATION] Planification des agents en cours...", t: 1500, type: 'accent' },
+                { l: 'L3', m: "> [ORCHESTRATION] Raisonnement multi-étapes (Chain of Thought)...", t: 2000, type: 'info' },
+                { l: 'L5', m: "> [MODELS] Inférence via MoE (Mixture of Experts)...", t: 1800, type: 'info' },
+                { l: 'L1', m: "> [GOUVERNANCE] Auto-Critique finale avant sortie...", t: 1000, type: 'warning' },
+                { l: 'L2', m: "> [SERVING] Livraison du résultat via API Gateway.", t: 800, type: 'success' }
             ];
 
-            let i = 0;
-            const interval = setInterval(() => {
-                if(i < steps.length) {
-                    consoleBox.innerHTML += `<br><span class="text-cyan-400">${steps[i]}</span>`;
-                    i++;
-                } else {
-                    clearInterval(interval);
-                }
-            }, 600);
+            for (const step of workflow) {
+                highlightLayer(step.l);
+                addLog(step.m, step.type);
+                await new Promise(r => setTimeout(r, step.t));
+            }
+
+            addLog("--- ANALYSE TERMINÉE ---", "success");
+            addLog(`RÉSULTAT : Le système a traité "${input.substring(0, 30)}..." avec succès via l'architecture NetSecurePro.`, "accent");
+            
+            highlightLayer(null);
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
     </script>
 </body>
