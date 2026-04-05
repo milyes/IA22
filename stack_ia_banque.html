@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Stack IA Hybride — Banque</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f1117; color: #e2e8f0; margin: 0; padding: 20px; }
+  h1 { text-align: center; font-size: 1.3rem; font-weight: 600; color: #94a3b8; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .subtitle { text-align: center; font-size: 0.75rem; color: #475569; margin-bottom: 28px; }
+  .diagram { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+
+  /* USER ROW */
+  .user-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 4px; }
+  .user-box { flex: 1; max-width: 220px; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 10px 14px; text-align: center; cursor: pointer; transition: border-color .2s; }
+  .user-box:hover { border-color: #64748b; }
+  .user-box .label { font-size: 0.82rem; font-weight: 600; color: #cbd5e1; }
+  .user-box .sub { font-size: 0.68rem; color: #64748b; margin-top: 2px; }
+
+  /* ARROW */
+  .arrow { text-align: center; color: #334155; font-size: 1.1rem; line-height: 1; }
+  .arrow.bi { color: #334155; }
+
+  /* TIER */
+  .tier { border-radius: 14px; padding: 14px 14px 12px; border: 1px dashed; }
+  .tier-header { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .tier-header .desc { font-weight: 400; opacity: 0.65; letter-spacing: 0; font-size: 0.68rem; }
+  .tier-components { display: flex; gap: 8px; }
+  .component { flex: 1; border-radius: 9px; padding: 10px 12px; text-align: center; cursor: pointer; transition: opacity .2s; border: 1px solid transparent; }
+  .component:hover { opacity: 0.82; }
+  .component .c-label { font-size: 0.78rem; font-weight: 600; margin-bottom: 3px; }
+  .component .c-sub { font-size: 0.64rem; opacity: 0.75; }
+
+  /* TIER COLORS */
+  .tier-edge   { background: #0d2318; border-color: #1D9E75; }
+  .tier-edge   .tier-header { color: #4ade80; }
+  .tier-edge   .component { background: #112b1e; border-color: #1a5c40; }
+  .tier-edge   .c-label { color: #6ee7b7; }
+
+  .tier-sec    { background: #251c09; border-color: #BA7517; }
+  .tier-sec    .tier-header { color: #fbbf24; }
+  .tier-sec    .component { background: #2e2108; border-color: #7a4e0a; }
+  .tier-sec    .c-label { color: #fcd34d; }
+
+  .tier-cloud  { background: #0d1b2e; border-color: #378ADD; }
+  .tier-cloud  .tier-header { color: #60a5fa; }
+  .tier-cloud  .component { background: #0f2240; border-color: #1e4d8c; }
+  .tier-cloud  .c-label { color: #93c5fd; }
+
+  .tier-onprem { background: #1a1240; border-color: #7F77DD; }
+  .tier-onprem .tier-header { color: #a78bfa; }
+  .tier-onprem .component { background: #211654; border-color: #4c3aab; }
+  .tier-onprem .c-label { color: #c4b5fd; }
+
+  .tier-gov    { background: #2a1108; border-color: #D85A30; }
+  .tier-gov    .tier-header { color: #fb923c; }
+  .tier-gov    .component { background: #341508; border-color: #8b3410; }
+  .tier-gov    .c-label { color: #fdba74; }
+
+  .tier-obs    { background: #141414; border-color: #888780; }
+  .tier-obs    .tier-header { color: #94a3b8; }
+  .tier-obs    .component { background: #1c1c1c; border-color: #3f3f3f; }
+  .tier-obs    .c-label { color: #cbd5e1; }
+
+  /* BADGE */
+  .badge { font-size: 0.6rem; background: rgba(255,255,255,0.08); border-radius: 4px; padding: 1px 6px; color: #94a3b8; }
+
+  /* TOOLTIP */
+  #tooltip { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 8px 16px;
+    font-size: 0.72rem; color: #94a3b8; max-width: 420px; text-align: center;
+    display: none; z-index: 100; }
+
+  .legend { display: flex; gap: 16px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+  .leg-item { font-size: 0.65rem; color: #475569; display: flex; align-items: center; gap: 5px; }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<h1>✅ STACK IA HYBRIDE — INSTITUTION BANCAIRE</h1>
+<p class="subtitle">Architecture tiered · Sécurité maximale · Conformité RGPD · DORA · Bâle III · AI Act EU</p>
+
+<div class="diagram">
+
+  <!-- UTILISATEURS -->
+  <div class="user-row">
+    <div class="user-box" onclick="tip('Canal Web : portail bancaire sécurisé HTTPS/TLS 1.3, SPA React avec authentification SSO')">
+      <div class="label">🖥 Web Banking</div>
+      <div class="sub">Clients particuliers &amp; pros</div>
+    </div>
+    <div class="user-box" onclick="tip('Canal Mobile : app iOS/Android avec biométrie FIDO2, notifications push chiffrées, mode hors-ligne partiel')">
+      <div class="label">📱 Mobile App</div>
+      <div class="sub">iOS &amp; Android</div>
+    </div>
+    <div class="user-box" onclick="tip('Canal Conseiller : poste de travail sécurisé en agence, accès aux outils IA d\'aide à la décision et résumés clients')">
+      <div class="label">👤 Conseiller</div>
+      <div class="sub">Chargés de clientèle</div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- EDGE -->
+  <div class="tier tier-edge">
+    <div class="tier-header">EDGE <span class="badge">&lt; 50ms</span> <span class="desc">Agences &amp; Mobile · SLM local · cache sémantique</span></div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('SLM Local (Phi-4 mini) : modèle léger déployé directement en agence ou sur device. Répond aux requêtes simples hors connexion cloud. Quantization INT4, ~2GB RAM.')">
+        <div class="c-label">SLM Local</div>
+        <div class="c-sub">Phi-4 mini · offline</div>
+      </div>
+      <div class="component" onclick="tip('Cache Redis sémantique : stocke les embeddings des Q/R fréquentes. Similarity threshold = 0.92. Réduit les appels LLM de 40-60% selon les benchmarks internes.')">
+        <div class="c-label">Cache Redis</div>
+        <div class="c-sub">FAQ &amp; contexte client</div>
+      </div>
+      <div class="component" onclick="tip('Auth FIDO2 : authentification sans mot de passe via clé matérielle ou biométrie. MFA obligatoire. Conformité PSD2 SCA (Strong Customer Authentication).')">
+        <div class="c-label">Auth FIDO2</div>
+        <div class="c-sub">MFA · biométrie · PSD2</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- SÉCURITÉ -->
+  <div class="tier tier-sec">
+    <div class="tier-header">SÉCURITÉ <span class="badge">Zero Trust</span> <span class="desc">Périmètre · DMZ · WAF · IAM</span></div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('WAF + Anti-DDoS (Cloudflare / F5 Advanced WAF) : protection contre injections SQL, XSS, attaques L7. Rate limiting par IP/user. Détection des prompt injections sur l\'API IA.')">
+        <div class="c-label">WAF / Anti-DDoS</div>
+        <div class="c-sub">Protection périmètre L7</div>
+      </div>
+      <div class="component" onclick="tip('API Gateway (Kong / AWS API GW) : routage intelligent vers cloud ou on-prem selon classification des données. JWT validation, OAuth 2.0, rate limiting par profil client.')">
+        <div class="c-label">API Gateway</div>
+        <div class="c-sub">Rate limit · JWT · OAuth 2.0</div>
+      </div>
+      <div class="component" onclick="tip('IAM / SSO (Okta / Ping Identity) : gestion des identités centralisée. RBAC granulaire par rôle bancaire (Teller, Advisor, Manager, Compliance). Least privilege enforced.')">
+        <div class="c-label">IAM / SSO</div>
+        <div class="c-sub">RBAC · least privilege</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- CLOUD -->
+  <div class="tier tier-cloud">
+    <div class="tier-header">CLOUD <span class="badge">~200ms</span> <span class="desc">Traitement IA avancé · données anonymisées uniquement</span></div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('LLM API : Azure OpenAI (région EU, conformité RGPD) pour GPT-4o, ou Claude 3.7 via API Anthropic. Routing dynamique selon coût/latence/disponibilité. Données PII exclues.')">
+        <div class="c-label">LLM API</div>
+        <div class="c-sub">GPT-4o · Claude · EU region</div>
+      </div>
+      <div class="component" onclick="tip('RAG Hybride : retrieval dense (BGE-M3 embeddings) + sparse (BM25) avec Reciprocal Rank Fusion. Reranker CrossEncoder Cohere. Sources : docs réglementaires, FAQ, politiques internes.')">
+        <div class="c-label">RAG Hybride</div>
+        <div class="c-sub">Dense + BM25 + rerank</div>
+      </div>
+      <div class="component" onclick="tip('Orchestrateur LangGraph : graphe d\'agents avec mémoire d\'état. Agents spécialisés : ResearchAgent, ComplianceAgent, SynthesisAgent, CriticAgent. Loop de raisonnement avec auto-correction.')">
+        <div class="c-label">Orchestrateur</div>
+        <div class="c-sub">LangGraph · multi-agents</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow bi">⇕ <span style="font-size:.65rem;color:#475569">flux bidirectionnel sécurisé · TLS 1.3 · mTLS</span></div>
+
+  <!-- ON-PREM -->
+  <div class="tier tier-onprem">
+    <div class="tier-header">ON-PREM <span class="badge">Air-gapped</span> <span class="desc">Données sensibles · HSM · PII · KYC · Core Banking</span></div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('LLM Privé (Llama 3.3 70B Q8 via vLLM) : traitement des données PII, KYC, fraude. Déployé sur GPU A100 on-site. Aucune donnée ne quitte l\'infrastructure. Réseau isolé.')">
+        <div class="c-label">LLM Privé</div>
+        <div class="c-sub">Llama 3.3 · PII · KYC</div>
+      </div>
+      <div class="component" onclick="tip('VectorDB Qdrant on-prem : index HNSW sur documents confidentiels (contrats, rapports AML, dossiers clients). Chiffrement AES-256 at rest. Accès par JWT interne uniquement.')">
+        <div class="c-label">VectorDB Qdrant</div>
+        <div class="c-sub">Docs confidentiels · AES-256</div>
+      </div>
+      <div class="component" onclick="tip('Core Banking System (CBS) : Oracle FLEXCUBE / Temenos T24. API REST interne pour consultation des comptes, historique de transactions, scoring crédit. Lecture seule depuis l\'IA.')">
+        <div class="c-label">Core Banking</div>
+        <div class="c-sub">Comptes · transactions · CBS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- GOUVERNANCE -->
+  <div class="tier tier-gov">
+    <div class="tier-header">GOUVERNANCE <span class="badge">RGPD</span> <span class="badge">DORA</span> <span class="badge">Bâle III</span> <span class="desc">Conformité · Guardrails · Audit · AI Act EU</span></div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('Guardrails (NeMo Guardrails + Llama Guard 3) : filtrage input/output. Détection des injections de prompt, contenu financier risqué, conseils non conformes MiFID II. Blocage temps réel.')">
+        <div class="c-label">Guardrails</div>
+        <div class="c-sub">NeMo · Llama Guard 3</div>
+      </div>
+      <div class="component" onclick="tip('Audit Trail immuable (blockchain interne / Immuta) : chaque requête IA horodatée, signée, archivée 7 ans. Conforme DORA Art.11, RGPD Art.30, Bâle III BCBS 239. Export réglementaire.')">
+        <div class="c-label">Audit Trail</div>
+        <div class="c-sub">DORA · RGPD · NIS2 · 7 ans</div>
+      </div>
+      <div class="component" onclick="tip('Explainabilité (SHAP + citations RAG) : chaque réponse IA inclut les sources, le niveau de confiance, et le raisonnement. Conforme AI Act EU (haut risque = explicabilité obligatoire).')">
+        <div class="c-label">Explainabilité</div>
+        <div class="c-sub">Citations · SHAP · sources</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- OBSERVABILITÉ -->
+  <div class="tier tier-obs">
+    <div class="tier-header">OBSERVABILITÉ <span class="badge">24/7</span> <span class="desc">Monitoring · SLA 99.9% · alertes · SIEM</span></div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('LangSmith / Langfuse : traces complètes des chaînes IA (latence, tokens, coût, faithfulness RAGAS). Évaluation automatique des réponses. Dashboard qualité par use case.')">
+        <div class="c-label">LangSmith</div>
+        <div class="c-sub">Traces · RAGAS · évaluations</div>
+      </div>
+      <div class="component" onclick="tip('Prometheus + Grafana : métriques infrastructure (GPU util, TTFT, throughput tokens/s, taux d\'erreur). Alertes PagerDuty si TTFT > 3s ou hallucination rate > 3%.')">
+        <div class="c-label">Prometheus</div>
+        <div class="c-sub">Métriques · Grafana · alertes</div>
+      </div>
+      <div class="component" onclick="tip('SIEM Splunk : corrélation des logs de sécurité IA + réseau + accès. Détection d\'anomalies comportementales, tentatives de jailbreak, exfiltration de données. SOC 24/7.')">
+        <div class="c-label">SIEM Splunk</div>
+        <div class="c-sub">Incidents sécurité · SOC 24/7</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="legend">
+  <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div> EDGE — local &lt;50ms</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#BA7517"></div> SÉCURITÉ — Zero Trust</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div> CLOUD — données anonymes</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#7F77DD"></div> ON-PREM — données sensibles</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#D85A30"></div> GOUVERNANCE — conformité</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#888780"></div> OBSERVABILITÉ — 24/7</div>
+</div>
+<p style="text-align:center;font-size:.65rem;color:#334155;margin-top:14px;">Cliquez sur chaque composant pour afficher les détails techniques ↓</p>
+
+<div id="tooltip"></div>
+
+<script>
+function tip(msg) {
+  var t = document.getElementById('tooltip');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.style.display='none'; }, 6000);
+}
+</script>
+</body>
+</html>
