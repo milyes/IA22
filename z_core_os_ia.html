@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z-CORE OS IA — Architecture Souveraine 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #05070d;
+    --bg2: #080b14;
+    --bg3: #0c0f1a;
+    --blue: #5b8fff;
+    --cyan: #3dffc0;
+    --violet: #a78bfa;
+    --coral: #ff6b6b;
+    --blue-dim: rgba(91,143,255,0.08);
+    --cyan-dim: rgba(61,255,192,0.08);
+    --violet-dim: rgba(167,139,250,0.1);
+    --coral-dim: rgba(255,107,107,0.08);
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #475569;
+    --border: rgba(255,255,255,0.06);
+    --mono: 'DM Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(91,143,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(91,143,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SCANLINE OVERLAY */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* HEADER */
+  header {
+    padding: 48px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .header-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-tag::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+
+  h1 span { color: var(--violet); font-style: italic; }
+
+  .header-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .header-sub span { color: var(--text2); }
+
+  /* FLUX BAR */
+  .flux-bar {
+    background: rgba(5,7,13,0.9);
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 10px;
+    padding: 16px 24px;
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .flux-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(167,139,250,0.05), transparent);
+    pointer-events: none;
+  }
+
+  .flux-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--violet);
+    text-transform: uppercase;
+    margin-right: 20px;
+    white-space: nowrap;
+  }
+
+  .flux-steps {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .flux-step {
+    font-size: 11px;
+    color: var(--text2);
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .flux-step:hover { border-color: var(--violet); color: var(--violet); }
+
+  .flux-step.highlight { border-color: rgba(167,139,250,0.4); color: var(--violet); background: rgba(167,139,250,0.08); }
+
+  .flux-arrow {
+    color: var(--text3);
+    margin: 0 6px;
+    font-size: 12px;
+  }
+
+  .flux-step.end { border-color: rgba(61,255,192,0.4); color: var(--cyan); background: rgba(61,255,192,0.06); }
+
+  /* LAYERS */
+  .layers { display: flex; flex-direction: column; gap: 12px; }
+
+  .layer {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .layer:hover { border-color: rgba(255,255,255,0.12); }
+  .layer.open { border-color: var(--layer-color, var(--border)); }
+
+  .layer-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    background: var(--bg2);
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .layer:hover .layer-header { background: var(--bg3); }
+  .layer.open .layer-header { background: var(--bg3); }
+
+  .layer-num {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--layer-color);
+    border: 1px solid var(--layer-color);
+    border-radius: 4px;
+    padding: 2px 7px;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  .layer-title {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .layer-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text3);
+  }
+
+  .layer-chevron {
+    color: var(--text3);
+    font-size: 14px;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .layer.open .layer-chevron { transform: rotate(180deg); color: var(--layer-color); }
+
+  .layer-body {
+    display: none;
+    padding: 0 24px 24px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+  }
+
+  .layer.open .layer-body { display: block; }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .card {
+    background: var(--bg);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--layer-color);
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+
+  .card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-1px); }
+  .card:hover::before { opacity: 1; }
+
+  .card-name {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--layer-color);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--layer-color);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .card-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .card-items li {
+    font-size: 11px;
+    color: var(--text3);
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .card-items li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--layer-color);
+    opacity: 0.5;
+  }
+
+  /* LAYER COLORS */
+  .layer-c5 { --layer-color: #ff6b6b; }
+  .layer-c4 { --layer-color: #3dffc0; }
+  .layer-c3 { --layer-color: #a78bfa; }
+  .layer-c2 { --layer-color: #5b8fff; }
+  .layer-c1 { --layer-color: #ff6b6b; }
+  .layer-c0 { --layer-color: #3dffc0; }
+
+  /* C3 special highlight */
+  .layer-c3 {
+    box-shadow: 0 0 0 1px rgba(167,139,250,0.2), 0 0 40px rgba(167,139,250,0.05);
+  }
+
+  .layer-c3.open {
+    box-shadow: 0 0 0 1px rgba(167,139,250,0.5), 0 0 60px rgba(167,139,250,0.1);
+  }
+
+  .sovereign-badge {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: rgba(167,139,250,0.15);
+    color: var(--violet);
+    border: 1px solid rgba(167,139,250,0.3);
+    text-transform: uppercase;
+  }
+
+  /* STATS BAR */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .stat {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-style: italic;
+    color: var(--cyan);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .layer { animation: fadeIn 0.4s ease both; }
+  .layer:nth-child(1) { animation-delay: 0.05s; }
+  .layer:nth-child(2) { animation-delay: 0.1s; }
+  .layer:nth-child(3) { animation-delay: 0.15s; }
+  .layer:nth-child(4) { animation-delay: 0.2s; }
+  .layer:nth-child(5) { animation-delay: 0.25s; }
+  .layer:nth-child(6) { animation-delay: 0.3s; }
+
+  /* FOOTER */
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-text { font-size: 10px; color: var(--text3); letter-spacing: 1px; }
+  .footer-badge { font-size: 9px; color: var(--cyan); letter-spacing: 2px; }
+
+  /* EXPAND ALL BTN */
+  .btn-expand {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--text3);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    display: block;
+    margin: 0 auto 24px auto;
+  }
+
+  .btn-expand:hover { border-color: var(--violet); color: var(--violet); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-tag">Système d'Exploitation IA Souverain · v2026.1</div>
+    <h1>Z-CORE OS <span>IA</span></h1>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7;max-width:640px;margin-top:10px;">Architecture souveraine à 6 couches. Local-first, chiffrement bout-en-bout, conformité RGPD, haute disponibilité géo-redondante.</p>
+    <div class="header-sub">
+      <div>Déploiement <span>Montréal + Allemagne</span></div>
+      <div>Stack <span>Debian 12 · Docker · Ollama</span></div>
+      <div>Statut <span style="color:var(--cyan)">● Opérationnel</span></div>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><span class="stat-val">6</span><div class="stat-label">Couches</div></div>
+    <div class="stat"><span class="stat-val">100%</span><div class="stat-label">Local-first</div></div>
+    <div class="stat"><span class="stat-val">E2EE</span><div class="stat-label">Chiffrement</div></div>
+    <div class="stat"><span class="stat-val">99.9%</span><div class="stat-label">Disponibilité</div></div>
+    <div class="stat"><span class="stat-val">RGPD</span><div class="stat-label">Conformité</div></div>
+    <div class="stat"><span class="stat-val">0☁</span><div class="stat-label">Zéro Cloud</div></div>
+  </div>
+
+  <!-- FLUX -->
+  <div class="flux-bar">
+    <div class="flux-label">Flux principal</div>
+    <div class="flux-steps">
+      <div class="flux-step">Utilisateur</div>
+      <div class="flux-arrow">→</div>
+      <div class="flux-step highlight">Kanidm SSO</div>
+      <div class="flux-arrow">→</div>
+      <div class="flux-step">Caddy 2</div>
+      <div class="flux-arrow">→</div>
+      <div class="flux-step highlight">FastAPI GW</div>
+      <div class="flux-arrow">→</div>
+      <div class="flux-step highlight">Orchestrateur</div>
+      <div class="flux-arrow">→</div>
+      <div class="flux-step highlight">Ollama / RAG</div>
+      <div class="flux-arrow">→</div>
+      <div class="flux-step end">Réponse chiffrée ✓</div>
+    </div>
+  </div>
+
+  <button class="btn-expand" onclick="toggleAll()">Tout déplier / replier</button>
+
+  <!-- LAYERS (top = C5, bottom = C0) -->
+  <div class="layers">
+
+    <!-- C5 -->
+    <div class="layer layer-c5" onclick="toggle(this)">
+      <div class="layer-header">
+        <div class="layer-num">C.5</div>
+        <div class="layer-title">Observabilité &amp; Gouvernance</div>
+        <div class="layer-tags">
+          <span class="tag">Monitoring</span>
+          <span class="tag">Backup</span>
+          <span class="tag">RGPD</span>
+        </div>
+        <div class="layer-chevron">▾</div>
+      </div>
+      <div class="layer-body">
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Prometheus + Grafana</div>
+            <ul class="card-items">
+              <li>Scraping métriques toutes les 15s</li>
+              <li>Dashboards temps réel</li>
+              <li>Alertmanager hooks (Slack/Matrix)</li>
+              <li>Rétention 90 jours</li>
+              <li>Node Exporter + cAdvisor</li>
+              <li>Loki pour les logs centralisés</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Backups Restic</div>
+            <ul class="card-items">
+              <li>Chiffrement AES-256 natif</li>
+              <li>Snapshots incrémentiels</li>
+              <li>Destinations: S3 + local + offsite</li>
+              <li>Vérification intégrité auto</li>
+              <li>Rétention 30 jours / 12 mois</li>
+              <li>Restauration testée auto (cron)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Conformité RGPD</div>
+            <ul class="card-items">
+              <li>Audit log immuable (append-only)</li>
+              <li>Purge automatique des données</li>
+              <li>Rapport conformité PDF auto</li>
+              <li>Consentement tracé par utilisateur</li>
+              <li>Article 30 — DPO Ready</li>
+              <li>Droit à l'oubli automatisé</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C4 -->
+    <div class="layer layer-c4" onclick="toggle(this)">
+      <div class="layer-header">
+        <div class="layer-num">C.4</div>
+        <div class="layer-title">Applications Spécialisées</div>
+        <div class="layer-tags">
+          <span class="tag">IA Métier</span>
+          <span class="tag">Médical</span>
+          <span class="tag">Vertical</span>
+        </div>
+        <div class="layer-chevron">▾</div>
+      </div>
+      <div class="layer-body">
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>IA122 Terminal</div>
+            <ul class="card-items">
+              <li>CLI + WebUI React</li>
+              <li>Multi-modèles Ollama intégré</li>
+              <li>Historique de conversation chiffré</li>
+              <li>Export JSON / Markdown / PDF</li>
+              <li>RAG natif sur documents locaux</li>
+              <li>Mode hors-ligne total</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>MedicalTrackerPro34</div>
+            <ul class="card-items">
+              <li>Standard FHIR R4 compatible</li>
+              <li>Alertes proactives par IA</li>
+              <li>Visualisation tendances santé</li>
+              <li>Export rapport PDF médecin</li>
+              <li>Données 100% locales et chiffrées</li>
+              <li>Intégration capteurs wearables</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>IA Parkinson Logic <span style="font-size:9px;color:var(--text3)">(optionnel)</span></div>
+            <ul class="card-items">
+              <li>Analyse tremblements gyroscope</li>
+              <li>Score UPDRS automatisé</li>
+              <li>Rapport médecin PDF auto</li>
+              <li>Capteurs accéléromètre/gyro</li>
+              <li>Suivi longitudinal évolutif</li>
+              <li>Module activable à la demande</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C3 IA SOUVERAINE -->
+    <div class="layer layer-c3 open" onclick="toggle(this)">
+      <div class="layer-header">
+        <div class="layer-num">C.3</div>
+        <div class="layer-title">IA Souveraine — LLM · RAG · Agents</div>
+        <div class="layer-tags">
+          <span class="sovereign-badge">★ Couche Centrale</span>
+          <span class="tag">GPU/CPU</span>
+          <span class="tag">Agentique</span>
+          <span class="tag">Hors-ligne</span>
+        </div>
+        <div class="layer-chevron">▾</div>
+      </div>
+      <div class="layer-body">
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Ollama</div>
+            <ul class="card-items">
+              <li>Llama-3.1 8B / 70B</li>
+              <li>Mistral 7B · Gemma2 · CodeLlama</li>
+              <li>GPU CUDA / CPU GGUF quantisé</li>
+              <li>API OpenAI-compatible (/v1/chat)</li>
+              <li>Modèles interchangeables à chaud</li>
+              <li>Zéro télémétrie — 100% local</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Whisper</div>
+            <ul class="card-items">
+              <li>STT temps réel en continu</li>
+              <li>Modèle large-v3 (meilleure précision)</li>
+              <li>Multilangue: FR / EN / AR / ES</li>
+              <li>Transcription médicale optimisée</li>
+              <li>100% local — zéro cloud</li>
+              <li>Intégration pipeline voix → RAG</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>pgvector</div>
+            <ul class="card-items">
+              <li>Embeddings 1536 dimensions</li>
+              <li>Index HNSW / IVFFlat optimisé</li>
+              <li>Similarité cosine / L2 / IP</li>
+              <li>Intégration PostgreSQL native</li>
+              <li>Backup LUKS automatique</li>
+              <li>Interrogation hybrid dense+sparse</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>FastAPI Gateway IA</div>
+            <ul class="card-items">
+              <li>JWT + Bearer auth par service</li>
+              <li>Rate-limit granulaire par utilisateur</li>
+              <li>Streaming SSE / WebSocket</li>
+              <li>Logging structuré (JSON)</li>
+              <li>Routing intelligent multi-modèle</li>
+              <li>Middleware audit RGPD intégré</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Orchestrateur Agentique</div>
+            <ul class="card-items">
+              <li>LangGraph — workflows d'agents</li>
+              <li>CrewAI — équipes multi-agents</li>
+              <li>Outils custom Python extensibles</li>
+              <li>Mémoire persistante par session</li>
+              <li>Retry automatique + fallback modèle</li>
+              <li>Planification tâches cron IA</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>RAG Souverain</div>
+            <ul class="card-items">
+              <li>Chunking sémantique adaptatif</li>
+              <li>Reranking cross-encodeur</li>
+              <li>Retrieval hybride BM25 + dense</li>
+              <li>Sources: docs · mail · agenda</li>
+              <li>Nextcloud · Stalwart intégrés</li>
+              <li>Mise à jour index en temps réel</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C2 -->
+    <div class="layer layer-c2" onclick="toggle(this)">
+      <div class="layer-header">
+        <div class="layer-num">C.2</div>
+        <div class="layer-title">Services Collaboratifs</div>
+        <div class="layer-tags">
+          <span class="tag">Mail E2EE</span>
+          <span class="tag">Chat</span>
+          <span class="tag">Office</span>
+          <span class="tag">Vault</span>
+        </div>
+        <div class="layer-chevron">▾</div>
+      </div>
+      <div class="layer-body">
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Stalwart Mail</div>
+            <ul class="card-items">
+              <li>SMTP / IMAP / JMAP natif</li>
+              <li>E2EE PGP intégré</li>
+              <li>Anti-spam ML intégré</li>
+              <li>DKIM · DMARC · SPF auto</li>
+              <li>Webmail inclus</li>
+              <li>Archivage conforme RGPD</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Matrix + Element</div>
+            <ul class="card-items">
+              <li>Fédération décentralisée P2P</li>
+              <li>E2EE Megolm par défaut</li>
+              <li>Bridges: Discord · Slack · Telegram</li>
+              <li>Salles chiffrées côté serveur</li>
+              <li>Synapse homeserver</li>
+              <li>Bots automatisés intégrés</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Nextcloud + Collabora</div>
+            <ul class="card-items">
+              <li>Suite Office en ligne (Collabora)</li>
+              <li>Agenda / Contacts (CalDAV)</li>
+              <li>WebDAV / CardDAV compatible</li>
+              <li>Partage chiffré avec expiration</li>
+              <li>Nextcloud Talk (visio)</li>
+              <li>Forms · Photos · Notes</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Vaultwarden</div>
+            <ul class="card-items">
+              <li>Compatible Bitwarden 100%</li>
+              <li>TOTP intégré (2FA)</li>
+              <li>Partage sécurisé d'équipe</li>
+              <li>Audit des accès complet</li>
+              <li>Emergency access configurable</li>
+              <li>Chiffrement AES-256 au repos</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C1 -->
+    <div class="layer layer-c1" onclick="toggle(this)">
+      <div class="layer-header">
+        <div class="layer-num">C.1</div>
+        <div class="layer-title">Sécurité &amp; Identité</div>
+        <div class="layer-tags">
+          <span class="tag">Zero-Trust</span>
+          <span class="tag">MFA</span>
+          <span class="tag">VPN</span>
+          <span class="tag">IDS/IPS</span>
+        </div>
+        <div class="layer-chevron">▾</div>
+      </div>
+      <div class="layer-body">
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Kanidm</div>
+            <ul class="card-items">
+              <li>SSO Rust natif — haute perf.</li>
+              <li>MFA: TOTP · WebAuthn · PassKey</li>
+              <li>OIDC · OAuth2 · LDAP · RADIUS</li>
+              <li>Groupes, rôles, attributs</li>
+              <li>Self-service portal utilisateur</li>
+              <li>Provisioning auto des services</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>WireGuard VPN</div>
+            <ul class="card-items">
+              <li>Tunnel UDP chiffré (Curve25519)</li>
+              <li>ChaCha20-Poly1305 symétrique</li>
+              <li>Kill-switch réseau automatique</li>
+              <li>Split-tunneling configuré</li>
+              <li>Rotation de clés automatique</li>
+              <li>Clients: Linux · Android · iOS</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Fail2ban + CrowdSec</div>
+            <ul class="card-items">
+              <li>Détection bruteforce adaptative</li>
+              <li>Threat Intelligence partagée (CAPI)</li>
+              <li>Bannissement automatique IP</li>
+              <li>Intégration nftables / iptables</li>
+              <li>Scénarios personnalisés YAML</li>
+              <li>Dashboard web CrowdSec intégré</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C0 -->
+    <div class="layer layer-c0" onclick="toggle(this)">
+      <div class="layer-header">
+        <div class="layer-num">C.0</div>
+        <div class="layer-title">Base OS &amp; Infrastructure</div>
+        <div class="layer-tags">
+          <span class="tag">Debian 12</span>
+          <span class="tag">Docker</span>
+          <span class="tag">IaC</span>
+          <span class="tag">HA</span>
+        </div>
+        <div class="layer-chevron">▾</div>
+      </div>
+      <div class="layer-body">
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Debian 12 Bookworm</div>
+            <ul class="card-items">
+              <li>LTS jusqu'en 2028</li>
+              <li>Hardening CIS Level 2</li>
+              <li>AppArmor profils activés</li>
+              <li>Auditd + syslog centralisé</li>
+              <li>Unattended-upgrades sécurité</li>
+              <li>Noyau patché (grsec optionnel)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Docker + Ansible</div>
+            <ul class="card-items">
+              <li>Docker Compose v2 multi-stack</li>
+              <li>Ansible IaC — déploiement reproductible</li>
+              <li>Rollback automatique en cas d'échec</li>
+              <li>Secrets chiffrés (Ansible Vault)</li>
+              <li>Registry Docker privé</li>
+              <li>Healthchecks + restart policies</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Stockage LUKS</div>
+            <ul class="card-items">
+              <li>LUKS2 avec AES-256-XTS</li>
+              <li>TPM2 auto-unlock sécurisé</li>
+              <li>Header LUKS sauvegardé hors-site</li>
+              <li>ZFS snapshots + compression</li>
+              <li>RAID mdadm redondant</li>
+              <li>Données chiffrées au repos total</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-name"><span class="card-dot"></span>Caddy 2 + HA</div>
+            <ul class="card-items">
+              <li>TLS automatique via ACME</li>
+              <li>Proxy HTTP/3 + QUIC</li>
+              <li>Géo-redondant: Montréal + Allemagne</li>
+              <li>Failover automatique 99.9% SLA</li>
+              <li>Load balancing round-robin</li>
+              <li>mTLS inter-services activé</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /layers -->
+
+  <footer>
+    <div class="footer-text">Z-CORE OS IA · Architecture Souveraine · 2026</div>
+    <div class="footer-badge">MADE WITH IA122 TERMINAL</div>
+  </footer>
+
+</div>
+
+<script>
+  function toggle(el) {
+    el.classList.toggle('open');
+  }
+
+  let allOpen = false;
+  function toggleAll() {
+    allOpen = !allOpen;
+    document.querySelectorAll('.layer').forEach(l => {
+      if (allOpen) l.classList.add('open');
+      else l.classList.remove('open');
+    });
+  }
+</script>
+</body>
+</html>
