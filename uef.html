@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>🧪 AIMEDIAB - Détection du diabète (Démo autonome)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #151a2b;
+      --accent: #4cafef;
+      --accent-soft: rgba(76, 175, 239, 0.15);
+      --text: #f5f7ff;
+      --muted: #9aa0c2;
+      --danger: #ff6b81;
+      --success: #4cd964;
+      --border: #262b3f;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-main);
+      background: radial-gradient(circle at top, #1a2340 0, #050712 55%, #020308 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .app-shell {
+      display: flex;
+      flex-direction: row;
+      gap: 24px;
+      padding: 24px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        flex-direction: column;
+      }
+    }
+
+    .panel {
+      background: linear-gradient(145deg, #111628, #090c18);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 20px 22px;
+    }
+
+    .panel-left {
+      flex: 1.1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .title-main {
+      font-size: 1.4rem;
+      font-weight: 650;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-main span.icon {
+      font-size: 1.6rem;
+    }
+
+    .title-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 0.75rem;
+      border: 1px solid var(--accent-soft);
+      background: radial-gradient(circle at top left, #283a5a 0, #101426 60%);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(76, 175, 239, 0.9);
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title span {
+      font-size: 1.1rem;
+    }
+
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 18px;
+    }
+
+    @media (max-width: 700px) {
+      .inputs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field {
+      background: radial-gradient(circle at top left, #1b2238 0, #0c0f1b 55%);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .field-value {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .field input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 999px;
+      background: #262b3f;
+      outline: none;
+    }
+
+    .field input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(76, 175, 239, 0.25);
+      cursor: pointer;
+      border: none;
+    }
+
+    .field input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(76, 175, 239, 0.25);
+      cursor: pointer;
+      border: none;
+    }
+
+    .field input[type="range"]::-moz-range-track {
+      height: 4px;
+      border-radius: 999px;
+      background: #262b3f;
+    }
+
+    .pill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--muted);
+    }
+
+    .btn-primary {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: linear-gradient(135deg, #4cafef, #7b5cff);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 12px 30px rgba(76, 175, 239, 0.35);
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out,
+        filter 0.08s ease-out;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(76, 175, 239, 0.45);
+      filter: brightness(1.05);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 20px rgba(76, 175, 239, 0.3);
+      filter: brightness(0.97);
+    }
+
+    .btn-primary span.icon {
+      font-size: 1.1rem;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1b2238 0, #090c18 60%);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 12px 14px;
+    }
+
+    .result-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .result-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .result-pill {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .result-pill.safe {
+      background: rgba(76, 217, 100, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(76, 217, 100, 0.4);
+    }
+
+    .result-pill.risk {
+      background: rgba(255, 107, 129, 0.12);
+      color: var(--danger);
+      border: 1px solid rgba(255, 107, 129, 0.4);
+    }
+
+    .result-pill span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .proba-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .proba-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .proba-bar {
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: #262b3f;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .proba-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #4cafef, #7b5cff);
+      transition: width 0.18s ease-out;
+    }
+
+    .proba-fill.risk {
+      background: linear-gradient(90deg, #ff6b81, #ff9f7b);
+    }
+
+    .proba-value {
+      width: 46px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .data-card {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px 10px;
+      margin-top: 4px;
+    }
+
+    .data-item {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 999px;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .data-item span.key {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .data-item span.val {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .disclaimer {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.4;
+      border-radius: var(--radius-md);
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+
+    .disclaimer strong {
+      color: #ffd166;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- PANEL GAUCHE : Entrées -->
+    <div class="panel panel-left">
+      <div class="title-row">
+        <div>
+          <div class="title-main">
+            <span class="icon">🧪</span>
+            <span>AIMEDIAB • Détection du diabète</span>
+          </div>
+          <div class="title-sub">
+            Démo autonome côté navigateur — aucune donnée envoyée à un serveur.
+          </div>
+        </div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          IA22 • Cockpit local
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">
+          <span>📝</span>
+          <span>Paramètres patient</span>
+        </div>
+        <div class="inputs-grid">
+          <!-- Grossesses -->
+          <div class="field">
+            <div class="field-label-row">
+              <div class="field-label">Grossesses</div>
+              <div class="field-value"><span id="val-pregnancies">1</span></div>
+            </div>
+            <input id="pregnancies" type="range" min="0" max="17" step="1" value="1" />
+            <div class="pill-row">
+              <div class="pill">0 – 17</div>
+            </div>
+          </div>
+
+          <!-- Glucose -->
+          <div class="field">
+            <div class="field-label-row">
+              <div class="field-label">Taux de glucose</div>
+              <div class="field-value"><span id="val-glucose">110</span> mg/dL</div>
+            </div>
+            <input id="glucose" type="range" min="0" max="200" step="1" value="110" />
+            <div class="pill-row">
+              <div class="pill">0 – 200 mg/dL</div>
+            </div>
+          </div>
+
+          <!-- Pression artérielle -->
+          <div class="field">
+            <div class="field-label-row">
+              <div class="field-label">Pression artérielle</div>
+              <div class="field-value"><span id="val-bp">70</span> mmHg</div>
+            </div>
+            <input id="bp" type="range" min="0" max="122" step="1" value="70" />
+            <div class="pill-row">
+              <div class="pill">0 – 122 mmHg</div>
+            </div>
+          </div>
+
+          <!-- Épaisseur de la peau -->
+          <div class="field">
+            <div class="field-label-row">
+              <div class="field-label">Épaisseur de la peau</div>
+              <div class="field-value"><span id="val-skin">20</span> mm</div>
+            </div>
+            <input id="skin" type="range" min="0" max="99" step="1" value="20" />
+            <div class="pill-row">
+              <div class="pill">0 – 99 mm</div>
+            </div>
+          </div>
+
+          <!-- Insuline -->
+          <div class="field">
+            <div class="field-label-row">
+              <div class="field-label">Insuline</div>
+              <div class="field-value"><span id="val-insulin">79</span> uU/mL</div>
+            </div>
+            <input id="insulin" type="range" min="0" max="846" step="1" value="79" />
+            <div class="pill-row">
+              <div class="pill">0 – 846 uU/mL</div>
+            </div>
+          </div>
+
+          <!-- IMC -->
+          <div class="field">
+            <div class="field-label-row">
+              <div class="field-label">IMC</div>
+              <div class="field-value"><span id="val-bmi">32.0</span></div>
+            </div>
+            <input id="bmi" type="range" min="0" max="67.1" step="0.1" value="32.0" />
+            <div class="pill-row">
+              <div class="pill">0 – 67.1</div>
+            </div>
+          </div>
+
+          <!-- DPF -->
+          <div class="field">
+            <div class="field-label-row">
+              <div class="field-label">Fonction pedigree du diabète</div>
+              <div class="field-value"><span id="val-dpf">0.47</span></div>
+            </div>
+            <input id="dpf" type="range" min="0" max="2.5" step="0.01" value="0.47" />
+            <div class="pill-row">
+              <div class="pill">0 – 2.5</div>
+            </div>
+          </div>
+
+          <!-- Âge -->
+          <div class="field">
+            <div class="field-label-row">
+              <div class="field-label">Âge</div>
+              <div class="field-value"><span id="val-age">33</span> ans</div>
+            </div>
+            <input id="age" type="range" min="21" max="88" step="1" value="33" />
+            <div class="pill-row">
+              <div class="pill">21 – 88 ans</div>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-predict" class="btn-primary">
+          <span class="icon">🔍</span>
+          <span>Lancer la prédiction (démo)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PANEL DROIT : Résultats -->
+    <div class="panel panel-right">
+      <div class="section-title">
+        <span>🔍</span>
+        <span>Résultat de la prédiction</span>
+      </div>
+
+      <div class="card">
+        <div class="result-main">
+          <div class="result-label">
+            🧠 Prédiction (0 = Non diabétique, 1 = Diabétique)
+          </div>
+          <div id="prediction-pill" class="result-pill safe">
+            <span class="dot"></span>
+            <span id="prediction-text">0 • Non diabétique (démo)</span>
+          </div>
+        </div>
+
+        <div class="section-title" style="font-size:0.9rem; margin-top:4px;">
+          <span>📊</span>
+          <span>Probabilités (modèle simplifié)</span>
+        </div>
+
+        <div class="proba-row">
+          <div class="proba-item">
+            <span>Non diabétique</span>
+            <div class="proba-bar">
+              <div id="proba-non" class="proba-fill"></div>
+            </div>
+            <div id="proba-non-val" class="proba-value">0.50</div>
+          </div>
+          <div class="proba-item">
+            <span>Diabétique</span>
+            <div class="proba-bar">
+              <div id="proba-dia" class="proba-fill risk"></div>
+            </div>
+            <div id="proba-dia-val" class="proba-value">0.50</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card data-card">
+        <div class="section-title" style="font-size:0.9rem; margin-bottom:4px;">
+          <span>📋</span>
+          <span>Données saisies</span>
+        </div>
+        <div class="data-grid">
+          <div class="data-item">
+            <span class="key">Grossesses</span>
+            <span id="d-pregnancies" class="val">1</span>
+          </div>
+          <div class="data-item">
+            <span class="key">Glucose</span>
+            <span id="d-glucose" class="val">110</span>
+          </div>
+          <div class="data-item">
+            <span class="key">Pression</span>
+            <span id="d-bp" class="val">70</span>
+          </div>
+          <div class="data-item">
+            <span class="key">Peau</span>
+            <span id="d-skin" class="val">20</span>
+          </div>
+          <div class="data-item">
+            <span class="key">Insuline</span>
+            <span id="d-insulin" class="val">79</span>
+          </div>
+          <div class="data-item">
+            <span class="key">IMC</span>
+            <span id="d-bmi" class="val">32.0</span>
+          </div>
+          <div class="data-item">
+            <span class="key">DPF</span>
+            <span id="d-dpf" class="val">0.47</span>
+          </div>
+          <div class="data-item">
+            <span class="key">Âge</span>
+            <span id="d-age" class="val">33</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        <strong>Important :</strong> cette page est une démonstration purement
+        technique, avec un calcul simplifié côté navigateur. Elle ne constitue
+        en aucun cas un outil de diagnostic médical, ni un avis de santé. Pour
+        toute question concernant le diabète ou votre santé, consultez un
+        professionnel de santé qualifié.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Récupération des éléments ---
+    const sliders = {
+      pregnancies: document.getElementById("pregnancies"),
+      glucose: document.getElementById("glucose"),
+      bp: document.getElementById("bp"),
+      skin: document.getElementById("skin"),
+      insulin: document.getElementById("insulin"),
+      bmi: document.getElementById("bmi"),
+      dpf: document.getElementById("dpf"),
+      age: document.getElementById("age"),
+    };
+
+    const labels = {
+      pregnancies: document.getElementById("val-pregnancies"),
+      glucose: document.getElementById("val-glucose"),
+      bp: document.getElementById("val-bp"),
+      skin: document.getElementById("val-skin"),
+      insulin: document.getElementById("val-insulin"),
+      bmi: document.getElementById("val-bmi"),
+      dpf: document.getElementById("val-dpf"),
+      age: document.getElementById("val-age"),
+    };
+
+    const dataLabels = {
+      pregnancies: document.getElementById("d-pregnancies"),
+      glucose: document.getElementById("d-glucose"),
+      bp: document.getElementById("d-bp"),
+      skin: document.getElementById("d-skin"),
+      insulin: document.getElementById("d-insulin"),
+      bmi: document.getElementById("d-bmi"),
+      dpf: document.getElementById("d-dpf"),
+      age: document.getElementById("d-age"),
+    };
+
+    const btnPredict = document.getElementById("btn-predict");
+    const predictionPill = document.getElementById("prediction-pill");
+    const predictionText = document.getElementById("prediction-text");
+
+    const probaNon = document.getElementById("proba-non");
+    const probaDia = document.getElementById("proba-dia");
+    const probaNonVal = document.getElementById("proba-non-val");
+    const probaDiaVal = document.getElementById("proba-dia-val");
+
+    // --- Mise à jour des labels en temps réel ---
+    Object.keys(sliders).forEach((key) => {
+      const slider = sliders[key];
+      const label = labels[key];
+      const dLabel = dataLabels[key];
+
+      const update = () => {
+        let v = slider.value;
+        if (key === "bmi") {
+          v = parseFloat(v).toFixed(1);
+        } else if (key === "dpf") {
+          v = parseFloat(v).toFixed(2);
+        }
+        label.textContent = v;
+        dLabel.textContent = v;
+      };
+
+      slider.addEventListener("input", update);
+      update();
+    });
+
+    // --- "Modèle" simplifié pour la démo ---
+    function computeDemoProbabilities() {
+      const pregnancies = parseFloat(sliders.pregnancies.value);
+      const glucose = parseFloat(sliders.glucose.value);
+      const bp = parseFloat(sliders.bp.value);
+      const skin = parseFloat(sliders.skin.value);
+      const insulin = parseFloat(sliders.insulin.value);
+      const bmi = parseFloat(sliders.bmi.value);
+      const dpf = parseFloat(sliders.dpf.value);
+      const age = parseFloat(sliders.age.value);
+
+      // Score simplifié, purement illustratif (ce n'est PAS un vrai modèle médical)
+      let score = 0;
+
+      score += (glucose - 100) * 0.03;
+      score += (bmi - 30) * 0.04;
+      score += (age - 35) * 0.02;
+      score += pregnancies * 0.05;
+      score += dpf * 0.8;
+
+      if (insulin > 200) score += 0.6;
+      if (bp < 60) score += 0.4;
+      if (skin > 40) score += 0.3;
+
+      // Sigmoïde pour transformer en pseudo-proba
+      const pDia = 1 / (1 + Math.exp(-score));
+      const pNon = 1 - pDia;
+
+      return { pNon, pDia };
+    }
+
+    function updateUIFromProbabilities(pNon, pDia) {
+      const pNonPct = (pNon * 100).toFixed(0);
+      const pDiaPct = (pDia * 100).toFixed(0);
+
+      probaNon.style.width = pNonPct + "%";
+      probaDia.style.width = pDiaPct + "%";
+
+      probaNonVal.textContent = (pNon).toFixed(2);
+      probaDiaVal.textContent = (pDia).toFixed(2);
+
+      const prediction = pDia >= 0.5 ? 1 : 0;
+
+      if (prediction === 1) {
+        predictionPill.classList.remove("safe");
+        predictionPill.classList.add("risk");
+        predictionText.textContent = "1 • Diabétique (démo)";
+      } else {
+        predictionPill.classList.remove("risk");
+        predictionPill.classList.add("safe");
+        predictionText.textContent = "0 • Non diabétique (démo)";
+      }
+    }
+
+    btnPredict.addEventListener("click", () => {
+      const { pNon, pDia } = computeDemoProbabilities();
+      updateUIFromProbabilities(pNon, pDia);
+    });
+
+    // Initialisation
+    (function init() {
+      const { pNon, pDia } = computeDemoProbabilities();
+      updateUIFromProbabilities(pNon, pDia);
+    })();
+  </script>
+</body>
+</html>
