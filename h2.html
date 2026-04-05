@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z-H202.ia | Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050a10; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .glow-border { border: 1px solid rgba(0, 255, 242, 0.2); box-shadow: 0 0 15px rgba(0, 255, 242, 0.05); }
+        .layer-card { transition: all 0.3s ease; }
+        .layer-card:hover { transform: translateY(-5px); border-color: #00fff2; }
+    </style>
+</head>
+<body class="p-8">
+    <header class="mb-12 flex justify-between items-center border-b border-gray-800 pb-6">
+        <div>
+            <h1 class="text-4xl font-bold text-cyan-400 tracking-tighter">Z-H202.ia</h1>
+            <p class="text-gray-400 uppercase text-xs tracking-widest mt-1">Architecture Système IA Avancée 2026</p>
+        </div>
+        <div class="flex gap-4">
+            <span class="flex items-center gap-2 px-3 py-1 bg-green-900/30 text-green-400 rounded-full text-sm border border-green-500/30">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> SYSTEM ONLINE
+            </span>
+            <span class="px-3 py-1 bg-purple-900/30 text-purple-400 rounded-full text-sm border border-purple-500/30">EU AI ACT COMPLIANT</span>
+        </div>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <section class="lg:col-span-1 space-y-6">
+            <div class="glow-border p-6 rounded-xl bg-gray-900/50">
+                <h2 class="text-xl font-semibold mb-4 text-white">Console d'Inférence</h2>
+                <textarea id="prompt" class="w-full bg-black border border-gray-700 rounded-lg p-4 text-sm focus:border-cyan-500 outline-none h-32 mb-4" placeholder="Entrez votre requête technique..."></textarea>
+                <button onclick="simulateInference()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-lg transition-colors">
+                    EXECUTER PIPELINE
+                </button>
+            </div>
+            
+            <div class="glow-border p-6 rounded-xl bg-gray-900/50">
+                <h3 class="text-sm font-bold text-gray-500 mb-3 uppercase">Métriques de Gouvernance</h3>
+                <div class="space-y-4">
+                    <div><div class="flex justify-between text-xs mb-1"><span>Précision RAG</span><span>94%</span></div><div class="w-full bg-gray-800 h-1 rounded-full"><div class="bg-cyan-500 h-1 rounded-full" style="width: 94%"></div></div></div>
+                    <div><div class="flex justify-between text-xs mb-1"><span>Score Éthique</span><span>100%</span></div><div class="w-full bg-gray-800 h-1 rounded-full"><div class="bg-purple-500 h-1 rounded-full" style="width: 100%"></div></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="layer-card p-5 rounded-lg border border-red-900/50 bg-red-950/10">
+                <h4 class="text-red-400 font-bold text-xs uppercase">L1 | Gouvernance</h4>
+                <p class="text-sm mt-2 opacity-80">Monitoring, Sécurité & AI Act</p>
+            </div>
+            <div class="layer-card p-5 rounded-lg border border-green-900/50 bg-green-950/10">
+                <h4 class="text-green-400 font-bold text-xs uppercase">L2 | Serving</h4>
+                <p class="text-sm mt-2 opacity-80">API Gateway & Kubernetes</p>
+            </div>
+            <div class="layer-card p-5 rounded-lg border border-blue-900/50 bg-blue-950/10">
+                <h4 class="text-blue-400 font-bold text-xs uppercase">L3 | Orchestration</h4>
+                <p class="text-sm mt-2 opacity-80">Multi-Agents & Reasoning</p>
+            </div>
+            <div class="layer-card p-5 rounded-lg border border-yellow-900/50 bg-yellow-950/10">
+                <h4 class="text-yellow-400 font-bold text-xs uppercase">L4 | RAG Layer</h4>
+                <p class="text-sm mt-2 opacity-80">Semantic & Hybrid Search</p>
+            </div>
+            <div class="md:col-span-2 glow-border p-6 rounded-xl bg-black font-mono text-sm overflow-y-auto h-64 border-cyan-900">
+                <div id="console" class="text-green-500">
+                    > Initialisation du système Z-H202...<br>
+                    > Couches L1-L6 prêtes.<br>
+                    > En attente d'instruction...
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function simulateInference() {
+            const consoleBox = document.getElementById('console');
+            const prompt = document.getElementById('prompt').value;
+            if(!prompt) return alert("Veuillez entrer une requête.");
+
+            const steps = [
+                `> [L1] Validation de sécurité conforme...`,
+                `> [L6] Requête vectorielle envoyée à la DB...`,
+                `> [L4] Contexte récupéré (2 documents)...`,
+                `> [L3] Agentic Layer : Raisonnement en cours...`,
+                `> [L5] Inférence LLM complétée.`,
+                `> [RESULT] Réponse générée avec succès.`
+            ];
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if(i < steps.length) {
+                    consoleBox.innerHTML += `<br><span class="text-cyan-400">${steps[i]}</span>`;
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 600);
+        }
+    </script>
+</body>
+</html>
