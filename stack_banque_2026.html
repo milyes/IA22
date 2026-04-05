@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z-H202.ia | Bank AI Stack Monitor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;700&display=swap');
+        
+        body {
+            background-color: #050a10;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .code-font { font-family: 'Fira Code', monospace; }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+        }
+
+        .status-pulse {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .mermaid { background: white; padding: 20px; border-radius: 8px; }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="flex justify-between items-center mb-8 border-b border-sky-900/50 pb-4">
+        <div>
+            <h1 class="text-2xl font-bold text-sky-400">✅ Z-H202.ia <span class="text-xs font-light text-slate-400">V.2026.4</span></h1>
+            <p class="text-sm text-slate-400 uppercase tracking-widest">Hybrid Banking Stack - Performance Mode</p>
+        </div>
+        <div class="text-right">
+            <div class="flex items-center gap-2">
+                <span class="status-pulse"></span>
+                <span class="text-xs font-bold text-emerald-400">SYSTÈME OPÉRATIONNEL</span>
+            </div>
+            <p class="text-[10px] text-slate-500 mt-1 code-font">LATENCY: 12ms | ANONYMIZATION: ACTIVE</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-2 glass-panel p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-sky-400"><path d="M12 2v8"/><path d="m16 6-4 4-4-4"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 18h.01"/><path d="M10 18h.01"/></svg>
+                    Architecture Logicielle Hybride
+                </h2>
+                <span class="text-[10px] bg-sky-500/20 text-sky-400 px-2 py-1 rounded">MERMAID RENDERER</span>
+            </div>
+            
+            <div class="mermaid">
+                graph TD
+                    subgraph Cloud ["ZONE CLOUD PUBLIC (Hautes Performances)"]
+                        LLM_H[MoE Géant 2026]
+                        VDB_C[(Vector DB Publique)]
+                    end
+
+                    subgraph OnPrem ["ZONE BANQUE (On-Premise - Souverain)"]
+                        API[API Gateway & Guardrails]
+                        Router{Semantic Router}
+                        Brain[MoE Local / SLM]
+                        subgraph Data [GraphRAG Engine]
+                            KG[Knowledge Graph]
+                            VDB_L[(Vector DB Privée)]
+                        end
+                        CBS[Core Banking System]
+                    end
+
+                    User((Utilisateur)) --> API
+                    API --> Router
+                    Router -- "PII / Sensible" --> Brain
+                    Router -- "Analytique / Public" --> LLM_H
+                    
+                    Brain <--> Data
+                    Brain --> CBS
+                    LLM_H <--> VDB_C
+                    
+                    style OnPrem fill:#f0f7ff,stroke:#0369a1,stroke-width:2px
+                    style Cloud fill:#fff7ed,stroke:#c2410c,stroke-dasharray: 5 5
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="glass-panel p-6 border-l-4 border-emerald-500">
+                <h3 class="text-sm font-bold text-slate-300 uppercase mb-4">Gouvernance & Sécurité</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span>Filtrage PII (Automatique)</span>
+                            <span class="text-emerald-400 text-xs">100% Secure</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-1.5 rounded-full">
+                            <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span>Taux d'Hallucination (GraphRAG)</span>
+                            <span class="text-sky-400 text-xs">&lt; 0.02%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-1.5 rounded-full">
+                            <div class="bg-sky-500 h-1.5 rounded-full" style="width: 2%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6">
+                <h3 class="text-sm font-bold text-slate-300 uppercase mb-4">Routage Temps Réel</h3>
+                <div id="logs" class="code-font text-[10px] space-y-2 overflow-y-auto max-h-48">
+                    <p class="text-slate-500">[14:22:01] REQ: "Solde compte courant ?" -> ROUTE: LOCAL_MOE</p>
+                    <p class="text-slate-500">[14:22:05] REQ: "Analyse marché NASDAQ" -> ROUTE: CLOUD_LLM</p>
+                    <p class="text-emerald-400">[14:22:12] GUARDRAILS: PII Anonymized (IBAN detected)</p>
+                    <p class="text-slate-500">[14:22:15] REQ: "Credit score simulation" -> ROUTE: AGENTIC_LOOP</p>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 bg-sky-900/10">
+                <h3 class="text-sm font-bold text-sky-400 uppercase mb-2 text-center">Hybrid Tiered Architecture</h3>
+                <p class="text-[11px] text-slate-400 text-center leading-relaxed">
+                    Le modèle hybride 2026 optimise le ratio **Performance/Confidentialité**. 
+                    Le **Semantic Router** agit comme le dispatch central, garantissant que 
+                    le Cloud n'est utilisé que pour le calcul "froid" ou anonymisé.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#f8fafc',
+                primaryTextColor: '#1e293b',
+                lineColor: '#38bdf8',
+                fontSize: '13px'
+            }
+        });
+
+        // Simple Auto-log simulation
+        const logsContainer = document.getElementById('logs');
+        const tasks = [
+            'RAG Query: Knowledge Graph lookup success',
+            'Cloud Sync: Weights updated (MoE)',
+            'Security: Zero-Trust handshake valid',
+            'Model: Switching to Expert_Finance_v4'
+        ];
+
+        setInterval(() => {
+            const time = new Date().toLocaleTimeString();
+            const log = document.createElement('p');
+            log.className = 'text-sky-400/70';
+            log.innerText = `[${time}] SYSTEM: ${tasks[Math.floor(Math.random() * tasks.length)]}`;
+            logsContainer.prepend(log);
+            if (logsContainer.children.length > 8) logsContainer.lastChild.remove();
+        }, 4000);
+    </script>
+</body>
+</html>
