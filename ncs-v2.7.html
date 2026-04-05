@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NetSecurePro IA — NCS-V2.7 Architecture Souveraine</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #0a0c10; color: #e2e8f0; margin: 0; padding: 20px; }
+  h1 { text-align: center; font-size: 1.35rem; font-weight: 700; color: #67e8f9; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .subtitle { text-align: center; font-size: 0.78rem; color: #64748b; margin-bottom: 32px; }
+  .diagram { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+
+  .user-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 8px; }
+  .user-box { flex: 1; max-width: 240px; background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 12px 16px; text-align: center; transition: all .2s; }
+  .user-box:hover { border-color: #67e8f9; transform: translateY(-2px); }
+  .user-box .label { font-size: 0.85rem; font-weight: 600; color: #cbd5e1; }
+  .user-box .sub { font-size: 0.7rem; color: #94a3b8; margin-top: 4px; }
+
+  .arrow { text-align: center; color: #475569; font-size: 1.3rem; margin: 4px 0; }
+
+  .tier { border-radius: 16px; padding: 16px 14px 14px; border: 1px dashed; }
+  .tier-header { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .tier-header .desc { font-weight: 400; opacity: 0.7; font-size: 0.7rem; }
+
+  .tier-components { display: flex; gap: 10px; flex-wrap: wrap; }
+  .component { flex: 1; min-width: 180px; border-radius: 10px; padding: 12px 14px; text-align: center; transition: all .2s; border: 1px solid transparent; }
+  .component:hover { transform: scale(1.02); }
+  .component .c-label { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; }
+  .component .c-sub { font-size: 0.68rem; opacity: 0.8; }
+
+  /* Tier Colors */
+  .tier-edge   { background: #0f1f1a; border-color: #34d399; }
+  .tier-edge   .tier-header { color: #34d399; }
+  .tier-edge   .component { background: #132923; border-color: #1f5c4a; }
+  .tier-edge   .c-label { color: #6ee7b7; }
+
+  .tier-shield { background: #1c120f; border-color: #f87171; }
+  .tier-shield .tier-header { color: #fb923c; }
+  .tier-shield .component { background: #2a1a16; border-color: #9f3f2f; }
+  .tier-shield .c-label { color: #fdba74; }
+
+  .tier-agent  { background: #1a1628; border-color: #a78bfa; }
+  .tier-agent  .tier-header { color: #c4b5fd; }
+  .tier-agent  .component { background: #211c38; border-color: #6d5cb8; }
+  .tier-agent  .c-label { color: #ddd6fe; }
+
+  .tier-core   { background: #0f172a; border-color: #60a5fa; }
+  .tier-core   .tier-header { color: #93c5fd; }
+  .tier-core   .component { background: #1e293b; border-color: #3b82f6; }
+  .tier-core   .c-label { color: #bfdbfe; }
+
+  .tier-data   { background: #1a1a1a; border-color: #94a3b8; }
+  .tier-data   .tier-header { color: #cbd5e1; }
+  .tier-data   .component { background: #27272a; border-color: #52525b; }
+  .tier-data   .c-label { color: #e2e8f0; }
+
+  .badge { font-size: 0.62rem; background: rgba(255,255,255,0.1); border-radius: 4px; padding: 1px 7px; color: #94a3b8; }
+
+  #tooltip { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; border: 1px solid #475569; border-radius: 10px; padding: 12px 20px; font-size: 0.75rem; color: #cbd5e1; max-width: 460px; display: none; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+</style>
+</head>
+<body>
+<h1>NetSecurePro IA — NCS-V2.7</h1>
+<p class="subtitle">Architecture IA Souveraine • Zero Trust • Ollama Local • Z-CORE</p>
+
+<div class="diagram">
+
+  <!-- CLIENTS -->
+  <div class="user-row">
+    <div class="user-box" onclick="tip('Web Dashboard : Accès via Kanidm SSO, interface React/Tailwind sécurisée')">
+      <div class="label">🌐 Web Dashboard</div>
+      <div class="sub">Portail souverain</div>
+    </div>
+    <div class="user-box" onclick="tip('Mobile : Flutter APK avec biométrie et chiffrement local')">
+      <div class="label">📱 Mobile App</div>
+      <div class="sub">Flutter • Chiffré</div>
+    </div>
+    <div class="user-box" onclick="tip('CLI : IA22 Terminal via Termux ou Linux')">
+      <div class="label">💻 IA22 Terminal</div>
+      <div class="sub">CLI Souverain</div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- EDGE -->
+  <div class="tier tier-edge">
+    <div class="tier-header">EDGE LAYER <span class="badge">Local</span></div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('SLM Local via Ollama : Modèles légers pour réponses rapides en agence ou mobile')">
+        <div class="c-label">SLM Local</div>
+        <div class="c-sub">Ollama • Phi-4 / Gemma2</div>
+      </div>
+      <div class="component" onclick="tip('Cache sémantique Redis : embeddings fréquents pour réduire latence')">
+        <div class="c-label">Cache Sémantique</div>
+        <div class="c-sub">Redis • Embeddings</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- SHIELD -->
+  <div class="tier tier-shield">
+    <div class="tier-header">IA22 SHIELD v2 <span class="badge">Zero Trust</span></div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('Protection contre Prompt Injection, Output Guard, Policy Engine et Sanitization')">
+        <div class="c-label">Prompt & Output Guard</div>
+        <div class="c-sub">IA22 Shield</div>
+      </div>
+      <div class="component" onclick="tip('Authentification forte via Kanidm SSO + MFA')">
+        <div class="c-label">Auth & Policy</div>
+        <div class="c-sub">Kanidm • RBAC</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- AGENTIC -->
+  <div class="tier tier-agent">
+    <div class="tier-header">AGENTIC ORCHESTRATOR <span class="badge">Nouveau V2.7</span></div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('Planning Manager + Multi-Agents + Mémoire courte et longue durée')">
+        <div class="c-label">Orchestrateur Agentique</div>
+        <div class="c-sub">Planning + Memory + Tools</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- CORE -->
+  <div class="tier tier-core">
+    <div class="tier-header">CORE IA SOUVERAINE</div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('Ollama comme runtime principal — Modèles locaux uniquement (Llama-3.1, Mistral, etc.)')">
+        <div class="c-label">Ollama Core</div>
+        <div class="c-sub">Modèles Locaux</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼</div>
+
+  <!-- DATA -->
+  <div class="tier tier-data">
+    <div class="tier-header">DATA & INTELLIGENCE LAYER</div>
+    <div class="tier-components">
+      <div class="component" onclick="tip('PostgreSQL + pgvector pour RAG souverain et stockage chiffré')">
+        <div class="c-label">PostgreSQL + pgvector</div>
+        <div class="c-sub">RAG Local • Audit</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:center; margin-top:30px; font-size:0.72rem; color:#475569;">
+  NetSecurePro IA • NCS-V2.7 • Z-CORE • Souveraineté Totale • Zero Trust
+</div>
+
+<div id="tooltip"></div>
+
+<script>
+function tip(msg) {
+  var t = document.getElementById('tooltip');
+  t.innerHTML = msg;
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.display = 'none'; }, 7000);
+}
+</script>
+</body>
+</html>
