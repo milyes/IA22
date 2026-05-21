@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZCORE // NETWORK DASHBOARD</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-void:    #050709;
+    --bg-deep:    #080c10;
+    --bg-panel:   #0c1219;
+    --bg-card:    #101820;
+    --border:     #1a2a38;
+    --border-glow:#1e4060;
+    --accent-cyan:#00d4ff;
+    --accent-green:#00ff9f;
+    --accent-red: #ff3a5c;
+    --accent-amber:#ffb000;
+    --text-primary:#e2eaf2;
+    --text-dim:   #4a6a82;
+    --text-muted: #263545;
+    --glow-cyan:  0 0 8px rgba(0,212,255,0.6), 0 0 24px rgba(0,212,255,0.2);
+    --glow-green: 0 0 8px rgba(0,255,159,0.6), 0 0 24px rgba(0,255,159,0.2);
+    --glow-red:   0 0 8px rgba(255,58,92,0.6);
+    --font-mono:  'Share Tech Mono', monospace;
+    --font-ui:    'Rajdhani', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-void);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,80,120,0.15) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,212,255,0.03) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,212,255,0.03) 40px);
+  }
+
+  /* ─── SCANLINE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 999; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.08) 3px);
+    animation: scanMove 8s linear infinite;
+  }
+  @keyframes scanMove { from { background-position: 0 0; } to { background-position: 0 100px; } }
+
+  /* ─── LAYOUT ─── */
+  .shell {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    border: 2px solid var(--accent-cyan);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 18px; font-weight: bold;
+    color: var(--accent-cyan);
+    box-shadow: var(--glow-cyan), inset 0 0 12px rgba(0,212,255,0.1);
+    animation: logoPulse 3s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%,100% { box-shadow: var(--glow-cyan), inset 0 0 12px rgba(0,212,255,0.1); }
+    50%      { box-shadow: 0 0 16px rgba(0,212,255,0.9), 0 0 40px rgba(0,212,255,0.3), inset 0 0 20px rgba(0,212,255,0.2); }
+  }
+  .logo-text { line-height: 1; }
+  .logo-text .brand { font-size: 22px; font-weight: 700; letter-spacing: 4px; color: var(--accent-cyan); text-shadow: var(--glow-cyan); }
+  .logo-text .tagline { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 2px; }
+
+  .header-meta {
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .sys-time { font-family: var(--font-mono); font-size: 13px; color: var(--accent-cyan); opacity: 0.8; }
+  .status-bar { display: flex; gap: 8px; }
+  .status-pill {
+    padding: 4px 10px; font-size: 11px; font-family: var(--font-mono); letter-spacing: 1px;
+    border: 1px solid; border-radius: 2px;
+  }
+  .status-pill.online { border-color: var(--accent-green); color: var(--accent-green); box-shadow: var(--glow-green); animation: blinkGreen 2s ease-in-out infinite; }
+  .status-pill.warn   { border-color: var(--accent-amber); color: var(--accent-amber); }
+  .status-pill.secure { border-color: var(--accent-cyan);  color: var(--accent-cyan); }
+  @keyframes blinkGreen { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+
+  /* ─── MAIN GRID ─── */
+  main {
+    padding: 20px 0;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 16px;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    grid-row: 1 / 4;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  /* ─── PANEL BASE ─── */
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent-cyan);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .panel::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+    opacity: 0.6;
+  }
+  .panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,212,255,0.03);
+  }
+  .panel-title {
+    font-size: 11px; font-family: var(--font-mono); letter-spacing: 2px;
+    color: var(--accent-cyan); text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .panel-title::before { content: '//'; color: var(--text-muted); }
+  .panel-badge {
+    font-family: var(--font-mono); font-size: 10px;
+    background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent-cyan); padding: 2px 6px;
+  }
+  .panel-body { padding: 14px; }
+
+  /* ─── HOST LIST ─── */
+  .host-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--text-muted);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .host-item:last-child { border-bottom: none; }
+  .host-item:hover { background: rgba(0,212,255,0.04); margin: 0 -14px; padding: 9px 14px; }
+  .host-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    box-shadow: 0 0 6px currentColor;
+  }
+  .dot-up   { background: var(--accent-green); color: var(--accent-green); }
+  .dot-warn { background: var(--accent-amber); color: var(--accent-amber); }
+  .dot-down { background: var(--accent-red);   color: var(--accent-red); animation: blinkRed 1s ease-in-out infinite; }
+  @keyframes blinkRed { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+  .host-info { flex: 1; min-width: 0; }
+  .host-name { font-size: 13px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .host-ip   { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+  .host-ping { font-family: var(--font-mono); font-size: 11px; color: var(--accent-cyan); }
+
+  /* ─── STAT CARDS ─── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-top: 2px solid transparent;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .stat-card.cyan  { border-top-color: var(--accent-cyan); }
+  .stat-card.green { border-top-color: var(--accent-green); }
+  .stat-card.amber { border-top-color: var(--accent-amber); }
+  .stat-card.red   { border-top-color: var(--accent-red); }
+  .stat-card::after {
+    content: '';
+    position: absolute; bottom: -20px; right: -10px;
+    width: 60px; height: 60px; border-radius: 50%;
+    opacity: 0.06;
+  }
+  .stat-card.cyan::after  { background: var(--accent-cyan); }
+  .stat-card.green::after { background: var(--accent-green); }
+  .stat-card.amber::after { background: var(--accent-amber); }
+  .stat-card.red::after   { background: var(--accent-red); }
+  .stat-label { font-size: 10px; font-family: var(--font-mono); letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px; }
+  .stat-value { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .stat-card.cyan  .stat-value { color: var(--accent-cyan); text-shadow: var(--glow-cyan); }
+  .stat-card.green .stat-value { color: var(--accent-green); text-shadow: var(--glow-green); }
+  .stat-card.amber .stat-value { color: var(--accent-amber); }
+  .stat-card.red   .stat-value { color: var(--accent-red); }
+  .stat-delta { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+  .stat-delta .up   { color: var(--accent-green); }
+  .stat-delta .down { color: var(--accent-red); }
+
+  /* ─── CHARTS ─── */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  canvas { display: block; width: 100% !important; }
+
+  /* ─── TRAFFIC TABLE ─── */
+  .traffic-table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--font-mono); font-size: 11px;
+  }
+  .traffic-table th {
+    text-align: left; padding: 6px 10px;
+    color: var(--text-dim); letter-spacing: 1px; font-size: 10px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,212,255,0.03);
+  }
+  .traffic-table td {
+    padding: 7px 10px; border-bottom: 1px solid var(--text-muted);
+    color: var(--text-primary); font-size: 11px;
+  }
+  .traffic-table tr:last-child td { border-bottom: none; }
+  .traffic-table tr:hover td { background: rgba(0,212,255,0.04); }
+  .proto { display: inline-block; padding: 1px 5px; font-size: 9px; letter-spacing: 1px; border-radius: 1px; }
+  .proto.tcp { background: rgba(0,212,255,0.15); color: var(--accent-cyan); border: 1px solid rgba(0,212,255,0.3); }
+  .proto.udp { background: rgba(0,255,159,0.15); color: var(--accent-green); border: 1px solid rgba(0,255,159,0.3); }
+  .proto.icmp{ background: rgba(255,176,0,0.15); color: var(--accent-amber); border: 1px solid rgba(255,176,0,0.3); }
+  .size-bar { display: flex; align-items: center; gap: 6px; }
+  .size-bar-bg { flex: 1; height: 4px; background: var(--bg-void); border-radius: 2px; overflow: hidden; max-width: 60px; }
+  .size-bar-fill { height: 100%; border-radius: 2px; background: var(--accent-cyan); transition: width 0.5s ease; }
+
+  /* ─── ALERT LOG ─── */
+  .alert-log { max-height: 200px; overflow-y: auto; }
+  .alert-log::-webkit-scrollbar { width: 4px; }
+  .alert-log::-webkit-scrollbar-track { background: var(--bg-void); }
+  .alert-log::-webkit-scrollbar-thumb { background: var(--border-glow); }
+  .alert-entry {
+    display: flex; gap: 10px; padding: 6px 0;
+    border-bottom: 1px solid var(--text-muted); font-family: var(--font-mono); font-size: 11px;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from { opacity:0; transform: translateX(-8px); } to { opacity:1; transform: translateX(0); } }
+  .alert-entry:last-child { border-bottom: none; }
+  .alert-time  { color: var(--text-dim); white-space: nowrap; }
+  .alert-level { white-space: nowrap; padding: 0 4px; }
+  .alert-level.crit { color: var(--accent-red); }
+  .alert-level.warn { color: var(--accent-amber); }
+  .alert-level.info { color: var(--accent-cyan); }
+  .alert-msg   { color: var(--text-primary); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 12px 0;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+    flex-wrap: wrap; gap: 8px;
+  }
+  .footer-left { display: flex; gap: 20px; flex-wrap: wrap; }
+  .footer-item span { color: var(--accent-cyan); }
+
+  /* ─── SPARKLINE ─── */
+  .sparkline-wrap { height: 32px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1100px) {
+    main { grid-template-columns: 240px 1fr; }
+    .stats-row { grid-template-columns: repeat(2,1fr); }
+  }
+
+  @media (max-width: 860px) {
+    main {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+    .sidebar { grid-row: auto; }
+    .charts-row { grid-template-columns: 1fr; }
+    .stats-row  { grid-template-columns: repeat(2,1fr); }
+  }
+
+  @media (max-width: 520px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    header { flex-direction: column; align-items: flex-start; }
+    .stat-value { font-size: 22px; }
+    .logo-text .brand { font-size: 18px; }
+  }
+
+  /* ─── TOOLTIP ─── */
+  .tooltip {
+    position: fixed; z-index: 100;
+    background: var(--bg-card); border: 1px solid var(--accent-cyan);
+    color: var(--text-primary); font-family: var(--font-mono); font-size: 11px;
+    padding: 6px 10px; pointer-events: none; opacity: 0; transition: opacity 0.15s;
+    box-shadow: var(--glow-cyan);
+  }
+  .tooltip.show { opacity: 1; }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-size: 9px; font-family: var(--font-mono); letter-spacing: 3px;
+    color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ═══ HEADER ═══ -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">Z</div>
+      <div class="logo-text">
+        <div class="brand">ZCORE</div>
+        <div class="tagline">NETWORK OPERATIONS CENTER v2.4.1</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="sys-time" id="sysTime">--:--:-- UTC</div>
+      <div class="status-bar">
+        <div class="status-pill online" id="netStatus">NET ONLINE</div>
+        <div class="status-pill warn">2 ALERTS</div>
+        <div class="status-pill secure">ENCRYPTED</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ MAIN ═══ -->
+  <main>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+
+      <!-- HOST STATUS -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Hosts Monitor</div>
+          <div class="panel-badge" id="hostCount">6 HOSTS</div>
+        </div>
+        <div class="panel-body">
+          <div id="hostList"></div>
+        </div>
+      </div>
+
+      <!-- INTERFACE STATS -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Interfaces</div>
+          <div class="panel-badge">eth0 / lo</div>
+        </div>
+        <div class="panel-body">
+          <div id="ifaceList"></div>
+        </div>
+      </div>
+
+      <!-- TOP PORTS -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Top Ports</div>
+        </div>
+        <div class="panel-body" id="topPorts"></div>
+      </div>
+
+    </aside>
+
+    <!-- ── CONTENT ── -->
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0;">
+
+      <!-- STAT CARDS -->
+      <div class="stats-row" id="statCards">
+        <div class="stat-card cyan">
+          <div class="stat-label">Bandwidth IN</div>
+          <div class="stat-value" id="bwIn">—</div>
+          <div class="stat-delta"><span class="up" id="bwInD">▲ 0%</span> last 60s</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Bandwidth OUT</div>
+          <div class="stat-value" id="bwOut">—</div>
+          <div class="stat-delta"><span class="down" id="bwOutD">▼ 0%</span> last 60s</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">Avg Latency</div>
+          <div class="stat-value" id="avgLatency">—</div>
+          <div class="stat-delta" id="latDelta">Mesure en cours…</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Packet Loss</div>
+          <div class="stat-value" id="pktLoss">—</div>
+          <div class="stat-delta" id="pktDelta">Analyse…</div>
+        </div>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="charts-row">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Trafic réseau (Mbps)</div>
+            <div class="panel-badge" id="chartBadge">LIVE</div>
+          </div>
+          <div class="panel-body" style="padding:10px 14px 14px;">
+            <canvas id="trafficChart" height="140"></canvas>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Latence (ms)</div>
+            <div class="panel-badge">RTT AVG</div>
+          </div>
+          <div class="panel-body" style="padding:10px 14px 14px;">
+            <canvas id="latencyChart" height="140"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE TRAFFIC TABLE -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Flux Réseau Actifs</div>
+          <div class="panel-badge" id="flowCount">0 FLOWS</div>
+        </div>
+        <div class="panel-body" style="padding:0 0 4px 0;">
+          <table class="traffic-table">
+            <thead>
+              <tr>
+                <th>SRC IP</th>
+                <th>DST IP</th>
+                <th>PROTO</th>
+                <th>PORT</th>
+                <th>SIZE</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="trafficTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ALERT LOG -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Journal d'Alertes</div>
+          <div class="panel-badge" id="alertBadge">0 EVENTS</div>
+        </div>
+        <div class="panel-body" style="padding:8px 14px;">
+          <div class="alert-log" id="alertLog"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <div class="footer-left">
+      <div class="footer-item">NODE: <span id="nodeId">ZCORE-PRIMARY</span></div>
+      <div class="footer-item">UPTIME: <span id="uptime">00:00:00</span></div>
+      <div class="footer-item">PACKETS: <span id="totalPkts">0</span></div>
+      <div class="footer-item">EVENTS: <span id="totalEvts">0</span></div>
+    </div>
+    <div>© ZCORE NOC SYSTEM — MONITORING ACTIVE</div>
+  </footer>
+
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<!-- ════════════════════════════════════════
+     NETWORK MONITORING ENGINE
+════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── STATE ─── */
+const state = {
+  startTime: Date.now(),
+  totalPackets: 0,
+  totalEvents: 0,
+  bwInHistory:  new Array(60).fill(0),
+  bwOutHistory: new Array(60).fill(0),
+  latHistory:   new Array(60).fill(0),
+  alerts: [],
+  hosts: [
+    { name:'GW-CORE',   ip:'10.0.0.1',  status:'up',   ping:2  },
+    { name:'SRV-WEB',   ip:'10.0.1.10', status:'up',   ping:14 },
+    { name:'SRV-DB',    ip:'10.0.1.20', status:'up',   ping:8  },
+    { name:'FW-EDGE',   ip:'10.0.0.254',status:'warn', ping:45 },
+    { name:'HOST-DEV',  ip:'10.0.2.5',  status:'up',   ping:22 },
+    { name:'SRV-MAIL',  ip:'10.0.1.30', status:'down', ping:null},
+  ],
+  ifaces: [
+    { name:'eth0', rx:0, tx:0, errors:0 },
+    { name:'lo',   rx:0, tx:0, errors:0 },
+  ],
+  flows: [],
+  tickCount: 0,
+};
+
+/* ─── UTILS ─── */
+const rand  = (a,b) => Math.random()*(b-a)+a;
+const randI = (a,b) => Math.floor(rand(a,b));
+const pick  = arr => arr[randI(0,arr.length)];
+const fmt   = n => n >= 1000 ? (n/1000).toFixed(1)+'Gbps' : n.toFixed(1)+'Mbps';
+const fmtMs = ms => ms.toFixed(1)+'ms';
+const pad2  = n => String(n).padStart(2,'0');
+const PROTOS = ['TCP','UDP','ICMP'];
+const STATUSES = ['ESTABLISHED','TIME_WAIT','SYN_SENT','LISTEN','CLOSE_WAIT'];
+const IPS_SRC = ['192.168.1.','10.0.2.','172.16.0.','10.100.'];
+const IPS_DST = ['10.0.1.','10.0.0.','8.8.8.','1.1.1.'];
+const PORTS  = [80,443,22,53,8080,3306,5432,6379,27017,25,587];
+
+function randomIP(base) { return base + randI(1,255); }
+function nowUTC() {
+  const d = new Date();
+  return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
+}
+
+/* ─── CANVAS SETUP ─── */
+function initCanvas(id) {
+  const canvas = document.getElementById(id);
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width  = rect.width  * dpr;
+  canvas.height = canvas.height * dpr; // use CSS height attribute
+  canvas.style.width  = rect.width + 'px';
+  canvas.style.height = (canvas.height / dpr) + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { canvas, ctx, w: rect.width, h: canvas.height / dpr };
+}
+
+let tCanvas, lCanvas;
+
+function setupCharts() {
+  const tc = initCanvas('trafficChart');
+  const lc = initCanvas('latencyChart');
+  tCanvas = tc; lCanvas = lc;
+}
+
+/* ─── DRAW CHART ─── */
+function drawLineChart(ctx, w, h, data, color, label, unit, fillColor) {
+  ctx.clearRect(0,0,w,h);
+  const pad = { top:10, right:10, bottom:24, left:42 };
+  const cw = w - pad.left - pad.right;
+  const ch = h - pad.top  - pad.bottom;
+  const max = Math.max(...data, 0.1);
+  const step = cw / (data.length - 1);
+
+  // grid
+  ctx.strokeStyle = 'rgba(26,42,56,0.8)';
+  ctx.lineWidth = 1;
+  for (let g=0;g<4;g++) {
+    const y = pad.top + ch * (g/3);
+    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(pad.left+cw,y); ctx.stroke();
+    ctx.fillStyle = 'rgba(74,106,130,0.7)';
+    ctx.font = '9px "Share Tech Mono"';
+    ctx.textAlign = 'right';
+    ctx.fillText(((max*(1-g/3)).toFixed(1)+unit), pad.left-4, y+4);
+  }
+
+  // fill area
+  const grad = ctx.createLinearGradient(0,pad.top,0,pad.top+ch);
+  grad.addColorStop(0, fillColor.replace(')', ',0.3)').replace('rgb','rgba'));
+  grad.addColorStop(1, fillColor.replace(')', ',0)').replace('rgb','rgba'));
+  ctx.beginPath();
+  data.forEach((v,i) => {
+    const x = pad.left + i*step;
+    const y = pad.top + ch * (1 - v/max);
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.lineTo(pad.left+cw, pad.top+ch);
+  ctx.lineTo(pad.left,    pad.top+ch);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // line
+  ctx.beginPath();
+  ctx.strokeStyle = color; ctx.lineWidth = 2;
+  ctx.shadowColor = color; ctx.shadowBlur = 6;
+  data.forEach((v,i) => {
+    const x = pad.left + i*step;
+    const y = pad.top + ch * (1 - v/max);
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // dots on last point
+  const lx = pad.left + (data.length-1)*step;
+  const ly = pad.top + ch * (1 - data[data.length-1]/max);
+  ctx.beginPath();
+  ctx.arc(lx,ly,3,0,Math.PI*2);
+  ctx.fillStyle = color; ctx.fill();
+  ctx.shadowColor = color; ctx.shadowBlur = 10;
+  ctx.fill(); ctx.shadowBlur = 0;
+
+  // x label
+  ctx.fillStyle = 'rgba(74,106,130,0.7)';
+  ctx.font = '9px "Share Tech Mono"'; ctx.textAlign='center';
+  ctx.fillText('-60s', pad.left, h-6);
+  ctx.fillText('NOW', pad.left+cw, h-6);
+}
+
+/* ─── UPDATE CHARTS ─── */
+function updateCharts() {
+  if (!tCanvas) return;
+  const { ctx:tc, w:tw, h:th } = tCanvas;
+  const { ctx:lc, w:lw, h:lh } = lCanvas;
+  drawLineChart(tc, tw, th, state.bwInHistory,  '#00d4ff', 'IN',  'M', 'rgb(0,212,255)');
+  drawLineChart(lc, lw, lh, state.latHistory,   '#00ff9f', 'LAT', 'ms','rgb(0,255,159)');
+}
+
+/* ─── RENDER HOSTS ─── */
+function renderHosts() {
+  const el = document.getElementById('hostList');
+  el.innerHTML = '';
+  state.hosts.forEach(h => {
+    const div = document.createElement('div');
+    div.className = 'host-item';
+    const pingStr = h.ping !== null ? h.ping+'ms' : 'N/A';
+    div.innerHTML = `
+      <div class="host-dot dot-${h.status}"></div>
+      <div class="host-info">
+        <div class="host-name">${h.name}</div>
+        <div class="host-ip">${h.ip}</div>
+      </div>
+      <div class="host-ping">${pingStr}</div>
+    `;
+    el.appendChild(div);
+  });
+  const up = state.hosts.filter(h=>h.status==='up').length;
+  document.getElementById('hostCount').textContent = `${up}/${state.hosts.length} UP`;
+}
+
+/* ─── RENDER INTERFACES ─── */
+function renderIfaces() {
+  const el = document.getElementById('ifaceList');
+  el.innerHTML = state.ifaces.map(i => `
+    <div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-family:var(--font-mono);font-size:12px;color:var(--accent-cyan)">${i.name}</span>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${i.errors} ERR</span>
+      </div>
+      <div style="display:flex;gap:12px;font-family:var(--font-mono);font-size:10px;">
+        <span>↓ <span style="color:var(--accent-cyan)">${fmt(i.rx)}</span></span>
+        <span>↑ <span style="color:var(--accent-green)">${fmt(i.tx)}</span></span>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ─── RENDER TOP PORTS ─── */
+function renderTopPorts() {
+  const portCounts = {};
+  PORTS.forEach(p => portCounts[p] = randI(10,200));
+  const sorted = Object.entries(portCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const max = sorted[0][1];
+  document.getElementById('topPorts').innerHTML = sorted.map(([port,count]) => `
+    <div style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;margin-bottom:3px;">
+        <span style="color:var(--accent-cyan)">:${port}</span>
+        <span style="color:var(--text-dim)">${count} pkts</span>
+      </div>
+      <div style="background:var(--bg-void);height:3px;border-radius:2px;overflow:hidden;">
+        <div style="height:100%;width:${(count/max*100).toFixed(0)}%;background:var(--accent-cyan);box-shadow:0 0 4px var(--accent-cyan);transition:width 0.5s;"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ─── GENERATE FLOW ─── */
+function generateFlow() {
+  return {
+    src:   randomIP(pick(IPS_SRC)),
+    dst:   randomIP(pick(IPS_DST)),
+    proto: pick(PROTOS),
+    port:  pick(PORTS),
+    size:  randI(64, 65000),
+    status:pick(STATUSES),
+    age:   randI(1,120),
+  };
+}
+
+/* ─── RENDER FLOWS ─── */
+function renderFlows() {
+  const tbody = document.getElementById('trafficTbody');
+  tbody.innerHTML = '';
+  const maxSize = Math.max(...state.flows.map(f=>f.size));
+  state.flows.slice(0,10).forEach(f => {
+    const pct = (f.size/maxSize*100).toFixed(0);
+    const sizeStr = f.size > 1024 ? (f.size/1024).toFixed(1)+'KB' : f.size+'B';
+    const stColor = f.status==='ESTABLISHED'?'var(--accent-green)':f.status==='TIME_WAIT'?'var(--text-dim)':'var(--accent-amber)';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${f.src}</td>
+      <td>${f.dst}</td>
+      <td><span class="proto ${f.proto.toLowerCase()}">${f.proto}</span></td>
+      <td>${f.port}</td>
+      <td>
+        <div class="size-bar">
+          <span style="min-width:40px">${sizeStr}</span>
+          <div class="size-bar-bg"><div class="size-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+      </td>
+      <td style="color:${stColor};font-size:10px;">${f.status}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('flowCount').textContent = state.flows.length+' FLOWS';
+}
+
+/* ─── GENERATE ALERT ─── */
+function maybeGenerateAlert() {
+  if (Math.random() > 0.15) return;
+  const alerts = [
+    { level:'CRIT', msg:'Port scan détecté depuis 192.168.99.'+randI(1,254) },
+    { level:'WARN', msg:'Latence élevée sur SRV-MAIL ('+randI(200,800)+'ms)' },
+    { level:'INFO', msg:'Nouvelle connexion SSH depuis 10.0.'+randI(0,5)+'.'+randI(1,254) },
+    { level:'WARN', msg:'Perte de paquets >5% sur eth0' },
+    { level:'CRIT', msg:'Tentative de connexion refusée — FW-EDGE DROP' },
+    { level:'INFO', msg:'Certificat TLS expirant dans '+randI(5,30)+' jours' },
+    { level:'WARN', msg:'CPU charge sur SRV-DB: '+randI(75,95)+'%' },
+  ];
+  const a = pick(alerts);
+  state.alerts.unshift({ time: nowUTC(), ...a });
+  if (state.alerts.length > 20) state.alerts.pop();
+  state.totalEvents++;
+}
+
+function renderAlerts() {
+  const el = document.getElementById('alertLog');
+  el.innerHTML = '';
+  state.alerts.slice(0,12).forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'alert-entry';
+    const lc = a.level==='CRIT'?'crit':a.level==='WARN'?'warn':'info';
+    div.innerHTML = `
+      <span class="alert-time">${a.time}</span>
+      <span class="alert-level ${lc}">[${a.level}]</span>
+      <span class="alert-msg">${a.msg}</span>
+    `;
+    el.appendChild(div);
+  });
+  document.getElementById('alertBadge').textContent = state.totalEvents+' EVENTS';
+}
+
+/* ─── SIMULATE NETWORK TICK ─── */
+function tick() {
+  state.tickCount++;
+
+  // BW simulation
+  const bwIn  = rand(10, 900);
+  const bwOut = rand(5, 600);
+  state.bwInHistory.shift();  state.bwInHistory.push(bwIn);
+  state.bwOutHistory.shift(); state.bwOutHistory.push(bwOut);
+
+  // Latency simulation (with occasional spikes)
+  let lat = rand(2, 30);
+  if (Math.random() > 0.9) lat += rand(50,200);
+  state.latHistory.shift(); state.latHistory.push(lat);
+
+  const avgLat = state.latHistory.filter(v=>v>0).reduce((a,b)=>a+b,0) / state.latHistory.filter(v=>v>0).length;
+  const pktLoss = (Math.random() > 0.85 ? rand(0.1,5) : rand(0,0.5)).toFixed(2);
+
+  // Update cards
+  document.getElementById('bwIn').textContent   = fmt(bwIn);
+  document.getElementById('bwOut').textContent  = fmt(bwOut);
+  document.getElementById('avgLatency').textContent = fmtMs(avgLat);
+  document.getElementById('pktLoss').textContent = pktLoss+'%';
+
+  const prevIn = state.bwInHistory[state.bwInHistory.length-2] || bwIn;
+  const delta  = ((bwIn - prevIn)/prevIn*100).toFixed(1);
+  document.getElementById('bwInD').textContent  = (delta>=0?'▲ ':'▼ ') + Math.abs(delta)+'%';
+  document.getElementById('bwInD').className    = delta>=0?'up':'down';
+  document.getElementById('latDelta').textContent = avgLat < 30 ? 'Latence nominale' : avgLat < 80 ? '⚠ Dégradée' : '⛔ Critique';
+
+  // ifaces
+  state.ifaces[0].rx = bwIn;
+  state.ifaces[0].tx = bwOut;
+  state.ifaces[0].errors = randI(0,3);
+
+  // hosts — occasionally change ping
+  state.hosts.forEach(h => {
+    if (h.status !== 'down' && Math.random() > 0.8) {
+      h.ping = randI(1,150);
+      if (h.ping > 100) h.status = 'warn'; else h.status = 'up';
+    }
+  });
+
+  // flows
+  if (state.flows.length < 12 || Math.random() > 0.5) state.flows.unshift(generateFlow());
+  if (state.flows.length > 15) state.flows.pop();
+  state.totalPackets += randI(100,2000);
+
+  maybeGenerateAlert();
+
+  // DOM updates
+  renderHosts();
+  renderIfaces();
+  if (state.tickCount % 5 === 0) renderTopPorts();
+  renderFlows();
+  renderAlerts();
+  updateCharts();
+  document.getElementById('totalPkts').textContent = state.totalPackets.toLocaleString();
+  document.getElementById('totalEvts').textContent = state.totalEvents;
+}
+
+/* ─── CLOCK ─── */
+function updateClock() {
+  const d = new Date();
+  document.getElementById('sysTime').textContent = nowUTC()+' UTC';
+  const elapsed = Math.floor((Date.now()-state.startTime)/1000);
+  const hh = pad2(Math.floor(elapsed/3600));
+  const mm = pad2(Math.floor(elapsed%3600/60));
+  const ss = pad2(elapsed%60);
+  document.getElementById('uptime').textContent = `${hh}:${mm}:${ss}`;
+}
+
+/* ─── RESIZE HANDLER ─── */
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { setupCharts(); updateCharts(); }, 200);
+});
+
+/* ─── INIT ─── */
+window.addEventListener('DOMContentLoaded', () => {
+  // Initial flows
+  for (let i=0;i<10;i++) state.flows.push(generateFlow());
+
+  // Initial alert
+  state.alerts.push({ time:nowUTC(), level:'INFO', msg:'Système ZCORE démarré — monitoring actif' });
+  state.alerts.push({ time:nowUTC(), level:'WARN', msg:'SRV-MAIL hors ligne — vérification en cours' });
+  state.totalEvents = 2;
+
+  setTimeout(() => { setupCharts(); tick(); }, 100);
+  setInterval(tick, 2000);
+  setInterval(updateClock, 1000);
+  updateClock();
+  renderTopPorts();
+});
+</script>
+</body>
+</html>
