@@ -1,0 +1,428 @@
+"""
+IA_CLAUDE-Z.ia - Intelligent Architecture Schema for NetSecurePro-IA22
+Schema d'Architecture Intelligente pour NetSecurePro-IA22
+
+Author: Zoubirou Mohammed Ilyes
+Framework: IA22 Sovereign Infrastructure
+Encoding: UTF-8
+Extension: .ia (Intelligent Architecture)
+"""
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🤖 IA_CLAUDE-Z: INTELLIGENT ARCHITECTURE DEFINITION
+# ═══════════════════════════════════════════════════════════════════════════
+
+IA_VERSION = "1.0.0-CLAUDE-Z"
+FRAMEWORK = "NetSecurePro-IA22"
+SOVEREIGN = True
+BIO_DIGITAL = True
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 📊 DATABASE SCHEMA DEFINITION
+# ═══════════════════════════════════════════════════════════════════════════
+
+DATABASE_SCHEMA = {
+    "name": "IA22-Sovereign-DB",
+    "type": "SQLite3",
+    "tables": {
+        "users": {
+            "fields": [
+                {"name": "id", "type": "INTEGER", "primary_key": True},
+                {"name": "username", "type": "TEXT", "unique": True},
+                {"name": "email", "type": "TEXT", "unique": True},
+                {"name": "hashed_password", "type": "TEXT"},
+                {"name": "is_active", "type": "INTEGER", "default": 1},
+                {"name": "created_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+                {"name": "updated_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+            ],
+            "indexes": ["email", "username"],
+            "description": "Utilisateurs du système IA22"
+        },
+        "audit_logs": {
+            "fields": [
+                {"name": "id", "type": "INTEGER", "primary_key": True},
+                {"name": "action", "type": "TEXT"},
+                {"name": "user_id", "type": "INTEGER", "foreign_key": "users.id"},
+                {"name": "details", "type": "TEXT"},
+                {"name": "created_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+            ],
+            "indexes": ["user_id", "created_at"],
+            "description": "Logs d'audit des actions"
+        },
+        "api_keys": {
+            "fields": [
+                {"name": "id", "type": "INTEGER", "primary_key": True},
+                {"name": "user_id", "type": "INTEGER", "foreign_key": "users.id", "not_null": True},
+                {"name": "key_hash", "type": "TEXT", "unique": True},
+                {"name": "name", "type": "TEXT"},
+                {"name": "is_active", "type": "INTEGER", "default": 1},
+                {"name": "last_used", "type": "TIMESTAMP"},
+                {"name": "created_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+                {"name": "expired_at", "type": "TIMESTAMP"},
+            ],
+            "indexes": ["user_id", "key_hash"],
+            "description": "Clés API sécurisées"
+        },
+        "sessions": {
+            "fields": [
+                {"name": "id", "type": "INTEGER", "primary_key": True},
+                {"name": "user_id", "type": "INTEGER", "foreign_key": "users.id", "not_null": True},
+                {"name": "token_hash", "type": "TEXT", "unique": True},
+                {"name": "user_agent", "type": "TEXT"},
+                {"name": "ip_address", "type": "TEXT"},
+                {"name": "is_active", "type": "INTEGER", "default": 1},
+                {"name": "created_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+                {"name": "expires_at", "type": "TIMESTAMP"},
+            ],
+            "indexes": ["user_id", "token_hash"],
+            "description": "Sessions utilisateur sécurisées"
+        },
+        "system_logs": {
+            "fields": [
+                {"name": "id", "type": "INTEGER", "primary_key": True},
+                {"name": "level", "type": "TEXT"},
+                {"name": "message", "type": "TEXT"},
+                {"name": "module", "type": "TEXT"},
+                {"name": "created_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+            ],
+            "indexes": ["level", "created_at"],
+            "description": "Logs système IA22"
+        },
+        "ia22_events": {
+            "fields": [
+                {"name": "id", "type": "INTEGER", "primary_key": True},
+                {"name": "event_type", "type": "TEXT"},
+                {"name": "event_data", "type": "TEXT"},
+                {"name": "user_id", "type": "INTEGER", "foreign_key": "users.id"},
+                {"name": "created_at", "type": "TIMESTAMP", "default": "CURRENT_TIMESTAMP"},
+            ],
+            "indexes": ["event_type", "created_at"],
+            "description": "Événements IA22 du système"
+        }
+    }
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🏗️ ARCHITECTURE MODULES
+# ═══════════════════════════════════════════════════════════════════════════
+
+ARCHITECTURE = {
+    "core": {
+        "module": "ia22.core",
+        "class": "IA22Core",
+        "description": "Cœur du système IA22",
+        "methods": ["process", "health_check"]
+    },
+    "api": {
+        "module": "ia22.api",
+        "app": "FastAPI",
+        "routes": {
+            "system": "GET /health, GET /matrix, GET /system-info",
+            "users": "POST /api/users, GET /api/users, GET /api/users/{id}",
+            "docs": "GET /docs (Swagger), GET /redoc (ReDoc)"
+        }
+    },
+    "database": {
+        "module": "ia22.sqlite_manager",
+        "class": "SQLite3Manager",
+        "features": ["CRUD", "Query Builder", "Bulk Operations", "Backup/Restore"]
+    },
+    "security": {
+        "module": "ia22.security",
+        "auth": "JWT + Bcrypt",
+        "encryption": "RSA + AES",
+        "features": ["Token Management", "Password Hashing", "API Keys"]
+    },
+    "communications": {
+        "module": "ia22.communications",
+        "type": "Messenger",
+        "protocol": "Secure Channel"
+    },
+    "sentinel": {
+        "module": "ia22.sentinel",
+        "class": "AutoCleaner",
+        "retention_days": 30,
+        "features": ["Log Cleanup", "Temp File Cleanup"]
+    }
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🔐 SECURITY PROTOCOLS
+# ═══════════════════════════════════════════════════════════════════════════
+
+SECURITY_PROTOCOLS = {
+    "authentication": {
+        "type": "JWT",
+        "algorithm": "HS256",
+        "expiration_minutes": 30,
+        "refresh_enabled": True
+    },
+    "password": {
+        "algorithm": "bcrypt",
+        "min_length": 8,
+        "require_uppercase": True,
+        "require_lowercase": True,
+        "require_numbers": True,
+        "require_special": True
+    },
+    "encryption": {
+        "algorithm": "AES-256-GCM",
+        "key_derivation": "PBKDF2",
+        "iterations": 100000
+    },
+    "api_keys": {
+        "format": "Bearer",
+        "rotation_days": 90,
+        "max_per_user": 5
+    }
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 📈 PERFORMANCE OPTIMIZATION
+# ═══════════════════════════════════════════════════════════════════════════
+
+PERFORMANCE = {
+    "database": {
+        "journal_mode": "WAL",
+        "cache_size": 10000,
+        "synchronous": "NORMAL",
+        "foreign_keys": True
+    },
+    "caching": {
+        "enabled": True,
+        "backend": "Redis",
+        "ttl_seconds": 300,
+        "key_prefix": "ia22:"
+    },
+    "connection_pool": {
+        "size": 5,
+        "max_overflow": 10,
+        "timeout": 30
+    }
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🚀 DEPLOYMENT CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════
+
+DEPLOYMENT = {
+    "docker": {
+        "enabled": True,
+        "base_image": "python:3.12-slim",
+        "compose": "docker-compose.yml",
+        "services": ["app", "postgres", "redis", "pgadmin"]
+    },
+    "environment": {
+        "development": {
+            "debug": True,
+            "database": "sqlite:///IA22.db",
+            "log_level": "DEBUG"
+        },
+        "production": {
+            "debug": False,
+            "database": "postgresql://user:pass@postgres:5432/ia22",
+            "log_level": "INFO"
+        }
+    },
+    "monitoring": {
+        "health_check": "/health",
+        "interval_seconds": 30,
+        "timeout_seconds": 10
+    }
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🧪 TESTING FRAMEWORK
+# ═══════════════════════════════════════════════════════════════════════════
+
+TESTING = {
+    "framework": "pytest",
+    "coverage": {
+        "minimum": 80,
+        "exclude": ["__pycache__", ".venv", "tests"]
+    },
+    "test_files": [
+        "tests/test_core.py",
+        "tests/test_api.py",
+        "tests/test_api_extended.py",
+        "tests/test_utils.py",
+        "tests/test_sqlite3.py",
+        "tests/test_query_builder.py"
+    ]
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 📦 PACKAGE DEPENDENCIES
+# ═══════════════════════════════════════════════════════════════════════════
+
+DEPENDENCIES = {
+    "core": [
+        "fastapi>=0.104.1",
+        "uvicorn[standard]>=0.24.0",
+        "pydantic>=2.5.0",
+    ],
+    "database": [
+        "sqlalchemy>=2.0.23",
+        "alembic>=1.13.0",
+        "psycopg2-binary>=2.9.9",
+    ],
+    "security": [
+        "cryptography>=41.0.7",
+        "python-jose[cryptography]>=3.3.0",
+        "passlib[bcrypt]>=1.7.4",
+    ],
+    "utilities": [
+        "python-dotenv>=1.0.0",
+        "loguru>=0.7.2",
+        "redis>=5.0.1",
+        "httpx>=0.25.2",
+    ],
+    "development": [
+        "pytest>=7.4.3",
+        "pytest-asyncio>=0.21.1",
+        "pytest-cov>=4.1.0",
+        "black>=23.12.0",
+        "ruff>=0.1.8",
+        "mypy>=1.7.0",
+    ]
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🎯 API ENDPOINTS DEFINITION
+# ═══════════════════════════════════════════════════════════════════════════
+
+API_ENDPOINTS = {
+    "system": [
+        {"path": "/", "method": "GET", "description": "Root endpoint"},
+        {"path": "/health", "method": "GET", "description": "Health check"},
+        {"path": "/matrix", "method": "GET", "description": "Matrix portal (Easter Egg)"},
+        {"path": "/system-info", "method": "GET", "description": "System information"},
+    ],
+    "users": [
+        {"path": "/api/users/", "method": "POST", "description": "Create user"},
+        {"path": "/api/users/", "method": "GET", "description": "List users"},
+        {"path": "/api/users/{user_id}", "method": "GET", "description": "Get user"},
+    ],
+    "documentation": [
+        {"path": "/docs", "method": "GET", "description": "Swagger UI"},
+        {"path": "/redoc", "method": "GET", "description": "ReDoc"},
+    ]
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🔄 WORKFLOW & PIPELINE
+# ═══════════════════════════════════════════════════════════════════════════
+
+CI_CD_PIPELINE = {
+    "github_actions": {
+        "workflow": ".github/workflows/python-tests.yml",
+        "triggers": ["push", "pull_request"],
+        "branches": ["main", "python-infrastructure"],
+        "steps": [
+            "Setup Python",
+            "Install Poetry",
+            "Install dependencies",
+            "Lint (Ruff + MyPy)",
+            "Format check (Black)",
+            "Run tests",
+            "Upload coverage"
+        ]
+    }
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 📊 METADATA
+# ═══════════════════════════════════════════════════════════════════════════
+
+METADATA = {
+    "project": "NetSecurePro-IA22",
+    "version": "1.0.0",
+    "author": "Zoubirou Mohammed Ilyes",
+    "github": "https://github.com/milyes/IA22",
+    "license": "Proprietary",
+    "status": "Active Development",
+    "python_version": "3.12.0",
+    "framework": "FastAPI",
+    "database": "SQLite3 + PostgreSQL (production)",
+    "created_date": "2026-05-31",
+    "last_updated": "2026-05-31"
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🎓 DOCUMENTATION REFERENCES
+# ═══════════════════════════════════════════════════════════════════════════
+
+DOCUMENTATION = {
+    "setup": "README-PYTHON.md",
+    "database": "README-SQLITE3.md",
+    "api": "/docs (Swagger UI)",
+    "schemas": "ia22/schemas.py",
+    "models": "ia22/models.py"
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ✅ QUALITY ASSURANCE
+# ═══════════════════════════════════════════════════════════════════════════
+
+QUALITY_GATES = {
+    "code_coverage": ">= 80%",
+    "type_checking": "MyPy strict mode",
+    "linting": "Ruff strict rules",
+    "formatting": "Black formatted",
+    "security": "No vulnerabilities",
+    "performance": "< 100ms response time (P95)"
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 🚀 QUICK START COMMANDS
+# ═══════════════════════════════════════════════════════════════════════════
+
+QUICK_START = {
+    "install": "poetry install",
+    "database": "make db",
+    "tests": "make test",
+    "lint": "make lint",
+    "format": "make format",
+    "run": "make run-dev",
+    "package": "make package-iso"
+}
+
+
+print("""
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    🤖 IA_CLAUDE-Z ARCHITECTURE SCHEMA 🤖                  ║
+║                    NetSecurePro-IA22 Intelligent Framework                 ║
+║                                                                            ║
+║  Version: 1.0.0-CLAUDE-Z                                                  ║
+║  Sovereign: True | Bio-Digital: True | Multi-Language: True               ║
+║                                                                            ║
+║  This schema defines the complete architecture for IA22                   ║
+║  Intelligent infrastructure with advanced features:                       ║
+║                                                                            ║
+║  ✅ SQLite3 Database with 6 core tables                                    ║
+║  ✅ FastAPI REST API with complete routing                               ║
+║  ✅ JWT Authentication + Bcrypt Security                                  ║
+║  ✅ Advanced Query Builder & ORM                                          ║
+║  ✅ Automated Backup & Restore System                                     ║
+║  ✅ Comprehensive Testing Framework                                       ║
+║  ✅ CI/CD Pipeline with GitHub Actions                                    ║
+║  ✅ Docker Deployment Ready                                               ║
+║                                                                            ║
+║  📚 Documentation: See README-PYTHON.md & README-SQLITE3.md               ║
+║  🚀 Quick Start: make db && make run-dev                                  ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+""")
