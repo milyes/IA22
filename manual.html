@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCL_MILYES | Forge IA Souveraine Algérie</title>
+    <meta name="description" content="De l'idée à l'empire en 48 heures">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        :root { --primary: #00ff9f; --dark: #0a1f33; --gold: #f5c300; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--dark);
+            color: #e0f0ff;
+            line-height: 1.6;
+        }
+        .hero { min-height: 100vh; background: linear-gradient(135deg, #0a1f33, #0f2a4a); display: flex; align-items: center; padding: 120px 5% 80px; text-align: center; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .flag { color: var(--gold); letter-spacing: 4px; font-size: 1.1rem; }
+        h1 { font-size: clamp(2.8rem, 8vw, 4.5rem); line-height: 1.05; font-weight: 800; margin: 25px 0; }
+        .highlight { color: var(--primary); }
+        .tagline { font-size: 1.35rem; max-width: 720px; margin: 30px auto; opacity: 0.95; }
+        .btn {
+            background: var(--primary);
+            color: #0a1f33;
+            padding: 18px 52px;
+            font-size: 1.35rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+        }
+        .btn:hover { transform: translateY(-8px) scale(1.05); box-shadow: 0 25px 50px rgba(0,255,159,0.4); }
+        .section { padding: 100px 5%; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .card { background: #112b44; padding: 40px 30px; border-radius: 24px; transition: 0.3s; }
+        .card:hover { transform: translateY(-15px); background: #1a3a55; }
+        .form-section { background: #112b44; padding: 60px 40px; border-radius: 24px; max-width: 700px; margin: 40px auto; }
+        input, textarea {
+            width: 100%; padding: 15px; margin: 10px 0; background: #0a1f33; border: 1px solid #334455;
+            border-radius: 12px; color: white; font-size: 1.1rem;
+        }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); }
+        footer { text-align: center; padding: 80px 20px 40px; background: #081822; }
+    </style>
+</head>
+<body>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container">
+            <p class="flag">🇩🇿 MADE IN ALGERIA • IA SOUVERAINE</p>
+            <h1>De l’idée<br>à l’<span class="highlight">empire</span> en 48 heures</h1>
+            <p class="tagline">
+                MCL_MILYES Algérie : La Forge d’Agents IA autonomes.<br>
+                Crée ta startup avec des agents qui parlent <strong>darija</strong>, maîtrisent la bureaucratie et exécutent les paiements <strong>CIB</strong>.
+            </p>
+            <button onclick="lancerForge()" class="btn">Lancer ma Forge Gratuite →</button>
+            <p style="margin-top: 35px; font-size: 1.15rem; opacity: 0.9;">
+                <strong>87 startups algériennes</strong> déjà créées avec MCL_MILYES
+            </p>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" style="background:#0f2a4a;">
+        <div class="container">
+            <h2 style="text-align:center; font-size:2.8rem; margin-bottom:70px;">Pourquoi les entrepreneurs algériens nous choisissent</h2>
+            <div class="features">
+                <div class="card"><h3>🇩🇿 Souveraineté Totale</h3><p>Hébergement local • Conformité loi 18-05</p></div>
+                <div class="card"><h3>🗣️ Agents en Darija</h3><p>Communication naturelle en dialecte algérien</p></div>
+                <div class="card"><h3>⚡ Vitesse Extrême</h3><p>Site + Agents + CIB en moins de 48 heures</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULAIRE D'INSCRIPTION -->
+    <section class="section" style="background:#0a1f33;">
+        <div class="container">
+            <h2 style="text-align:center; font-size:2.7rem; margin-bottom:20px;">Rejoins la Forge dès maintenant</h2>
+            <p style="text-align:center; font-size:1.3rem; margin-bottom:50px;">Réserve ta place - Accès gratuit</p>
+            
+            <div class="form-section">
+                <form id="inscriptionForm" onsubmit="handleSubmit(event)">
+                    <input type="text" id="nom" placeholder="Nom complet" required>
+                    <input type="email" id="email" placeholder="Adresse email" required>
+                    <input type="tel" id="telephone" placeholder="Numéro WhatsApp">
+                    <textarea id="idee" rows="4" placeholder="Décris ton idée de startup (facultatif)"></textarea>
+                    <button type="submit" class="btn" style="width:100%; margin-top:20px;">Je veux rejoindre la Forge Gratuite</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="section" style="text-align:center; background:#112b44;">
+        <h2 style="font-size:2.7rem;">Prêt à forger ton empire ?</h2>
+        <button onclick="lancerForge()" class="btn" style="font-size:1.5rem; padding:24px 65px;">Lancer ma Forge Immédiate</button>
+    </section>
+
+    <footer>
+        © 2026 MCL_MILYES Algérie • Mohammed Ilyes Zoubirou<br>
+        𝕏 @MZoubirou • mclmilyes.dz
+    </footer>
+
+    <script>
+        function lancerForge() {
+            alert("🚀 Forge MCL_MILYES activée !\n\nUn agent IA va commencer à travailler sur ton projet.");
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const nom = document.getElementById('nom').value;
+            const email = document.getElementById('email').value;
+
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = "Envoi en cours...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                alert(`🎉 Merci ${nom.split(" ")[0]} !\n\nBienvenue dans MCL_MILYES.\n\nTon agent IA va te contacter bientôt via email et WhatsApp.`);
+                e.target.reset();
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 1400);
+        }
+
+        // Bonus : touche Entrée
+        document.getElementById("idee").addEventListener("keypress", function(e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                this.form.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>

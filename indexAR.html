@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar-DZ">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCL_MILYES | الفرجة الذكية الجزائرية</title>
+    <meta name="description" content="من الفكرة إلى الإمبراطورية في 48 ساعة">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        :root { --primary: #00ff9f; --dark: #0a1f33; --gold: #f5c300; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--dark);
+            color: #e0f0ff;
+            line-height: 1.7;
+        }
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a1f33 0%, #0f2a4a 100%);
+            display: flex;
+            align-items: center;
+            padding: 140px 5% 100px;
+            text-align: center;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .flag { color: var(--gold); letter-spacing: 4px; font-size: 1.2rem; margin-bottom: 20px; }
+        h1 {
+            font-size: clamp(2.8rem, 8vw, 4.6rem);
+            line-height: 1.1;
+            font-weight: 800;
+            margin: 20px 0 30px;
+        }
+        .highlight { color: var(--primary); }
+        .tagline { font-size: 1.45rem; max-width: 780px; margin: 0 auto 40px; opacity: 0.95; }
+        .btn {
+            background: var(--primary);
+            color: #0a1f33;
+            padding: 18px 55px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+        }
+        .btn:hover { transform: translateY(-8px) scale(1.05); }
+        .section { padding: 110px 5%; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .card { background: #112b44; padding: 45px 35px; border-radius: 24px; transition: all 0.4s; }
+        .card:hover { transform: translateY(-15px); background: #1a3a55; }
+        .form-section { background: #112b44; padding: 60px 50px; border-radius: 24px; max-width: 720px; margin: 40px auto; }
+        input, textarea {
+            width: 100%; padding: 16px 20px; margin: 12px 0; background: #0a1f33; border: 1px solid #334455;
+            border-radius: 14px; color: white; font-size: 1.1rem;
+        }
+        input:focus, textarea:focus { border-color: var(--primary); outline: none; }
+        footer { text-align: center; padding: 90px 20px 50px; background: #081822; }
+    </style>
+</head>
+<body>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container">
+            <p class="flag">🇩🇿 MADE IN ALGERIA • ذكاء اصطناعي سيادي</p>
+            <h1>من الفكرة<br>إلى الـ<span class="highlight">إمبراطورية</span> في 48 ساعة</h1>
+            <p class="tagline">
+                MCL_MILYES الجزائر : فرجة الوكلاء الذكيين الآليين.<br>
+                أنشئ ستارتابك مع وكلاء يتكلمون <strong>دارجة</strong>، يفهموا البيروقراطية الجزائرية ويخلصوا الدفع عبر <strong>CIB</strong>.
+            </p>
+            <button onclick="lancerForge()" class="btn">نطلق فرجتي مجاناً ←</button>
+            <p style="margin-top: 40px; font-size: 1.25rem; opacity: 0.9;">
+                <strong>87 ستارتاب جزائرية</strong> تم إنشاؤها مع MCL_MILYES
+            </p>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" style="background:#0f2a4a;">
+        <div class="container">
+            <h2 style="text-align:center; font-size:2.8rem; margin-bottom:70px;">علاش الشباب الجزائري يختارونا</h2>
+            <div class="features">
+                <div class="card">
+                    <h3 style="font-size:1.9rem; margin-bottom:15px;">🇩🇿 سيادة كاملة</h3>
+                    <p>سيرفرات في الجزائر • مطابقة للقانون 18-05 • بياناتك محمية محلياً</p>
+                </div>
+                <div class="card">
+                    <h3 style="font-size:1.9rem; margin-bottom:15px;">🗣️ وكلاء يتكلموا دارجة</h3>
+                    <p>يتفاهموا مع الزبائن بالدارجة ويفهموا السوق الجزائري كيفاش راه</p>
+                </div>
+                <div class="card">
+                    <h3 style="font-size:1.9rem; margin-bottom:15px;">⚡ سرعة رهيبة</h3>
+                    <p>موقع + وكلاء ذكيين + دفع CIB كامل في أقل من 48 ساعة</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULAIRE D'INSCRIPTION -->
+    <section class="section" style="background:#0a1f33;">
+        <div class="container">
+            <h2 style="text-align:center; font-size:2.7rem; margin-bottom:20px;">انضم للفرجة دابا</h2>
+            <p style="text-align:center; font-size:1.35rem; margin-bottom:50px;">الدخول مجاني في المرحلة الأولى</p>
+            
+            <div class="form-section">
+                <form id="inscriptionForm" onsubmit="handleSubmit(event)">
+                    <input type="text" id="nom" placeholder="الإسم الكامل" required>
+                    <input type="email" id="email" placeholder="الإيميل" required>
+                    <input type="tel" id="telephone" placeholder="رقم الواتساب (مهم)">
+                    <textarea id="idee" rows="4" placeholder="وصف فكرتك باختصار (اختياري)"></textarea>
+                    
+                    <button type="submit" class="btn" style="width:100%; margin-top:20px; font-size:1.4rem;">
+                        نعم، بغيت ننضم للفرجة المجانية
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="section" style="text-align:center; background:#112b44;">
+        <h2 style="font-size:2.8rem; margin-bottom:30px;">واش جاهز تبني إمبراطوريتك ؟</h2>
+        <button onclick="lancerForge()" class="btn" style="font-size:1.5rem; padding:26px 70px;">
+            نطلق فرجتي دابا
+        </button>
+    </section>
+
+    <footer>
+        © 2026 MCL_MILYES الجزائر • محمد إلياس زبيرو<br>
+        𝕏 @MZoubirou • mclmilyes.dz
+    </footer>
+
+    <script>
+        function lancerForge() {
+            alert("🚀 فرجة MCL_MILYES تم تفعيلها!\n\nالوكيل الذكي تاعك راه يبدا يخدم على مشروعك.");
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const nom = document.getElementById('nom').value.trim();
+            
+            const btn = e.target.querySelector('button');
+            btn.textContent = "جاري إنشاء الوكيل...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                alert(`🎉 مرحبا بيك ${nom.split(" ")[0]} !\n\nوكيلك الذكي راه يتفعل.\n\nغادي نتصلو بيك عبر الواتساب والإيميل قريبا إن شاء الله.`);
+                e.target.reset();
+                btn.textContent = "نعم، بغيت ننضم للفرجة المجانية";
+                btn.disabled = false;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
