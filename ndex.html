@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agence de marketing digital 100% DZ</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #050d14; color: #ffffff; line-height: 1.6; }
+
+        /* Navbar */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 10%; background: rgba(10, 31, 51, 0.9); backdrop-filter: blur(10px); position: fixed; width: 100%; top: 0; z-index: 1000; border-bottom: 1px solid #112b44; }
+        nav .logo-text { font-size: 1.5rem; color: #00ff9f; font-weight: bold; }
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav ul li a { color: #ffffff; text-decoration: none; transition: 0.3s; }
+        nav ul li a:hover { color: #00ff9f; }
+
+        /* Hero Section */
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at top right, #112b44, #050d14); padding: 0 20px; }
+        .hero img.logo { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #00ff9f; margin-bottom: 30px; box-shadow: 0 0 30px rgba(0, 255, 159, 0.3); object-fit: cover; }
+        .hero h1 { font-size: 3.5rem; color: #00ff9f; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        .hero p { font-size: 1.2rem; color: #a0c4e8; max-width: 600px; margin-bottom: 40px; }
+        .btn { background: linear-gradient(45deg, #00ff9f, #00cc7a); color: #050d14; padding: 18px 45px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; text-decoration: none; display: inline-block; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 255, 159, 0.4); }
+
+        /* Features Section */
+        .features { padding: 100px 10%; background: #0a1f33; }
+        .features h2 { text-align: center; font-size: 2.5rem; margin-bottom: 50px; color: #ffffff; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .card { background: #112b44; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #1a3a55; transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); border-color: #00ff9f; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .card h3 { color: #00ff9f; margin-bottom: 15px; font-size: 1.3rem; }
+        .card p { color: #a0c4e8; font-size: 0.95rem; }
+
+        /* Footer */
+        footer { text-align: center; padding: 30px; background: #050d14; color: #5a7a9a; border-top: 1px solid #112b44; margin-top: 50px; }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            nav ul { display: none; } /* Cache le menu sur mobile pour garder propre */
+            .hero h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo-text">🚀 Agence</div>
+        <ul>
+            <li><a href="#accueil">Accueil</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="accueil">
+        <!-- Si le logo n'est pas généré, l'image se cache automatiquement -->
+        <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+        <h1>Agence de marketing digital 100% DZ</h1>
+        <p>La première solution 100% algérienne, pensée par l'IA et conçue pour l'excellence. Rapidité, sécurité et innovation.</p>
+        <a href="#" class="btn" onclick="event.preventDefault(); this.innerText='✅ Demande envoyée !'; this.style.background='#1a3a55'; this.style.color='#00ff9f';">Lancer mon Business →</a>
+    </section>
+
+    <section class="features" id="services">
+        <h2>Nos Avantages</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>⚡ Ultra Rapide</h3>
+                <p>Des performances optimisées pour le marché local, sans latence.</p>
+            </div>
+            <div class="card">
+                <h3>🛡️ 100% Sécurisé</h3>
+                <p>Vos données sont protégées par des standards de cryptage modernes.</p>
+            </div>
+            <div class="card">
+                <h3>🇩🇿 Made in DZ</h3>
+                <p>Conçu par et pour les algériens. Support local réactif en Darija.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Agence de marketing digital 100% DZ | Propulsé par <strong style="color:#00ff9f">MCL_MILYES</strong> 🇩🇿</p>
+    </footer>
+
+</body>

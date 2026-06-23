@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Épicerie locale livrée en 30 min</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #050d14; color: #ffffff; line-height: 1.6; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 10%; background: rgba(10, 31, 51, 0.9); backdrop-filter: blur(10px); position: fixed; width: 100%; top: 0; z-index: 1000; border-bottom: 1px solid #112b44; }
+        nav .logo-text { font-size: 1.5rem; color: #00ff9f; font-weight: bold; }
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav ul li a { color: #ffffff; text-decoration: none; transition: 0.3s; }
+        nav ul li a:hover { color: #00ff9f; }
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at top right, #112b44, #050d14); padding: 0 20px; }
+        .hero img.logo { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #00ff9f; margin-bottom: 30px; box-shadow: 0 0 30px rgba(0, 255, 159, 0.3); object-fit: cover; }
+        .hero h1 { font-size: 3.5rem; color: #00ff9f; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        .hero p { font-size: 1.2rem; color: #a0c4e8; max-width: 600px; margin-bottom: 40px; }
+        .btn { background: linear-gradient(45deg, #00ff9f, #00cc7a); color: #050d14; padding: 18px 45px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; text-decoration: none; display: inline-block; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 255, 159, 0.4); }
+        .features { padding: 100px 10%; background: #0a1f33; }
+        .features h2 { text-align: center; font-size: 2.5rem; margin-bottom: 50px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .card { background: #112b44; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #1a3a55; transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); border-color: #00ff9f; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .card h3 { color: #00ff9f; margin-bottom: 15px; }
+
+        /* NOUVEAU : SECTION CONTACT / CRM */
+        .contact { padding: 80px 10%; background: #050d14; text-align: center; }
+        .contact h2 { margin-bottom: 40px; color: #00ff9f; }
+        .form-container { max-width: 500px; margin: 0 auto; background: #112b44; padding: 40px; border-radius: 15px; border: 1px solid #1a3a55; }
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #1a3a55; background: #0a1f33; color: white; font-size: 1rem; }
+        input:focus, textarea:focus { outline: none; border-color: #00ff9f; }
+        textarea { height: 100px; resize: none; }
+
+        footer { text-align: center; padding: 30px; background: #050d14; color: #5a7a9a; border-top: 1px solid #112b44; }
+        @media (max-width: 768px) { nav ul { display: none; } .hero h1 { font-size: 2.2rem; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo-text">🚀 Épicerie</div>
+        <ul>
+            <li><a href="#accueil">Accueil</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="accueil">
+        <img src="logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+        <h1>Épicerie locale livrée en 30 min</h1>
+        <p>La première solution 100% algérienne, pensée par l'IA et conçue pour l'excellence.</p>
+        <a href="#contact" class="btn">Nous Contacter →</a>
+    </section>
+
+    <section class="features" id="services">
+        <h2>Nos Avantages</h2>
+        <div class="grid">
+            <div class="card"><h3>⚡ Ultra Rapide</h3><p>Des performances optimisées sans latence.</p></div>
+            <div class="card"><h3>🛡️ 100% Sécurisé</h3><p>Cryptage moderne de vos données.</p></div>
+            <div class="card"><h3>🇩🇿 Made in DZ</h3><p>Support local réactif en Darija.</p></div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Démarrer votre projet</h2>
+        <div class="form-container">
+            <form id="contactForm">
+                <input type="text" id="name" placeholder="Votre nom complet" required>
+                <input type="text" id="phone" placeholder="Numéro de téléphone (ex: 0555XXXXXX)" required>
+                <textarea id="message" placeholder="Décrivez brièvement votre besoin..."></textarea>
+                <button type="submit" class="btn" style="width: 100%;">Envoyer ma demande</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Épicerie locale livrée en 30 min | Propulsé par <strong style="color:#00ff9f">MCL_MILYES</strong> 🇩🇿</p>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Récupération des données
+            const lead = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                message: document.getElementById('message').value,
+                date: new Date().toISOString()
+            };
+
+            // Sauvegarde en local (Dans un vrai cas, ça enverrait à une API PHP/Python)
+            let leads = JSON.parse(localStorage.getItem('mcl_leads') || '[]');
+            leads.push(lead);
+            localStorage.setItem('mcl_leads', JSON.stringify(leads));
+
+            // UI Feedback
+            const btn = this.querySelector('button');
+            btn.innerText = '✅ Merci ! Nous vous appellerons.';
+            btn.style.background = '#1a3a55';
+            btn.style.color = '#00ff9f';
+            btn.disabled = true;
+
+            // Simulation d'envoi vers le serveur local MCL_MILYES
+            fetch('/save-lead', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(lead)
+            }).catch(() => {}); // Ignore l'erreur si le serveur backend n'est pas lancé
+        });
+    </script>
+</body>
+
+
+
+
