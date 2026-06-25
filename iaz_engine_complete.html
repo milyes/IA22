@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IAZ_ENGINE.ai — Intelligent Automation Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #000; color: #fff; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Oswald', sans-serif; }
+    ::selection { background: #A6E93A; color: #000; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #A6E93A; }
+
+    .neon-text { color: #A6E93A; }
+    .neon-bg { background-color: #A6E93A; }
+    .neon-border { border-color: #A6E93A; }
+
+    .gradient-text {
+      background: linear-gradient(to right, #A6E93A, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-overlay {
+      background: linear-gradient(to top, #000000 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%);
+    }
+
+    .card-glow:hover {
+      box-shadow: 0 0 30px rgba(166,233,58,0.05);
+    }
+
+    .pulse-dot {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    .float-anim { animation: float 6s ease-in-out infinite; }
+    .float-anim-delay { animation: float 6s ease-in-out 2s infinite; }
+
+    @keyframes scan {
+      0% { top: -10%; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { top: 110%; opacity: 0; }
+    }
+    .scan-line {
+      animation: scan 4s linear infinite;
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.03; }
+      50% { opacity: 0.08; }
+    }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(166,233,58,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(166,233,58,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridPulse 4s ease-in-out infinite;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #A6E93A;
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFade 4s ease-in-out infinite;
+    }
+    @keyframes particleFade {
+      0% { opacity: 0; transform: translateY(0) scale(0); }
+      50% { opacity: 0.8; transform: translateY(-40px) scale(1); }
+      100% { opacity: 0; transform: translateY(-80px) scale(0); }
+    }
+
+    .tab-active {
+      background: rgba(166,233,58,0.15);
+      border-color: #A6E93A;
+      color: #A6E93A;
+    }
+
+    .toast {
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .typing-cursor::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+      color: #A6E93A;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .modal-hidden {
+      display: none;
+    }
+
+    .modal-visible {
+      display: flex;
+      animation: modalFade 0.3s ease-out;
+    }
+
+    @keyframes modalFade {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .step-number {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #A6E93A, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .pricing-card-active {
+      border-color: #A6E93A;
+      background: rgba(166, 233, 58, 0.05);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast fixed bottom-6 right-6 z-[100] bg-neutral-900 border border-neutral-700 rounded-[20px] px-6 py-4 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-full bg-[#A6E93A]/20 flex items-center justify-center">
+      <i data-lucide="check" class="w-4 h-4 text-[#A6E93A]"></i>
+    </div>
+    <span id="toastMsg" class="text-sm font-medium text-white"></span>
+  </div>
+
+  <!-- Demo Modal -->
+  <div id="demo-modal" class="modal-hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-[30px] max-w-2xl w-full p-8 animate-in">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-['Oswald'] text-2xl font-500 tracking-tight uppercase">Watch Demo</h3>
+        <button onclick="closeModal()" class="text-neutral-500 hover:text-white transition-colors">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <div class="bg-black rounded-[20px] aspect-video flex items-center justify-center border border-neutral-800 mb-6">
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-[#A6E93A]/20 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="play" class="w-8 h-8 text-[#A6E93A]"></i>
+          </div>
+          <p class="text-neutral-400 text-sm">Demo video player — Coming soon</p>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="closeModal()" class="flex-1 border border-neutral-700 text-white px-6 py-3 rounded-[30px] font-medium uppercase tracking-tight hover:border-[#A6E93A] hover:text-[#A6E93A] transition-colors">
+          Close
+        </button>
+        <button onclick="showToast('Scheduling a demo call...')" class="flex-1 bg-[#A6E93A] text-black px-6 py-3 rounded-[30px] font-semibold uppercase tracking-tight hover:bg-white transition-colors">
+          Schedule Call
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-xl bg-[#A6E93A] flex items-center justify-center">
+          <i data-lucide="cpu" class="w-5 h-5 text-black"></i>
+        </div>
+        <span class="font-['Oswald'] text-xl font-500 tracking-tight uppercase">
+          IAZ<span class="text-[#A6E93A]">_ENGINE</span><span class="text-neutral-500 text-sm">.ai</span>
+        </span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#features" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors">Features</a>
+        <a href="#how-it-works" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors">How It Works</a>
+        <a href="#use-cases" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors">Use Cases</a>
+        <a href="#pricing" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors">Pricing</a>
+        <a href="#contact" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors">Contact</a>
+      </div>
+
+      <div class="hidden md:flex items-center gap-4">
+        <button onclick="showToast('Login portal opening...')" class="text-sm font-semibold tracking-wide text-neutral-400 hover:text-white transition-colors px-4 py-2">LOG IN</button>
+        <button onclick="document.getElementById('demo-modal').classList.remove('modal-hidden'); document.getElementById('demo-modal').classList.add('modal-visible')" class="bg-[#A6E93A] text-black px-6 py-2.5 rounded-[30px] text-sm font-semibold uppercase tracking-tight hover:bg-white transition-colors">
+          Get Started
+        </button>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" class="md:hidden text-white" onclick="toggleMobileMenu()">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-black/95 backdrop-blur-md border-t border-neutral-800">
+      <div class="px-6 py-6 flex flex-col gap-4">
+        <a href="#features" onclick="toggleMobileMenu()" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors py-2">Features</a>
+        <a href="#how-it-works" onclick="toggleMobileMenu()" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors py-2">How It Works</a>
+        <a href="#use-cases" onclick="toggleMobileMenu()" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors py-2">Use Cases</a>
+        <a href="#pricing" onclick="toggleMobileMenu()" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors py-2">Pricing</a>
+        <a href="#contact" onclick="toggleMobileMenu()" class="text-sm font-medium tracking-wide text-neutral-400 hover:text-[#A6E93A] transition-colors py-2">Contact</a>
+        <div class="border-t border-neutral-800 pt-4 flex flex-col gap-3">
+          <button onclick="showToast('Login portal opening...')" class="text-sm font-semibold tracking-wide text-neutral-400 hover:text-white transition-colors py-2">LOG IN</button>
+          <button onclick="showToast('Redirecting to dashboard...')" class="bg-[#A6E93A] text-black px-6 py-3 rounded-[30px] text-sm font-semibold uppercase tracking-tight hover:bg-white transition-colors w-full">
+            Get Started
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative min-h-screen flex items-center overflow-hidden">
+    <!-- Background Effects -->
+    <div class="absolute inset-0 grid-bg"></div>
+    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#A6E93A] rounded-full blur-[200px] opacity-5"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#A6E93A] rounded-full blur-[180px] opacity-3"></div>
+
+    <!-- Particles -->
+    <div class="particle" style="left:10%; top:60%; animation-delay:0s;"></div>
+    <div class="particle" style="left:25%; top:70%; animation-delay:0.8s;"></div>
+    <div class="particle" style="left:50%; top:55%; animation-delay:1.6s;"></div>
+    <div class="particle" style="left:70%; top:65%; animation-delay:2.4s;"></div>
+    <div class="particle" style="left:85%; top:75%; animation-delay:3.2s;"></div>
+    <div class="particle" style="left:40%; top:80%; animation-delay:1.2s;"></div>
+    <div class="particle" style="left:60%; top:45%; animation-delay:2s;"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 pt-32 md:pt-48 pb-20 md:pb-32 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+      <!-- Left Content -->
+      <div>
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-[30px] border border-[#A6E93A]/30 bg-[#A6E93A]/10 mb-8">
+          <span class="w-2 h-2 rounded-full bg-[#A6E93A] pulse-dot"></span>
+          <span class="text-xs font-semibold uppercase tracking-widest text-[#A6E93A]">Engine v3.0 — Now Live</span>
+        </div>
+
+        <h1 class="font-['Oswald'] text-5xl md:text-7xl lg:text-8xl font-500 leading-[0.9] tracking-tight uppercase mb-6">
+          BUILD<br>
+          <span class="gradient-text">INTELLIGENT</span><br>
+          SYSTEMS
+        </h1>
+
+        <p class="text-neutral-400 text-base md:text-lg font-light leading-relaxed max-w-lg mb-10">
+          IAZ_ENGINE.ai is the autonomous AI infrastructure layer that powers next-generation applications — from real-time decision systems to adaptive workflows.
+        </p>
+
+        <div class="flex flex-wrap gap-4 mb-12">
+          <button onclick="showToast('Starting your free trial!')" class="bg-[#A6E93A] text-black px-8 py-4 rounded-[30px] font-semibold uppercase tracking-tight hover:bg-white transition-colors flex items-center gap-2 text-base">
+            Start Free Trial
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </button>
+          <button onclick="document.getElementById('demo-modal').classList.remove('modal-hidden'); document.getElementById('demo-modal').classList.add('modal-visible')" class="border border-neutral-700 text-white px-8 py-4 rounded-[30px] font-medium uppercase tracking-tight hover:border-[#A6E93A] hover:text-[#A6E93A] transition-colors flex items-center gap-2 text-base">
+            <i data-lucide="play" class="w-5 h-5"></i>
+            Watch Demo
+          </button>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="flex gap-10">
+          <div>
+            <div class="font-['Oswald'] text-3xl font-500 text-white">99.7<span class="text-[#A6E93A]">%</span></div>
+            <div class="text-xs text-neutral-500 font-medium uppercase tracking-wide mt-1">Uptime SLA</div>
+          </div>
+          <div>
+            <div class="font-['Oswald'] text-3xl font-500 text-white">2.4<span class="text-[#A6E93A]">ms</span></div>
+            <div class="text-xs text-neutral-500 font-medium uppercase tracking-wide mt-1">Avg Latency</div>
+          </div>
+          <div>
+            <div class="font-['Oswald'] text-3xl font-500 text-white">10K<span class="text-[#A6E93A]">+</span></div>
+            <div class="text-xs text-neutral-500 font-medium uppercase tracking-wide mt-1">Deployments</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Visual -->
+      <div class="relative flex justify-center lg:justify-end">
+        <div class="relative w-full max-w-md">
+          <!-- Main Terminal Card -->
+          <div class="bg-neutral-900/80 backdrop-blur-xl border border-neutral-800 rounded-[30px] p-6 float-anim">
+            <!-- Terminal Header -->
+            <div class="flex items-center gap-2 mb-5">
+              <div class="w-3 h-3 rounded-full bg-red-500/70"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500/70"></div>
+              <span class="ml-3 text-xs text-neutral-600 font-mono">iAZ_engine — session</span>
+            </div>
+            <!-- Terminal Content -->
+            <div class="font-mono text-sm space-y-3">
+              <div><span class="text-[#A6E93A]">→</span> <span class="text-neutral-500">Initializing engine core...</span></div>
+              <div><span class="text-[#A6E93A]">✓</span> <span class="text-neutral-300">Neural pathways loaded</span> <span class="text-neutral-600">(0.8s)</span></div>
+              <div><span class="text-[#A6E93A]">✓</span> <span class="text-neutral-300">Inference pipeline active</span> <span class="text-neutral-600">(1.2s)</span></div>
+              <div><span class="text-[#A6E93A]">✓</span> <span class="text-neutral-300">Memory banks synchronized</span> <span class="text-neutral-600">(0.4s)</span></div>
+              <div class="border-t border-neutral-800 pt-3 mt-3">
+                <div><span class="text-[#A6E93A]">→</span> <span class="text-neutral-500">Processing query...</span></div>
+                <div class="text-white mt-1 typing-cursor" id="typingText">Autonomous optimization enabled</div>
+              </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="mt-5 pt-4 border-t border-neutral-800 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#A6E93A] pulse-dot"></span>
+                <span class="text-xs text-neutral-500">Engine Active</span>
+              </div>
+              <span class="text-xs text-neutral-600 font-mono">GPU: 23% | MEM: 4.2GB</span>
+            </div>
+          </div>
+
+          <!-- Floating Badge 1 -->
+          <div class="absolute -top-4 -left-4 bg-neutral-900/90 backdrop-blur-xl border border-neutral-800 rounded-[20px] px-4 py-3 float-anim-delay">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-full bg-[#A6E93A]/20 flex items-center justify-center">
+                <i data-lucide="zap" class="w-4 h-4 text-[#A6E93A]"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-white">Inference Speed</div>
+                <div class="text-[10px] text-[#A6E93A] font-mono">2.4ms avg</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Badge 2 -->
+          <div class="absolute -bottom-4 -right-4 bg-neutral-900/90 backdrop-blur-xl border border-neutral-800 rounded-[20px] px-4 py-3 float-anim">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-full bg-[#A6E93A]/20 flex items-center justify-center">
+                <i data-lucide="shield-check" class="w-4 h-4 text-[#A6E93A]"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-white">Security</div>
+                <div class="text-[10px] text-[#A6E93A] font-mono">SOC2 Certified</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <span class="text-[10px] text-neutral-600 uppercase tracking-widest">Scroll</span>
+      <div class="w-5 h-8 border border-neutral-700 rounded-full flex justify-center pt-1.5">
+        <div class="w-1 h-2 bg-[#A6E93A] rounded-full animate-bounce"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trusted By -->
+  <section class="border-y border-neutral-800/50 py-10 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class="text-center text-xs font-semibold uppercase tracking-widest text-neutral-600 mb-8">Trusted by forward-thinking teams</p>
+      <div class="flex items-center justify-center gap-12 md:gap-20 flex-wrap opacity-30">
+        <span class="font-['Oswald'] text-xl font-400 tracking-wide uppercase">Nexon Labs</span>
+        <span class="font-['Oswald'] text-xl font-400 tracking-wide uppercase">Synthex</span>
+        <span class="font-['Oswald'] text-xl font-400 tracking-wide uppercase">Vortex AI</span>
+        <span class="font-['Oswald'] text-xl font-400 tracking-wide uppercase">QuantumOS</span>
+        <span class="font-['Oswald'] text-xl font-400 tracking-wide uppercase">DataForge</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block text-xs font-semibold uppercase tracking-widest text-[#A6E93A] mb-4">Core Capabilities</span>
+        <h2 class="font-['Oswald'] text-4xl md:text-5xl font-500 tracking-tight uppercase mb-4">
+          Engineered for <span class="gradient-text">Performance</span>
+        </h2>
+        <p class="text-neutral-400 font-light max-w-2xl mx-auto">
+          Every component of IAZ_ENGINE is purpose-built to deliver sub-millisecond inference with enterprise-grade reliability.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-14 h-14 rounded-[20px] bg-black border border-neutral-800 flex items-center justify-center mb-6 group-hover:border-[#A6E93A] transition-colors">
+            <i data-lucide="brain" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-3">Adaptive Neural Core</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed">
+            Self-optimizing neural architecture that continuously adapts model weights based on real-time feedback loops and drift detection.
+          </p>
+          <div class="mt-6 pt-4 border-t border-neutral-800 flex items-center gap-2 text-[#A6E93A] text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-14 h-14 rounded-[20px] bg-black border border-neutral-800 flex items-center justify-center mb-6 group-hover:border-[#A6E93A] transition-colors">
+            <i data-lucide="layers" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-3">Multi-Model Orchestration</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed">
+            Seamlessly route, chain, and ensemble multiple AI models through a unified inference graph with intelligent load balancing.
+          </p>
+          <div class="mt-6 pt-4 border-t border-neutral-800 flex items-center gap-2 text-[#A6E93A] text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-14 h-14 rounded-[20px] bg-black border border-neutral-800 flex items-center justify-center mb-6 group-hover:border-[#A6E93A] transition-colors">
+            <i data-lucide="gauge" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-3">Real-Time Analytics</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed">
+            Granular observability into every inference call — latency breakdowns, token usage, model performance metrics, and custom alerts.
+          </p>
+          <div class="mt-6 pt-4 border-t border-neutral-800 flex items-center gap-2 text-[#A6E93A] text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-14 h-14 rounded-[20px] bg-black border border-neutral-800 flex items-center justify-center mb-6 group-hover:border-[#A6E93A] transition-colors">
+            <i data-lucide="shield-check" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-3">Enterprise Security</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed">
+            SOC2 Type II certified, end-to-end encryption, HIPAA compliant, and zero-knowledge architecture for maximum data privacy.
+          </p>
+          <div class="mt-6 pt-4 border-t border-neutral-800 flex items-center gap-2 text-[#A6E93A] text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-14 h-14 rounded-[20px] bg-black border border-neutral-800 flex items-center justify-center mb-6 group-hover:border-[#A6E93A] transition-colors">
+            <i data-lucide="zap" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-3">Extreme Performance</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed">
+            GPU-optimized inference, quantized models, edge deployment support, and batching optimization for 10x throughput gains.
+          </p>
+          <div class="mt-6 pt-4 border-t border-neutral-800 flex items-center gap-2 text-[#A6E93A] text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-14 h-14 rounded-[20px] bg-black border border-neutral-800 flex items-center justify-center mb-6 group-hover:border-[#A6E93A] transition-colors">
+            <i data-lucide="api" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-3">Developer-First API</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed">
+            RESTful + gRPC endpoints, SDKs for Python/Node/Go, comprehensive documentation, and one-click Vercel/Docker deployment.
+          </p>
+          <div class="mt-6 pt-4 border-t border-neutral-800 flex items-center gap-2 text-[#A6E93A] text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="py-24 relative border-y border-neutral-800/50">
+    <div class="absolute inset-0 grid-bg opacity-50"></div>
+    <div class="relative max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block text-xs font-semibold uppercase tracking-widest text-[#A6E93A] mb-4">The Process</span>
+        <h2 class="font-['Oswald'] text-4xl md:text-5xl font-500 tracking-tight uppercase mb-4">
+          From <span class="gradient-text">Zero to Deployed</span>
+        </h2>
+        <p class="text-neutral-400 font-light max-w-2xl mx-auto">
+          Get your AI infrastructure live in minutes, not months. A streamlined process designed for speed and scale.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <!-- Left - Steps -->
+        <div class="space-y-8">
+          <!-- Step 1 -->
+          <div class="flex gap-6 group">
+            <div class="flex-shrink-0">
+              <div class="step-number">01</div>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-2">Connect Your Models</h3>
+              <p class="text-neutral-400 font-light text-sm">
+                Import pre-trained models from Hugging Face, OpenAI, Anthropic, or use your custom models. Support for PyTorch, TensorFlow, ONNX, and more.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex gap-6 group">
+            <div class="flex-shrink-0">
+              <div class="step-number">02</div>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-2">Configure Inference Graphs</h3>
+              <p class="text-neutral-400 font-light text-sm">
+                Define routing logic, chaining, A/B testing, and fallback strategies through an intuitive visual editor or YAML config.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex gap-6 group">
+            <div class="flex-shrink-0">
+              <div class="step-number">03</div>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-2">Optimize & Monitor</h3>
+              <p class="text-neutral-400 font-light text-sm">
+                Auto-tune quantization, batch sizes, and inference parameters. Monitor real-time latency, accuracy, and cost metrics.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="flex gap-6 group">
+            <div class="flex-shrink-0">
+              <div class="step-number">04</div>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-2">Deploy at Scale</h3>
+              <p class="text-neutral-400 font-light text-sm">
+                One-click deployment to cloud, edge, or hybrid environments. Auto-scaling, load balancing, and 99.7% uptime SLA guaranteed.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right - Visual -->
+        <div class="relative">
+          <div class="bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8">
+            <div class="bg-gradient-to-br from-neutral-900 to-black rounded-[20px] aspect-square flex items-center justify-center relative overflow-hidden">
+              <!-- Animated Grid -->
+              <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 400">
+                <defs>
+                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(166,233,58,0.1)" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="400" height="400" fill="url(#grid)" />
+              </svg>
+
+              <!-- Nodes -->
+              <div class="relative w-full h-full flex items-center justify-center">
+                <div class="flex flex-col items-center gap-8">
+                  <!-- Input Node -->
+                  <div class="w-16 h-16 rounded-full bg-[#A6E93A]/20 border border-[#A6E93A] flex items-center justify-center float-anim">
+                    <i data-lucide="input" class="w-8 h-8 text-[#A6E93A]"></i>
+                  </div>
+
+                  <!-- Arrow -->
+                  <div class="text-[#A6E93A] text-2xl">↓</div>
+
+                  <!-- Process Node -->
+                  <div class="w-16 h-16 rounded-full bg-[#A6E93A]/30 border border-[#A6E93A] flex items-center justify-center float-anim-delay">
+                    <i data-lucide="cpu" class="w-8 h-8 text-[#A6E93A]"></i>
+                  </div>
+
+                  <!-- Arrow -->
+                  <div class="text-[#A6E93A] text-2xl">↓</div>
+
+                  <!-- Output Node -->
+                  <div class="w-16 h-16 rounded-full bg-[#A6E93A]/20 border border-[#A6E93A] flex items-center justify-center float-anim">
+                    <i data-lucide="output" class="w-8 h-8 text-[#A6E93A]"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases Section -->
+  <section id="use-cases" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block text-xs font-semibold uppercase tracking-widest text-[#A6E93A] mb-4">Real-World Applications</span>
+        <h2 class="font-['Oswald'] text-4xl md:text-5xl font-500 tracking-tight uppercase mb-4">
+          Built for Every <span class="gradient-text">Industry</span>
+        </h2>
+        <p class="text-neutral-400 font-light max-w-2xl mx-auto">
+          From fintech to healthcare, IAZ_ENGINE powers mission-critical AI workloads across sectors.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Use Case 1 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-12 h-12 rounded-[16px] bg-[#A6E93A]/20 flex items-center justify-center mb-6 group-hover:bg-[#A6E93A]/30 transition-colors">
+            <i data-lucide="trending-up" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-lg font-500 tracking-tight uppercase mb-3">Financial Services</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed mb-4">
+            Real-time fraud detection, risk assessment, algorithmic trading, and portfolio optimization at scale.
+          </p>
+          <ul class="text-xs text-neutral-500 space-y-2">
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              Sub-10ms decision latency
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              99.99% uptime SLA
+            </li>
+          </ul>
+        </div>
+
+        <!-- Use Case 2 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-12 h-12 rounded-[16px] bg-[#A6E93A]/20 flex items-center justify-center mb-6 group-hover:bg-[#A6E93A]/30 transition-colors">
+            <i data-lucide="heart" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-lg font-500 tracking-tight uppercase mb-3">Healthcare & MedTech</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed mb-4">
+            Diagnostic imaging analysis, patient risk prediction, drug discovery, and clinical decision support systems.
+          </p>
+          <ul class="text-xs text-neutral-500 space-y-2">
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              HIPAA compliant
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              GDPR ready
+            </li>
+          </ul>
+        </div>
+
+        <!-- Use Case 3 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-12 h-12 rounded-[16px] bg-[#A6E93A]/20 flex items-center justify-center mb-6 group-hover:bg-[#A6E93A]/30 transition-colors">
+            <i data-lucide="shopping-cart" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-lg font-500 tracking-tight uppercase mb-3">E-Commerce & Retail</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed mb-4">
+            Personalization engines, recommendation systems, inventory optimization, and demand forecasting.
+          </p>
+          <ul class="text-xs text-neutral-500 space-y-2">
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              1M+ req/sec support
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              A/B testing built-in
+            </li>
+          </ul>
+        </div>
+
+        <!-- Use Case 4 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-12 h-12 rounded-[16px] bg-[#A6E93A]/20 flex items-center justify-center mb-6 group-hover:bg-[#A6E93A]/30 transition-colors">
+            <i data-lucide="lock" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-lg font-500 tracking-tight uppercase mb-3">Cybersecurity</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed mb-4">
+            Threat detection, anomaly analysis, vulnerability assessment, and security event triage at enterprise scale.
+          </p>
+          <ul class="text-xs text-neutral-500 space-y-2">
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              Real-time threat intel
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              Zero-trust architecture
+            </li>
+          </ul>
+        </div>
+
+        <!-- Use Case 5 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-12 h-12 rounded-[16px] bg-[#A6E93A]/20 flex items-center justify-center mb-6 group-hover:bg-[#A6E93A]/30 transition-colors">
+            <i data-lucide="bot" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-lg font-500 tracking-tight uppercase mb-3">Conversational AI</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed mb-4">
+            Chatbots, voice assistants, customer support automation, and multi-language NLU at massive scale.
+          </p>
+          <ul class="text-xs text-neutral-500 space-y-2">
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              150+ languages
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              Streaming responses
+            </li>
+          </ul>
+        </div>
+
+        <!-- Use Case 6 -->
+        <div class="group bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <div class="w-12 h-12 rounded-[16px] bg-[#A6E93A]/20 flex items-center justify-center mb-6 group-hover:bg-[#A6E93A]/30 transition-colors">
+            <i data-lucide="database" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-['Oswald'] text-lg font-500 tracking-tight uppercase mb-3">Data & Analytics</h3>
+          <p class="text-neutral-400 font-light text-sm leading-relaxed mb-4">
+            Log analysis, entity extraction, classification, and time-series forecasting with petabyte-scale datasets.
+          </p>
+          <ul class="text-xs text-neutral-500 space-y-2">
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              Petabyte-scale support
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-1 h-1 rounded-full bg-[#A6E93A]"></span>
+              Custom metrics
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="py-24 relative border-y border-neutral-800/50">
+    <div class="absolute inset-0 grid-bg opacity-50"></div>
+    <div class="relative max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block text-xs font-semibold uppercase tracking-widest text-[#A6E93A] mb-4">Simple, Transparent Pricing</span>
+        <h2 class="font-['Oswald'] text-4xl md:text-5xl font-500 tracking-tight uppercase mb-4">
+          Plans That <span class="gradient-text">Scale With You</span>
+        </h2>
+        <p class="text-neutral-400 font-light max-w-2xl mx-auto">
+          Pay for what you use. No hidden fees. Cancel anytime. All plans include our world-class support.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
+        <!-- Starter Plan -->
+        <div class="bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <h3 class="font-['Oswald'] text-2xl font-500 tracking-tight uppercase mb-2">Starter</h3>
+          <p class="text-neutral-400 font-light text-sm mb-6">Perfect for prototyping and small projects</p>
+          
+          <div class="mb-6">
+            <div class="font-['Oswald'] text-4xl font-500 text-white mb-1">
+              $29<span class="text-lg text-neutral-500">/mo</span>
+            </div>
+            <p class="text-xs text-neutral-500">Billed monthly • First 100K tokens free</p>
+          </div>
+
+          <button onclick="showToast('Starting Starter plan...')" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-3 rounded-[30px] font-semibold uppercase tracking-tight transition-colors mb-8">
+            Get Started
+          </button>
+
+          <div class="space-y-4 pt-8 border-t border-neutral-800">
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">100K tokens/month</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">1 concurrent inference</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">Basic analytics</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">Community support</span>
+            </div>
+            <div class="flex items-center gap-3 opacity-50">
+              <i data-lucide="x" class="w-5 h-5 text-neutral-600 flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">Custom models</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pro Plan (Featured) -->
+        <div class="bg-gradient-to-b from-[#A6E93A]/10 to-neutral-900/30 border border-[#A6E93A] rounded-[30px] p-8 card-glow pricing-card-active">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#A6E93A]/20 border border-[#A6E93A]/50 mb-4">
+            <span class="w-2 h-2 rounded-full bg-[#A6E93A]"></span>
+            <span class="text-xs font-semibold uppercase tracking-widest text-[#A6E93A]">Most Popular</span>
+          </div>
+
+          <h3 class="font-['Oswald'] text-2xl font-500 tracking-tight uppercase mb-2">Professional</h3>
+          <p class="text-neutral-400 font-light text-sm mb-6">Built for growing teams and production workloads</p>
+          
+          <div class="mb-6">
+            <div class="font-['Oswald'] text-4xl font-500 text-white mb-1">
+              $299<span class="text-lg text-neutral-500">/mo</span>
+            </div>
+            <p class="text-xs text-neutral-500">Billed monthly • Save 20% with annual plan</p>
+          </div>
+
+          <button onclick="showToast('Starting Professional plan...')" class="w-full bg-[#A6E93A] hover:bg-white text-black px-6 py-3 rounded-[30px] font-semibold uppercase tracking-tight transition-colors mb-8">
+            Get Started
+          </button>
+
+          <div class="space-y-4 pt-8 border-t border-[#A6E93A]/30">
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-200">Everything in Starter, plus:</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-200">10M tokens/month</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-200">100 concurrent inferences</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-200">Advanced analytics & alerts</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-200">Custom models support</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-200">Priority email support</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 hover:border-[#A6E93A] transition-all duration-300 card-glow">
+          <h3 class="font-['Oswald'] text-2xl font-500 tracking-tight uppercase mb-2">Enterprise</h3>
+          <p class="text-neutral-400 font-light text-sm mb-6">For mission-critical deployments at scale</p>
+          
+          <div class="mb-6">
+            <div class="font-['Oswald'] text-4xl font-500 text-white mb-1">
+              Custom<span class="text-lg text-neutral-500"></span>
+            </div>
+            <p class="text-xs text-neutral-500">Flexible pricing based on your needs</p>
+          </div>
+
+          <button onclick="document.getElementById('contact-form').scrollIntoView({behavior:'smooth'})" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white px-6 py-3 rounded-[30px] font-semibold uppercase tracking-tight transition-colors mb-8">
+            Contact Sales
+          </button>
+
+          <div class="space-y-4 pt-8 border-t border-neutral-800">
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">Everything in Pro, plus:</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">Unlimited tokens & scaling</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">Dedicated infrastructure</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">24/7 support + SLA</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">Custom integrations</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <i data-lucide="check" class="w-5 h-5 text-[#A6E93A] flex-shrink-0"></i>
+              <span class="text-sm text-neutral-400">White-label options</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Collapse -->
+      <div class="max-w-3xl mx-auto mt-16 pt-12 border-t border-neutral-800">
+        <h3 class="font-['Oswald'] text-2xl font-500 tracking-tight uppercase mb-8">Frequently Asked Questions</h3>
+        
+        <div class="space-y-4">
+          <details class="group bg-neutral-900/30 border border-neutral-800 rounded-[20px] p-6 cursor-pointer hover:border-[#A6E93A]/50 transition-colors">
+            <summary class="flex items-center justify-between font-semibold text-white">
+              Can I switch plans anytime?
+              <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 group-open:rotate-180 transition-transform"></i>
+            </summary>
+            <p class="text-neutral-400 font-light text-sm mt-4">Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate your billing.</p>
+          </details>
+
+          <details class="group bg-neutral-900/30 border border-neutral-800 rounded-[20px] p-6 cursor-pointer hover:border-[#A6E93A]/50 transition-colors">
+            <summary class="flex items-center justify-between font-semibold text-white">
+              What payment methods do you accept?
+              <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 group-open:rotate-180 transition-transform"></i>
+            </summary>
+            <p class="text-neutral-400 font-light text-sm mt-4">We accept all major credit cards, bank transfers, and can arrange custom billing for Enterprise customers.</p>
+          </details>
+
+          <details class="group bg-neutral-900/30 border border-neutral-800 rounded-[20px] p-6 cursor-pointer hover:border-[#A6E93A]/50 transition-colors">
+            <summary class="flex items-center justify-between font-semibold text-white">
+              Is there a free trial?
+              <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 group-open:rotate-180 transition-transform"></i>
+            </summary>
+            <p class="text-neutral-400 font-light text-sm mt-4">Yes! All new accounts start with a free 14-day trial of the Professional plan with 100K free tokens to get started.</p>
+          </details>
+
+          <details class="group bg-neutral-900/30 border border-neutral-800 rounded-[20px] p-6 cursor-pointer hover:border-[#A6E93A]/50 transition-colors">
+            <summary class="flex items-center justify-between font-semibold text-white">
+              Do you offer discounts for annual billing?
+              <i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500 group-open:rotate-180 transition-transform"></i>
+            </summary>
+            <p class="text-neutral-400 font-light text-sm mt-4">Yes! Annual billing saves you 20% on all plans. We also offer custom discounts for non-profits and academic institutions.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-24 relative">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block text-xs font-semibold uppercase tracking-widest text-[#A6E93A] mb-4">Get In Touch</span>
+        <h2 class="font-['Oswald'] text-4xl md:text-5xl font-500 tracking-tight uppercase mb-4">
+          Ready to Transform <span class="gradient-text">Your AI Workflows?</span>
+        </h2>
+        <p class="text-neutral-400 font-light max-w-2xl mx-auto">
+          Our team is here to help. Whether you're just exploring or ready to deploy, let's talk.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <!-- Contact Info 1 -->
+        <div class="text-center">
+          <div class="w-12 h-12 rounded-full bg-[#A6E93A]/20 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="mail" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-semibold text-white mb-2">Email</h3>
+          <a href="mailto:hello@iazengine.ai" class="text-neutral-400 hover:text-[#A6E93A] transition-colors">hello@iazengine.ai</a>
+        </div>
+
+        <!-- Contact Info 2 -->
+        <div class="text-center">
+          <div class="w-12 h-12 rounded-full bg-[#A6E93A]/20 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="phone" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-semibold text-white mb-2">Phone</h3>
+          <a href="tel:+18003334242" class="text-neutral-400 hover:text-[#A6E93A] transition-colors">+1 (800) 333-4242</a>
+        </div>
+
+        <!-- Contact Info 3 -->
+        <div class="text-center">
+          <div class="w-12 h-12 rounded-full bg-[#A6E93A]/20 flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="map-pin" class="w-6 h-6 text-[#A6E93A]"></i>
+          </div>
+          <h3 class="font-semibold text-white mb-2">Location</h3>
+          <p class="text-neutral-400">San Francisco, CA • Remote First</p>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <form id="contact-form" class="bg-neutral-900/30 border border-neutral-800 rounded-[30px] p-8 md:p-12" onsubmit="handleContactSubmit(event)">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <!-- Name -->
+          <div>
+            <label class="block text-sm font-semibold text-white mb-2">Full Name</label>
+            <input type="text" placeholder="Your name" required class="w-full bg-neutral-800 border border-neutral-700 rounded-[16px] px-4 py-3 text-white placeholder-neutral-500 focus:border-[#A6E93A] focus:outline-none transition-colors" />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-sm font-semibold text-white mb-2">Email</label>
+            <input type="email" placeholder="you@company.com" required class="w-full bg-neutral-800 border border-neutral-700 rounded-[16px] px-4 py-3 text-white placeholder-neutral-500 focus:border-[#A6E93A] focus:outline-none transition-colors" />
+          </div>
+        </div>
+
+        <!-- Company -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-white mb-2">Company</label>
+          <input type="text" placeholder="Your company" class="w-full bg-neutral-800 border border-neutral-700 rounded-[16px] px-4 py-3 text-white placeholder-neutral-500 focus:border-[#A6E93A] focus:outline-none transition-colors" />
+        </div>
+
+        <!-- Message -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-white mb-2">Message</label>
+          <textarea placeholder="Tell us about your project..." rows="6" required class="w-full bg-neutral-800 border border-neutral-700 rounded-[16px] px-4 py-3 text-white placeholder-neutral-500 focus:border-[#A6E93A] focus:outline-none transition-colors resize-none"></textarea>
+        </div>
+
+        <!-- Checkbox -->
+        <div class="flex items-center gap-3 mb-8">
+          <input type="checkbox" id="agree" required class="w-4 h-4 rounded accent-[#A6E93A]" />
+          <label for="agree" class="text-sm text-neutral-400">I agree to the privacy policy and terms of service</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full bg-[#A6E93A] hover:bg-white text-black px-8 py-4 rounded-[30px] font-semibold uppercase tracking-tight transition-colors">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-neutral-800 py-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <!-- Brand -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-[#A6E93A] flex items-center justify-center">
+              <i data-lucide="cpu" class="w-4 h-4 text-black"></i>
+            </div>
+            <span class="font-['Oswald'] font-500 tracking-tight uppercase">
+              IAZ<span class="text-[#A6E93A]">_ENGINE</span>
+            </span>
+          </div>
+          <p class="text-neutral-500 text-sm font-light">The autonomous AI infrastructure layer for the modern enterprise.</p>
+        </div>
+
+        <!-- Product -->
+        <div>
+          <h4 class="font-semibold text-white mb-4 uppercase text-sm">Product</h4>
+          <ul class="space-y-2">
+            <li><a href="#features" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Features</a></li>
+            <li><a href="#pricing" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Pricing</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">API Docs</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Status</a></li>
+          </ul>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <h4 class="font-semibold text-white mb-4 uppercase text-sm">Company</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">About</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Blog</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Careers</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Press</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div>
+          <h4 class="font-semibold text-white mb-4 uppercase text-sm">Legal</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Privacy</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Terms</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Security</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Footer -->
+      <div class="border-t border-neutral-800 pt-8 flex flex-col md:flex-row items-center justify-between">
+        <p class="text-neutral-600 text-sm font-light">&copy; 2024 IAZ_ENGINE.ai. All rights reserved.</p>
+        <div class="flex items-center gap-6 mt-4 md:mt-0">
+          <a href="#" class="text-neutral-600 hover:text-[#A6E93A] transition-colors">
+            <i data-lucide="twitter" class="w-5 h-5"></i>
+          </a>
+          <a href="#" class="text-neutral-600 hover:text-[#A6E93A] transition-colors">
+            <i data-lucide="github" class="w-5 h-5"></i>
+          </a>
+          <a href="#" class="text-neutral-600 hover:text-[#A6E93A] transition-colors">
+            <i data-lucide="linkedin" class="w-5 h-5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Toast Notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Mobile Menu Toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    // Modal Functions
+    function closeModal() {
+      const modal = document.getElementById('demo-modal');
+      modal.classList.add('modal-hidden');
+      modal.classList.remove('modal-visible');
+    }
+
+    // Handle Contact Form
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      showToast('Message sent! We\'ll be in touch soon.');
+      e.target.reset();
+    }
+
+    // Navbar Background on Scroll
+    window.addEventListener('scroll', function() {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.style.background = 'rgba(0, 0, 0, 0.8)';
+        navbar.style.backdropFilter = 'blur(10px)';
+        navbar.style.borderBottom = '1px solid rgba(255, 255, 255, 0.05)';
+      } else {
+        navbar.style.background = 'transparent';
+        navbar.style.backdropFilter = 'none';
+        navbar.style.borderBottom = 'none';
+      }
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('demo-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

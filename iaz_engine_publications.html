@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IAZ_ENGINE.ai — Publications</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #000; color: #fff; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Oswald', sans-serif; }
+    ::selection { background: #A6E93A; color: #000; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #A6E93A; }
+
+    .neon-text { color: #A6E93A; }
+    .neon-bg { background-color: #A6E93A; }
+    .neon-border { border-color: #A6E93A; }
+
+    .gradient-text {
+      background: linear-gradient(to right, #A6E93A, #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-glow:hover {
+      box-shadow: 0 0 30px rgba(166,233,58,0.05);
+    }
+
+    .pulse-dot {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.03; }
+      50% { opacity: 0.08; }
+    }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(166,233,58,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(166,233,58,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridPulse 4s ease-in-out infinite;
+    }
+
+    .modal-hidden { display: none; }
+    .modal-visible {
+      display: flex;
+      animation: modalFade 0.3s ease-out;
+    }
+
+    @keyframes modalFade {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .toast {
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .editor-toolbar {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 12px 12px 0 0;
+      flex-wrap: wrap;
+    }
+
+    .editor-toolbar button {
+      padding: 6px 12px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .editor-toolbar button:hover {
+      background: #333;
+      border-color: #A6E93A;
+      color: #A6E93A;
+    }
+
+    .editor-content {
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 16px;
+      min-height: 400px;
+      max-height: 600px;
+      overflow-y: auto;
+      resize: vertical;
+    }
+
+    .article-card {
+      background: linear-gradient(135deg, rgba(166,233,58,0.05) 0%, rgba(0,0,0,0.3) 100%);
+      border: 1px solid rgba(166,233,58,0.2);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .article-card:hover {
+      border-color: #A6E93A;
+      box-shadow: 0 0 30px rgba(166,233,58,0.1);
+      transform: translateY(-4px);
+    }
+
+    .article-cover {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #A6E93A/20 0%, #A6E93A/5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid rgba(166,233,58,0.2);
+      font-size: 48px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      background: rgba(166,233,58,0.15);
+      border: 1px solid rgba(166,233,58,0.3);
+      border-radius: 20px;
+      font-size: 12px;
+      color: #A6E93A;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tag:hover {
+      background: rgba(166,233,58,0.25);
+      border-color: #A6E93A;
+    }
+
+    .tab-button {
+      padding: 12px 24px;
+      background: transparent;
+      border: 2px solid transparent;
+      border-bottom: 2px solid #333;
+      color: #888;
+      cursor: pointer;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .tab-button.active {
+      color: #A6E93A;
+      border-bottom-color: #A6E93A;
+    }
+
+    .tab-button:hover {
+      color: #A6E93A;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: #888;
+    }
+
+    .article-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      padding-left: 40px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast fixed bottom-6 right-6 z-[100] bg-neutral-900 border border-neutral-700 rounded-[20px] px-6 py-4 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-full bg-[#A6E93A]/20 flex items-center justify-center">
+      <i data-lucide="check" class="w-4 h-4 text-[#A6E93A]"></i>
+    </div>
+    <span id="toastMsg" class="text-sm font-medium text-white"></span>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-neutral-800">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-xl bg-[#A6E93A] flex items-center justify-center">
+          <i data-lucide="cpu" class="w-5 h-5 text-black"></i>
+        </div>
+        <span class="font-['Oswald'] text-xl font-500 tracking-tight uppercase">
+          IAZ<span class="text-[#A6E93A]">_ENGINE</span>
+        </span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-6">
+        <a href="#publications" class="text-sm font-medium text-neutral-400 hover:text-[#A6E93A] transition-colors">Publications</a>
+        <a href="#" class="text-sm font-medium text-neutral-400 hover:text-[#A6E93A] transition-colors">Archive</a>
+        <a href="#" class="text-sm font-medium text-neutral-400 hover:text-[#A6E93A] transition-colors">Catégories</a>
+      </div>
+
+      <button onclick="openCreateModal()" class="bg-[#A6E93A] text-black px-6 py-2.5 rounded-[30px] text-sm font-semibold uppercase tracking-tight hover:bg-white transition-colors hidden md:block">
+        + Créer
+      </button>
+    </div>
+  </nav>
+
+  <!-- Create Publication Modal -->
+  <div id="createModal" class="modal-hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-[30px] max-w-4xl w-full my-8">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-8 border-b border-neutral-800">
+        <h2 class="font-['Oswald'] text-2xl font-500 tracking-tight uppercase">Créer une Publication</h2>
+        <button onclick="closeCreateModal()" class="text-neutral-500 hover:text-white transition-colors">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="p-8 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <!-- Titre -->
+        <div>
+          <label class="block text-sm font-semibold text-white mb-3">Titre (Obligatoire)</label>
+          <input 
+            type="text" 
+            id="pubTitle"
+            placeholder="Entrez le titre de votre article..." 
+            class="w-full bg-neutral-800 border border-neutral-700 rounded-[16px] px-4 py-3 text-white placeholder-neutral-500 focus:border-[#A6E93A] focus:outline-none transition-colors"
+          />
+          <p class="text-xs text-neutral-500 mt-2">Soyez descriptif et engageant</p>
+        </div>
+
+        <!-- Description courte -->
+        <div>
+          <label class="block text-sm font-semibold text-white mb-3">Description (Résumé)</label>
+          <textarea 
+            id="pubDescription"
+            placeholder="Une brève description de votre article (150 caractères max)..." 
+            maxlength="150"
+            rows="2"
+            class="w-full bg-neutral-800 border border-neutral-700 rounded-[16px] px-4 py-3 text-white placeholder-neutral-500 focus:border-[#A6E93A] focus:outline-none transition-colors resize-none"
+          ></textarea>
+          <p class="text-xs text-neutral-500 mt-2">Aide les lecteurs à comprendre le contenu en un coup d'œil</p>
+        </div>
+
+        <!-- Contenu principal -->
+        <div>
+          <label class="block text-sm font-semibold text-white mb-3">Contenu</label>
+          <div class="editor-toolbar">
+            <button onclick="insertMarkdown('**bold**')" title="Bold"><i data-lucide="bold" class="w-4 h-4"></i></button>
+            <button onclick="insertMarkdown('*italic*')" title="Italic"><i data-lucide="italic" class="w-4 h-4"></i></button>
+            <button onclick="insertMarkdown('[lien](url)')" title="Link"><i data-lucide="link" class="w-4 h-4"></i></button>
+            <button onclick="insertMarkdown('# Titre')" title="Heading"><i data-lucide="heading" class="w-4 h-4"></i></button>
+            <button onclick="insertMarkdown('- Point')" title="List"><i data-lucide="list" class="w-4 h-4"></i></button>
+            <button onclick="insertMarkdown('```code```')" title="Code"><i data-lucide="code" class="w-4 h-4"></i></button>
+          </div>
+          <textarea 
+            id="pubContent"
+            placeholder="Écrivez votre contenu ici... (Markdown supporté)"
+            class="editor-content"
+          ></textarea>
+          <p class="text-xs text-neutral-500 mt-2">Markdown supporté: **bold**, *italic*, # titre, - liste, etc.</p>
+        </div>
+
+        <!-- Tags & Catégories -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-semibold text-white mb-3">Tags</label>
+            <input 
+              type="text" 
+              id="tagInput"
+              placeholder="Entrez un tag et appuyez sur Entrée..."
+              class="w-full bg-neutral-800 border border-neutral-700 rounded-[16px] px-4 py-3 text-white placeholder-neutral-500 focus:border-[#A6E93A] focus:outline-none transition-colors"
+              onkeypress="handleTagInput(event)"
+            />
+            <div id="tagsList" class="flex flex-wrap gap-2 mt-3"></div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white mb-3">Catégorie</label>
+            <select id="pubCategory" class="w-full bg-neutral-800 border border-neutral-700 rounded-[16px] px-4 py-3 text-white focus:border-[#A6E93A] focus:outline-none transition-colors">
+              <option value="ai">Intelligence Artificielle</option>
+              <option value="infra">Infrastructure</option>
+              <option value="security">Sécurité</option>
+              <option value="devops">DevOps</option>
+              <option value="tutorial">Tutoriel</option>
+              <option value="news">Actualités</option>
+              <option value="case-study">Étude de Cas</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Image/Emoji Cover -->
+        <div>
+          <label class="block text-sm font-semibold text-white mb-3">Emoji de Couverture</label>
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="setCover('🤖')" class="w-12 h-12 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-[#A6E93A] text-xl transition-colors">🤖</button>
+            <button onclick="setCover('⚡')" class="w-12 h-12 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-[#A6E93A] text-xl transition-colors">⚡</button>
+            <button onclick="setCover('🔐')" class="w-12 h-12 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-[#A6E93A] text-xl transition-colors">🔐</button>
+            <button onclick="setCover('🚀')" class="w-12 h-12 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-[#A6E93A] text-xl transition-colors">🚀</button>
+            <button onclick="setCover('💡')" class="w-12 h-12 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-[#A6E93A] text-xl transition-colors">💡</button>
+            <button onclick="setCover('📊')" class="w-12 h-12 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-[#A6E93A] text-xl transition-colors">📊</button>
+            <button onclick="setCover('🔬')" class="w-12 h-12 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-[#A6E93A] text-xl transition-colors">🔬</button>
+            <button onclick="setCover('🌐')" class="w-12 h-12 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-[#A6E93A] text-xl transition-colors">🌐</button>
+          </div>
+          <input type="hidden" id="pubCover" value="🤖" />
+        </div>
+
+        <!-- Visibility -->
+        <div>
+          <label class="block text-sm font-semibold text-white mb-3">Visibilité</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="visibility" value="public" checked class="accent-[#A6E93A]" />
+              <span class="text-sm text-neutral-400">Publique</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="visibility" value="private" class="accent-[#A6E93A]" />
+              <span class="text-sm text-neutral-400">Privé</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="visibility" value="draft" class="accent-[#A6E93A]" />
+              <span class="text-sm text-neutral-400">Brouillon</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex gap-3 p-8 border-t border-neutral-800">
+        <button onclick="closeCreateModal()" class="flex-1 border border-neutral-700 text-white px-6 py-3 rounded-[30px] font-medium uppercase tracking-tight hover:border-[#A6E93A] hover:text-[#A6E93A] transition-colors">
+          Annuler
+        </button>
+        <button onclick="publishArticle()" class="flex-1 bg-[#A6E93A] hover:bg-white text-black px-6 py-3 rounded-[30px] font-semibold uppercase tracking-tight transition-colors">
+          Publier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="relative min-h-[400px] flex items-center overflow-hidden pt-20">
+    <div class="absolute inset-0 grid-bg"></div>
+    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#A6E93A] rounded-full blur-[200px] opacity-5"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 py-20 w-full">
+      <div class="max-w-3xl">
+        <h1 class="font-['Oswald'] text-5xl md:text-6xl font-500 leading-[1.1] tracking-tight uppercase mb-6">
+          Knowledge <span class="gradient-text">Base</span>
+        </h1>
+        <p class="text-neutral-400 text-lg font-light leading-relaxed mb-8">
+          Explorez les articles techniques, tutoriels et études de cas sur IAZ_ENGINE. Découvrez comment les meilleurs ingénieurs construisent avec notre plateforme.
+        </p>
+
+        <div class="flex gap-4 flex-wrap">
+          <button onclick="openCreateModal()" class="bg-[#A6E93A] text-black px-8 py-4 rounded-[30px] font-semibold uppercase tracking-tight hover:bg-white transition-colors flex items-center gap-2">
+            + Créer un article
+            <i data-lucide="plus" class="w-5 h-5"></i>
+          </button>
+          <button class="border border-neutral-700 text-white px-8 py-4 rounded-[30px] font-medium uppercase tracking-tight hover:border-[#A6E93A] hover:text-[#A6E93A] transition-colors flex items-center gap-2">
+            <i data-lucide="book-open" class="w-5 h-5"></i>
+            Lire les docs
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Publications Section -->
+  <section id="publications" class="py-24 relative">
+    <div class="max-w-7xl mx-auto px-6">
+      <!-- Tabs & Search -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12 pb-6 border-b border-neutral-800">
+        <div class="flex gap-2 overflow-x-auto pb-4 md:pb-0">
+          <button class="tab-button active" onclick="filterArticles('all')">Tous</button>
+          <button class="tab-button" onclick="filterArticles('ai')">IA</button>
+          <button class="tab-button" onclick="filterArticles('infra')">Infrastructure</button>
+          <button class="tab-button" onclick="filterArticles('security')">Sécurité</button>
+          <button class="tab-button" onclick="filterArticles('tutorial')">Tutoriels</button>
+        </div>
+
+        <div class="search-box w-full md:w-64">
+          <i data-lucide="search" class="w-5 h-5"></i>
+          <input 
+            type="text" 
+            id="searchInput"
+            placeholder="Rechercher..." 
+            class="w-full bg-neutral-800 border border-neutral-700 rounded-[12px] px-4 py-2 text-sm text-white placeholder-neutral-500 focus:border-[#A6E93A] focus:outline-none transition-colors"
+            onkeyup="searchArticles()"
+          />
+        </div>
+      </div>
+
+      <!-- Articles Grid -->
+      <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Article Card Template (will be populated by JS) -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="text-center py-16">
+        <div class="w-16 h-16 rounded-full bg-[#A6E93A]/20 flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="file-text" class="w-8 h-8 text-[#A6E93A]"></i>
+        </div>
+        <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-2">Aucun article</h3>
+        <p class="text-neutral-400 text-sm mb-6">Soyez le premier à créer une publication et partager vos connaissances.</p>
+        <button onclick="openCreateModal()" class="bg-[#A6E93A] text-black px-6 py-3 rounded-[30px] font-semibold uppercase tracking-tight hover:bg-white transition-colors">
+          Créer maintenant
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Article Detail Modal -->
+  <div id="articleModal" class="modal-hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-[30px] max-w-3xl w-full my-8">
+      <!-- Close Button -->
+      <button onclick="closeArticleModal()" class="absolute top-4 right-4 z-10 text-neutral-500 hover:text-white transition-colors">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <!-- Cover -->
+      <div id="modalCover" class="w-full h-64 bg-gradient-to-br from-[#A6E93A]/20 to-[#A6E93A]/5 flex items-center justify-center text-6xl border-b border-neutral-800"></div>
+
+      <!-- Content -->
+      <div class="p-8 md:p-12">
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-4">
+            <span id="modalCategory" class="tag text-xs">Catégorie</span>
+          </div>
+          <h2 id="modalTitle" class="font-['Oswald'] text-3xl font-500 tracking-tight uppercase mb-4">Titre</h2>
+          <p id="modalDescription" class="text-neutral-400 font-light text-base mb-6">Description</p>
+
+          <div class="article-meta mb-8 pb-8 border-b border-neutral-800">
+            <span><i data-lucide="user" class="w-4 h-4"></i> <span id="modalAuthor">Auteur</span></span>
+            <span><i data-lucide="calendar" class="w-4 h-4"></i> <span id="modalDate">Date</span></span>
+            <span><i data-lucide="clock" class="w-4 h-4"></i> <span id="modalReadTime">5 min</span></span>
+            <span><i data-lucide="eye" class="w-4 h-4"></i> <span id="modalViews">0</span> vues</span>
+          </div>
+        </div>
+
+        <div id="modalContent" class="prose prose-invert max-w-none mb-8 text-neutral-400 leading-relaxed">
+          <!-- Content will be inserted here -->
+        </div>
+
+        <div id="modalTags" class="flex flex-wrap gap-2 pt-8 border-t border-neutral-800"></div>
+
+        <!-- Comments Section -->
+        <div class="mt-8 pt-8 border-t border-neutral-800">
+          <h3 class="font-['Oswald'] text-xl font-500 tracking-tight uppercase mb-6">Commentaires</h3>
+          <div class="bg-neutral-800/50 border border-neutral-700 rounded-[16px] p-4 mb-6">
+            <textarea placeholder="Partagez vos pensées..." class="w-full bg-transparent text-white placeholder-neutral-500 focus:outline-none resize-none" rows="3"></textarea>
+            <div class="flex justify-end mt-3">
+              <button onclick="showToast('Commentaire ajouté!')" class="bg-[#A6E93A] text-black px-6 py-2 rounded-[20px] font-semibold text-sm uppercase tracking-tight hover:bg-white transition-colors">
+                Commenter
+              </button>
+            </div>
+          </div>
+          <p class="text-neutral-500 text-sm">Les commentaires seront disponibles prochainement.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-neutral-800 py-16 mt-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-[#A6E93A] flex items-center justify-center">
+              <i data-lucide="cpu" class="w-4 h-4 text-black"></i>
+            </div>
+            <span class="font-['Oswald'] font-500 tracking-tight uppercase text-sm">IAZ_ENGINE</span>
+          </div>
+          <p class="text-neutral-500 text-sm font-light">Knowledge Base & Blog</p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-4 uppercase text-sm">Ressources</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">API Docs</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Tutoriels</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Exemples</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-4 uppercase text-sm">Communauté</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Discord</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">GitHub</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Forum</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-4 uppercase text-sm">Entreprise</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">À propos</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Carrières</a></li>
+            <li><a href="#" class="text-neutral-500 hover:text-[#A6E93A] text-sm transition-colors">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-neutral-800 pt-8 flex flex-col md:flex-row items-center justify-between">
+        <p class="text-neutral-600 text-sm font-light">&copy; 2024 IAZ_ENGINE.ai. Tous droits réservés.</p>
+        <div class="flex items-center gap-6 mt-4 md:mt-0">
+          <a href="#" class="text-neutral-600 hover:text-[#A6E93A] transition-colors">
+            <i data-lucide="twitter" class="w-5 h-5"></i>
+          </a>
+          <a href="#" class="text-neutral-600 hover:text-[#A6E93A] transition-colors">
+            <i data-lucide="github" class="w-5 h-5"></i>
+          </a>
+          <a href="#" class="text-neutral-600 hover:text-[#A6E93A] transition-colors">
+            <i data-lucide="linkedin" class="w-5 h-5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Articles Data
+    let articles = [
+      {
+        id: 1,
+        title: "Optimiser l'Inférence IA en Temps Réel",
+        description: "Découvrez les techniques avancées pour réduire la latence d'inférence et améliorer la performance de vos modèles.",
+        category: "ai",
+        author: "Mohammed Ilyes Zoubirou",
+        date: "2024-06-24",
+        cover: "🤖",
+        tags: ["inference", "optimization", "performance"],
+        content: "# Optimiser l'Inférence IA en Temps Réel\n\nL'inférence en temps réel est un défi critique pour les applications d'IA modernes. Dans cet article, nous explorons les meilleures pratiques pour optimiser vos modèles.\n\n## Quantification des Modèles\nLa quantification réduit la taille des modèles et améliore la vitesse d'inférence.\n\n## Batching Intelligent\nGrouper les requêtes permet une utilisation optimale des ressources GPU.\n\n## Caching Stratégique\nGérez intelligemment vos caches pour éviter les recalculs inutiles.",
+        views: 1240,
+        readTime: "8 min",
+        visibility: "public"
+      },
+      {
+        id: 2,
+        title: "Sécurité des Modèles d'IA en Production",
+        description: "Guide complet sur la sécurisation de vos déploiements d'IA contre les attaques adversariales et les fuites de données.",
+        category: "security",
+        author: "Mohammed Ilyes Zoubirou",
+        date: "2024-06-23",
+        cover: "🔐",
+        tags: ["security", "production", "ai-safety"],
+        content: "# Sécurité des Modèles d'IA en Production\n\nLa sécurité est paramount lorsque vous déployez des modèles d'IA en production.\n\n## Attaques Adversariales\nComprendre les attaques adversariales et comment vous protéger.\n\n## Gestion des Secrets\nNe jamais exposer vos clés API ou modèles propriétaires.\n\n## Monitoring et Alertes\nDétecter les anomalies en temps réel avec des systèmes d'alerte robustes.",
+        views: 856,
+        readTime: "10 min",
+        visibility: "public"
+      },
+      {
+        id: 3,
+        title: "Déployer IAZ_ENGINE sur Kubernetes",
+        description: "Tutoriel complet: containerisation, orchestration et scaling automatique avec Kubernetes.",
+        category: "infra",
+        author: "Mohammed Ilyes Zoubirou",
+        date: "2024-06-22",
+        cover: "🚀",
+        tags: ["kubernetes", "docker", "devops", "deployment"],
+        content: "# Déployer IAZ_ENGINE sur Kubernetes\n\nKubernetes offre la flexibilité et la scalabilité nécessaires pour IAZ_ENGINE.\n\n## Containerisation avec Docker\nCréer une image Docker optimisée pour votre infrastructure.\n\n## Configuration Kubernetes\nDéfinir vos ressources, services et ingress.\n\n## Auto-scaling\nConfigurer l'auto-scaling basé sur la charge.",
+        views: 2100,
+        readTime: "12 min",
+        visibility: "public"
+      },
+      {
+        id: 4,
+        title: "Introduction à IAZ_ENGINE pour Débutants",
+        description: "Commencez votre voyage avec IAZ_ENGINE. Un guide pas à pas pour les nouveaux utilisateurs.",
+        category: "tutorial",
+        author: "Mohammed Ilyes Zoubirou",
+        date: "2024-06-21",
+        cover: "💡",
+        tags: ["beginner", "tutorial", "getting-started"],
+        content: "# Introduction à IAZ_ENGINE pour Débutants\n\nBienvenue dans IAZ_ENGINE! Ce guide vous aidera à démarrer.\n\n## Installation\nÉtapes simples pour installer IAZ_ENGINE sur votre machine.\n\n## Premier Modèle\nChargez et exécutez votre premier modèle en 5 minutes.\n\n## Intégration API\nConnectez votre application à IAZ_ENGINE via l'API.",
+        views: 3400,
+        readTime: "6 min",
+        visibility: "public"
+      }
+    ];
+
+    let allArticles = [...articles];
+    let currentTags = [];
+
+    // Toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Modal functions
+    function openCreateModal() {
+      document.getElementById('createModal').classList.remove('modal-hidden');
+      document.getElementById('createModal').classList.add('modal-visible');
+    }
+
+    function closeCreateModal() {
+      document.getElementById('createModal').classList.add('modal-hidden');
+      document.getElementById('createModal').classList.remove('modal-visible');
+    }
+
+    function openArticleModal(article) {
+      document.getElementById('modalTitle').textContent = article.title;
+      document.getElementById('modalDescription').textContent = article.description;
+      document.getElementById('modalCategory').textContent = article.category;
+      document.getElementById('modalAuthor').textContent = article.author;
+      document.getElementById('modalDate').textContent = new Date(article.date).toLocaleDateString('fr-FR');
+      document.getElementById('modalReadTime').textContent = article.readTime;
+      document.getElementById('modalViews').textContent = article.views;
+      document.getElementById('modalCover').textContent = article.cover;
+      document.getElementById('modalContent').innerHTML = markdownToHTML(article.content);
+      
+      const tagsContainer = document.getElementById('modalTags');
+      tagsContainer.innerHTML = article.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+
+      document.getElementById('articleModal').classList.remove('modal-hidden');
+      document.getElementById('articleModal').classList.add('modal-visible');
+    }
+
+    function closeArticleModal() {
+      document.getElementById('articleModal').classList.add('modal-hidden');
+      document.getElementById('articleModal').classList.remove('modal-visible');
+    }
+
+    // Tag handling
+    function handleTagInput(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const input = document.getElementById('tagInput');
+        const tag = input.value.trim();
+        if (tag && !currentTags.includes(tag)) {
+          currentTags.push(tag);
+          renderTags();
+          input.value = '';
+        }
+      }
+    }
+
+    function renderTags() {
+      const tagsList = document.getElementById('tagsList');
+      tagsList.innerHTML = currentTags.map(tag => `
+        <span class="tag">
+          ${tag}
+          <i data-lucide="x" class="w-3 h-3 cursor-pointer" onclick="removeTag('${tag}')"></i>
+        </span>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function removeTag(tag) {
+      currentTags = currentTags.filter(t => t !== tag);
+      renderTags();
+    }
+
+    function setCover(emoji) {
+      document.getElementById('pubCover').value = emoji;
+    }
+
+    function insertMarkdown(markdown) {
+      const textarea = document.getElementById('pubContent');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const text = textarea.value;
+      textarea.value = text.substring(0, start) + markdown + text.substring(end);
+      textarea.focus();
+    }
+
+    // Publish article
+    function publishArticle() {
+      const title = document.getElementById('pubTitle').value;
+      const description = document.getElementById('pubDescription').value;
+      const content = document.getElementById('pubContent').value;
+      const category = document.getElementById('pubCategory').value;
+      const cover = document.getElementById('pubCover').value;
+      const visibility = document.querySelector('input[name="visibility"]:checked').value;
+
+      if (!title || !content) {
+        showToast('Veuillez remplir tous les champs obligatoires');
+        return;
+      }
+
+      const newArticle = {
+        id: articles.length + 1,
+        title,
+        description: description || "Aucune description",
+        category,
+        author: "Mohammed Ilyes Zoubirou",
+        date: new Date().toISOString().split('T')[0],
+        cover,
+        tags: currentTags,
+        content,
+        views: 0,
+        readTime: calculateReadTime(content),
+        visibility
+      };
+
+      articles.push(newArticle);
+      allArticles = [...articles];
+      renderArticles();
+      closeCreateModal();
+      currentTags = [];
+      document.getElementById('pubTitle').value = '';
+      document.getElementById('pubDescription').value = '';
+      document.getElementById('pubContent').value = '';
+      document.getElementById('tagInput').value = '';
+      document.getElementById('tagsList').innerHTML = '';
+      showToast('Article publié avec succès!');
+    }
+
+    // Calculate read time
+    function calculateReadTime(text) {
+      const wordsPerMinute = 200;
+      const words = text.trim().split(/\s+/).length;
+      const minutes = Math.ceil(words / wordsPerMinute);
+      return `${minutes} min`;
+    }
+
+    // Markdown to HTML (simple)
+    function markdownToHTML(markdown) {
+      let html = markdown
+        .replace(/^### (.*?)$/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
+        .replace(/^## (.*?)$/gm, '<h2 class="text-2xl font-semibold mt-6 mb-3">$1</h2>')
+        .replace(/^# (.*?)$/gm, '<h1 class="text-3xl font-semibold mt-8 mb-4">$1</h1>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+        .replace(/^- (.*?)$/gm, '<li class="ml-4">$1</li>')
+        .replace(/\n\n/g, '</p><p class="mb-4">');
+      return `<p class="mb-4">${html}</p>`;
+    }
+
+    // Filter articles
+    function filterArticles(category) {
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      if (category === 'all') {
+        allArticles = [...articles];
+      } else {
+        allArticles = articles.filter(a => a.category === category);
+      }
+      renderArticles();
+    }
+
+    // Search articles
+    function searchArticles() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      allArticles = articles.filter(a => 
+        a.title.toLowerCase().includes(query) || 
+        a.description.toLowerCase().includes(query) ||
+        a.tags.some(tag => tag.toLowerCase().includes(query))
+      );
+      renderArticles();
+    }
+
+    // Render articles
+    function renderArticles() {
+      const grid = document.getElementById('articlesGrid');
+      const emptyState = document.getElementById('emptyState');
+
+      if (allArticles.length === 0) {
+        grid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      grid.innerHTML = allArticles.map(article => `
+        <div class="article-card cursor-pointer" onclick="openArticleModal(${JSON.stringify(article).replace(/"/g, '&quot;')})">
+          <div class="article-cover">${article.cover}</div>
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="tag text-xs">${article.category}</span>
+            </div>
+            <h3 class="font-['Oswald'] text-lg font-500 tracking-tight uppercase mb-3 line-clamp-2">
+              ${article.title}
+            </h3>
+            <p class="text-neutral-400 font-light text-sm mb-4 line-clamp-2">
+              ${article.description}
+            </p>
+            <div class="article-meta text-xs">
+              <span><i data-lucide="calendar" class="w-3 h-3"></i> ${new Date(article.date).toLocaleDateString('fr-FR')}</span>
+              <span><i data-lucide="clock" class="w-3 h-3"></i> ${article.readTime}</span>
+              <span><i data-lucide="eye" class="w-3 h-3"></i> ${article.views}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // Initial render
+    renderArticles();
+
+    // Close modal when clicking outside
+    document.getElementById('createModal').addEventListener('click', function(e) {
+      if (e.target === this) closeCreateModal();
+    });
+
+    document.getElementById('articleModal').addEventListener('click', function(e) {
+      if (e.target === this) closeArticleModal();
+    });
+  </script>
+</body>
+</html>
