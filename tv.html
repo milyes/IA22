@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETSECUREPRO IA - Audio Sync Dashboard</title>
+    <style>
+        /* Base Styles - Thème sombre ultra-sécurisé */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+        .dashboard { max-width: 1200px; margin: 0 auto; background: #1e293b; border-radius: 8px; border: 1px solid #334155; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #334155; padding-bottom: 16px; margin-bottom: 24px; }
+        .status-badge { background: #16a34a; color: white; padding: 4px 12px; border-radius: 9999px; font-size: 0.85rem; font-weight: bold; }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: #0f172a; padding: 16px; border-radius: 6px; border: 1px solid #334155; }
+        .stat-label { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; }
+        .stat-value { font-size: 1.4rem; font-weight: bold; margin-top: 4px; color: #38bdf8; }
+
+        /* File List Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th { text-align: left; padding: 12px; background: #0f172a; color: #94a3b8; font-size: 0.9rem; }
+        td { padding: 12px; border-bottom: 1px solid #334155; font-size: 0.95rem; }
+        tr:hover { background: #334155; }
+        
+        /* Indicators */
+        .indicator { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.85rem; }
+        .ind-green { color: #4ade80; }
+        .ind-yellow { color: #facc15; }
+        .ind-red { color: #f87171; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <!-- Header de l'infrastructure -->
+    <div class="header">
+        <div>
+            <h1 style="margin:0; font-size: 1.5rem;">🛡️ NETSECUREPRO IA</h1>
+            <small style="color: #94a3b8;">Z-CORE Sovereign Ecosystem v1.0 • Node: Montréal, QC 🇨🇦</small>
+        </div>
+        <span class="status-badge">GHOST MODE ACTIVE</span>
+    </div>
+
+    <!-- Métriques d'état local -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Stockage Disque Local</div>
+            <div class="stat-value">7.86 GB Libres</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">File d'attente rclone</div>
+            <div class="stat-value">1 Fichier</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Statut Pare-feu Cloud</div>
+            <div class="stat-value" style="color: #4ade80;">100% Étanche</div>
+        </div>
+    </div>
+
+    <!-- Liste d'indexation audio -->
+    <h3 style="margin-top: 32px; border-left: 4px solid #38bdf8; padding-left: 8px;">🎵 Index des Fichiers Audio Souverains</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom du Fichier</th>
+                <th>Taille</th>
+                <th>Chemin d'Origine (Local)</th>
+                <th>Statut Ingestion Rclone</th>
+                <th>État de Fuite Google Drive</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>audio_client_01.wav</strong></td>
+                <td>42.1 MB</td>
+                <td><code>/data/local/tmp/zcore/</code></td>
+                <td><span class="indicator ind-green">● Chiffré localement</span></td>
+                <td><span class="indicator ind-red">▲ Accès Bloqué (Ghost)</span></td>
+            </tr>
+            <tr>
+                <td><strong>enregistrement_appel_42.mp3</strong></td>
+                <td>12.4 MB</td>
+                <td><code>/data/local/tmp/zcore/</code></td>
+                <td><span class="indicator ind-yellow">▲ En attente de purge RAM</span></td>
+                <td><span class="indicator ind-red">▲ Accès Bloqué (Ghost)</span></td>
+            </tr>
+            <tr>
+                <td><strong>synthese_vocale_loi25.raw</strong></td>
+                <td>118.0 MB</td>
+                <td><code>/data/local/tmp/zcore/</code></td>
+                <td><span class="indicator ind-green">● Scellé cryptographiquement</span></td>
+                <td><span class="indicator ind-red">▲ Accès Bloqué (Ghost)</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
