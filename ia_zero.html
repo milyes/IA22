@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MILYES-IA V9 - Super Zéro</title>
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --panel: #16161a;
+            --accent: #00f2ff;
+            --text: #e0e0e6;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            background: var(--panel);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 800px;
+            width: 100%;
+            border: 1px solid #333;
+        }
+        h1 { color: var(--accent); text-align: center; font-weight: 300; }
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+        .controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        button {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        button:hover { background: var(--accent); color: #000; }
+        #canvas-container { text-align: center; }
+        canvas {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #444;
+            width: 100%;
+            max-width: 400px;
+        }
+        .log {
+            height: 100px;
+            overflow-y: auto;
+            background: #000;
+            padding: 10px;
+            font-size: 0.8em;
+            color: #888;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>MILYES-IA V9 <small>Pure JS Engine</small></h1>
+
+    <div class="stats">
+        <div>Époque: <span id="epoch-val">0</span></div>
+        <div>Perte (Loss): <span id="loss-val">0.0000</span></div>
+    </div>
+
+    <div class="controls">
+        <button onclick="startTraining()">Lancer l'Apprentissage (XOR)</button>
+        <button onclick="resetIA()">Réinitialiser</button>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="visualizer" width="400" height="400"></canvas>
+        <p><small>Visualisation de la frontière de décision (XOR)</small></p>
+    </div>
+
+    <div id="log" class="log">Système prêt. En attente d'instruction...</div>
+</div>
+
+<script>
+/**
+ * MOTEUR IA SUPER ZÉRO - MILYES-IA V9
+ * Implémentation : JavaScript Pur (Zero Dependency)
+ */
+
+class NeuralNetwork {
+    constructor(layers, momentum = 0.9, l2 = 0.001) {
+        this.layers = layers;
+        this.gamma = momentum;
+        this.l2 = l2;
+        this.weights = [];
+        this.biases = [];
+        this.v_w = [];
+        this.v_b = [];
+
+        for (let i = 0; i < layers.length - 1; i++) {
+            let limit = Math.sqrt(6 / (layers[i] + layers[i+1]));
+            this.weights.push(this.createMatrix(layers[i+1], layers[i], () => Math.random() * 2 * limit - limit));
+            this.biases.push(this.createMatrix(layers[i+1], 1, () => 0));
+            this.v_w.push(this.createMatrix(layers[i+1], layers[i], () => 0));
+            this.v_b.push(this.createMatrix(layers[i+1], 1, () => 0));
+        }
+    }
+
+    createMatrix(rows, cols, initFn) {
+        return Array.from({ length: rows }, () => Array.from({ length: cols }, initFn));
+    }
+
+    sigmoid(x) { return 1 / (1 + Math.exp(-Math.max(Math.min(x, 20), -20))); }
+
+    predict(input) {
+        let curr = input.map(x => [x]);
+        for (let i = 0; i < this.weights.length; i++) {
+            let next = [];
+            for (let r = 0; r < this.weights[i].length; r++) {
+                let sum = this.biases[i][r][0];
+                for (let c = 0; c < this.weights[i][r].length; c++) {
+                    sum += this.weights[i][r][c] * curr[c][0];
+                }
+                next.push([this.sigmoid(sum)]);
+            }
+            curr = next;
+        }
+        return curr.map(x => x[0]);
+    }
+
+    trainStep(batch, lr) {
+        let dw_acc = this.weights.map(w => w.map(r => r.map(() => 0)));
+        let db_acc = this.biases.map(b => b.map(r => r.map(() => 0)));
+        let totalLoss = 0;
+
+        for (let [input, target] of batch) {
+            let activations = [input.map(x => [x])];
+            let zs = [];
+
+            // Forward
+            for (let i = 0; i < this.weights.length; i++) {
+                let z = [];
+                let curr = activations[activations.length - 1];
+                for (let r = 0; r < this.weights[i].length; r++) {
+                    let sum = this.biases[i][r][0];
+                    for (let c = 0; c < this.weights[i][r].length; c++) {
+                        sum += this.weights[i][r][c] * curr[c][0];
+                    }
+                    z.push([sum]);
+                }
+                zs.push(z);
+                activations.push(z.map(v => [this.sigmoid(v[0])]));
+            }
+
+            // Loss (Cross-Entropy)
+            let lastAct = activations[activations.length - 1];
+            for (let j = 0; j < target.length; j++) {
+                totalLoss -= target[j] * Math.log(lastAct[j][0] + 1e-10) + (1 - target[j]) * Math.log(1 - lastAct[j][0] + 1e-10);
+            }
+
+            // Backward
+            let delta = lastAct.map((a, j) => [a[0] - target[j]]);
+            for (let l = 1; l <= this.weights.length; l++) {
+                let idx = this.weights.length - l;
+                let prevAct = activations[idx];
+
+                // Accumulate gradients
+                for (let r = 0; r < delta.length; r++) {
+                    for (let c = 0; c < prevAct.length; c++) {
+                        dw_acc[idx][r][c] += delta[r][0] * prevAct[c][0];
+                    }
+                    db_acc[idx][r][0] += delta[r][0];
+                }
+
+                if (idx > 0) {
+                    let nextDelta = [];
+                    for (let c = 0; c < this.weights[idx][0].length; c++) {
+                        let error = 0;
+                        for (let r = 0; r < this.weights[idx].length; r++) {
+                            error += this.weights[idx][r][c] * delta[r][0];
+                        }
+                        let a = activations[idx][c][0];
+                        nextDelta.push([error * a * (1 - a)]);
+                    }
+                    delta = nextDelta;
+                }
+            }
+        }
+
+        // Update Weights (Momentum + L2)
+        for (let i = 0; i < this.weights.length; i++) {
+            for (let r = 0; r < this.weights[i].length; r++) {
+                for (let c = 0; c < this.weights[i][r].length; c++) {
+                    let grad = (dw_acc[i][r][c] / batch.length) + (this.l2 * this.weights[i][r][c]);
+                    this.v_w[i][r][c] = this.gamma * this.v_w[i][r][c] + lr * grad;
+                    this.weights[i][r][c] -= this.v_w[i][r][c];
+                }
+                let grad_b = db_acc[i][r][0] / batch.length;
+                this.v_b[i][r][0] = this.gamma * this.v_b[i][r][0] + lr * grad_b;
+                this.biases[i][r][0] -= this.v_b[i][r][0];
+            }
+        }
+        return totalLoss / batch.length;
+    }
+}
+
+// UI & Logic
+let nn = new NeuralNetwork([2, 8, 1]);
+const canvas = document.getElementById('visualizer');
+const ctx = canvas.getContext('2d');
+const log = document.getElementById('log');
+
+function draw() {
+    const size = 10;
+    for (let x = 0; x < canvas.width; x += size) {
+        for (let y = 0; y < canvas.height; y += size) {
+            let out = nn.predict([x / canvas.width, y / canvas.height]);
+            let color = Math.floor(out[0] * 255);
+            ctx.fillStyle = `rgb(${color}, ${color/2}, ${255-color})`;
+            ctx.fillRect(x, y, size, size);
+        }
+    }
+}
+
+let training = false;
+async function startTraining() {
+    if (training) return;
+    training = true;
+    const data = [
+        [[0, 0], [0]], [[0, 1], [1]], [[1, 0], [1]], [[1, 1], [0]]
+    ];
+
+    for (let e = 0; e <= 2000; e++) {
+        let loss = nn.trainStep(data, 0.1);
+        if (e % 50 === 0) {
+            document.getElementById('epoch-val').innerText = e;
+            document.getElementById('loss-val').innerText = loss.toFixed(4);
+            draw();
+            await new Promise(r => setTimeout(r, 1));
+        }
+    }
+    log.innerHTML += "<br>Apprentissage terminé.";
+    training = false;
+}
+
+function resetIA() {
+    nn = new NeuralNetwork([2, 8, 1]);
+    draw();
+    log.innerHTML = "IA Réinitialisée.";
+}
+
+draw();
+</script>
+</body>
+</html>
