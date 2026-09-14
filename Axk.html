@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>AIMEDIXAL Parkinson Logic – Logicomedic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AIMEDIXAL – Système IA souverain pour l’analyse des symptômes moteurs de la maladie de Parkinson.">
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #0b1020;
+            color: #e5e9f0;
+        }
+        header {
+            background: #111827;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1f2937;
+        }
+        .logo {
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #60a5fa;
+        }
+        .title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .status {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            text-align: right;
+        }
+        main {
+            padding: 24px 32px 48px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h2 {
+            margin-top: 32px;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #9ca3af;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .card {
+            background: #111827;
+            border-radius: 10px;
+            padding: 16px 18px;
+            border: 1px solid #1f2937;
+        }
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #e5e9f0;
+        }
+        .card-subtitle {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin: 4px 0;
+        }
+        .metric-label {
+            color: #9ca3af;
+        }
+        .metric-value {
+            font-weight: 600;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            background: #1f2937;
+            color: #93c5fd;
+            margin-right: 6px;
+        }
+        .risk-bar {
+            width: 100%;
+            height: 8px;
+            border-radius: 999px;
+            background: #1f2937;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .risk-fill {
+            height: 100%;
+            width: 35%;
+            background: linear-gradient(90deg, #22c55e, #f97316, #ef4444);
+        }
+        .section-text {
+            font-size: 0.9rem;
+            color: #d1d5db;
+            line-height: 1.5;
+        }
+        footer {
+            margin-top: 32px;
+            padding-top: 16px;
+            border-top: 1px solid #1f2937;
+            font-size: 0.8rem;
+            color: #9ca3af;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid #3b82f6;
+            color: #bfdbfe;
+            font-size: 0.8rem;
+            text-decoration: none;
+            margin-top: 8px;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+        @media (max-width: 768px) {
+            header, main {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <div class="logo">LOGICOMEDIC</div>
+        <div class="title">AIMEDIXAL Parkinson Logic Core Engine</div>
+    </div>
+    <div class="status">
+        <div>Offline-native • Zero-Trust</div>
+        <div>Session ID: AIMEDIXAL-SESSION-001</div>
+        <div>UTC: 2026-09-14T18:28:00</div>
+    </div>
+</header>
+
+<main>
+    <!-- Vue d’ensemble -->
+    <section>
+        <h2>Vue d’ensemble clinique</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Paramètres moteurs</div>
+                <div class="card-subtitle">Analyse multimodale IMU (acc + gyr)</div>
+                <div class="metric-row">
+                    <span class="metric-label">Tremblement</span>
+                    <span class="metric-value">0.0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Rigidité</span>
+                    <span class="metric-value">0.0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Bradykinésie</span>
+                    <span class="metric-value">0.0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Vitesse</span>
+                    <span class="metric-value">1.0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Amplitude</span>
+                    <span class="metric-value">1.0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Régularité</span>
+                    <span class="metric-value">1.0</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Score global AIMEDIXAL</div>
+                <div class="card-subtitle">Fusion IMU + voix (tremor + dysarthrie)</div>
+                <div class="metric-row">
+                    <span class="metric-label">Score de risque</span>
+                    <span class="metric-value">0.350</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Risque détecté</span>
+                    <span class="metric-value">NON</span>
+                </div>
+                <div class="risk-bar">
+                    <div class="risk-fill"></div>
+                </div>
+                <p class="section-text" style="margin-top:10px;">
+                    Ce scoring est démonstratif et ne remplace pas un avis médical. Il est basé sur des données
+                    issues de capteurs médicaux validés et sur des modèles IA souverains exécutés localement.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Résumé clinique</div>
+                <div class="card-subtitle">Contexte de la session</div>
+                <p class="section-text">
+                    Analyse complétée sur une session de capture IMU (accéléromètre + gyroscope) et audio.
+                    Les données proviennent de dispositifs médicaux certifiés ou de capteurs de recherche calibrés.
+                    Aucun capteur mobile grand public n’est utilisé dans ce protocole.
+                </p>
+                <span class="badge">Capteurs validés</span>
+                <span class="badge">Offline-native</span>
+                <span class="badge">Zero-Trust</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module IMU -->
+    <section>
+        <h2>Module IMU — Accéléromètre & Gyroscope</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Accéléromètre</div>
+                <div class="card-subtitle">Analyse du tremblement (4–12 Hz)</div>
+                <div class="metric-row">
+                    <span class="metric-label">Fréquence brute</span>
+                    <span class="metric-value">50 Hz</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Fenêtres analysées</span>
+                    <span class="metric-value">128</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Features par fenêtre</span>
+                    <span class="metric-value">RMS, pic spectral, puissance</span>
+                </div>
+                <p class="section-text">
+                    Les signaux sont filtrés, rééchantillonnés et segmentés en fenêtres glissantes avant
+                    l’inférence TFLite. L’agrégation par médiane permet une robustesse aux artefacts.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Gyroscope</div>
+                <div class="card-subtitle">Analyse de la régularité du mouvement</div>
+                <div class="metric-row">
+                    <span class="metric-label">Fréquence brute</span>
+                    <span class="metric-value">50 Hz</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Fenêtres analysées</span>
+                    <span class="metric-value">128</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">Vitesse angulaire, stabilité</span>
+                </div>
+                <p class="section-text">
+                    Les données gyroscopiques complètent l’analyse du tremblement en apportant une mesure
+                    de la régularité et de la fluidité des mouvements.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module Audio -->
+    <section>
+        <h2>Module Audio — Dysarthrie</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Analyse vocale</div>
+                <div class="card-subtitle">Spectrogramme Mel & stabilité vocale</div>
+                <div class="metric-row">
+                    <span class="metric-label">Score de dysarthrie</span>
+                    <span class="metric-value">0.12</span>
+                </div>
+                <p class="section-text">
+                    Les enregistrements audio sont transformés en spectrogrammes Mel, puis analysés par un
+                    modèle TFLite dédié à la détection de signes de dysarthrie. Les résultats sont intégrés
+                    au score global AIMEDIXAL.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inférence IA -->
+    <section>
+        <h2>Inférence IA — TFLite Runtime</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Moteur d’inférence</div>
+                <div class="card-subtitle">tflite_runtime • latence faible</div>
+                <div class="metric-row">
+                    <span class="metric-label">Modèle tremor</span>
+                    <span class="metric-value">tremor_model_int8.tflite</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Latence moyenne</span>
+                    <span class="metric-value">&lt; 200 ms</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Agrégation</span>
+                    <span class="metric-value">Médiane + P90</span>
+                </div>
+                <p class="section-text">
+                    Les modèles TFLite quantifiés INT8 permettent une exécution rapide sur des dispositifs
+                    légers ou des serveurs sans GPU, tout en conservant une précision suffisante pour
+                    l’analyse clinique.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rapport JSON -->
+    <section>
+        <h2>Rapport clinique AIMEDIXAL</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Rapport JSON structuré</div>
+                <div class="card-subtitle">AIMEDIXAL_structured_data.json</div>
+                <p class="section-text">
+                    Le rapport contient l’ID de session, les métadonnées du dispositif, les paramètres
+                    cliniques analysés, les scores moteurs et vocaux, ainsi qu’un score global de risque.
+                    Le schéma JSON est validé avant la génération finale.
+                </p>
+                <a href="#" class="btn">Télécharger le rapport JSON</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sécurité -->
+    <section>
+        <h2>Module sécurité — Z‑CORE / NetSecurePro</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">Sentinelle Zero‑Trust</div>
+                <div class="card-subtitle">NetSecurePro v2.4</div>
+                <div class="metric-row">
+                    <span class="metric-label">Crypto</span>
+                    <span class="metric-value">AES‑256‑GCM / TLS 1.3 / ECDH</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Audit</span>
+                    <span class="metric-value">Logs immuables RGPD/HDS</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Capteurs mobiles</span>
+                    <span class="metric-value">Interdits</span>
+                </div>
+                <p class="section-text">
+                    Le module NetSecurePro assure une défense active du périmètre, une gestion stricte des
+                    accès, et une étanchéité totale vis‑à‑vis des données cliniques brutes. Seules les
+                    métadonnées techniques sont visibles pour les mécanismes de sécurité.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div>
+            Logicomedic — AIMEDIXAL Core Engine v1.0.76<br>
+            © 2024–2026 — Tous droits réservés.
+        </div>
+        <div>
+            Ce système ne remplace pas un diagnostic médical.<br>
+            Ce document contient des informations techniques appartenant à Mohammed Ilyes Zoubirou.
+        </div>
+    </footer>
+</main>
+</body>
+</html>
