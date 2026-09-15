@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 – IA22 | Zone non trouvée</title>
+    <title>404 – IA22 | Accès Refusé</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #000;
-            color: #0f0;
+            color: #00ff41;
             font-family: 'Courier New', monospace;
             height: 100vh;
             display: flex;
@@ -17,55 +17,102 @@
             align-items: center;
             text-align: center;
             overflow: hidden;
+            position: relative;
         }
         .glitch {
-            font-size: 6rem;
+            font-size: clamp(4rem, 15vw, 8rem);
             font-weight: bold;
-            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
-            animation: glitch 1s infinite;
+            letter-spacing: 8px;
+            text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 40px #00ff41;
+            animation: glitch 1.2s infinite;
         }
         @keyframes glitch {
-            0% { text-shadow: 2px 0 #f00, -2px 0 #0ff; }
-            25% { text-shadow: -2px 0 #f00, 2px 0 #0ff; }
-            50% { text-shadow: 2px 0 #0ff, -2px 0 #f00; }
-            75% { text-shadow: -2px 0 #0ff, 2px 0 #f00; }
-            100% { text-shadow: 2px 0 #f00, -2px 0 #0ff; }
+            0%, 100% { text-shadow: 2px 0 #ff003c, -2px 0 #00f0ff; }
+            25% { text-shadow: -2px 0 #ff003c, 2px 0 #00f0ff; }
+            50% { text-shadow: 2px 0 #00f0ff, -2px 0 #ff003c; }
+            75% { text-shadow: -2px 0 #00f0ff, 2px 0 #ff003c; }
         }
-        h1 { font-size: 1.8rem; margin: 20px 0 10px; letter-spacing: 3px; }
-        p { opacity: 0.8; margin-bottom: 30px; max-width: 500px; line-height: 1.5; }
+        h1 {
+            font-size: 1.6rem;
+            margin: 25px 0 15px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        p {
+            opacity: 0.85;
+            max-width: 520px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            font-size: 1.05rem;
+        }
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
         a {
-            color: #0f0;
+            color: #00ff41;
             text-decoration: none;
-            border: 1px solid #0f0;
-            padding: 12px 30px;
-            border-radius: 4px;
-            transition: all 0.3s;
+            border: 1px solid #00ff41;
+            padding: 12px 28px;
+            border-radius: 3px;
+            transition: all 0.25s ease;
             font-weight: bold;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
         }
         a:hover {
-            background: #0f0;
+            background: #00ff41;
             color: #000;
-            box-shadow: 0 0 15px #0f0;
+            box-shadow: 0 0 20px #00ff41;
         }
         .footer {
             position: absolute;
-            bottom: 20px;
-            font-size: 0.85rem;
-            opacity: 0.6;
+            bottom: 25px;
+            font-size: 0.8rem;
+            opacity: 0.55;
+            letter-spacing: 1px;
+        }
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 255, 65, 0.03) 51%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
         }
     </style>
 </head>
 <body>
+    <div class="scanline"></div>
+
     <div class="glitch">404</div>
-    <h1>ZONE NON TROUVÉE</h1>
+    <h1>Zone non localisée</h1>
     <p>
-        Le protocole IA22 n’a pas pu localiser cette ressource.<br>
-        Accès refusé ou chemin inexistant.
+        Le protocole <strong>IA22</strong> n’a pas pu identifier cette ressource.<br>
+        Accès refusé ou chemin inexistant dans le système souverain.
     </p>
-    <a href="/">← RETOUR AU NOYAU</a>
+
+    <div class="buttons">
+        <a href="/">← Retour au Noyau</a>
+        <a href="https://dzrouge.com">dzrouge.com</a>
+        <a href="https://neochatai.com">NeoChat AI</a>
+    </div>
 
     <div class="footer">
-        NetSecurePro-IA22 • Système Souverain
+        NetSecurePro-IA22 • Système Souverain • © 2026
     </div>
 </body>
 </html>
