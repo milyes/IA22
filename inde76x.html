@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z-CORE AI Interpreter</title>
+  <style>
+    body { font-family: monospace; background: #0d1117; color: #58a6ff; padding: 20px; }
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; max-width: 500px; }
+    input, button { width: 100%; padding: 10px; margin-top: 10px; box-sizing: border-box; background: #21262d; border: 1px solid #30363d; color: #c9d1d9; border-radius: 4px; font-family: inherit; }
+    button { background: #238636; color: #fff; cursor: pointer; font-weight: bold; }
+    button:hover { background: #2ea043; }
+    #output { margin-top: 15px; padding: 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 4px; color: #7ee787; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h3>[Z-PUCE] Interprète de Règles IA</h3>
+    <input type="text" id="inputIA" placeholder="Ex: audit, dashboard, status...">
+    <button onclick="interpreterIA()">Exécuter</button>
+    <div id="output">En attente de commande...</div>
+  </div>
+
+  <script>
+    let aiRulesCache = null;
+
+    async function interpreterIA() {
+      const inputElement = document.getElementById("inputIA");
+      const outputElement = document.getElementById("output");
+      const input = inputElement.value.trim().toLowerCase();
+
+      if (!input) {
+        outputElement.innerText = "⚠️ Veuillez saisir une commande.";
+        return;
+      }
+
+      try {
+        if (!aiRulesCache) {
+          const response = await fetch("ai_rules.json");
+          if (!response.ok) throw new Error("Fichier ai_rules.json introuvable.");
+          const data = await response.json();
+          aiRulesCache = data.rules;
+        }
+
+        const match = aiRulesCache.find(rule =>
+          input.includes(rule.condition.toLowerCase())
+        );
+
+        outputElement.innerText = match
+          ? `✅ Condition détectée : "${match.condition}"\n🧠 Action IA : ${match.action}`
+          : "⚠️ Aucune règle IA correspondante.";
+
+      } catch (error) {
+        outputElement.innerText = `❌ Erreur : ${error.message}`;
+      }
+    }
+  </script>
+
+</body>
+</html>
+EOF
+
+cat << 'EOF' > ai_rules.json
+{
+  "rules": [
+    {
+      "condition": "audit",
+      "action": "Lancer le scan de sécurité MSRC et vérifier les accès"
+    },
+    {
+      "condition": "dashboard",
+      "action": "Ouvrir l'interface Z-PUCE sur le port 8000"
+    },
+    {
+      "condition": "status",
+      "action": "Vérifier l'état de la mémoire RAM et des conteneurs"
+    }
+  ]
+}
